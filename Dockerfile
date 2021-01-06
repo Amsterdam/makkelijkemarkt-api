@@ -28,7 +28,7 @@ COPY Docker/php/ /usr/local/etc/php/
 
 WORKDIR /app
 
-RUN curl -sS https://getcomposer.org/installer | php && php composer.phar install --prefer-dist --no-scripts
+RUN curl -sS https://getcomposer.org/installer | php --1 && php composer.phar install --prefer-dist --no-scripts
 
 RUN chown -R www-data:www-data /app/app/cache \
     && chmod 770 /app/app/cache \
