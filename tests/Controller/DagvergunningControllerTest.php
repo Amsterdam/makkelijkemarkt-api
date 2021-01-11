@@ -1,0 +1,737 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Controller;
+
+use App\Entity\Dagvergunning;
+use App\Entity\Koopman;
+use App\Entity\Markt;
+use App\Entity\Tariefplan;
+use App\Repository\DagvergunningRepository;
+use App\Repository\KoopmanRepository;
+use App\Repository\TariefplanRepository;
+use App\Test\ApiTestCase;
+use DateTime;
+
+class DagvergunningControllerTest extends ApiTestCase
+{
+    public function testGetAll(): void
+    {
+        $response = $this->client->get('/api/1.1.0/dagvergunning/', ['headers' => $this->headers]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+        $dagvergunningData = reset($responseData);
+
+        $expectedKeys = [
+            'id',
+            'dag',
+            'aantal3MeterKramen',
+            'aantal4MeterKramen',
+            'extraMeters',
+            'totaleLengte',
+            'aantalElektra',
+            'afvaleiland',
+            'krachtstroom',
+            'reiniging',
+            'erkenningsnummer',
+            'erkenningsnummerInvoerMethode',
+            'koopman',
+            'markt',
+            'vervanger',
+            'aanwezig',
+            'notitie',
+            'aantal3meterKramenVast',
+            'aantal4meterKramenVast',
+            'aantalExtraMetersVast',
+            'totaleLengteVast',
+            'aantalElektraVast',
+            'afvaleilandVast',
+            'krachtstroomVast',
+            'eenmaligElektra',
+            'status',
+            'sollicitatie',
+            'registratieDatumtijd',
+            'registratieGeolocatie',
+            'registratieAccount',
+            'aanmaakDatumtijd',
+            'verwijderdDatumtijd',
+            'doorgehaaldDatumtijd',
+            'doorgehaaldAccount',
+            'doorgehaald',
+            'audit',
+            'factuur',
+            'loten',
+            'auditReason',
+        ];
+
+        foreach ($expectedKeys as $expectedKey) {
+            $this->assertArrayHasKey($expectedKey, $dagvergunningData);
+        }
+
+        $this->assertIsInt($dagvergunningData['id']);
+        $this->assertIsArray($dagvergunningData['markt']);
+    }
+
+    public function testGetAllWithLimit(): void
+    {
+        $response = $this->client->get('/api/1.1.0/dagvergunning/?listLength=1', ['headers' => $this->headers]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertGreaterThan(1, $response->getHeader('x-api-listsize'));
+
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        $this->assertCount(1, $responseData);
+    }
+
+    public function testGetAllWithFilterDoorgehaald(): void
+    {
+        $response = $this->client->get('/api/1.1.0/dagvergunning/?doorgehaald=0&listLength=10', ['headers' => $this->headers]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertGreaterThan(1, $response->getHeader('x-api-listsize'));
+
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        foreach ($responseData as $accountData) {
+            $this->assertFalse($accountData['doorgehaald']);
+        }
+    }
+
+    public function testGetById(): Dagvergunning
+    {
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        /** @var KoopmanRepository $koopmanRepository */
+        $koopmanRepository = $this->entityManager
+            ->getRepository(Koopman::class);
+
+        /** @var TariefplanRepository $tariefplanRepository */
+        $tariefplanRepository = $this->entityManager
+            ->getRepository(Tariefplan::class);
+
+        /** @var Koopman $koopman */
+        $koopman = $koopmanRepository->findOneBy([
+            'status' => 1,
+        ]);
+
+        /** @var Tariefplan $tariefplan */
+        $tariefplan = $tariefplanRepository->findOneBy([
+            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'concreetplan' => null,
+        ]);
+
+        /** @var Markt $markt */
+        $markt = $tariefplan->getMarkt();
+
+        /** @var array<string, mixed> $dataDagvergunning */
+        $dataDagvergunning = [
+            'markt' => $markt,
+            'koopman' => $koopman,
+            'dag' => $dt,
+            'erkenningsnummerInvoerMethode' => $this->faker->randomLetter,
+            'registratie_datumtijd' => $dt,
+            'erkenningsnummerInvoerWaarde' => '2422',
+            'aanwezig' => 'Vervanger zonder toestemming',
+            'doorgehaald' => false,
+            'extraMeters' => 10,
+            'notitie' => '----dagvergunning test by id----',
+            'aanmaak_datumtijd' => $dt,
+            'aantalElektra' => 3,
+            'krachtstroom' => false,
+            'reiniging' => true,
+            'aantal3MeterKramen' => 4,
+            'aantal4MeterKramen' => 5,
+            'afvaleiland' => 1,
+            'eenmaligElektra' => true,
+        ];
+
+        /** @var Dagvergunning $dagvergunning */
+        $dagvergunning = $this->createObject($dataDagvergunning, new Dagvergunning());
+
+        $response = $this->client->get('/api/1.1.0/dagvergunning/' . $dagvergunning->getId(), ['headers' => $this->headers]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        $this->assertEquals($dagvergunning->getId(), $responseData['id']);
+
+        foreach ($dataDagvergunning as $key => $val) {
+            if (
+                'koopman' !== $key &&
+                'markt' !== $key &&
+                'dag' !== $key &&
+                'registratie_datumtijd' !== $key &&
+                'aanmaak_datumtijd' !== $key &&
+                'erkenningsnummerInvoerWaarde' !== $key
+            ) {
+                $this->assertEquals($val, $responseData[$key]);
+            }
+        }
+
+        $expectedDates = [
+            'registratieDatumtijd',
+            'aanmaakDatumtijd',
+        ];
+
+        foreach ($expectedDates as $key) {
+            $this->assertStringStartsWith($dt->format('Y-m-d'), $responseData[$key]);
+        }
+
+        $this->assertEquals($dt->format('Y-m-d'), $responseData['dag']);
+        $this->assertEquals($dataDagvergunning['erkenningsnummerInvoerWaarde'], $responseData['erkenningsnummer']);
+
+        return $dagvergunning;
+    }
+
+    public function testPostConcept(): void
+    {
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        /** @var TariefplanRepository $tariefplanRepository */
+        $tariefplanRepository = $this->entityManager
+            ->getRepository(Tariefplan::class);
+
+        /** @var Tariefplan $tariefplan */
+        $tariefplan = $tariefplanRepository->findOneBy([
+            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'concreetplan' => null,
+        ]);
+
+        /** @var Markt $markt */
+        $markt = $tariefplan->getMarkt();
+
+        /** @var array<string, mixed> $dataDagvergunning */
+        $dataDagvergunning = [
+            'marktId' => $markt->getId(),
+            'dag' => $dt->format('Y-m-d'),
+            'aantal3MeterKramen' => 15,
+            'aantal4MeterKramen' => 13,
+            'extraMeters' => 12,
+            'aantalElektra' => 10,
+            'afvaleiland' => 8,
+            'eenmaligElektra' => true,
+            'krachtstroom' => true,
+            'reiniging' => false,
+            'erkenningsnummer' => '7773081004',
+            'erkenningsnummerInvoerMethode' => 'scan-barcode',
+            'aanwezig' => 'Niet geregisteerd',
+            'notitie' => '----- dagvergunning testPostConcept',
+            'registratieDatumtijd' => $dt->format('Y-m-d H:i:s'),
+            'registratieGeolocatie' => '777, 888',
+        ];
+
+        $response = $this->client->post('/api/1.1.0/dagvergunning_concept/', [
+            'headers' => $this->headers,
+            'body' => json_encode($dataDagvergunning),
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        foreach ($dataDagvergunning as $key => $val) {
+            if (
+                'marktId' !== $key &&
+                'dag' !== $key &&
+                'registratieDatumtijd' !== $key &&
+                'registratieGeolocatie' !== $key
+            ) {
+                $this->assertEquals($val, $responseData[$key]);
+            }
+        }
+
+        $expectedDates = [
+            'registratieDatumtijd',
+            'aanmaakDatumtijd',
+        ];
+
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        foreach ($expectedDates as $key) {
+            $this->assertStringStartsWith($dt->format('Y-m-d'), $responseData[$key]);
+        }
+
+        $this->assertEquals($dt->format('Y-m-d'), $responseData['dag']);
+
+        $extraParameterValues = [
+            'verwijderdDatumtijd' => null,
+            'doorgehaaldDatumtijd' => null,
+            'doorgehaaldAccount' => null,
+            'audit' => false,
+            'loten' => 0,
+            'auditReason' => null,
+            'eenmaligElektra' => true,
+        ];
+
+        foreach ($extraParameterValues as $key => $val) {
+            $this->assertEquals($val, $responseData[$key]);
+        }
+
+        $extraParameters = [
+            'totaleLengte',
+            'aanmaakDatumtijd',
+            'koopman',
+            'markt',
+        ];
+
+        foreach ($extraParameters as $key) {
+            $this->assertArrayHasKey($key, $responseData);
+        }
+
+        $expectedArrays = [
+            'markt',
+            'factuur',
+            'registratieGeolocatie',
+        ];
+
+        foreach ($expectedArrays as $expectedArray) {
+            $this->assertIsArray($responseData[$expectedArray]);
+        }
+
+        /** @var string $registratieGeolocatie */
+        $registratieGeolocatie = explode(',', $dataDagvergunning['registratieGeolocatie']);
+        $this->assertEquals($registratieGeolocatie[0], $responseData['registratieGeolocatie'][0]);
+        $this->assertEquals($registratieGeolocatie[1], $responseData['registratieGeolocatie'][1]);
+
+        // and now the distinction to "just" postDagvergunning
+        $this->assertNull($responseData['id']);
+        $this->assertNull($responseData['factuur']['id']);
+    }
+
+    /**
+     * @depends testPostConcept
+     */
+    public function testPostLineairplan(): int
+    {
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        /** @var TariefplanRepository $tariefplanRepository */
+        $tariefplanRepository = $this->entityManager
+            ->getRepository(Tariefplan::class);
+
+        /** @var Tariefplan $tariefplan */
+        $tariefplan = $tariefplanRepository->findOneBy([
+            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'concreetplan' => null,
+        ]);
+
+        /** @var Markt $markt */
+        $markt = $tariefplan->getMarkt();
+
+        /** @var array<string, mixed> $dataDagvergunning */
+        $dataDagvergunning = [
+            'marktId' => $markt->getId(),
+            'dag' => $dt->format('Y-m-d'),
+            'aantal3MeterKramen' => 15,
+            'aantal4MeterKramen' => 13,
+            'extraMeters' => 12,
+            'aantalElektra' => 10,
+            'afvaleiland' => 8,
+            'eenmaligElektra' => true,
+            'krachtstroom' => true,
+            'reiniging' => false,
+            'erkenningsnummer' => '7773081004',
+            'erkenningsnummerInvoerMethode' => 'scan-barcode',
+            'aanwezig' => 'Niet geregisteerd',
+            'notitie' => '---dagvergunning test postLineairplan----',
+            'registratieDatumtijd' => $dt->format('Y-m-d H:i:s'),
+            'registratieGeolocatie' => '777, 888',
+        ];
+
+        $response = $this->client->post('/api/1.1.0/dagvergunning/', [
+            'headers' => $this->headers,
+            'body' => json_encode($dataDagvergunning),
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        foreach ($dataDagvergunning as $key => $val) {
+            if (
+                'marktId' !== $key &&
+                'dag' !== $key &&
+                'registratieDatumtijd' !== $key &&
+                'registratieGeolocatie' !== $key
+            ) {
+                $this->assertEquals($val, $responseData[$key]);
+            }
+        }
+
+        $expectedDates = [
+            'registratieDatumtijd',
+            'aanmaakDatumtijd',
+        ];
+
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        foreach ($expectedDates as $key) {
+            $this->assertStringStartsWith($dt->format('Y-m-d'), $responseData[$key]);
+        }
+
+        $this->assertEquals($dt->format('Y-m-d'), $responseData['dag']);
+
+        $extraParameterValues = [
+            'verwijderdDatumtijd' => null,
+            'doorgehaaldDatumtijd' => null,
+            'doorgehaaldAccount' => null,
+            'audit' => false,
+            'loten' => 0,
+            'auditReason' => null,
+            'eenmaligElektra' => true,
+        ];
+
+        foreach ($extraParameterValues as $key => $val) {
+            $this->assertEquals($val, $responseData[$key]);
+        }
+
+        $extraParameters = [
+            'totaleLengte',
+            'aanmaakDatumtijd',
+            'koopman',
+            'markt',
+        ];
+
+        foreach ($extraParameters as $key) {
+            $this->assertArrayHasKey($key, $responseData);
+        }
+
+        $expectedArrays = [
+            'markt',
+            'factuur',
+            'registratieGeolocatie',
+        ];
+
+        foreach ($expectedArrays as $expectedArray) {
+            $this->assertIsArray($responseData[$expectedArray]);
+        }
+
+        /** @var string $registratieGeolocatie */
+        $registratieGeolocatie = explode(',', $dataDagvergunning['registratieGeolocatie']);
+        $this->assertEquals($registratieGeolocatie[0], $responseData['registratieGeolocatie'][0]);
+        $this->assertEquals($registratieGeolocatie[1], $responseData['registratieGeolocatie'][1]);
+
+        return $responseData['id'];
+    }
+
+    public function testPostConcreetplan(): int
+    {
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        /** @var TariefplanRepository $tariefplanRepository */
+        $tariefplanRepository = $this->entityManager
+            ->getRepository(Tariefplan::class);
+
+        /** @var Tariefplan $tariefplan */
+        $tariefplan = $tariefplanRepository->findOneBy([
+            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'lineairplan' => null,
+        ]);
+
+        /** @var Markt $markt */
+        $markt = $tariefplan->getMarkt();
+
+        /** @var array<string, mixed> $dataDagvergunning */
+        $dataDagvergunning = [
+            'marktId' => $markt->getId(),
+            'dag' => $dt->format('Y-m-d'),
+            'aantal3MeterKramen' => 25,
+            'aantal4MeterKramen' => 23,
+            'extraMeters' => 22,
+            'aantalElektra' => null,
+            'afvaleiland' => null,
+            'eenmaligElektra' => true,
+            'krachtstroom' => true,
+            'reiniging' => false,
+            'erkenningsnummer' => '7774',
+            'erkenningsnummerInvoerMethode' => 'opgezocht',
+            'aanwezig' => 'Niet geregisteerd',
+            'notitie' => '-----dagvergunning test concreetplan',
+            'registratieDatumtijd' => $dt->format('Y-m-d H:i:s'),
+            'registratieGeolocatie' => '1234.44, 1231.22',
+        ];
+
+        $response = $this->client->post('/api/1.1.0/dagvergunning/', [
+            'headers' => $this->headers,
+            'body' => json_encode($dataDagvergunning),
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        foreach ($dataDagvergunning as $key => $val) {
+            if (
+                'marktId' !== $key &&
+                'dag' !== $key &&
+                'registratieDatumtijd' !== $key &&
+                'registratieGeolocatie' !== $key
+            ) {
+                $this->assertEquals($val, $responseData[$key]);
+            }
+        }
+
+        $expectedDates = [
+            'registratieDatumtijd',
+            'aanmaakDatumtijd',
+        ];
+
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        foreach ($expectedDates as $key) {
+            $this->assertStringStartsWith($dt->format('Y-m-d'), $responseData[$key]);
+        }
+
+        $this->assertEquals($dt->format('Y-m-d'), $responseData['dag']);
+
+        $extraParameterValues = [
+            'verwijderdDatumtijd' => null,
+            'doorgehaaldDatumtijd' => null,
+            'doorgehaaldAccount' => null,
+            'audit' => false,
+            'loten' => 0,
+            'auditReason' => null,
+            'eenmaligElektra' => true,
+        ];
+
+        foreach ($extraParameterValues as $key => $val) {
+            $this->assertEquals($val, $responseData[$key]);
+        }
+
+        $extraParameters = [
+            'totaleLengte',
+            'aanmaakDatumtijd',
+            'koopman',
+            'markt',
+        ];
+
+        foreach ($extraParameters as $key) {
+            $this->assertArrayHasKey($key, $responseData);
+        }
+
+        $expectedArrays = [
+            'markt',
+            'factuur',
+            'registratieGeolocatie',
+        ];
+
+        foreach ($expectedArrays as $expectedArray) {
+            $this->assertIsArray($responseData[$expectedArray]);
+        }
+
+        /** @var string $registratieGeolocatie */
+        $registratieGeolocatie = explode(',', $dataDagvergunning['registratieGeolocatie']);
+        $this->assertEquals($registratieGeolocatie[0], $responseData['registratieGeolocatie'][0]);
+        $this->assertEquals($registratieGeolocatie[1], $responseData['registratieGeolocatie'][1]);
+
+        return $responseData['id'];
+    }
+
+    public function testPostWithMissingParameters(): void
+    {
+        $testData = [
+            // 'marktiId' missing
+            [
+                'aanwezig' => 'not relevant',
+            ],
+            // 'dag' missing
+            [
+                'marktId' => 1,
+            ],
+            // 'erkenningsnummer' missing
+            [
+                'marktId' => 1,
+                'dag' => '2018-01-01',
+            ],
+            // 'aanwezig' missing
+            [
+                'marktId' => 1,
+                'dag' => '2018-01-01',
+                'erkenningsnummer' => 'vbnmxcv',
+            ],
+        ];
+
+        foreach ($testData as $data) {
+            $response = $this->client->post('/api/1.1.0/dagvergunning/', [
+                'headers' => $this->headers,
+                'http_errors' => false,
+                'body' => json_encode($data),
+            ]);
+
+            $this->assertEquals(400, $response->getStatusCode());
+        }
+    }
+
+    /**
+     * @depends testPostLineairplan
+     */
+    public function testPutWithParameters(int $id): int
+    {
+        /** @var DagvergunningRepository $dagvergunningRepository */
+        $dagvergunningRepository = $this->entityManager->getRepository(Dagvergunning::class);
+
+        /** @var Dagvergunning $dagvergunning */
+        $dagvergunning = $dagvergunningRepository->find($id);
+
+        $data = [
+            'marktId' => $dagvergunning->getMarkt()->getId(),
+            'dag' => date('Y') . '-02-02',
+            'erkenningsnummer' => 'somethingnew',
+            'aanwezig' => 'zelf',
+            'doorgehaaldDatumtijd' => date('Y') . '-05-02 10:11:12',
+            'doorgehaaldGeolocatie' => '55.22, 77.12',
+            'aantal3MeterKramen' => 45,
+            'aantal4MeterKramen' => 44,
+        ];
+
+        $response = $this->client->put('/api/1.1.0/dagvergunning/' . $dagvergunning->getId(), [
+            'headers' => $this->headers,
+            'body' => json_encode($data),
+        ]);
+
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        $this->assertEquals($data['aantal3MeterKramen'], $responseData['aantal3MeterKramen']);
+        $this->assertEquals($data['aantal4MeterKramen'], $responseData['aantal4MeterKramen']);
+
+        return $responseData['id'];
+    }
+
+    /**
+     * @depends testPutWithParameters
+     */
+    public function testDelete(int $id): void
+    {
+        $response = $this->client->delete('/api/1.1.0/dagvergunning/' . $id, ['headers' => $this->headers]);
+
+        /** @var DagvergunningRepository $dagvergunningRepository */
+        $dagvergunningRepository = $this->entityManager->getRepository(Dagvergunning::class);
+
+        /** @var Dagvergunning $dagvergunning */
+        $dagvergunning = $dagvergunningRepository->find($id);
+
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+
+        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertEquals($dt->format('Y-m-d'), $dagvergunning->getDoorgehaaldDatumtijd()->format('Y-m-d'));
+        $this->assertTrue($dagvergunning->getDoorgehaald());
+        $this->assertNull($dagvergunning->getDoorgehaaldGeolocatieLat());
+        $this->assertNull($dagvergunning->getDoorgehaaldGeolocatieLong());
+    }
+
+    /**
+     * @depends testPostConcreetplan
+     */
+    public function testDeleteWithParameters(int $id): void
+    {
+        $data = [
+            'doorgehaaldDatumtijd' => date('Y') . '-03-02 10:11:12',
+            'doorgehaaldGeolocatie' => '1234.22, 87654.12',
+        ];
+
+        $response = $this->client->delete('/api/1.1.0/dagvergunning/' . $id, [
+            'headers' => $this->headers,
+            'body' => json_encode($data),
+        ]);
+
+        /** @var DagvergunningRepository $dagvergunningRepository */
+        $dagvergunningRepository = $this->entityManager->getRepository(Dagvergunning::class);
+
+        /** @var Dagvergunning $dagvergunning */
+        $dagvergunning = $dagvergunningRepository->find($id);
+
+        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertTrue($dagvergunning->getDoorgehaald());
+        $this->assertEquals(1234.22, $dagvergunning->getDoorgehaaldGeolocatieLat());
+        $this->assertEquals(87654.12, $dagvergunning->getDoorgehaaldGeolocatieLong());
+        $this->assertEquals($data['doorgehaaldDatumtijd'], $dagvergunning->getDoorgehaaldDatumtijd()->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * @depends testGetById
+     */
+    public function testGetByKoopmanAndDate(Dagvergunning $dagvergunning): void
+    {
+        /** @var Koopman $koopman */
+        $koopman = $dagvergunning->getKoopman();
+
+        /** @var DateTime $dt */
+        $dt = new DateTime();
+        $startDate = $dt->format('Y-m-') . '01';
+        $endDate = $dt->format('Y-m-t');
+
+        $response = $this->client->get('/api/1.1.0/dagvergunning_by_date/' . $koopman->getId() . '/' . $startDate . '/' . $endDate, [
+            'headers' => $this->headers,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+        $dagvergunningData = reset($responseData);
+
+        $expectedKeys = [
+            'id',
+            'dag',
+            'aantal3MeterKramen',
+            'aantal4MeterKramen',
+            'extraMeters',
+            'totaleLengte',
+            'aantalElektra',
+            'afvaleiland',
+            'krachtstroom',
+            'reiniging',
+            'erkenningsnummer',
+            'erkenningsnummerInvoerMethode',
+            'koopman',
+            'markt',
+            'vervanger',
+            'aanwezig',
+            'notitie',
+            'aantal3meterKramenVast',
+            'aantal4meterKramenVast',
+            'aantalExtraMetersVast',
+            'totaleLengteVast',
+            'aantalElektraVast',
+            'afvaleilandVast',
+            'krachtstroomVast',
+            'eenmaligElektra',
+            'status',
+            'sollicitatie',
+            'registratieDatumtijd',
+            'registratieGeolocatie',
+            'registratieAccount',
+            'aanmaakDatumtijd',
+            'verwijderdDatumtijd',
+            'doorgehaaldDatumtijd',
+            'doorgehaaldAccount',
+            'doorgehaald',
+            'audit',
+            'factuur',
+            'loten',
+            'auditReason',
+        ];
+
+        foreach ($expectedKeys as $expectedKey) {
+            $this->assertArrayHasKey($expectedKey, $dagvergunningData);
+        }
+
+        $this->assertIsInt($dagvergunningData['id']);
+        $this->assertIsArray($dagvergunningData['markt']);
+        $this->assertIsArray($dagvergunningData['koopman']);
+        $this->assertEquals($koopman->getId(), $dagvergunningData['koopman']['id']);
+        $this->assertStringStartsWith($dt->format('Y-m-'), $dagvergunningData['dag']);
+    }
+}

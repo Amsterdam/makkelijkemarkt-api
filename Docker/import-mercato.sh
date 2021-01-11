@@ -16,9 +16,9 @@ popd
 
 # Import the CSV data into the database
 pushd $DST_DIR
-php /app/app/console makkelijkemarkt:import:perfectview:vervanger Vervangers.CSV --env=prod
-php /app/app/console makkelijkemarkt:import:perfectview:markt Marktnaam.CSV --env=prod
-php /app/app/console makkelijkemarkt:import:perfectview:koopman Koopman.CSV --env=prod
-php /app/app/console makkelijkemarkt:import:perfectview:sollicitatie Koopman_Markt.CSV --env=prod
-php /app/app/console makkelijkemarkt:import:perfectview:foto Koopman.CSV fotos --env=prod
+php /app/bin/console makkelijkemarkt:import:perfectview:vervanger Vervangers.CSV --env=prod
+php /app/bin/console makkelijkemarkt:import:perfectview:markt Marktnaam.CSV --env=prod
+php /app/bin/console makkelijkemarkt:import:perfectview:koopman Koopman.CSV --env=prod
+php /app/bin/console makkelijkemarkt:import:perfectview:sollicitatie Koopman_Markt.CSV --env=prod
+php /app/bin/console makkelijkemarkt:import:perfectview:foto Koopman.CSV fotos --env=prod
 popd

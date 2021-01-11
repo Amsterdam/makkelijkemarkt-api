@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+final class Version20150819101744 extends AbstractMigration
+{
+    public function up(Schema $schema): void
+    {
+        $this->abortIf('postgresql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('CREATE SEQUENCE plaats_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE plaats (id INT NOT NULL, dagvergunning_id INT NOT NULL, plaatsnummer VARCHAR(15) NOT NULL, meters INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_AEF29B2BBE5F3A40 ON plaats (dagvergunning_id)');
+        $this->addSql('ALTER TABLE plaats ADD CONSTRAINT FK_AEF29B2BBE5F3A40 FOREIGN KEY (dagvergunning_id) REFERENCES dagvergunning (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE dagvergunning DROP plaatsnummer');
+        $this->addSql('ALTER TABLE dagvergunning DROP extra_plaatsnummers');
+    }
+
+    public function down(Schema $schema): void
+    {
+        $this->abortIf('postgresql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
+
+        $this->addSql('DROP SEQUENCE plaats_id_seq CASCADE');
+        $this->addSql('DROP TABLE plaats');
+        $this->addSql('ALTER TABLE dagvergunning ADD plaatsnummer VARCHAR(25) NOT NULL');
+        $this->addSql('ALTER TABLE dagvergunning ADD extra_plaatsnummers TEXT DEFAULT NULL');
+        $this->addSql('COMMENT ON COLUMN dagvergunning.extra_plaatsnummers IS \'(DC2Type:simple_array)\'');
+    }
+}

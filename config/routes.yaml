@@ -1,0 +1,14 @@
+homepage:
+    path: /
+    controller: App\Controller\DefaultController::index
+
+doc:
+    path: /doc
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: static/doc.html.twig
+
+controllers:
+    resource: '../src/Controller/'
+    type:     annotation
+    prefix: /api/1.1.0

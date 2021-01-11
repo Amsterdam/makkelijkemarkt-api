@@ -15,7 +15,7 @@ services:
     - "8080:8080"
     depends_on:
     - database
-    command: ["/usr/bin/wait-for-it.sh", "database:5432", "--" , "/app/docker-entrypoint.sh"]
+    command: ["/app/docker-entrypoint.sh"]
     links:
     - database:database
     environment:
@@ -26,8 +26,8 @@ services:
       MM_API__DATABASE__PASSWORD: "insecure"
       MM_API__MAILER__TRANSPORT: "smtp"
       MM_API__MAILER__HOST: "localhost"
-      MM_API__MAILER__USER: ""
-      MM_API__MAILER__PASSWORD: ""
+      MM_API__MAILER__USER: "user"
+      MM_API__MAILER__PASSWORD: "insecure"
       MM_API__MAILER__PORT: "25"
       MM_API__MAILER__ENCRYPTION: "ssl" # null, ssl, tls
       MM_API__SECRET: "insecure" # random
