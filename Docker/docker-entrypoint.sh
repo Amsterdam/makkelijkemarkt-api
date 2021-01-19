@@ -27,18 +27,18 @@ mkdir -p /etc/nginx/htpasswd.d
 echo -e $MM_API__NGINX_HTPASSWD > /etc/nginx/htpasswd.d/makkelijkemarkt-api.amsterdam.nl
 
 # Make sure log files exist, so tail won't return a non-zero exitcode
-touch /app/var/logs/dev.log
-touch /app/var/logs/prod.log
+touch /app/var/log/dev.log
+touch /app/var/log/prod.log
 touch /var/log/nginx/access.log
 touch /var/log/nginx/error.log
 
-tail -f /app/var/logs/dev.log &
-tail -f /app/var/logs/prod.log &
+tail -f /app/var/log/dev.log &
+tail -f /app/var/log/prod.log &
 tail -f /var/log/nginx/access.log &
 tail -f /var/log/nginx/error.log &
 
-chgrp www-data /app/var/logs/*.log
-chmod 775 /app/var/logs/*.log
+chgrp www-data /app/var/log/*.log
+chmod 775 /app/var/log/*.log
 
 nginx
 
