@@ -652,8 +652,8 @@ final class TariefplanController extends AbstractController
      */
     protected function processConcreetPlan(Tariefplan $tariefplan, Concreetplan $concreetplan, $data): Concreetplan
     {
-        $geldigVanaf = new DateTime($data['geldigVanaf']);
-        $geldigTot = new DateTime($data['geldigTot']);
+        $geldigVanaf = new DateTime($data['geldigVanaf']['date']);
+        $geldigTot = new DateTime($data['geldigTot']['date']);
 
         $tariefplan->setNaam($data['naam']);
         $tariefplan->setGeldigVanaf($geldigVanaf);

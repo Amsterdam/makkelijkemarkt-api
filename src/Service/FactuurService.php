@@ -124,7 +124,7 @@ final class FactuurService
         string $aanwezig,
         string $erkenningsnummerInvoerMethode,
         string $registratieDatumtijd,
-        string $registratieGeolocatie = null,
+        $registratieGeolocatie = null,
         int $aantal3MeterKramen,
         int $aantal4MeterKramen,
         int $extraMeters,
