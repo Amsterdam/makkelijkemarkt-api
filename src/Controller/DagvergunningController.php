@@ -361,9 +361,9 @@ final class DagvergunningController extends AbstractController
         // NO saving of dagvergunning or factuur!
         // this is only a concept
 
-        $this->factuurService->createFactuur($dagvergunning);
+        $factuur = $this->factuurService->createFactuur($dagvergunning);
 
-        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
+        $response = $this->serializer->serialize($factuur, 'json', ['groups' => $this->groups]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }

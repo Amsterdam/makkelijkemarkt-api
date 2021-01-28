@@ -137,7 +137,7 @@ final class LoginController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="username", @OA\Schema(type="string"), description="Account Username"),
+     *                 @OA\Property(property="username", @OA\Schema(type="string"), description="Account Username", example="string"),
      *                 @OA\Property(property="password", @OA\Schema(type="string"), example="string"),
      *                 @OA\Property(property="deviceUuid", @OA\Schema(type="string"), description="UUID van het gebruikte device", example="string"),
      *                 @OA\Property(property="clientApp", @OA\Schema(type="string"), description="appliciatie type", example="string"),
