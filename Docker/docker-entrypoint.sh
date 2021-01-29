@@ -32,13 +32,13 @@ touch /app/var/log/prod.log
 touch /var/log/nginx/access.log
 touch /var/log/nginx/error.log
 
+chgrp www-data /app/var/log/*.log
+chmod 775 /app/var/log/*.log
+
 tail -f /app/var/log/dev.log &
 tail -f /app/var/log/prod.log &
 tail -f /var/log/nginx/access.log &
 tail -f /var/log/nginx/error.log &
-
-chgrp www-data /app/var/log/*.log
-chmod 775 /app/var/log/*.log
 
 nginx
 
