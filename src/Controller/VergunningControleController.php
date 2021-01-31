@@ -369,7 +369,7 @@ final class VergunningControleController extends AbstractController
         string $erkenningsnummerInvoerWaarde,
         string $erkenningsnummerInvoerMethode,
         string $vervangerErkenningsnummer = null,
-        string $registratieGeolocatie,
+        $registratieGeolocatie,
         int $aantal3MeterKramen,
         int $aantal4MeterKramen,
         int $extraMeters,
