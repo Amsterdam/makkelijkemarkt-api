@@ -6,6 +6,7 @@ set -e
 SRC_DIR=/app/data
 DST_DIR=/app/mercato
 
+mkdir -p $SRC_DIR
 mkdir -p $DST_DIR/fotos
 
 # Unzip datafiles from Mercato stored in makkelijkemarkt objectstore
