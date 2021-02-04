@@ -281,7 +281,6 @@ final class LoginController extends AbstractController
         $account->setLastAttempt(new DateTime());
 
         if (false === $this->userPasswordEncoder->isPasswordValid($account, $data['password'])) {
-            dump($data, $account);
             $attempts = $account->getAttempts();
             ++$attempts;
 

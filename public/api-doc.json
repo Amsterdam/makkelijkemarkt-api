@@ -2276,7 +2276,8 @@
                                 ],
                                 "properties": {
                                     "username": {
-                                        "description": "Account Username"
+                                        "description": "Account Username",
+                                        "example": "string"
                                     },
                                     "password": {
                                         "example": "string"
