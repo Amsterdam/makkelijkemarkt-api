@@ -37,9 +37,6 @@ final class MarktController extends AbstractController
     /** @var Serializer $serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
-    private $groups;
-
     public function __construct(
         MarktRepository $marktRepository,
         EntityManagerInterface $entityManager,
@@ -179,7 +176,7 @@ final class MarktController extends AbstractController
      *     )
      * )
      * @Route("/markt/{id}", methods={"POST"})
-     * @Security("is_granted('ROLE_ADMIN')")
+     * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function postById(Request $request, int $id): Response
     {
