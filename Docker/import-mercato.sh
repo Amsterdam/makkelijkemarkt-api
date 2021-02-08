@@ -3,7 +3,7 @@
 # Exit when any command fails
 set -e
 
-SRC_DIR=/app/data
+SRC_DIR=/app/var/data
 DST_DIR=/app/mercato
 
 mkdir -p $SRC_DIR
