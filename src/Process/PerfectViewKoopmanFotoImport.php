@@ -129,9 +129,13 @@ class PerfectViewKoopmanFotoImport
                 continue;
             }
 
-            // calculate checksum
+            // determine values
             $checksum = md5_file($fullPath, false);
-            if ($koopman['foto_hash'] === $checksum) {
+            $filename = time() . '-' . $checksum . '-' . $koopman['erkenningsnummer'] . '.jpg';
+            $destination = $this->dataDir . DIRECTORY_SEPARATOR . 'koopman-fotos' . DIRECTORY_SEPARATOR . $filename;
+
+            // calculate checksum
+            if (file_exists($destination) === true && $koopman['foto_hash'] === $checksum) {
                 $this->logger->info('Skip, old hash and new hash are the same, photo not updated', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'FotoKop' => $pvRecord['FotoKop'], 'NEW HASH' => $checksum, 'OLD HASH' => $koopman['foto_hash']]);
                 continue;
             }
@@ -142,8 +146,6 @@ class PerfectViewKoopmanFotoImport
             $qb->where('e.id = :id')->setParameter('id', $koopman['id']);
 
             // copy the file to the new location
-            $filename = time() . '-' . $checksum . '-' . $koopman['erkenningsnummer'] . '.jpg';
-            $destination = $this->dataDir . DIRECTORY_SEPARATOR . 'koopman-fotos' . DIRECTORY_SEPARATOR . $filename;
             $result = copy($fullPath, $destination);
             if ($result === false) {
                 $this->logger->error('Can not copy photo to data directory', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'src' => $fullPath, 'dst' => $destination]);
