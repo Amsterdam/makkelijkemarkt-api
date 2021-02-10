@@ -8,6 +8,7 @@ use App\Kernel;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,6 +29,25 @@ final class DefaultController extends AbstractController
     public function index(): JsonResponse
     {
         return new JsonResponse(['msg' => 'Hallo!'], Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/health/")
+     */
+    public function health(Request $request, Kernel $appKernel): JsonResponse
+    {
+        return new JsonResponse(
+            [
+                'env' => [
+                    'app_env' => $appKernel->getEnvironment(),
+                    'app_debug' => $appKernel->isDebug(),
+                    'clientIp' => $request->getClientIp(),
+                    'clientIps' => $request->getClientIps(),
+                    'trustedProxies' => $request->getTrustedProxies()
+                ]
+            ],
+            Response::HTTP_OK
+        );
     }
 
     /**
