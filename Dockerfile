@@ -26,6 +26,8 @@ COPY Docker/nginx/ /etc/nginx/
 
 COPY Docker/php/ /usr/local/etc/php/
 
+COPY Docker/phpfpm/zz2-docker.conf /usr/local/etc/php-fpm.d/zz2-docker.conf
+
 WORKDIR /app
 
 RUN curl -sS https://getcomposer.org/installer | php -- && php composer.phar install --prefer-dist --no-scripts
@@ -42,5 +44,7 @@ RUN mkdir -p /app/var/cache \
     && chmod 775 /app/docker-entrypoint.sh \
     && chmod 775 /app/import-mercato.sh \
     && chmod 775 /app/report.sh
+
+ENV FPM_PM_MAX_CHILDREN=20
 
 CMD /app/docker-entrypoint.sh
