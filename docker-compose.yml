@@ -32,3 +32,4 @@ services:
       MM_API__MAILER__ENCRYPTION: "ssl" # null, ssl, tls
       MM_API__SECRET: "insecure" # random
       MM_API__APP_KEY: "insecure"
+      MM_API__NGINX_HTPASSWD: ""
