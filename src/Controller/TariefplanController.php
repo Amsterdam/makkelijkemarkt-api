@@ -465,8 +465,6 @@ final class TariefplanController extends AbstractController
 
         $this->processConcreetPlan($tariefplan, $concreetplan, $data);
 
-        $this->entityManager->persist($tariefplan);
-        $this->entityManager->persist($concreetplan);
         $this->entityManager->flush();
 
         $response = $this->serializer->serialize($tariefplan, 'json', ['groups' => $this->groups]);
@@ -580,8 +578,6 @@ final class TariefplanController extends AbstractController
 
         $lineairplan = $this->processLineairPlan($tariefplan, $lineairplan, $data);
 
-        $this->entityManager->persist($tariefplan);
-        $this->entityManager->persist($lineairplan);
         $this->entityManager->flush();
 
         $response = $this->serializer->serialize($tariefplan, 'json', ['groups' => $this->groups]);
