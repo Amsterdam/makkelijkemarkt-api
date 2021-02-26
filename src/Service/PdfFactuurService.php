@@ -162,8 +162,8 @@ class PdfFactuurService
                 $btwOver[$product->getBtwHoog()] = 0;
             }
 
-            $btwTotaal[$product->getBtwHoog()] = number_format($product->getAantal() * $product->getBedrag() * ($product->getBtwHoog() / 100),2);
-            $btwOver[$product->getBtwHoog()] = number_format($product->getAantal() * $product->getBedrag(),2);
+            $btwTotaal[$product->getBtwHoog()] += number_format($product->getAantal() * $product->getBedrag() * ($product->getBtwHoog() / 100),2);
+            $btwOver[$product->getBtwHoog()] += number_format($product->getAantal() * $product->getBedrag(),2);
 
             $this->pdf->Ln(5);
         }
