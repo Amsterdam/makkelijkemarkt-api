@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Dagvergunning;
 use App\Repository\KoopmanRepository;
 use App\Repository\DagvergunningRepository;
+use App\Service\FactuurService;
 use App\Service\PdfFactuurService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,12 +36,18 @@ class StuurFactuurCommand extends Command
      */
     private $mailer;
 
-    public function __construct(KoopmanRepository $koopmanRepository, DagvergunningRepository $dagvergunningRepository, PdfFactuurService $pdfFactuurService, \Swift_Mailer $mailer)
+    /**
+     * @var FactuurService
+     */
+    private $factuurService;
+
+    public function __construct(KoopmanRepository $koopmanRepository, DagvergunningRepository $dagvergunningRepository, PdfFactuurService $pdfFactuurService, \Swift_Mailer $mailer, FactuurService $factuurService)
     {
         $this->koopmanRepository = $koopmanRepository;
         $this->dagvergunningRepository = $dagvergunningRepository;
         $this->pdfFactuurService = $pdfFactuurService;
         $this->mailer = $mailer;
+        $this->factuurService = $factuurService;
 
         parent::__construct();
     }
@@ -86,6 +94,22 @@ class StuurFactuurCommand extends Command
                     'koopmanId' => $koopman->getId(),
                     'doorgehaald' => 0
                 ));
+
+                $heeftBetaalbaarBedrag = false;
+                foreach ($dagvergunningen as $dagvergunning) {
+                    /** @var Dagvergunning $dagvergunning */
+                    $totaalBedrag = $this->factuurService->getTotaalExclBtw($dagvergunning->getFactuur());
+                    $output->writeln('.. Dagvergunning ' . $dagvergunning->getId() . ' / Invoice total ' . $totaalBedrag);
+                    if ($totaalBedrag > 0.01 || $totaalBedrag < -0.01) {
+                        $heeftBetaalbaarBedrag = true;
+                        $output->writeln('.... We need to send invoice');
+                    }
+                }
+                if ($heeftBetaalbaarBedrag === false) {
+                    $output->writeln('.. Skip (no invoiced needed)');
+                    continue;
+                }
+
                 $pdf = $this->pdfFactuurService->generate($koopman, $dagvergunningen);
                 $pdfFile = $pdf->Output('koopman-' . $koopman->getId() . '.pdf', 'S');
 

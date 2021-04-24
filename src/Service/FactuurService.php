@@ -262,4 +262,15 @@ final class FactuurService
 
         return number_format($totaal, 2);
     }
+
+    public function getTotaalExclBtw(Factuur $factuur): float
+    {
+        $totaal = 0.00;
+        $producten = $factuur->getProducten();
+        foreach ($producten as $product) {
+            /** @var Product $product */
+            $totaal += ($product->getAantal() * $product->getBedrag());
+        }
+        return $totaal;
+    }
 }
