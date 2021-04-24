@@ -4,6 +4,7 @@
 String PROJECTNAME = "makkelijkemarkt-api"
 String CONTAINERDIR = "."
 String PRODUCTION_BRANCH = "master"
+String ACCEPTANCE_BRANCH = "develop"
 String PLAYBOOK = 'deploy.yml'
 
 // All other data uses variables, no changes needed for static
@@ -45,6 +46,30 @@ node {
             docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
                 image = docker.build("${CONTAINERNAME}:${env.BUILD_NUMBER}","-f ${DOCKERFILE} ${CONTAINERDIR}")
                 image.push()
+            }
+        }
+    }
+}
+
+// On master branch, fetch the container, tag with production and latest and deploy to production
+if (BRANCH == "${ACCEPTANCE_BRANCH}") {
+    node {
+        stage('Deploy to ACC') {
+            tryStep "deployment", {
+                docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
+                    docker.image("${CONTAINERNAME}:${env.BUILD_NUMBER}").pull()
+                    // The Image.push() function ignores the docker registry prefix of the image name,
+                    // which means that we cannot re-tag an image that was built in a different stage (on a different node).
+                    // Resort to manual tagging to allow build and tag steps to run on different Jenkins slaves.
+                    retagAndPush("${CONTAINERNAME}", "acceptance")
+                }
+
+                build job: 'Subtask_Openstack_Playbook',
+                parameters: [
+                    [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
+                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: "${PLAYBOOK}"],
+                    [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_${PROJECTNAME}"],
+                ]
             }
         }
     }

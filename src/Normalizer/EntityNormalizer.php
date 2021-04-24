@@ -131,8 +131,8 @@ final class EntityNormalizer extends ObjectNormalizer
             $fotoMediumUrl = null;
 
             if (null !== $object->getFoto()) {
-                //$fotoUrl = $this->cacheManager->getBrowserPath('koopman-fotos/' . $object->getFoto(), 'koopman_rect_small');
-                //$fotoMediumUrl = $this->cacheManager->getBrowserPath('koopman-fotos/' . $object->getFoto(), 'koopman_rect_medium');
+                $fotoUrl = $this->cacheManager->getBrowserPath($object->getFoto(), 'koopman_rect_small');
+                $fotoMediumUrl = $this->cacheManager->getBrowserPath($object->getFoto(), 'koopman_rect_medium');
             }
 
             $data['fotoUrl'] = $fotoUrl;

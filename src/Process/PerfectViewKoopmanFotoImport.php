@@ -7,6 +7,7 @@ namespace App\Process;
 use App\Utils\Logger;
 use Doctrine\DBAL\Query\QueryBuilder;
 use App\Utils\CsvIterator;
+use League\Flysystem\Filesystem;
 
 class PerfectViewKoopmanFotoImport
 {
@@ -16,9 +17,9 @@ class PerfectViewKoopmanFotoImport
     protected $conn;
 
     /**
-     * @var string
+     * @var Filesystem
      */
-    protected $dataDir;
+    protected $storage;
 
     /**
      * @var Logger
@@ -27,45 +28,12 @@ class PerfectViewKoopmanFotoImport
 
     /**
      * @param \Doctrine\DBAL\Connection $conn
-     * @param string $dataDir
+     * @param Filesystem $storage
      */
-    public function __construct(\Doctrine\DBAL\Connection $conn, $dataDir)
+    public function __construct(\Doctrine\DBAL\Connection $conn, Filesystem $storage)
     {
         $this->conn = $conn;
-        $this->dataDir = $dataDir;
-    }
-
-    /**
-     * Data directory initialization
-     * @return boolean
-     */
-    protected function prepareDataDir()
-    {
-        if (file_exists($this->dataDir) === false) {
-            $this->logger->info('dataDirectory does not exists, will be created', ['dataDirectory' => $this->dataDir]);
-            $result = mkdir($this->dataDir);
-            if ($result === false) {
-                $this->logger->error('Can not create dataDirectory');
-                return false;
-            }
-        }
-        if (file_exists($this->dataDir) === true && is_dir($this->dataDir) === false) {
-            $this->logger->error('dataDirectory is a file');
-            return false;
-        }
-        if (file_exists($this->dataDir . DIRECTORY_SEPARATOR . 'koopman-fotos') === false) {
-            $this->logger->info('dataDirectory/koopman-fotos does not exists, will be created', ['dataDirectory' => $this->dataDir]);
-            $result = mkdir($this->dataDir . DIRECTORY_SEPARATOR . 'koopman-fotos');
-            if ($result === false) {
-                $this->logger->error('Can not create dataDirectory/koopman-fotos');
-                return false;
-            }
-        }
-        if (file_exists($this->dataDir . DIRECTORY_SEPARATOR . 'koopman-fotos') === true && is_dir($this->dataDir . DIRECTORY_SEPARATOR . 'koopman-fotos') === false) {
-            $this->logger->error('dataDirectory/koopman-fotos is a file');
-            return false;
-        }
-        return true;
+        $this->storage = $storage;
     }
 
     /**
@@ -88,12 +56,6 @@ class PerfectViewKoopmanFotoImport
             if (in_array($requiredHeading, $headings) === false) {
                 throw new \RuntimeException('Missing column "' . $requiredHeading . '" in import file');
             }
-        }
-
-        $result = $this->prepareDataDir();
-        if ($result === false) {
-            $this->logger->emergency('dataDirectory is not ready, abort');
-            return;
         }
 
         // iterate the csv-file
@@ -131,11 +93,10 @@ class PerfectViewKoopmanFotoImport
 
             // determine values
             $checksum = md5_file($fullPath, false);
-            $filename = time() . '-' . $checksum . '-' . $koopman['erkenningsnummer'] . '.jpg';
-            $destination = $this->dataDir . DIRECTORY_SEPARATOR . 'koopman-fotos' . DIRECTORY_SEPARATOR . $filename;
+            $filename = $checksum . '-' . $koopman['erkenningsnummer'] . '.jpg';
 
             // calculate checksum
-            if (file_exists($destination) === true && $koopman['foto_hash'] === $checksum) {
+            if ($this->storage->has($filename) === true && $koopman['foto_hash'] === $checksum) {
                 $this->logger->info('Skip, old hash and new hash are the same, photo not updated', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'FotoKop' => $pvRecord['FotoKop'], 'NEW HASH' => $checksum, 'OLD HASH' => $koopman['foto_hash']]);
                 continue;
             }
@@ -146,7 +107,7 @@ class PerfectViewKoopmanFotoImport
             $qb->where('e.id = :id')->setParameter('id', $koopman['id']);
 
             // copy the file to the new location
-            $result = copy($fullPath, $destination);
+            $result = $this->storage->put($filename, file_get_contents($fullPath));
             if ($result === false) {
                 $this->logger->error('Can not copy photo to data directory', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'src' => $fullPath, 'dst' => $destination]);
                 continue;

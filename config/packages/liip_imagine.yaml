@@ -3,22 +3,37 @@ liip_imagine:
     # valid drivers options include "gd" or "gmagick" or "imagick"
     driver: 'gd'
 
-    loaders:
-        default:
-            filesystem:
-                data_root: '%data_dir%/'
-
-    resolvers:
-        default:
-            web_path: ~
+    data_loader: app_flysystem_loader
+    cache: app_flysystem_resolver
 
     filter_sets:
         cache: ~
         koopman_rect_small:
             quality: 75
+            format: jpg
             filters:
                 thumbnail: { size: [120, 160], mode: outbound }
         koopman_rect_medium:
             quality: 75
+            format: jpg
             filters:
                 thumbnail: { size: [426, 568], mode: outbound }
+
+services:
+    imagine.data.loader.flysystem:
+        class: App\Imagine\SwiftFlysystemLoader
+        arguments:
+            - "@flysystem_fotos"
+        tags:
+            - { name: "liip_imagine.binary.loader", loader: app_flysystem_loader }
+    imagine.cache.resolver.flysystem:
+        class: App\Imagine\SwiftFlysystemResolver
+        arguments:
+            - "@flysystem_thumbs"
+            - '%env(SWIFT_PROJECT_ID)%'
+            - '%env(SWIFT_EXTERNAL_DOMAIN)%'
+            - '%swift_flysystem_container_thumbs%'
+            - '%env(SWIFT_TEMP_URL_KEY)%'
+            - "@imagine_cache"
+        tags:
+            - { name: "liip_imagine.cache.resolver", resolver: app_flysystem_resolver }

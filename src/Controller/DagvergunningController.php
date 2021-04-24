@@ -196,8 +196,8 @@ final class DagvergunningController extends AbstractController
      *     tags={"Dagvergunning"},
      *     summary="Geeft dagvergunningen terug per koopman en datum",
      *     @OA\Parameter(name="koopmanId", @OA\Schema(type="integer"), in="path", required=true, description="Id van de koopman"),
-     *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd, alleen i.c.m. dagEind"),
-     *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd, alleen i.c.m. dagStart"),
+     *     @OA\Parameter(name="startDate", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd, alleen i.c.m. dagEind"),
+     *     @OA\Parameter(name="endDate", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd, alleen i.c.m. dagStart"),
      *     @OA\Response(
      *         response="200",
      *         description="",

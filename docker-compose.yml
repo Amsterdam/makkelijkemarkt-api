@@ -33,3 +33,11 @@ services:
       MM_API__SECRET: "insecure" # random
       MM_API__APP_KEY: "insecure"
       MM_API__NGINX_HTPASSWD: ""
+      SWIFT_AUTH_URL: "https://identity.stack.cloudvps.com/v3/"
+      SWIFT_REGION: "NL"
+      SWIFT_USER_NAME: ""
+      SWIFT_USER_DOMAIN_ID: "Default"
+      SWIFT_USER_PASSWORD: "insecure"
+      SWIFT_PROJECT_ID: ""
+      SWIFT_TEMP_URL_KEY: ""
+      SWIFT_EXTERNAL_DOMAIN: "objectstore.eu"

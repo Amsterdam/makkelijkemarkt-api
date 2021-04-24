@@ -11,6 +11,7 @@
         "doctrine/doctrine-migrations-bundle": "3.0.*",
         "fzaninotto/faker": "1.9.*",
         "liip/imagine-bundle": "2.4.*",
+        "nimbusoft/flysystem-openstack-swift": "^0.3.4",
         "qipsius/tcpdf-bundle": "^2.0",
         "sensio/framework-extra-bundle": "5.6.*",
         "symfony/console": "5.2.*",
