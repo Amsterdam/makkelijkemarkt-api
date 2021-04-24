@@ -39,7 +39,7 @@ final class FactuurReportCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Generates factuur json data')
+            ->setDescription('Generates a csv file with all the invoice lines')
             ->addArgument('startdate', InputArgument::REQUIRED, 'Start date yyyy-mm-dd')
             ->addArgument('enddate', InputArgument::REQUIRED, 'End date yyyy-mm-dd')
         ;

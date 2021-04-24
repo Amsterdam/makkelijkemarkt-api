@@ -8,7 +8,7 @@ csvFile="$targetDir/factuur-report-$startDate-$endDate.csv"
 
 mkdir -p "$targetDir"
 
-php /app/bin/console makkelijkemarkt:report:factuur $startDate $endDate --env=prod > "$csvFile"
+php /app/bin/console app:factuur:report $startDate $endDate > "$csvFile"
 md5sum "$csvFile" > "$csvFile.md5"
 
 find "$targetDir" -type f -mtime +14 -delete
