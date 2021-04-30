@@ -1342,7 +1342,7 @@
                         }
                     },
                     {
-                        "name": "dagStart",
+                        "name": "startDate",
                         "in": "path",
                         "description": "Als yyyy-mm-dd, alleen i.c.m. dagEind",
                         "required": true,
@@ -1351,7 +1351,7 @@
                         }
                     },
                     {
-                        "name": "dagEind",
+                        "name": "endDate",
                         "in": "path",
                         "description": "Als yyyy-mm-dd, alleen i.c.m. dagStart",
                         "required": true,

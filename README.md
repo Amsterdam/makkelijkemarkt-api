@@ -41,7 +41,8 @@ Dit project maakt gebruik van diverse andere Open Source software componenten. O
 [PHPExcel](https://github.com/PHPOffice/PHPExcel),
 [ExcelBundle](https://github.com/liuggio/ExcelBundle),
 [Nelmio API Doc](https://github.com/nelmio/NelmioApiDocBundle),
-[Nelmio Cors Bundle](https://github.com/nelmio/NelmioCorsBundle)
+[Nelmio Cors Bundle](https://github.com/nelmio/NelmioCorsBundle),
+[Flysystem](https://github.com/thephpleague/flysystem)
 
 
 ## Installeren van de API
