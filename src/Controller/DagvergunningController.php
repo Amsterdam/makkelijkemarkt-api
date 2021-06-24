@@ -105,7 +105,7 @@ final class DagvergunningController extends AbstractController
         $listOffset = $request->query->getInt('listOffset', 0);
 
         /** @var int $listLength */
-        $listLength = $request->query->getInt('listLength', 100);
+        $listLength = $request->query->getInt('listLength', 1000000);
 
         /** @var array<string> $q */
         $q = [];
