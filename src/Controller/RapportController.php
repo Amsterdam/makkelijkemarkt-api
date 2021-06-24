@@ -54,7 +54,7 @@ final class RapportController extends AbstractController
         $this->koopmanRepository = $koopmanRepository;
 
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->groups = ['account', 'dagvergunning', 'simpleKoopman', 'simpleMarkt', 'vervanger'];
+        $this->groups = ['account', 'dagvergunning', 'simpleKoopman', 'simpleMarkt', 'vervanger', 'sollicitatie', 'factuur', 'product'];
     }
 
     /**
