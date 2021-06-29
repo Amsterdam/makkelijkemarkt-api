@@ -89,7 +89,7 @@ final class DagvergunningController extends AbstractController
      *     @OA\Parameter(name="doorgehaald", @OA\Schema(type="integer"), in="query", required=false, description="Indien niet opgenomen of leeg of 0 enkel niet doorgehaalde dagvergunningen, indien opgenomen en 1 dan enkel doorgehaalde dagvergunningen"),
      *     @OA\Parameter(name="accountId", @OA\Schema(type="integer"), in="query", required=false, description="Filter op de persoon die de dagvergunning uitgegeven heeft"),
      *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
-     *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=100"),
+     *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=1000000"),
      *     @OA\Response(
      *         response="200",
      *         description="",
@@ -105,7 +105,7 @@ final class DagvergunningController extends AbstractController
         $listOffset = $request->query->getInt('listOffset', 0);
 
         /** @var int $listLength */
-        $listLength = $request->query->getInt('listLength', 100);
+        $listLength = $request->query->getInt('listLength', 1000000);
 
         /** @var array<string> $q */
         $q = [];
