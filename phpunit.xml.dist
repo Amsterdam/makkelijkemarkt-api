@@ -13,8 +13,10 @@
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
-        <server name="MM_APP_KEY" value="testkey" />
+        <server name="MM_APP_KEY" value="insecure" />
         <server name="MM_APP_TOKEN" value="effdb4f3-20c4-4cf9-b4e1-efb152fe9630" />
+        <server name="KERNEL_CLASS" value="App\Kernel"/>
+        <server name="DATABASE_URL" value="postgresql://makkelijkemarkt:insecure@database:5432/makkelijkemarkt?serverVersion=11&amp;charset=utf8"/>
     </php>
 
     <testsuites>
