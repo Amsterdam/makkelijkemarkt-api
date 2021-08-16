@@ -19,7 +19,7 @@ class Vervanger
     /**
      * @OA\Property(example="14")
      * @Groups("vervanger")
-     * @SerializedName("vervanger_id")
+     * @SerializedName("relation_id")
      *
      * @var int
      * @ORM\Id()
@@ -27,6 +27,15 @@ class Vervanger
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @OA\Property(example="14")
+     * @Groups("vervanger")
+     * @SerializedName("vervanger_id")
+     *
+     * @var int
+     */
+    private $vervanger_id;
 
     /**
      * @var Koopman
@@ -141,6 +150,17 @@ class Vervanger
     public function getId(): ?int
     {
         return $this->id;
+    }
+    
+    public function getVervangerId(): ?int
+    {
+        $result = null;
+
+        if (null !== $this->getVervanger()) {
+            $result = $this->getVervanger()->getId();
+        }
+
+        return $result;
     }
 
     public function getKoopman(): Koopman

@@ -55,7 +55,7 @@ class ApiTestCase extends KernelTestCase
 
         /** @var Token $token */
         $token = $tokenRepository->findOneBy([
-            'clientApp' => 'admin',
+            'account' => 0,
         ]);
 
         $this->headers = [
