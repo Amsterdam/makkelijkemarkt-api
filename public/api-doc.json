@@ -874,7 +874,7 @@
                     {
                         "name": "listLength",
                         "in": "query",
-                        "description": "Default=100",
+                        "description": "Default=1000000",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -2564,6 +2564,7 @@
                                     "makkelijkeMarktActief",
                                     "indelingstype",
                                     "marktDagenTekst",
+                                    "marktDagen",
                                     "indelingsTijdstipTekst",
                                     "telefoonNummerContact"
                                 ],
@@ -2611,6 +2612,9 @@
                                         "type": "string"
                                     },
                                     "marktDagenTekst": {
+                                        "type": "string"
+                                    },
+                                    "marktDagen": {
                                         "type": "string"
                                     },
                                     "indelingsTijdstipTekst": {
@@ -5512,6 +5516,14 @@
             "Vervanger": {
                 "properties": {
                     "id": {
+                        "type": "integer",
+                        "example": "14"
+                    },
+                    "vervanger_id": {
+                        "type": "integer",
+                        "example": "14"
+                    },
+                    "koopman_id": {
                         "type": "integer",
                         "example": "14"
                     },
