@@ -4,7 +4,6 @@
 String PROJECTNAME = "makkelijkemarkt-api"
 String CONTAINERDIR = "."
 String PRODUCTION_BRANCH = "master"
-String ACCEPTANCE_BRANCH = "develop"
 String PLAYBOOK = 'deploy.yml'
 
 // All other data uses variables, no changes needed for static
@@ -18,7 +17,7 @@ def tryStep(String message, Closure block, Closure tearDown = null) {
         block();
     }
     catch (Throwable t) {
-        slackSend message: "${env.JOB_NAME}: ${message} failure ${env.BUILD_URL}", channel: '#ci-channel-app', color: 'danger'
+        slackSend message: "${env.JOB_NAME}: ${message} failure ${env.BUILD_URL}", channel: '#salmagundi_ci', color: 'danger'
         throw t;
     }
     finally {
@@ -52,31 +51,13 @@ node {
 }
 
 // On master branch, fetch the container, tag with production and latest and deploy to production
-if (BRANCH == "${ACCEPTANCE_BRANCH}") {
-    node {
-        stage('Deploy to ACC') {
-            tryStep "deployment", {
-                docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
-                    docker.image("${CONTAINERNAME}:${env.BUILD_NUMBER}").pull()
-                    // The Image.push() function ignores the docker registry prefix of the image name,
-                    // which means that we cannot re-tag an image that was built in a different stage (on a different node).
-                    // Resort to manual tagging to allow build and tag steps to run on different Jenkins slaves.
-                    retagAndPush("${CONTAINERNAME}", "acceptance")
-                }
-
-                build job: 'Subtask_Openstack_Playbook',
-                parameters: [
-                    [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: "${PLAYBOOK}"],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_${PROJECTNAME}"],
-                ]
-            }
-        }
-    }
-}
-
-// On master branch, fetch the container, tag with production and latest and deploy to production
 if (BRANCH == "${PRODUCTION_BRANCH}") {
+
+    stage('Waiting for approval') {
+        slackSend channel: '#salmagundi_ci', color: 'warning', message: 'Makkelijke markt API is waiting for Acceptance Release - please confirm'
+        input "Deploy to Acceptance?"
+    }
+
     node {
         stage('Deploy to ACC') {
             tryStep "deployment", {
@@ -99,7 +80,7 @@ if (BRANCH == "${PRODUCTION_BRANCH}") {
     }
 
     stage('Waiting for approval') {
-        slackSend channel: '#ci-channel-app', color: 'warning', message: 'Makkelijke markt API is waiting for Production Release - please confirm'
+        slackSend channel: '#salmagundi_ci', color: 'warning', message: 'Makkelijke markt API is waiting for Production Release - please confirm'
         input "Deploy to Production?"
     }
 

@@ -136,6 +136,7 @@ final class MarktController extends AbstractController
      *                 @OA\Property(property="makkelijkeMarktActief", type="boolean"),
      *                 @OA\Property(property="indelingstype", type="string"),
      *                 @OA\Property(property="marktDagenTekst", type="string"),
+     *                 @OA\Property(property="marktDagen", type="string"),
      *                 @OA\Property(property="indelingsTijdstipTekst", type="string"),
      *                 @OA\Property(property="telefoonNummerContact", type="string"),
      *                 required={
@@ -153,6 +154,7 @@ final class MarktController extends AbstractController
      *                      "makkelijkeMarktActief",
      *                      "indelingstype",
      *                      "marktDagenTekst",
+     *                      "marktDagen",
      *                      "indelingsTijdstipTekst",
      *                      "telefoonNummerContact"
      *                 }
@@ -202,6 +204,7 @@ final class MarktController extends AbstractController
             'makkelijkeMarktActief',
             'indelingstype',
             'marktDagenTekst',
+            'marktDagen',
             'indelingsTijdstipTekst',
             'telefoonNummerContact',
         ];
