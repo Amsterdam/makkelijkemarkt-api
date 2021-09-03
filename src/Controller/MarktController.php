@@ -236,16 +236,20 @@ final class MarktController extends AbstractController
             $accessor->setValue($markt, $key, $value);
         }
 
+        /*
+        * Marktdagen is being saved in marktExtraData, in order to prevent marktDagen is being reset when the
+        * Mercator Import scripts run (file: PerfectViewMarktImport.php)
+        */
         $marktAfkorting = $markt->getAfkorting();
         $marktExtraData = $this->marktExtraDataRepository->getByAfkorting($marktAfkorting);
 
         if($marktExtraData !== null){
             $marktDagen = $markt -> getMarktDagen();
             $accessor->setValue($marktExtraData, 'marktDagen', $marktDagen);
-           
+
             $this->entityManager->persist($marktExtraData);
         }
-        
+
         $this->entityManager->persist($markt);
         $this->entityManager->flush();
 
