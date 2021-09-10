@@ -1,18 +1,15 @@
 #!groovy
 
-// Project settings for deployment
 String PROJECTNAME = "makkelijkemarkt-api"
 String CONTAINERDIR = "."
-String PRODUCTION_BRANCH = "master"
+String PRODUCTION_BRANCH = "main"
+String INFRASTRUCTURE = 'secure'
 String PLAYBOOK = 'deploy.yml'
-
-// All other data uses variables, no changes needed for static
-String CONTAINERNAME = "fixxx/makkelijkemarkt-api"
-String DOCKERFILE="Dockerfile"
+String CONTAINERNAME = "fixxx/${PROJECTNAME}"
+String DOCKERFILE = "Dockerfile"
 String BRANCH = "${env.BRANCH_NAME}"
 
-
-def tryStep(String message, Closure block, Closure tearDown = null) {
+def tryStep (String message, Closure block, Closure tearDown = null) {
     try {
         block();
     }
@@ -27,8 +24,7 @@ def tryStep(String message, Closure block, Closure tearDown = null) {
     }
 }
 
-def retagAndPush(String imageName, String newTag)
-{
+def retagAndPush (String imageName, String newTag) {
     def regex = ~"^https?://"
     def dockerReg = "${DOCKER_REGISTRY_HOST}" - regex
     sh "docker tag ${dockerReg}/${imageName}:${env.BUILD_NUMBER} ${dockerReg}/${imageName}:${newTag}"
@@ -38,10 +34,13 @@ def retagAndPush(String imageName, String newTag)
 node {
     stage("Checkout") {
         checkout scm
-    }
+}
 
-    stage("Build image") {
+    stage("Build develop image") {
         tryStep "build", {
+            sh "git rev-parse HEAD > version_file"
+            sh 'cat version_file'
+
             docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
                 image = docker.build("${CONTAINERNAME}:${env.BUILD_NUMBER}","-f ${DOCKERFILE} ${CONTAINERDIR}")
                 image.push()
@@ -50,42 +49,39 @@ node {
     }
 }
 
-// On master branch, fetch the container, tag with production and latest and deploy to production
 if (BRANCH == "${PRODUCTION_BRANCH}") {
-
     stage('Waiting for approval') {
-        slackSend channel: '#salmagundi_ci', color: 'warning', message: 'Makkelijke markt API is waiting for Acceptance Release - please confirm'
+        slackSend channel: '#salmagundi_ci', color: 'warning', message: "${PROJECTNAME} is waiting for Acceptance Release - please confirm. URL: ${env.JOB_URL}"
         input "Deploy to Acceptance?"
     }
 
     node {
-        stage('Deploy to ACC') {
+        stage("Deploy to ACC") {
             tryStep "deployment", {
                 docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
                     docker.image("${CONTAINERNAME}:${env.BUILD_NUMBER}").pull()
-                    // The Image.push() function ignores the docker registry prefix of the image name,
-                    // which means that we cannot re-tag an image that was built in a different stage (on a different node).
-                    // Resort to manual tagging to allow build and tag steps to run on different Jenkins slaves.
                     retagAndPush("${CONTAINERNAME}", "acceptance")
                 }
 
                 build job: 'Subtask_Openstack_Playbook',
-                parameters: [
-                    [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: "${PLAYBOOK}"],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_${PROJECTNAME}"],
-                ]
+                        parameters: [
+                                [$class: 'StringParameterValue', name: 'INFRASTRUCTURE', value: "${INFRASTRUCTURE}"],
+                                [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
+                                [$class: 'StringParameterValue', name: 'PLAYBOOK', value: "${PLAYBOOK}"],
+                                [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_${PROJECTNAME}"],
+                                [$class: 'StringParameterValue', name: 'STATIC_CONTAINER', value: "${PROJECTNAME}"],
+                        ]
             }
         }
     }
 
     stage('Waiting for approval') {
-        slackSend channel: '#salmagundi_ci', color: 'warning', message: 'Makkelijke markt API is waiting for Production Release - please confirm'
+        slackSend channel: '#salmagundi_ci', color: 'warning', message: "${PROJECTNAME} is waiting for Production Release - please confirm. URL: ${env.JOB_URL}"
         input "Deploy to Production?"
     }
 
     node {
-        stage('Deploy to PROD') {
+        stage("Deploy to PROD") {
             tryStep "deployment", {
                 docker.withRegistry("${DOCKER_REGISTRY_HOST}",'docker_registry_auth') {
                     docker.image("${CONTAINERNAME}:${env.BUILD_NUMBER}").pull()
@@ -94,11 +90,13 @@ if (BRANCH == "${PRODUCTION_BRANCH}") {
                 }
 
                 build job: 'Subtask_Openstack_Playbook',
-                parameters: [
-                    [$class: 'StringParameterValue', name: 'INVENTORY', value: 'production'],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: "${PLAYBOOK}"],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_${PROJECTNAME}"],
-                ]
+                        parameters: [
+                                [$class: 'StringParameterValue', name: 'INFRASTRUCTURE', value: "${INFRASTRUCTURE}"],
+                                [$class: 'StringParameterValue', name: 'INVENTORY', value: 'production'],
+                                [$class: 'StringParameterValue', name: 'PLAYBOOK', value: "${PLAYBOOK}"],
+                                [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_${PROJECTNAME}"],
+                                [$class: 'StringParameterValue', name: 'STATIC_CONTAINER', value: "${PROJECTNAME}"],
+                        ]
             }
         }
     }
