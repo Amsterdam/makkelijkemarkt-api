@@ -15,6 +15,8 @@ use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
+define("IMAGE_RESOLVE_PATH", "media/cache/resolve/");
+
 final class EntityNormalizer extends ObjectNormalizer
 {
     /** @var CacheManager $cacheManager */
@@ -116,6 +118,20 @@ final class EntityNormalizer extends ObjectNormalizer
     }
 
     /**
+     * @param string $photo
+     * @param string $imageSize
+     *
+     * @return string
+     */
+    private function getBrowserPath(string $photo, string $imageSize): string {
+        $base_url = "";
+        if(isset($_SERVER['MM_API__BASE_URL'])){
+            $base_url = $_SERVER['MM_API__BASE_URL'];
+        }
+        return $base_url.IMAGE_RESOLVE_PATH.$imageSize."/".$photo;
+    }
+
+    /**
      * @param mixed        $object
      * @param array<mixed> $data
      *
@@ -131,8 +147,8 @@ final class EntityNormalizer extends ObjectNormalizer
             $fotoMediumUrl = null;
 
             if (null !== $object->getFoto()) {
-                $fotoUrl = $this->cacheManager->getBrowserPath($object->getFoto(), 'koopman_rect_small');
-                $fotoMediumUrl = $this->cacheManager->getBrowserPath($object->getFoto(), 'koopman_rect_medium');
+                $fotoUrl = $this->getBrowserPath($object->getFoto(), 'koopman_rect_small');
+                $fotoMediumUrl = $this->getBrowserPath($object->getFoto(), 'koopman_rect_medium');
             }
 
             $data['fotoUrl'] = $fotoUrl;
