@@ -97,3 +97,4 @@ Om gegevens uit Ceniam te importeren zijn de volgende imports beschikbaar, deze 
 * Koopman: php app/console makkelijkemarkt:import:perfectview:koopman Koopman.csv --env=prod
 * Sollicitatie: php app/console makkelijkemarkt:import:perfectview:sollicitatie Sollicitatie.csv --env=prod
 * Fotos: php app/console makkelijkemarkt:import:perfectview:foto Koopman.CSV fotos/ --env=prod
+
