@@ -315,6 +315,11 @@ final class RapportController extends AbstractController
         foreach ($selector as $record) {
             $dagVergunningen = $this->dagvergunningRepository->findAllByDagAndErkenningsnummer($dag, $record['erkenningsnummer']);
 
+            # Set the Factuur on the returned dagvergunningen to null since we don't use them and they cause a circular error.
+            foreach ( $dagVergunningen as $dagVergunning ) {
+                $dagVergunning->setFactuur(null);
+            }
+
             /** @var ?Koopman $koopman */
             $koopman = $this->koopmanRepository->findOneByErkenningsnummer($record['erkenningsnummer']);
 
