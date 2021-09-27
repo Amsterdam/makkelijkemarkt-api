@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-define("IMAGE_RESOLVE_PATH", "/media/cache/resolve/");
+define("IMAGE_RESOLVE_PATH", "media/cache/resolve/");
 
 final class EntityNormalizer extends ObjectNormalizer
 {
@@ -124,13 +124,11 @@ final class EntityNormalizer extends ObjectNormalizer
      * @return string
      */
     private function getBrowserPath(string $photo, string $imageSize): string {
-        if(strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,4))=='http') {
-            $formatStr = 'http://%s:%d'; 
-        } else {
-            $formatStr = 'https://%s:%d'; 
+        $base_url = "";
+        if(isset($_SERVER['MM_API__BASE_URL'])){
+            $base_url = $_SERVER['MM_API__BASE_URL'];
         }
-        $hostStr = sprintf($formatStr, $_SERVER['SERVER_ADDR'], $_SERVER['SERVER_PORT']);
-        return $hostStr.IMAGE_RESOLVE_PATH.$imageSize."/".$photo;
+        return $base_url.IMAGE_RESOLVE_PATH.$imageSize."/".$photo;
     }
 
     /**
