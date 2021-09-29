@@ -10,7 +10,7 @@ services:
     environment:
       - MM_API__NGINX_HTPASSWD=test
     volumes:
-      - .:/srv/web
+      - ./src:/app/src
 
 networks:
   bridge:

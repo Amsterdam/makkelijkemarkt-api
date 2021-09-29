@@ -24,4 +24,8 @@
 /public/media/cache/
 ###< liip/imagine-bundle ###
 
+###> local dev env
+composer.phar
+/public/media/
 /mercato
+###< local dev env
