@@ -200,6 +200,15 @@ class Markt
      * @OA\Property()
      * @Groups("markt")
      *
+     * @var bool
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $marktBeeindigd;
+
+    /**
+     * @OA\Property()
+     * @Groups("markt")
+     *
      * @var string
      * @ORM\Column(type="string", length=50, nullable=true)
      */
@@ -511,6 +520,18 @@ class Markt
     public function setKiesJeKraamMededelingActief(bool $kiesJeKraamMededelingActief): self
     {
         $this->kiesJeKraamMededelingActief = $kiesJeKraamMededelingActief;
+
+        return $this;
+    }
+
+    public function getMarktBeeindigd(): ?bool
+    {
+        return $this->marktBeeindigd;
+    }
+
+    public function setMarktBeeindigd(bool $isBeeindigd): self
+    {
+        $this->marktBeeindigd = $isBeeindigd;
 
         return $this;
     }

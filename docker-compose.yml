@@ -11,6 +11,7 @@ services:
       - MM_API__NGINX_HTPASSWD=test
     volumes:
       - ./src:/app/src
+      - ./config:/app/config
 
 networks:
   bridge:
