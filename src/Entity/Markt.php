@@ -373,7 +373,7 @@ class Markt
      */
     public function getMarktDagen(): array
     {
-        if (null === $this->marktDagen) {
+        if (null === $this->marktDagen || "" === $this->marktDagen) {
             return [];
         }
 
