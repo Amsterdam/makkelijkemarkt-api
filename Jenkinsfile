@@ -1,10 +1,10 @@
 #!groovy
-def PROJECTNAME = "makkelijkemarkt-api"
-def CONTAINERDIR = "."
-def CONTAINERNAME = "salmagundi/${PROJECTNAME}"
-def DOCKERFILE = "Dockerfile"
-def INFRASTRUCTURE = "secure"
-def PLAYBOOK = "deploy.yml"
+String PROJECTNAME = "makkelijkemarkt-api"
+String CONTAINERDIR = "."
+String CONTAINERNAME = "salmagundi/${PROJECTNAME}"
+String DOCKERFILE = "Dockerfile"
+String INFRASTRUCTURE = "secure"
+String PLAYBOOK = "deploy.yml"
 
 def tryStep (String message, Closure block, Closure tearDown = null) {
     try {
