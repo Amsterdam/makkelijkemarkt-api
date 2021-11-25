@@ -68,7 +68,7 @@ class PlaatsVoorkeurController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="plaatsen", type="array", description="array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)"),
+     *                 @OA\Items(items="plaatsen", type="array", description="array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)"),
      *                 @OA\Property(property="marktAfkorting", type="string", description="afkorting van de markt"),
      *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
      *             )
@@ -159,8 +159,8 @@ class PlaatsVoorkeurController extends AbstractController
      *     @OA\Parameter(name="marktAfkorting", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
-     *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/plaatsVoorkeur")
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -197,8 +197,8 @@ class PlaatsVoorkeurController extends AbstractController
      *     @OA\Parameter(name="marktAfkorting", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
-     *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/plaatsVoorkeur")
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -247,13 +247,13 @@ class PlaatsVoorkeurController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="plaatsen", type="array", description=""),
+     *                 @OA\Items(items="plaatsen", type="array", description="array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)"),
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response="200",
-     *         description="",
+     *         description="Success",
      *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
      *     ),
      *     @OA\Response(

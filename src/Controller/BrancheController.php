@@ -128,7 +128,7 @@ class BrancheController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/branche")
+     *         @OA\JsonContent(ref="#/components/schemas/Branche")
      *     )
      * )
      * @Route("/branche/all", methods={"GET"})
@@ -155,7 +155,7 @@ class BrancheController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/branche")
+     *         @OA\JsonContent(ref="#/components/schemas/Branche")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -192,8 +192,8 @@ class BrancheController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="omschrijving", type="string", description=""),
-     *                 @OA\Property(property="color", type="string", description=""),
+     *                 @OA\Property(property="omschrijving", type="string", description="omschrijving van de branche"),
+     *                 @OA\Property(property="color", type="string", description="kleur van de branche"),
      *             )
      *         )
      *     ),

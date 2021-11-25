@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 
 /**
+ * @OA\Schema(schema="MarktVoorkeur", type="object")
+ * 
  * @ORM\Entity(repositoryClass=MarktVoorkeurRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={

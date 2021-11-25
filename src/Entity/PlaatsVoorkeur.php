@@ -6,6 +6,8 @@ use App\Repository\PlaatsVoorkeurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @OA\Schema(schema="PlaatsVoorkeur", type="object")
+ * 
  * @ORM\Entity(repositoryClass=PlaatsVoorkeurRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={

@@ -69,7 +69,7 @@ class RsvpController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="marktDate", type="date", description="datum van de markt"),
+     *                 @OA\Property(property="marktDate", type="string", description="datum van de markt (als YYYY-MM-DD)"),
      *                 @OA\Property(property="attending", type="boolean", description="rsvp status van de koopman"),
      *                 @OA\Property(property="marktAfkorting", type="string", description="afkorting van de markt"),
      *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
@@ -164,7 +164,7 @@ class RsvpController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/rsvp")
+     *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
      *     ),
      *     @OA\Response(
      *         response="400",
@@ -214,7 +214,7 @@ class RsvpController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/rsvp")
+     *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
      *     ),
      *     @OA\Response(
      *         response="400",

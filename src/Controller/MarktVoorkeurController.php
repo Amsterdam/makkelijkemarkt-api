@@ -82,8 +82,8 @@ class MarktVoorkeurController extends AbstractController
      *                 @OA\Property(property="maximum", type="integer", description="maximaal aantal plaatsen"),
      *                 @OA\Property(property="hasInrichting", type="boolean", description="heeft de koopman een eigen inrichting?"),
      *                 @OA\Property(property="isBak", type="boolean", description="gaat de koopman bakken?"),
-     *                 @OA\Property(property="absentFrom", type="date", description="begindatum absentie periode"),
-     *                 @OA\Property(property="absentUntil", type="date", description="einddatum absentie periode"),
+     *                 @OA\Property(property="absentFrom", type="string", description="begindatum absentie periode (als YYYY-MM-DD)"),
+     *                 @OA\Property(property="absentUntil", type="string", description="einddatum absentie periode (als YYYY-MM-DD)"),
      *                 @OA\Property(property="brancheAfkorting", type="string", description="afkorting van de branche"),
      *                 @OA\Property(property="marktAfkorting", type="string", description="afkorting van de markt"),
      *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
@@ -201,7 +201,7 @@ class MarktVoorkeurController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/markt_voorkeur")
+     *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
      *     @OA\Response(
      *         response="400",
@@ -239,7 +239,7 @@ class MarktVoorkeurController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/markt_voorkeur")
+     *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
      *     @OA\Response(
      *         response="400",
@@ -277,8 +277,8 @@ class MarktVoorkeurController extends AbstractController
      *     @OA\Parameter(name="koopmanErkenningsNummer", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
-     *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/markt_voorkeur")
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -328,20 +328,20 @@ class MarktVoorkeurController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="anywhere", type="boolean", description=""),
-     *                 @OA\Property(property="minimum", type="integer", description=""),
-     *                 @OA\Property(property="maximum", type="integer", description=""),
-     *                 @OA\Property(property="hasInrichting", type="boolean", description=""),
-     *                 @OA\Property(property="isBak", type="boolean", description=""),
-     *                 @OA\Property(property="absentFrom", type="date", description=""),
-     *                 @OA\Property(property="absentUntil", type="date", description=""),
-     *                 @OA\Property(property="brancheAfkorting", type="string", description="")
+     *                 @OA\Property(property="anywhere", type="boolean", description="mag de koopman overal ingedeeld worden?"),
+     *                 @OA\Property(property="minimum", type="integer", description="minimaal aantal plaatsen"),
+     *                 @OA\Property(property="maximum", type="integer", description="maximaal aantal plaatsen"),
+     *                 @OA\Property(property="hasInrichting", type="boolean", description="heeft de koopman een eigen inrichting?"),
+     *                 @OA\Property(property="isBak", type="boolean", description="gaat de koopman bakken?"),
+     *                 @OA\Property(property="absentFrom", type="string", description="begindatum absentie periode (als YYYY-MM-DD)"),
+     *                 @OA\Property(property="absentUntil", type="string", description="einddatum absentie periode (als YYYY-MM-DD)"),
+     *                 @OA\Property(property="brancheAfkorting", type="string", description="afkorting van de branche"),
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response="200",
-     *         description="",
+     *         description="Success",
      *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
      *     @OA\Response(

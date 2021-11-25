@@ -6,6 +6,8 @@ use App\Repository\BrancheRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @OA\Schema(schema="Branche", type="object")
+ * 
  * @ORM\Entity(repositoryClass=BrancheRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={

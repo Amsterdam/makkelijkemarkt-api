@@ -679,6 +679,291 @@
                 ]
             }
         },
+        "/api/1.1.0/branche/create": {
+            "post": {
+                "tags": [
+                    "Branche"
+                ],
+                "summary": "Maakt nieuwe Branche aan",
+                "operationId": "BranchCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "afkorting": {
+                                        "description": "afkorting van de branche",
+                                        "type": "string"
+                                    },
+                                    "omschrijving": {
+                                        "description": "omschrijving van de branche",
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "description": "kleur van de branche",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branche"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/branche/all": {
+            "get": {
+                "tags": [
+                    "Branche"
+                ],
+                "summary": "Vraag alle branches op.",
+                "operationId": "BrancheGetAll",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branche"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/branche/{afkorting}": {
+            "get": {
+                "tags": [
+                    "Branche"
+                ],
+                "summary": "Vraag branches op met een bracheAfkorting.",
+                "operationId": "BrancheGetByAfkorting",
+                "parameters": [
+                    {
+                        "name": "afkorting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branche"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Branche"
+                ],
+                "summary": "Past een Branche aan",
+                "operationId": "BranchUpdate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "omschrijving": {
+                                        "description": "",
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "description": "",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branche"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Notitie"
+                ],
+                "summary": "Verwijderd een branche",
+                "operationId": "BrancheDelete",
+                "parameters": [
+                    {
+                        "name": "afkorting",
+                        "in": "path",
+                        "description": "afkorting van de branche",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/1.1.0/btw/": {
             "get": {
                 "tags": [
@@ -2608,6 +2893,9 @@
                                     "makkelijkeMarktActief": {
                                         "type": "boolean"
                                     },
+                                    "marktBeeindigd": {
+                                        "type": "boolean"
+                                    },
                                     "indelingstype": {
                                         "type": "string"
                                     },
@@ -2636,6 +2924,413 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Markt"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/marktvoorkeur/create": {
+            "post": {
+                "tags": [
+                    "MarktVoorkeur"
+                ],
+                "summary": "Maakt nieuwe MarktVoorkeur aan",
+                "operationId": "MarktVoorkeurCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "anywhere": {
+                                        "description": "mag de koopman overal ingedeeld worden?",
+                                        "type": "boolean"
+                                    },
+                                    "minimum": {
+                                        "description": "minimaal aantal plaatsen",
+                                        "type": "integer"
+                                    },
+                                    "maximum": {
+                                        "description": "maximaal aantal plaatsen",
+                                        "type": "integer"
+                                    },
+                                    "hasInrichting": {
+                                        "description": "heeft de koopman een eigen inrichting?",
+                                        "type": "boolean"
+                                    },
+                                    "isBak": {
+                                        "description": "gaat de koopman bakken?",
+                                        "type": "boolean"
+                                    },
+                                    "absentFrom": {
+                                        "description": "begindatum absentie periode (als YYYY-MM-DD)",
+                                        "type": "string"
+                                    },
+                                    "absentUntil": {
+                                        "description": "einddatum absentie periode (als YYYY-MM-DD)",
+                                        "type": "string"
+                                    },
+                                    "brancheAfkorting": {
+                                        "description": "afkorting van de branche",
+                                        "type": "string"
+                                    },
+                                    "marktAfkorting": {
+                                        "description": "afkorting van de markt",
+                                        "type": "string"
+                                    },
+                                    "koopmanErkenningsNummer": {
+                                        "description": "erkenningsnummer van de koopman",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktVoorkeur"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/marktvoorkeur/{marktAfkorting}": {
+            "get": {
+                "tags": [
+                    "MarktVoorkeur"
+                ],
+                "summary": "Vraag marktvoorkeuren op met een MarktAfkorting.",
+                "operationId": "MarktVoorkeurGetByMarktAfkorting",
+                "parameters": [
+                    {
+                        "name": "marktAfkorting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktVoorkeur"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/marktvoorkeur/{koopmanErkenningsNummer}": {
+            "get": {
+                "tags": [
+                    "MarktVoorkeur"
+                ],
+                "summary": "Vraag marktvoorkeuren op met een KoopmanErkenningsNummer.",
+                "operationId": "MarktVoorkeurGetByKoopmanErkenningsNummer",
+                "parameters": [
+                    {
+                        "name": "koopmanErkenningsNummer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktVoorkeur"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "MarktVoorkeur"
+                ],
+                "summary": "Verwijderd marktvoorkeuren van een KoopmanErkenningsNummer.",
+                "operationId": "MarktVoorkeurDeleteByKoopmanErkenningsNummer",
+                "parameters": [
+                    {
+                        "name": "koopmanErkenningsNummer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/marktvoorkeur/{marktAfkorting}/{koopmanErkenningsNummer}": {
+            "get": {
+                "tags": [
+                    "MarktVoorkeur"
+                ],
+                "summary": "Vraag marktvoorkeuren op met een KoopmanErkenningsNummer.",
+                "operationId": "MarktVoorkeurGetByMarktAfkortingAndKoopmanErkenningsNummer",
+                "parameters": [
+                    {
+                        "name": "marktAfkorting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "koopmanErkenningsNummer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktVoorkeur"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "MarktVoorkeur"
+                ],
+                "summary": "Past een MarktVoorkeur aan",
+                "operationId": "MarktVoorkeurUpdate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "anywhere": {
+                                        "description": "mag de koopman overal ingedeeld worden?",
+                                        "type": "boolean"
+                                    },
+                                    "minimum": {
+                                        "description": "minimaal aantal plaatsen",
+                                        "type": "integer"
+                                    },
+                                    "maximum": {
+                                        "description": "maximaal aantal plaatsen",
+                                        "type": "integer"
+                                    },
+                                    "hasInrichting": {
+                                        "description": "heeft de koopman een eigen inrichting?",
+                                        "type": "boolean"
+                                    },
+                                    "isBak": {
+                                        "description": "gaat de koopman bakken?",
+                                        "type": "boolean"
+                                    },
+                                    "absentFrom": {
+                                        "description": "begindatum absentie periode (als YYYY-MM-DD)",
+                                        "type": "string"
+                                    },
+                                    "absentUntil": {
+                                        "description": "einddatum absentie periode (als YYYY-MM-DD)",
+                                        "type": "string"
+                                    },
+                                    "brancheAfkorting": {
+                                        "description": "afkorting van de branche",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktVoorkeur"
                                 }
                             }
                         }
@@ -3010,6 +3705,253 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Notitie"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/plaatsvoorkeur/create": {
+            "post": {
+                "tags": [
+                    "PlaatsVoorkeur"
+                ],
+                "summary": "Maakt nieuwe PlaatsVoorkeur aan",
+                "operationId": "PlaatsVoorkeurCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "marktAfkorting": {
+                                        "description": "afkorting van de markt",
+                                        "type": "string"
+                                    },
+                                    "koopmanErkenningsNummer": {
+                                        "description": "erkenningsnummer van de koopman",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "items": {
+                                    "description": "array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)",
+                                    "type": "array",
+                                    "items": "plaatsen"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlaatsVoorkeur"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/plaatsvoorkeur/{marktAfkorting}": {
+            "get": {
+                "tags": [
+                    "PlaatsVoorkeur"
+                ],
+                "summary": "Vraag PlaatsVoorkeuren op met een marktAfkorting.",
+                "operationId": "PlaatsVoorkeurGetByMarktAfkorting",
+                "parameters": [
+                    {
+                        "name": "marktAfkorting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlaatsVoorkeur"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/plaatsvoorkeur/{marktAfkorting}/{koopmanErkenningsNummer}": {
+            "get": {
+                "tags": [
+                    "PlaatsVoorkeur"
+                ],
+                "summary": "Vraag PlaatsVoorkeuren op met een marktAfkorting en koopmanErkenningsnummer.",
+                "operationId": "PlaatsVoorkeurGetByMarktAfkortingAndKoopmanErkenningsNummer",
+                "parameters": [
+                    {
+                        "name": "marktAfkorting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlaatsVoorkeur"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/plaatsvoorkeur/{marktAfkorting}/{KoopmanErkenningsNummer}": {
+            "put": {
+                "tags": [
+                    "PlaatsVoorkeur"
+                ],
+                "summary": "Past een PlaatsVoorkeur aan",
+                "operationId": "PlaatsVoorkeurUpdate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "items": {
+                                    "description": "array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)",
+                                    "type": "array",
+                                    "items": "plaatsen"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlaatsVoorkeur"
                                 }
                             }
                         }
@@ -3502,6 +4444,290 @@
                                         "type": {},
                                         "input": {},
                                         "output": {}
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp/create": {
+            "post": {
+                "tags": [
+                    "Rsvp"
+                ],
+                "summary": "Maakt nieuwe Rsvp aan",
+                "operationId": "RsvpCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "marktDate": {
+                                        "description": "datum van de markt",
+                                        "type": "date"
+                                    },
+                                    "attending": {
+                                        "description": "rsvp status van de koopman",
+                                        "type": "boolean"
+                                    },
+                                    "marktAfkorting": {
+                                        "description": "afkorting van de markt",
+                                        "type": "string"
+                                    },
+                                    "koopmanErkenningsNummer": {
+                                        "description": "erkenningsnummer van de koopman",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Rsvp"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp/{marktAfkorting}/{date}": {
+            "get": {
+                "tags": [
+                    "Rsvp"
+                ],
+                "summary": "Vraag Rsvp's op met een marktAfkorting en een datum.",
+                "operationId": "RsvpGetByMarktAfkortingAndDate",
+                "parameters": [
+                    {
+                        "name": "marktAfkorting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Rsvp"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp/{marktAfkorting}/{startDate}/{endDate}": {
+            "get": {
+                "tags": [
+                    "Rsvp"
+                ],
+                "summary": "Vraag Rsvp's op met een marktAfkorting en tussen twee data.",
+                "operationId": "RsvpGetByMarktAfkortingAndBetweenDates",
+                "parameters": [
+                    {
+                        "name": "marktAfkorting",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Rsvp"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp/{marktAfkorting}/{koopmanErkenningsNummer}/{date}": {
+            "put": {
+                "tags": [
+                    "Rsvp"
+                ],
+                "summary": "Past een Rsvp aan",
+                "operationId": "RsvpUpdate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "attending": {
+                                        "description": "rsvp status van een koopman",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Rsvp"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
                                     },
                                     "type": "object"
                                 }
@@ -4976,6 +6202,9 @@
                 },
                 "type": "object"
             },
+            "Branche": {
+                "type": "object"
+            },
             "BtwTarief": {
                 "properties": {
                     "id": {
@@ -5315,6 +6544,9 @@
                     "kiesJeKraamActief": {
                         "type": "boolean"
                     },
+                    "marktBeeindigd": {
+                        "type": "boolean"
+                    },
                     "kiesJeKraamFase": {
                         "type": "string"
                     },
@@ -5345,6 +6577,9 @@
                         "type": "string"
                     }
                 },
+                "type": "object"
+            },
+            "MarktVoorkeur": {
                 "type": "object"
             },
             "Notitie": {
@@ -5378,6 +6613,9 @@
                     "afgevinktDatumtijd": {},
                     "verwijderdDatumtijd": {}
                 },
+                "type": "object"
+            },
+            "PlaatsVoorkeur": {
                 "type": "object"
             },
             "Product": {
@@ -5416,6 +6654,9 @@
                         "$ref": "#/components/schemas/Factuur"
                     }
                 },
+                "type": "object"
+            },
+            "Rsvp": {
                 "type": "object"
             },
             "Sollicitatie": {
@@ -5520,10 +6761,6 @@
                         "example": "14"
                     },
                     "vervanger_id": {
-                        "type": "integer",
-                        "example": "14"
-                    },
-                    "koopman_id": {
                         "type": "integer",
                         "example": "14"
                     },

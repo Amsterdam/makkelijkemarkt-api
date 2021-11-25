@@ -6,6 +6,8 @@ use App\Repository\RsvpRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @OA\Schema(schema="Rsvp", type="object")
+ * 
  * @ORM\Entity(repositoryClass=RsvpRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={
