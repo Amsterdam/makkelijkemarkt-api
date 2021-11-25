@@ -28,4 +28,5 @@
 composer.phar
 /public/media/
 /mercato
+.tool-versions
 ###< local dev env
