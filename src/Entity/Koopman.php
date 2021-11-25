@@ -228,11 +228,29 @@ class Koopman
      */
     private $vervangerVoor;
 
+    /**
+     * @ORM\OneToMany(targetEntity=MarktVoorkeur::class, mappedBy="koopman", orphanRemoval=true)
+     */
+    private $marktVoorkeuren;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PlaatsVoorkeur::class, mappedBy="koopman", orphanRemoval=true)
+     */
+    private $plaatsVoorkeuren;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Rsvp::class, mappedBy="koopman", orphanRemoval=true)
+     */
+    private $rsvps;
+
     public function __construct()
     {
         $this->sollicitaties = new ArrayCollection();
         $this->dagvergunningen = new ArrayCollection();
         $this->handhavingsVerzoek = null;
+        $this->marktVoorkeuren = new ArrayCollection();
+        $this->plaatsVoorkeuren = new ArrayCollection();
+        $this->rsvps = new ArrayCollection();
     }
 
     public function __toString()
@@ -552,5 +570,95 @@ class Koopman
         }
 
         return $afwezig / $dagvergunningen / 2;
+    }
+
+    /**
+     * @return Collection|MarktVoorkeur[]
+     */
+    public function getMarktVoorkeuren(): Collection
+    {
+        return $this->marktVoorkeuren;
+    }
+
+    public function addMarktVoorkeuren(MarktVoorkeur $marktVoorkeuren): self
+    {
+        if (!$this->marktVoorkeuren->contains($marktVoorkeuren)) {
+            $this->marktVoorkeuren[] = $marktVoorkeuren;
+            $marktVoorkeuren->setKoopman($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMarktVoorkeuren(MarktVoorkeur $marktVoorkeuren): self
+    {
+        if ($this->marktVoorkeuren->removeElement($marktVoorkeuren)) {
+            // set the owning side to null (unless already changed)
+            if ($marktVoorkeuren->getKoopman() === $this) {
+                $marktVoorkeuren->setKoopman(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlaatsVoorkeur[]
+     */
+    public function getPlaatsVoorkeuren(): Collection
+    {
+        return $this->plaatsVoorkeuren;
+    }
+
+    public function addPlaatsVoorkeuren(PlaatsVoorkeur $plaatsVoorkeuren): self
+    {
+        if (!$this->plaatsVoorkeuren->contains($plaatsVoorkeuren)) {
+            $this->plaatsVoorkeuren[] = $plaatsVoorkeuren;
+            $plaatsVoorkeuren->setKoopman($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlaatsVoorkeuren(PlaatsVoorkeur $plaatsVoorkeuren): self
+    {
+        if ($this->plaatsVoorkeuren->removeElement($plaatsVoorkeuren)) {
+            // set the owning side to null (unless already changed)
+            if ($plaatsVoorkeuren->getKoopman() === $this) {
+                $plaatsVoorkeuren->setKoopman(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Rsvp[]
+     */
+    public function getRsvps(): Collection
+    {
+        return $this->rsvps;
+    }
+
+    public function addRsvp(Rsvp $rsvp): self
+    {
+        if (!$this->rsvps->contains($rsvp)) {
+            $this->rsvps[] = $rsvp;
+            $rsvp->setKoopman($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRsvp(Rsvp $rsvp): self
+    {
+        if ($this->rsvps->removeElement($rsvp)) {
+            // set the owning side to null (unless already changed)
+            if ($rsvp->getKoopman() === $this) {
+                $rsvp->setKoopman(null);
+            }
+        }
+
+        return $this;
     }
 }
