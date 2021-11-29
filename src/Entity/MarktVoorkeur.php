@@ -4,11 +4,11 @@ namespace App\Entity;
 
 use App\Repository\MarktVoorkeurRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(schema="MarktVoorkeur", type="object")
- * 
+ *
  * @ORM\Entity(repositoryClass=MarktVoorkeurRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={

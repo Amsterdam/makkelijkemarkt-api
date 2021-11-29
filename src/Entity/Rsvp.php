@@ -4,10 +4,11 @@ namespace App\Entity;
 
 use App\Repository\RsvpRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(schema="Rsvp", type="object")
- * 
+ *
  * @ORM\Entity(repositoryClass=RsvpRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={

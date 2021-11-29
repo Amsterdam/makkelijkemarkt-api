@@ -4,10 +4,11 @@ namespace App\Entity;
 
 use App\Repository\BrancheRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(schema="Branche", type="object")
- * 
+ *
  * @ORM\Entity(repositoryClass=BrancheRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={
