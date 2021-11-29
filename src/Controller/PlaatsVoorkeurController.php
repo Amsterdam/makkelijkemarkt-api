@@ -58,7 +58,7 @@ class PlaatsVoorkeurController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/plaatsvoorkeur/create",
+     *     path="/api/1.1.0/plaatsvoorkeur",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="PlaatsVoorkeurCreate",
      *     tags={"PlaatsVoorkeur"},
@@ -85,7 +85,7 @@ class PlaatsVoorkeurController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/plaatsvoorkeur/create", methods={"POST"})
+     * @Route("/plaatsvoorkeur", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response

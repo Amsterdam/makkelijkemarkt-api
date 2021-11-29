@@ -67,7 +67,7 @@ class MarktVoorkeurController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/marktvoorkeur/create",
+     *     path="/api/1.1.0/marktvoorkeur",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="MarktVoorkeurCreate",
      *     tags={"MarktVoorkeur"},
@@ -101,7 +101,7 @@ class MarktVoorkeurController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/marktvoorkeur/create", methods={"POST"})
+     * @Route("/marktvoorkeur", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response

@@ -46,7 +46,7 @@ class BrancheController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/branche/create",
+     *     path="/api/1.1.0/branche",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="BranchCreate",
      *     tags={"Branche"},
@@ -78,7 +78,7 @@ class BrancheController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/branche/create", methods={"POST"})
+     * @Route("/branche", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response

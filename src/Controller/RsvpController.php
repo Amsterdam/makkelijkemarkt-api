@@ -59,7 +59,7 @@ class RsvpController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/rsvp/create",
+     *     path="/api/1.1.0/rsvp",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="RsvpCreate",
      *     tags={"Rsvp"},
@@ -87,7 +87,7 @@ class RsvpController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/rsvp/create", methods={"POST"})
+     * @Route("/rsvp", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response
@@ -296,7 +296,7 @@ class RsvpController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/rsvp/create/{marktAfkorting}/{koopmanErkenningsNummer}/{date}", methods={"PUT"})
+     * @Route("/rsvp/{marktAfkorting}/{koopmanErkenningsNummer}/{date}", methods={"PUT"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function update(Request $request, string $marktAfkorting, string $koopmanErkenningsNummer, string $date): Response

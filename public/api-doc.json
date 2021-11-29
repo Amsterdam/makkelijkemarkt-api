@@ -679,7 +679,7 @@
                 ]
             }
         },
-        "/api/1.1.0/branche/create": {
+        "/api/1.1.0/branche": {
             "post": {
                 "tags": [
                     "Branche"
@@ -854,11 +854,11 @@
                             "schema": {
                                 "properties": {
                                     "omschrijving": {
-                                        "description": "",
+                                        "description": "omschrijving van de branche",
                                         "type": "string"
                                     },
                                     "color": {
-                                        "description": "",
+                                        "description": "kleur van de branche",
                                         "type": "string"
                                     }
                                 },
@@ -2969,7 +2969,7 @@
                 ]
             }
         },
-        "/api/1.1.0/marktvoorkeur/create": {
+        "/api/1.1.0/marktvoorkeur": {
             "post": {
                 "tags": [
                     "MarktVoorkeur"
@@ -3750,7 +3750,7 @@
                 ]
             }
         },
-        "/api/1.1.0/plaatsvoorkeur/create": {
+        "/api/1.1.0/plaatsvoorkeur": {
             "post": {
                 "tags": [
                     "PlaatsVoorkeur"
@@ -4459,7 +4459,7 @@
                 ]
             }
         },
-        "/api/1.1.0/rsvp/create": {
+        "/api/1.1.0/rsvp": {
             "post": {
                 "tags": [
                     "Rsvp"
@@ -4473,8 +4473,8 @@
                             "schema": {
                                 "properties": {
                                     "marktDate": {
-                                        "description": "datum van de markt",
-                                        "type": "date"
+                                        "description": "datum van de markt (als YYYY-MM-DD)",
+                                        "type": "string"
                                     },
                                     "attending": {
                                         "description": "rsvp status van de koopman",
