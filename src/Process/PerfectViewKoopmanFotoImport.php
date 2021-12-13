@@ -66,18 +66,15 @@ class PerfectViewKoopmanFotoImport
                 $this->logger->info('Skip, record is empty');
                 continue;
             }
-            $this->logger->info('Handle PerfectView record', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'FotoKop' => $pvRecord['FotoKop']]);
 
             // get relation fields
             $koopman = $this->getKoopmanRecord($pvRecord['Erkenningsnummer']);
             if ($koopman === null) {
-                $this->logger->warning('Skip record, KOOPMAN not found in database', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer']]);
                 continue;
             }
 
             // skip empty foto record
             if ($pvRecord['FotoKop'] === '') {
-                $this->logger->warning('Skip record, FOTO field is empty', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer']]);
                 continue;
             }
 
@@ -87,7 +84,6 @@ class PerfectViewKoopmanFotoImport
             // get expected import path
             $fullPath = $imageSourceDirectory . DIRECTORY_SEPARATOR . $pvRecord['FotoKop'];
             if (file_exists($fullPath) === false) {
-                $this->logger->warning('Skip record, FILE does not exists', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'FotoKop' => $pvRecord['FotoKop'], 'fullPath' => $fullPath]);
                 continue;
             }
 
@@ -97,7 +93,6 @@ class PerfectViewKoopmanFotoImport
 
             // calculate checksum
             if ($this->storage->has($filename) === true && $koopman['foto_hash'] === $checksum) {
-                $this->logger->info('Skip, old hash and new hash are the same, photo not updated', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'FotoKop' => $pvRecord['FotoKop'], 'NEW HASH' => $checksum, 'OLD HASH' => $koopman['foto_hash']]);
                 continue;
             }
 
@@ -109,7 +104,6 @@ class PerfectViewKoopmanFotoImport
             // copy the file to the new location
             $result = $this->storage->put($filename, file_get_contents($fullPath));
             if ($result === false) {
-                $this->logger->error('Can not copy photo to data directory', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'src' => $fullPath, 'dst' => $destination]);
                 continue;
             }
 
@@ -121,7 +115,6 @@ class PerfectViewKoopmanFotoImport
             // execute insert/update query
             $result = $this->conn->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
 
-            $this->logger->info('Query execution done', ['type' => $qb->getType(), 'result' => $result]);
         }
     }
 

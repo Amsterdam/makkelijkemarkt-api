@@ -61,17 +61,14 @@ class PerfectViewSollicitatieImport
                 $this->logger->info('Skip, record is empty');
                 continue;
             }
-            $this->logger->info('Handle PerfectView record', ['Koppelveld' => $pvRecord['Koppelveld'], 'Markt afkorting' => $pvRecord['Afkorting'], 'Erkenningsnummer' => $pvRecord['Erkenningsnummer']]);
 
             // get relation fields
             $markt = $this->getMarktRecord($pvRecord['Afkorting']);
             if ($markt === null) {
-                $this->logger->warning('Skip record, MARKT not found in database', ['Koppelveld' => $pvRecord['Koppelveld'], 'Markt afkorting' => $pvRecord['Afkorting']]);
                 continue;
             }
             $koopman = $this->getKoopmanRecord($pvRecord['Erkenningsnummer']);
             if ($koopman === null) {
-                $this->logger->warning('Skip record, KOOPMAN not found in database', ['Koppelveld' => $pvRecord['Koppelveld'], 'Erkenningsnummer' => $pvRecord['Erkenningsnummer']]);
                 continue;
             }
             if ($pvRecord['SollicitantenNummer'] === '' || $pvRecord['SollicitantenNummer'] === null) {
@@ -94,12 +91,10 @@ class PerfectViewSollicitatieImport
 
             if (($solliciatieRecord !== null)) {
                 // update
-                $this->logger->info('Record found in database', ['id' => $solliciatieRecord['id']]);
                 $qb->update('sollicitatie', 'e');
                 $qb->where('e.id = :id')->setParameter('id', $solliciatieRecord['id']);
             } else {
                 // insert
-                $this->logger->info('Record not in database, create new');
                 $qb->insert('sollicitatie');
                 $qb->setValue('id', 'NEXTVAL(\'sollicitatie_id_seq\')'); // IMPORTANT setValue on Query Builder, not via helper!
             }
@@ -125,7 +120,6 @@ class PerfectViewSollicitatieImport
             // execute insert/update query
             $result = $this->conn->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
 
-            $this->logger->info('Query execution done', ['type' => $qb->getType(), 'result' => $result]);
         }
     }
 
