@@ -75,6 +75,7 @@ class PerfectViewKoopmanFotoImport
 
             // skip empty foto record
             if ($pvRecord['FotoKop'] === '') {
+                $this->logger->warning('Skip record, FOTO field is empty');
                 continue;
             }
 
@@ -84,6 +85,7 @@ class PerfectViewKoopmanFotoImport
             // get expected import path
             $fullPath = $imageSourceDirectory . DIRECTORY_SEPARATOR . $pvRecord['FotoKop'];
             if (file_exists($fullPath) === false) {
+                $this->logger->warning('Skip record, FILE does not exists');
                 continue;
             }
 
