@@ -104,6 +104,7 @@ class PerfectViewKoopmanFotoImport
             // copy the file to the new location
             $result = $this->storage->put($filename, file_get_contents($fullPath));
             if ($result === false) {
+                $this->logger->error('Can not copy photo to data directory');
                 continue;
             }
 

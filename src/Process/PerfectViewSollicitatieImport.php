@@ -65,6 +65,7 @@ class PerfectViewSollicitatieImport
             // get relation fields
             $markt = $this->getMarktRecord($pvRecord['Afkorting']);
             if ($markt === null) {
+                $this->logger->warning('Skip record, MARKT not found in database', ['Koppelveld' => $pvRecord['Koppelveld'], 'Markt afkorting' => $pvRecord['Afkorting']]);
                 continue;
             }
             $koopman = $this->getKoopmanRecord($pvRecord['Erkenningsnummer']);
