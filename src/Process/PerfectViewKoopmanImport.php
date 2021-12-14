@@ -78,8 +78,6 @@ class PerfectViewKoopmanImport
                 continue;
             }
 
-            $this->logger->info('Handle PerfectView record', ['Erkenningsnummer' => $pvRecord['Erkenningsnummer']]);
-
             // get the record from the database (if it is already in the database)
             $koopmanRecord = $this->getKoopmanRecord($pvRecord['Erkenningsnummer']);
             // prepare query builder
@@ -87,13 +85,11 @@ class PerfectViewKoopmanImport
 
             if (($koopmanRecord !== null)) {
                 // update
-                $this->logger->info('Record found in database', ['id' => $koopmanRecord['id'], 'db-erkenningsnummer' => $koopmanRecord['erkenningsnummer'], 'file-erkenningsnummer' => $pvRecord['Erkenningsnummer'], 'db-achternaam' => $koopmanRecord['achternaam'], 'file-achternaam' => $pvRecord['ACHTERNAAM'] ]);
                 $qb->update('koopman', 'e');
                 $qb->where('e.id = :id')->setParameter('id', $koopmanRecord['id']);
                 $aantalNieuw ++;
             } else {
                 // insert
-                $this->logger->info('Record not in database, create new');
                 $qb->insert('koopman');
                 $qb->setValue('id', 'NEXTVAL(\'koopman_id_seq\')'); // IMPORTANT setValue on Query Builder, not via helper!
                 $aantalBijgewerkt ++;
@@ -113,7 +109,6 @@ class PerfectViewKoopmanImport
             // execute insert/update query
             $result = $this->conn->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
 
-            $this->logger->info('Query execution done', ['type' => $qb->getType(), 'result' => $result]);
         }
 
         $this->logger->info('Alle records verwerkt', ['nieuw' => $aantalNieuw, 'bijgewerkt' => $aantalBijgewerkt, 'totaal' => $i]);

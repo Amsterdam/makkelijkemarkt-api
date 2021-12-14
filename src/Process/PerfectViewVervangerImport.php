@@ -68,8 +68,6 @@ class PerfectViewVervangerImport
                 continue;
             }
 
-            $this->logger->info('Handle PerfectView record', ['Vervanger_NFCHEX' => $pvRecord['Vervanger_NFCHEX'], 'Erkenningsnummer_Vervanger' => $pvRecord['Erkenningsnummer_Vervanger'], 'Erkenningsnummer_Koopman' => $pvRecord['Erkenningsnummer_Koopman']]);
-
             // get the record from the database (if it is already in the database)
             $koopmanRecord = $this->getKoopmanRecord($pvRecord['Erkenningsnummer_Koopman']);
             $vervangerRecord = $this->getKoopmanRecord($pvRecord['Erkenningsnummer_Vervanger']);
@@ -86,7 +84,6 @@ class PerfectViewVervangerImport
             // prepare query builder
             $qb = $this->conn->createQueryBuilder();
 
-            $this->logger->info('Creating vervanger');
             $qb->insert('vervanger');
             $qb->setValue('id', 'NEXTVAL(\'vervanger_id_seq\')'); // IMPORTANT setValue on Query Builder, not via helper!
 
@@ -98,8 +95,6 @@ class PerfectViewVervangerImport
 
             // execute insert/update query
             $result = $this->conn->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
-
-            $this->logger->info('Query execution done', ['type' => $qb->getType(), 'result' => $result]);
 
         }
 
