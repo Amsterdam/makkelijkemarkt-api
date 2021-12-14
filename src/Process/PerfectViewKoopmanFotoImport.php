@@ -70,6 +70,7 @@ class PerfectViewKoopmanFotoImport
             // get relation fields
             $koopman = $this->getKoopmanRecord($pvRecord['Erkenningsnummer']);
             if ($koopman === null) {
+                $this->logger->warning('Skip record, KOOPMAN not found in database');
                 continue;
             }
 
