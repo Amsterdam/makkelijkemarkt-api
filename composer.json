@@ -3,7 +3,7 @@
     "type": "project",
     "license": "MPLv2",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "1.11.*",
