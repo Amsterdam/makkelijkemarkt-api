@@ -1,7 +1,5 @@
 #!/bin/bash
 
-EXIT_CODE=0
-
 # Exit when any command fails
 set -e
 
@@ -13,23 +11,11 @@ mkdir -p $DST_DIR/fotos
 
 # Unzip datafiles from Mercato stored in makkelijkemarkt objectstore
 pushd $SRC_DIR
-#check file age
-MAXAGE=90000 # 25 hours = 90.000 seconcs
-FILEAGE=$(($(date +%s)-$(stat -c %Y -- Bestanden.zip)))
-PHOTOAGE=$(($(date +%s)-$(stat -c %Y -- Pasfotos.zip)))
-if [ $FILEAGE -gt $MAXAGE ]
-then
-    echo "Bestanden.zip is older than 1 day!"
-    EXIT_CODE=99
-fi
-if [ $PHOTOAGE -gt $MAXAGE ]
-then
-    echo "Pasfotos.zip is older than 1 day!"
-    EXIT_CODE=99
-fi
 echo "unpacking Bestanden.zip"
+stat Bestanden.zip
 unzip -qq -o Bestanden.zip -d $DST_DIR/
 echo "Done, unpacking Pasfotos.zip"
+stat Pasfotos.zip
 unzip -qq -o Pasfotos.zip -d $DST_DIR/fotos/
 echo "Done"
 popd
@@ -48,5 +34,3 @@ echo "Done, running import:perfectview:foto"
 php /app/bin/console makkelijkemarkt:import:perfectview:foto Koopman.CSV fotos --env=prod
 echo "Done"
 popd
-
-exit $EXIT_CODE
