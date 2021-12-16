@@ -61,20 +61,8 @@ pipeline {
         }
 
         stage("Push and deploy") {
-            when {
-                anyOf {
-                    branch "main"
-                    buildingTag()
-                }
-            }
             stages {
                 stage("Confirm Release ACC") {
-                    when {
-                        anyOf {
-                            branch "main"
-                            buildingTag()
-                        }
-                    }
                     steps {
                         script {
 
@@ -86,12 +74,6 @@ pipeline {
                 }
 
                 stage("Release ACC") {
-                    when {
-                        anyOf {
-                            branch "main"
-                            buildingTag()
-                        }
-                    }
                     steps {
                         script {
 
