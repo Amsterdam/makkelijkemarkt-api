@@ -473,6 +473,169 @@
                 ]
             }
         },
+        "/api/1.1.0/allocation": {
+            "post": {
+                "tags": [
+                    "Allocation"
+                ],
+                "summary": "Maakt nieuwe Allocation aan",
+                "operationId": "AllocationCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "isAllocated": {
+                                        "description": "True voor toewijzing, False voor afwijzing",
+                                        "type": "boolean"
+                                    },
+                                    "rejectReason": {
+                                        "description": "Optional, reden van afwijzing, bv: BRANCHE_FULL",
+                                        "type": "string"
+                                    },
+                                    "date": {
+                                        "description": "datum van de allocation (YYYY-MM-DD)",
+                                        "type": "string"
+                                    },
+                                    "anywhere": {
+                                        "description": "wil de koopman op andere plaatsen dan zijn voorkeur staan?",
+                                        "type": "boolean"
+                                    },
+                                    "minimum": {
+                                        "description": "minimum kramen?",
+                                        "type": "integer"
+                                    },
+                                    "maximum": {
+                                        "description": "maximum kramen?",
+                                        "type": "integer"
+                                    },
+                                    "isBak": {
+                                        "description": "gaat de koopman bakken?",
+                                        "type": "boolean"
+                                    },
+                                    "hasInrichting": {
+                                        "description": "heeft de koopman een EVI?",
+                                        "type": "boolean"
+                                    },
+                                    "koopmanErkenningsNummer": {
+                                        "description": "erkenningsnummer van de koopman",
+                                        "type": "string"
+                                    },
+                                    "brancheAfkorting": {
+                                        "description": "afkorting van de branche",
+                                        "type": "string"
+                                    },
+                                    "marktAfkorting": {
+                                        "description": "afkorting van de markt",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "items": {
+                                    "description": "Optional, plaatnummers van de toewijzing",
+                                    "type": "array",
+                                    "items": "plaatsen"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Allocation"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/allocation/markt/date": {
+            "get": {
+                "tags": [
+                    "Allocation"
+                ],
+                "summary": "Vraag alle allocaties van een markt en een dag (YYYY-MM-DD) op.",
+                "operationId": "AllocationGetByMarktAndByDate",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branche"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/1.1.0/audit/{marktId}/{datum}": {
             "get": {
                 "tags": [
@@ -6200,6 +6363,9 @@
                         "type": "boolean"
                     }
                 },
+                "type": "object"
+            },
+            "Allocation": {
                 "type": "object"
             },
             "Branche": {
