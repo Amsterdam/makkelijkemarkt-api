@@ -88,6 +88,11 @@ class Allocation
      */
     private $markt;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $plaatsvoorkeuren = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -201,9 +206,9 @@ class Allocation
         return $this;
     }
 
-    public function getKoopman(): ?Koopman
+    public function getKoopman(): ?String
     {
-        return $this->koopman;
+        return $this->koopman->getErkenningsnummer();
     }
 
     public function setKoopman(?Koopman $koopman): self
@@ -213,9 +218,9 @@ class Allocation
         return $this;
     }
 
-    public function getBranche(): ?Branche
+    public function getBranche(): ?String
     {
-        return $this->branche;
+        return $this->branche->getAfkorting();
     }
 
     public function setBranche(?Branche $branche): self
@@ -225,14 +230,26 @@ class Allocation
         return $this;
     }
 
-    public function getMarkt(): ?Markt
+    public function getMarkt(): ?String
     {
-        return $this->markt;
+        return $this->markt->getAfkorting();
     }
 
     public function setMarkt(?Markt $markt): self
     {
         $this->markt = $markt;
+
+        return $this;
+    }
+
+    public function getPlaatsvoorkeuren(): ?array
+    {
+        return $this->plaatsvoorkeuren;
+    }
+
+    public function setPlaatsvoorkeuren(?array $plaatsvoorkeuren): self
+    {
+        $this->plaatsvoorkeuren = $plaatsvoorkeuren;
 
         return $this;
     }

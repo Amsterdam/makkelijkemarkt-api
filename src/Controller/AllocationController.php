@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Allocation;
+use App\Entity\Markt;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\AllocationRepository;
 use App\Repository\BrancheRepository;
@@ -14,12 +15,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use DateTime;
+use Exception;
 
 class AllocationController extends AbstractController
 {
@@ -41,8 +44,7 @@ class AllocationController extends AbstractController
     /** @var BrancheRepository */
     private $brancheRepository;
 
-    /** @var array */
-    private $validRejectReasons;
+    private $rejectReasons;
 
     public function __construct(
         CacheManager $cacheManager,
@@ -51,7 +53,7 @@ class AllocationController extends AbstractController
         AllocationRepository $allocationRepository,
         KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
-        BrancheRepository $brancheRepository
+        BrancheRepository $brancheRepository,
         )
         {
             $this->koopmanRepository = $koopmanRepository;
@@ -61,13 +63,96 @@ class AllocationController extends AbstractController
             $this->entityManager = $entityManager;
             $this->logger = $logger;
             $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-            $this->$validRejectReasons = ["BRANCHE_FULL", "ADJACENT_UNAVAILABLE", "MINIMUM_UNAVAILABLE", "MARKET_FULL"];
+            $this->rejectReasons = [1 => "BRANCHE_FULL", 2 => "ADJACENT_UNAVAILABLE", 3 => "MINIMUM_UNAVAILABLE", 4 => "MARKET_FULL"];
         }
+
+    private function createAllocation(
+        Markt $markt,
+        Datetime $marktDate,
+        bool $isAllocated,
+        ?array $plaatsvoorkeuren=null,
+        ?bool $anywhere=true,
+        ?int $minimum=0,
+        ?int $maximum=0,
+        ?bool $parentBrancheId,
+        ?array $inrichting,
+        string $koopmanErkenningsNummer,
+        string $brancheAfkorting,
+        ?string $rejectReason,
+        ?array $plaatsen
+    )
+    {
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
+
+        if ( $koopman === null) {
+            throw new Exception("Koopman not found");
+        }
+
+        $branche = $this->brancheRepository->findOneByAfkorting($brancheAfkorting);
+
+        if ( $branche === null) {
+            $branche = $this->brancheRepository->findOneByAfkorting("000-EMPTY");
+        }
+
+        if ($parentBrancheId == 'bak') {
+            $isBak = true;
+        } else {
+            $isBak = false;
+        }
+        if (isset($inrichting) > 0 && in_array('eigen-materieel', $inrichting) ) {
+            $hasInrichting = true;
+        } else {
+            $hasInrichting = false;
+        }
+
+        if ($isAllocated){
+            if ( isset($plaatsen) ) {
+                foreach ($plaatsen as $item){
+                    if ( filter_var($item, FILTER_VALIDATE_INT) === false ) {
+                        throw new Exception("plaatsen contains an invalid item (not an int)");
+                    }
+                }
+            } else {
+                throw new Exception("plaatsen not set for allocated allocation.");
+            }
+            if ( isset($rejectReason) ) {
+                throw new Exception("rejectReason set for allocated allocation.");
+            }
+        } else {
+            if ( isset($rejectReason) ) {
+                if ( !array_key_exists($rejectReason, $this->rejectReasons) ) {
+                    throw new Exception("rejectReason not valid.");
+                }
+            } else {
+                throw new Exception("rejectReason not set for unallocated allocation.");
+            }
+            if ( isset($plaatsen) ) {
+                throw new Exception("plaatsen set for unallocated allocation.");
+            }
+        }
+
+        $allocation = new Allocation();
+        $allocation->setIsAllocated($isAllocated);
+        $allocation->setPlaatsen($plaatsen);
+        $allocation->setPlaatsvoorkeuren($plaatsvoorkeuren);
+        $allocation->setrejectReason($this->rejectReasons[$rejectReason]??null);
+        $allocation->setDate($marktDate);
+        $allocation->setAnywhere($anywhere);
+        $allocation->setMinimum($minimum);
+        $allocation->setMaximum($maximum);
+        $allocation->setIsBak($isBak);
+        $allocation->setHasInrichting($hasInrichting);
+        $allocation->setMarkt($markt);
+        $allocation->setKoopman($koopman);
+        $allocation->setBranche($branche);
+
+        return $allocation;
+    }
 
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/allocation",
+     *     path="/api/1.1.0/allocation/{marktAfkorting}/{date}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="AllocationCreate",
      *     tags={"Allocation"},
@@ -77,18 +162,8 @@ class AllocationController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="isAllocated", type="boolean", description="True voor toewijzing, False voor afwijzing"),
-     *                 @OA\Property(property="rejectReason", type="string", description="Optional, reden van afwijzing, bv: BRANCHE_FULL"),
-     *                 @OA\Items(items="plaatsen", type="array", description="Optional, plaatnummers van de toewijzing"),
-     *                 @OA\Property(property="date", type="string", description="datum van de allocation (YYYY-MM-DD)"),
-     *                 @OA\Property(property="anywhere", type="boolean", description="wil de koopman op andere plaatsen dan zijn voorkeur staan?"),
-     *                 @OA\Property(property="minimum", type="integer", description="minimum kramen?"),
-     *                 @OA\Property(property="maximum", type="integer", description="maximum kramen?"),
-     *                 @OA\Property(property="isBak", type="boolean", description="gaat de koopman bakken?"),
-     *                 @OA\Property(property="hasInrichting", type="boolean", description="heeft de koopman een EVI?"),
-     *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman"),
-     *                 @OA\Property(property="brancheAfkorting", type="string", description="afkorting van de branche"),
-     *                 @OA\Property(property="marktAfkorting", type="string", description="afkorting van de markt")
+     *                 @OA\Items(items="afwijzingen", type="array", description="array met afwijzingen"),
+     *                 @OA\Items(items="toewijzingen", type="array", description="array met toewijzingen")
      *             )
      *         )
      *     ),
@@ -103,116 +178,98 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation", methods={"POST"})
+     * @Route("/allocation/{marktAfkorting}/{date}", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function create(Request $request): Response
+    public function create(Request $request, string $marktAfkorting, string $date): Response
     {
         $data = json_decode((string) $request->getContent(), true);
 
         if (null === $data) {
+            $this->logger->error(json_last_error_msg());
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-        $expectedParameters = [
-            'isAllocated',
-            'date',
-            'anywhere',
-            'minimum',
-            'maximum',
-            'isBak',
-            'hasInrichting',
-            'koopman',
-            'branche',
-            'markt'
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
+        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
         if ( $markt === null) {
+            $this->logger->error("Markt not found");
             return new JsonResponse(['error' => "Markt not found"], Response::HTTP_BAD_REQUEST);
         }
 
-        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopmanErkenningsNummer']);
-
-        if ( $koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_BAD_REQUEST);
-        }
-
-        $branche = $this->brancheRepository->findOneByAfkorting($data['brancheAfkorting']);
-
-        if ( $branche === null) {
-            return new JsonResponse(['error' => "Branche not found"], Response::HTTP_BAD_REQUEST);
-        }
-
-
-        if ($data['isAllocated']){
-            if ( array_key_exists('plaatsen', $data) ) {
-                if ( is_array($data['plaatsen']) ){
-                    foreach ($data['plaatsen'] as $item){
-                        if ( filter_var($item, FILTER_VALIDATE_INT) === false ) {
-                            return new JsonResponse(['error' => "plaatsen contains an invalid item (not an int)"], Response::HTTP_BAD_REQUEST);
-                        }
-                    }
-                } else {
-                    return new JsonResponse(['error' => "plaatsen is not an array"], Response::HTTP_BAD_REQUEST);
-                }
-            } else {
-                return new JsonResponse(['error' => "plaatsen not set for allocated allocation."], Response::HTTP_BAD_REQUEST);
-            }
-            if ( array_key_exists('rejectReason', $data) ) {
-                return new JsonResponse(['error' => "rejectReason set for allocated allocation."], Response::HTTP_BAD_REQUEST);
-            }
-            $plaatsen = $data['plaatsen'];
+        if ( strtotime($date) ) {
+            $marktDate = new DateTime($date);
         } else {
-            if ( array_key_exists('rejectReason', $data) ) {
-                if ( !in_array($data['plaatsen'], $this->validRejectReasons) ) {
-                    return new JsonResponse(['error' => "rejectReason not valid."], Response::HTTP_BAD_REQUEST);
-                }
-            } else {
-                return new JsonResponse(['error' => "rejectReason not set for unallocated allocation."], Response::HTTP_BAD_REQUEST);
-            }
-            if ( array_key_exists('plaatsen', $data) ) {
-                return new JsonResponse(['error' => "plaatsen set for unallocated allocation."], Response::HTTP_BAD_REQUEST);
-            }
-            $rejectReason = $data['rejectReason'];
-        }
-
-        if (strtotime($data['date'])) {
-            $date = new DateTime($data['date']);
-        } else {
+            $this->logger->error("date is not a date");
             return new JsonResponse(['error' => "date is not a date"], Response::HTTP_BAD_REQUEST);
         }
 
-        $allocation = $this->allocationRepository->findOneByMarktAndKoopmanAndDate($markt, $koopman, $date);
-
-        if ( $branche === null) {
-            $allocation = new Allocation();
+        foreach ( $this->allocationRepository->findAllByMarktAndDate($markt, $marktDate) as $allocation) {
+            $this->entityManager->remove($allocation);
         }
 
-        $allocation->setIsAllocated($data['isAllocated']);
-        $allocation->setPlaatsen($plaatsen);
-        $allocation->setrejectReason($rejectReason);
-        $allocation->setDate($date);
-        $allocation->setAnywhere($data['anywhere']);
-        $allocation->setMinimum($data['minumum']);
-        $allocation->setMaximum($data['maximum']);
-        $allocation->setIsBak($data['isBak']);
-        $allocation->setHasInrichting($data['hasInrichting']);
-        $allocation->setMarkt($markt);
-        $allocation->setKoopman($koopman);
-        $allocation->setBranche($branche);
+        $allocations = [];
 
-        $this->entityManager->persist($allocation);
+        try {
+            foreach ( $data['afwijzingen'] as $afwijzing){
+                if ( $afwijzing['ondernemer']['plaatsen'] == [] ){
+                    $plaatsvoorkeuren = null;
+                } else {
+                    $plaatsvoorkeuren = $afwijzing['ondernemer']['plaatsen'];
+                }
+                array_push($allocations, $this->createAllocation(
+                    markt: $markt,
+                    marktDate: $marktDate,
+                    isAllocated: false,
+                    plaatsvoorkeuren: $plaatsvoorkeuren,
+                    anywhere: $afwijzing['ondernemer']['voorkeur']['anywhere'],
+                    minimum: $afwijzing['ondernemer']['voorkeur']['minimum'],
+                    maximum: $afwijzing['ondernemer']['voorkeur']['maximum'],
+                    parentBrancheId: $afwijzing['ondernemer']['voorkeur']['parentBrancheId'],
+                    inrichting: $afwijzing['ondernemer']['voorkeur']['verkoopinrichting'],
+                    koopmanErkenningsNummer: $afwijzing['erkenningsNummer'],
+                    brancheAfkorting: $afwijzing['ondernemer']['voorkeur']['brancheId'],
+                    rejectReason: $afwijzing['reason']['code'],
+                    plaatsen: null
+                ));
+            }
+
+            foreach ($data['toewijzingen'] as $toewijzing){
+                if ( $toewijzing['ondernemer']['plaatsen'] == [] ){
+                    $plaatsvoorkeuren = null;
+                } else {
+                    $plaatsvoorkeuren = $toewijzing['ondernemer']['plaatsen'];
+                }
+                array_push($allocations, $this->createAllocation(
+                    markt: $markt,
+                    marktDate: $marktDate,
+                    isAllocated: true,
+                    plaatsvoorkeuren: $plaatsvoorkeuren,
+                    anywhere: $toewijzing['ondernemer']['voorkeur']['anywhere'],
+                    minimum: $toewijzing['ondernemer']['voorkeur']['minimum'],
+                    maximum: $toewijzing['ondernemer']['voorkeur']['maximum'],
+                    parentBrancheId: $toewijzing['ondernemer']['voorkeur']['parentBrancheId'],
+                    inrichting: $toewijzing['ondernemer']['voorkeur']['verkoopinrichting'],
+                    koopmanErkenningsNummer: $toewijzing['erkenningsNummer'],
+                    brancheAfkorting: $toewijzing['ondernemer']['voorkeur']['brancheId'],
+                    rejectReason: null,
+                    plaatsen: $toewijzing['plaatsen']
+                ));
+            }
+        } catch (Exception $e) {
+            $this->logger->error("here");
+            $this->logger->error($e);
+            $this->logger->error("here");
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        foreach ($allocations as $allocation) {
+            $this->entityManager->persist($allocation);
+        }
+
         $this->entityManager->flush();
 
-        $response = $this->serializer->serialize($allocation, 'json');
+        $response = $this->serializer->serialize($allocations, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -220,7 +277,7 @@ class AllocationController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/allocation/markt/date",
+     *     path="/api/1.1.0/allocation/{markt}/{date}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="AllocationGetByMarktAndByDate",
      *     tags={"Allocation"},
@@ -241,7 +298,7 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/markt/date", methods={"GET"})
+     * @Route("/allocation/{marktAfkorting}/{date}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationsByMarktAndDate(string $marktAfkorting, string $date): Response
@@ -249,16 +306,18 @@ class AllocationController extends AbstractController
         $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
         if ( $markt === null) {
+            $this->logger->error("Markt not found");
             return new JsonResponse(['error' => "Markt not found"], Response::HTTP_NOT_FOUND);
         }
 
         if (strtotime($date)) {
-            $outputDate = new DateTime($date);
+            $marktDate = new DateTime($date);
         } else {
+            $this->logger->error("date is not a date");
             return new JsonResponse(['error' => "date is not a date"], Response::HTTP_BAD_REQUEST);
         }
 
-        $allocations = $this->allocationRepository->findAllByMarktAndDate($markt, $outputDate);
+        $allocations = $this->allocationRepository->findAllByMarktAndDate($markt, $marktDate);
 
         $response = $this->serializer->serialize($allocations, 'json');
 
