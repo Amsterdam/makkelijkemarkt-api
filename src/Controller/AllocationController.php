@@ -257,9 +257,6 @@ class AllocationController extends AbstractController
                 ));
             }
         } catch (Exception $e) {
-            $this->logger->error("here");
-            $this->logger->error($e);
-            $this->logger->error("here");
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
