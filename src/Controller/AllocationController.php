@@ -53,7 +53,7 @@ class AllocationController extends AbstractController
         AllocationRepository $allocationRepository,
         KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
-        BrancheRepository $brancheRepository,
+        BrancheRepository $brancheRepository
         )
         {
             $this->koopmanRepository = $koopmanRepository;
@@ -218,19 +218,19 @@ class AllocationController extends AbstractController
                     $plaatsvoorkeuren = $afwijzing['ondernemer']['plaatsen'];
                 }
                 array_push($allocations, $this->createAllocation(
-                    markt: $markt,
-                    marktDate: $marktDate,
-                    isAllocated: false,
-                    plaatsvoorkeuren: $plaatsvoorkeuren,
-                    anywhere: $afwijzing['ondernemer']['voorkeur']['anywhere'],
-                    minimum: $afwijzing['ondernemer']['voorkeur']['minimum'],
-                    maximum: $afwijzing['ondernemer']['voorkeur']['maximum'],
-                    parentBrancheId: $afwijzing['ondernemer']['voorkeur']['parentBrancheId'],
-                    inrichting: $afwijzing['ondernemer']['voorkeur']['verkoopinrichting'],
-                    koopmanErkenningsNummer: $afwijzing['erkenningsNummer'],
-                    brancheAfkorting: $afwijzing['ondernemer']['voorkeur']['brancheId'],
-                    rejectReason: $afwijzing['reason']['code'],
-                    plaatsen: null
+                    $markt,
+                    $marktDate,
+                    false,
+                    $plaatsvoorkeuren,
+                    $afwijzing['ondernemer']['voorkeur']['anywhere'],
+                    $afwijzing['ondernemer']['voorkeur']['minimum'],
+                    $afwijzing['ondernemer']['voorkeur']['maximum'],
+                    $afwijzing['ondernemer']['voorkeur']['parentBrancheId'],
+                    $afwijzing['ondernemer']['voorkeur']['verkoopinrichting'],
+                    $afwijzing['erkenningsNummer'],
+                    $afwijzing['ondernemer']['voorkeur']['brancheId'],
+                    $afwijzing['reason']['code'],
+                    null
                 ));
             }
 
@@ -241,19 +241,19 @@ class AllocationController extends AbstractController
                     $plaatsvoorkeuren = $toewijzing['ondernemer']['plaatsen'];
                 }
                 array_push($allocations, $this->createAllocation(
-                    markt: $markt,
-                    marktDate: $marktDate,
-                    isAllocated: true,
-                    plaatsvoorkeuren: $plaatsvoorkeuren,
-                    anywhere: $toewijzing['ondernemer']['voorkeur']['anywhere'],
-                    minimum: $toewijzing['ondernemer']['voorkeur']['minimum'],
-                    maximum: $toewijzing['ondernemer']['voorkeur']['maximum'],
-                    parentBrancheId: $toewijzing['ondernemer']['voorkeur']['parentBrancheId'],
-                    inrichting: $toewijzing['ondernemer']['voorkeur']['verkoopinrichting'],
-                    koopmanErkenningsNummer: $toewijzing['erkenningsNummer'],
-                    brancheAfkorting: $toewijzing['ondernemer']['voorkeur']['brancheId'],
-                    rejectReason: null,
-                    plaatsen: $toewijzing['plaatsen']
+                    $markt,
+                    $marktDate,
+                    true,
+                    $plaatsvoorkeuren,
+                    $toewijzing['ondernemer']['voorkeur']['anywhere'],
+                    $toewijzing['ondernemer']['voorkeur']['minimum'],
+                    $toewijzing['ondernemer']['voorkeur']['maximum'],
+                    $toewijzing['ondernemer']['voorkeur']['parentBrancheId'],
+                    $toewijzing['ondernemer']['voorkeur']['verkoopinrichting'],
+                    $toewijzing['erkenningsNummer'],
+                    $toewijzing['ondernemer']['voorkeur']['brancheId'],
+                    null,
+                    $toewijzing['plaatsen']
                 ));
             }
         } catch (Exception $e) {

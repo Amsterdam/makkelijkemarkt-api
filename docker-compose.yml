@@ -12,6 +12,13 @@ services:
     volumes:
       - ./src:/app/src
       - ./config:/app/config
+  database:
+    image: postgres:9.5
+    ports:
+    - "5432:5432"
+    environment:
+      POSTGRES_USER: makkelijkemarkt
+      POSTGRES_PASSWORD: insecure
 
 networks:
   bridge:
