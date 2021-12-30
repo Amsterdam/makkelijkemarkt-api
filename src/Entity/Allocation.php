@@ -134,9 +134,9 @@ class Allocation
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?string
     {
-        return $this->date;
+        return $this->date->format("c");
     }
 
     public function setDate(\DateTimeInterface $date): self
