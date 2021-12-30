@@ -37,7 +37,7 @@ class ApiTestCase extends KernelTestCase
         self::bootKernel();
 
         self::$staticClient = new Client([
-            'base_uri' => 'http://127.0.0.1:8000',
+            'base_uri' => 'http://172.101.0.1:8081',
         ]);
 
         self::$staticFaker = Factory::create();
@@ -55,7 +55,7 @@ class ApiTestCase extends KernelTestCase
 
         /** @var Token $token */
         $token = $tokenRepository->findOneBy([
-            'account' => 0,
+            'account' => 1,
         ]);
 
         $this->headers = [
