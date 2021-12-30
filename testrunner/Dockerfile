@@ -22,6 +22,7 @@ RUN apk add postgresql-dev bzip2-dev freetype libpng libjpeg-turbo freetype-dev 
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install pdo_pgsql pgsql bcmath bz2 calendar exif gd gettext gmp intl pcntl shmop soap sockets sysvmsg sysvsem sysvshm xmlrpc xsl zip
 
+ADD ./src /app/src
 COPY . /app
 COPY testrunner/doctrine.yaml /app/config/packages/doctrine.yaml
 
