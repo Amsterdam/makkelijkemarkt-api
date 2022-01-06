@@ -119,7 +119,7 @@ class StuurFactuurCommand extends Command
                 $body .= "Het gaat hier niet om een factuur.";
 
                 $message = (new \Swift_Message())
-                    ->setSubject('BTW- overzicht Marktbureau Gemeente Amsterdam')
+                    ->setSubject('BTW-overzicht Marktbureau Gemeente Amsterdam')
                     ->setFrom(['marktbureau@amsterdam.nl' => 'Marktbureau Gemeente Amsterdam'])
                     ->setTo([$koopman->getEmail()])
                     ->setBody($body)
