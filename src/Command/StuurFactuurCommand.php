@@ -126,8 +126,6 @@ class StuurFactuurCommand extends Command
                     ->attach((new \Swift_Attachment())->setFilename('btw-overzicht.pdf')->setContentType('application/pdf')->setBody($pdfFile))
                 ;
 
-                print($message->getBody());
-
                 $this->mailer->send($message);
                 $output->writeln('.. Mail queued for ' . $koopman->getEmail());
             } catch (\Exception $e) {
