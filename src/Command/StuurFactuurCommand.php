@@ -113,7 +113,7 @@ class StuurFactuurCommand extends Command
                 $pdf = $this->pdfFactuurService->generate($koopman, $dagvergunningen);
                 $pdfFile = $pdf->Output('koopman-' . $koopman->getId() . '.pdf', 'S');
 
-                $body =  "Bijgesloten ontvangt u een BTW- overzicht van het Marktbureau van de Gemeente Amsterdam als PDF-bestand. \n";
+                $body =  "Bijgesloten ontvangt u een BTW-overzicht van het Marktbureau van de Gemeente Amsterdam als PDF-bestand. \n";
                 $body .= "Dit is voor uw eigen administratie. \n"; 
                 $body .= "U heeft reeds betaald of u moet nog betalen op de markt, per pin, bij de markttoezichthouder. \n";
                 $body .= "Het gaat hier niet om een factuur.";
