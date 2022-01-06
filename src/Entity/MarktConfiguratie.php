@@ -7,6 +7,7 @@ namespace App\Entity;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -56,23 +57,23 @@ class MarktConfiguratie {
     /**
      * @ORM\Column(type="json")
      */
-    private string $geografie;
+    private array $geografie;
     /**
      * @ORM\Column(type="json")
      */
-    private string $locaties;
+    private array $locaties;
     /**
      * @ORM\Column(type="json")
      */
-    private string $marktOpstelling;
+    private array $marktOpstelling;
     /**
      * @ORM\Column(type="json")
      */
-    private string $paginas;
+    private array $paginas;
     /**
      * @ORM\Column(type="json")
      */
-    private string $branches;
+    private array $branches;
 
     /**
      * @OA\Property()
@@ -86,6 +87,9 @@ class MarktConfiguratie {
     {
         $data = json_decode((string) $request->getContent(), true);
 
+        if (!$data)
+            throw new BadRequestException("Invalid input data");
+
         foreach (self::MANDATORY_REQUEST_FIELDS as $request_field) {
             if (!array_key_exists($request_field, $data)) {
                 throw new BadRequestException("Field $request_field is missing from request body");
@@ -96,11 +100,12 @@ class MarktConfiguratie {
 
         $marktConfiguratie->setMarkt($markt)
             ->setAanmaakDatumtijd(new \DateTime())
+            ->setMarkt($markt)
             ->setGeografie($data[self::INPUT_FIELD_GEOGRAFIE])
             ->setBranches($data[self::INPUT_FIELD_BRANCHES])
-            ->setMarkt($data[self::INPUT_FIELD_MARKT])
             ->setLocaties($data[self::INPUT_FIELD_LOCATIES])
-            ->setPaginas($data[self::INPUT_FIELD_LOCATIES]);
+            ->setPaginas($data[self::INPUT_FIELD_LOCATIES])
+            ->setMarktOpstelling($data[self::INPUT_FIELD_MARKT]);
 
         return $marktConfiguratie;
     }
@@ -153,17 +158,17 @@ class MarktConfiguratie {
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getGeografie(): string
+    public function getGeografie(): array
     {
         return $this->geografie;
     }
 
     /**
-     * @param string $geografie
+     * @param array $geografie
      */
-    public function setGeografie(string $geografie): self
+    public function setGeografie(array $geografie): self
     {
         $this->geografie = $geografie;
 
@@ -171,17 +176,17 @@ class MarktConfiguratie {
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getLocaties(): string
+    public function getLocaties(): array
     {
         return $this->locaties;
     }
 
     /**
-     * @param string $locaties
+     * @param array $locaties
      */
-    public function setLocaties(string $locaties): self
+    public function setLocaties(array $locaties): self
     {
         $this->locaties = $locaties;
 
@@ -189,17 +194,17 @@ class MarktConfiguratie {
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getMarktOpstelling(): string
+    public function getMarktOpstelling(): array
     {
         return $this->marktOpstelling;
     }
 
     /**
-     * @param string $marktOpstelling
+     * @param array $marktOpstelling
      */
-    public function setMarktOpstelling(string $marktOpstelling): self
+    public function setMarktOpstelling(array $marktOpstelling): self
     {
         $this->marktOpstelling = $marktOpstelling;
 
@@ -207,17 +212,17 @@ class MarktConfiguratie {
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getPaginas(): string
+    public function getPaginas(): array
     {
         return $this->paginas;
     }
 
     /**
-     * @param string $paginas
+     * @param array $paginas
      */
-    public function setPaginas(string $paginas): self
+    public function setPaginas(array $paginas): self
     {
         $this->paginas = $paginas;
 
@@ -225,17 +230,17 @@ class MarktConfiguratie {
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getBranches(): string
+    public function getBranches(): array
     {
         return $this->branches;
     }
 
     /**
-     * @param string $branches
+     * @param array $branches
      */
-    public function setBranches(string $branches): self
+    public function setBranches(array $branches): self
     {
         $this->branches = $branches;
 
