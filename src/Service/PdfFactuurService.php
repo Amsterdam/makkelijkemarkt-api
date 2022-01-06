@@ -77,6 +77,13 @@ class PdfFactuurService
         $this->pdf->SetFont($this->fontname, 'b', 8);
         $this->pdf->Cell(16, 6, '', 0, 0);
         $this->pdf->Cell(164, 6, '', 0, 0);
+        
+        
+        $this->pdf->Ln(8);
+
+        $this->pdf->SetFont($this->fontnameBold, 'b', 11);
+        $this->pdf->Cell(16, 6, '', 0, 0);
+        $this->pdf->Cell(180, 6, 'BTW-overzicht', 0, 0);
 
         $this->pdf->Ln(10);
 

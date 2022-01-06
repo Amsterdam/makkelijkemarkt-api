@@ -94,7 +94,7 @@ class StuurFactuurCommand extends Command
                     'koopmanId' => $koopman->getId(),
                     'doorgehaald' => 0
                 ));
-
+                
                 $heeftBetaalbaarBedrag = false;
                 foreach ($dagvergunningen as $dagvergunning) {
                     /** @var Dagvergunning $dagvergunning */
@@ -113,15 +113,20 @@ class StuurFactuurCommand extends Command
                 $pdf = $this->pdfFactuurService->generate($koopman, $dagvergunningen);
                 $pdfFile = $pdf->Output('koopman-' . $koopman->getId() . '.pdf', 'S');
 
+                $body =  "Bijgesloten ontvangt u een BTW- overzicht van het Marktbureau van de Gemeente Amsterdam als PDF-bestand. \n";
+                $body .= "Dit is voor uw eigen administratie. \n"; 
+                $body .= "U heeft reeds betaald of u moet nog betalen op de markt, per pin, bij de markttoezichthouder. \n";
+                $body .= "Het gaat hier niet om een factuur.";
+
                 $message = (new \Swift_Message())
-                    ->setSubject('Factuur Marktbureau Gemeente Amsterdam')
+                    ->setSubject('BTW- overzicht Marktbureau Gemeente Amsterdam')
                     ->setFrom(['marktbureau@amsterdam.nl' => 'Marktbureau Gemeente Amsterdam'])
                     ->setTo([$koopman->getEmail()])
-                    ->setBody('Bijgesloten ontvangt u een factuur van het Marktbureau van de Gemeente Amsterdam als PDF-bestand. Deze factuur is voor uw eigen administratie en bevat tevens een btw specificatie.
-
-De factuur heeft u reeds betaald of moet u nog betalen op de markt per pin bij de toezichthouder. De factuur is geen betalingsbewijs.')
-                    ->attach((new \Swift_Attachment())->setFilename('factuur.pdf')->setContentType('application/pdf')->setBody($pdfFile))
+                    ->setBody($body)
+                    ->attach((new \Swift_Attachment())->setFilename('btw-overzicht.pdf')->setContentType('application/pdf')->setBody($pdfFile))
                 ;
+
+                print($message->getBody());
 
                 $this->mailer->send($message);
                 $output->writeln('.. Mail queued for ' . $koopman->getEmail());
