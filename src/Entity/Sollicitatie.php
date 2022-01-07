@@ -81,7 +81,7 @@ class Sollicitatie
      *
      * @var ?int
      * @ORM\Column(name="aantal_3meter_kramen", type="integer", nullable=true)
-     */ 
+     */
     private $aantal3MeterKramen;
 
     /**

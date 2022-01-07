@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
-use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,7 +22,8 @@ use Symfony\Component\HttpFoundation\Request;
  *     }
  * )
  */
-class MarktConfiguratie {
+class MarktConfiguratie
+{
 
     private const INPUT_FIELD_GEOGRAFIE = 'geografie';
     private const INPUT_FIELD_LOCATIES = 'locaties';
@@ -47,7 +48,7 @@ class MarktConfiguratie {
      * @ORM\Column(type="integer")
      */
     private int $id;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class)
      * @ORM\JoinColumn(nullable=false)
@@ -85,7 +86,7 @@ class MarktConfiguratie {
 
     public static function createFromPostRequest(Request $request, Markt $markt): self
     {
-        $data = json_decode((string) $request->getContent(), true);
+        $data = json_decode((string)$request->getContent(), true);
 
         if (!$data)
             throw new BadRequestException("Invalid input data");
@@ -99,7 +100,7 @@ class MarktConfiguratie {
         $marktConfiguratie = new self();
 
         $marktConfiguratie->setMarkt($markt)
-            ->setAanmaakDatumtijd(new \DateTime())
+            ->setAanmaakDatumtijd(new DateTime())
             ->setMarkt($markt)
             ->setGeografie($data[self::INPUT_FIELD_GEOGRAFIE])
             ->setBranches($data[self::INPUT_FIELD_BRANCHES])
@@ -111,7 +112,7 @@ class MarktConfiguratie {
     }
 
 
-    public function getMarkt(): ?String
+    public function getMarkt(): ?string
     {
         return $this->markt->getAfkorting();
     }
@@ -127,7 +128,7 @@ class MarktConfiguratie {
      * Get the value of id
      *
      * @return  int
-     */ 
+     */
     public function getId(): int
     {
         return $this->id;
@@ -137,7 +138,7 @@ class MarktConfiguratie {
      * Get the value of aanmaakDatumtijd
      *
      * @return  DateTimeInterface
-     */ 
+     */
     public function getAanmaakDatumtijd(): DateTimeInterface
     {
         return $this->aanmaakDatumtijd;
@@ -146,10 +147,10 @@ class MarktConfiguratie {
     /**
      * Set the value of aanmaakDatumtijd
      *
-     * @param  DateTimeInterface  $aanmaakDatumtijd
+     * @param DateTimeInterface $aanmaakDatumtijd
      *
      * @return  self
-     */ 
+     */
     public function setAanmaakDatumtijd(DateTimeInterface $aanmaakDatumtijd): MarktConfiguratie
     {
         $this->aanmaakDatumtijd = $aanmaakDatumtijd;

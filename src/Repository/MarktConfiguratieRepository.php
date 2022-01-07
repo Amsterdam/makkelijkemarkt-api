@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Markt;
 use App\Entity\MarktConfiguratie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;

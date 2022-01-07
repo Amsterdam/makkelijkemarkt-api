@@ -5,8 +5,10 @@ namespace App\Tests\Controller;
 use App\Entity\Markt;
 use App\Entity\MarktConfiguratie;
 use App\Repository\MarktRepository;
+use App\Test\ApiTestCase;
+use DateTime;
 
-class MarktConfiguratieControllerTest extends \App\Test\ApiTestCase
+class MarktConfiguratieControllerTest extends ApiTestCase
 {
     public function testGetLatest(): void
     {
@@ -19,7 +21,7 @@ class MarktConfiguratieControllerTest extends \App\Test\ApiTestCase
         $marktConfiguratie = new MarktConfiguratie();
 
         $marktConfiguratie->setMarkt($markt)
-            ->setAanmaakDatumtijd(new \DateTime())
+            ->setAanmaakDatumtijd(new DateTime())
             ->setMarktOpstelling(['testKey' => 1])
             ->setBranches(['testKey' => 2])
             ->setGeografie(['testKey' => 3])
@@ -39,7 +41,7 @@ class MarktConfiguratieControllerTest extends \App\Test\ApiTestCase
         $this->assertEquals($response->getStatusCode(), 200);
         $this->assertEquals($body['markt'], $markt->getAfkorting());
         // Should be a date string
-        $this->assertEquals((bool) strtotime($body['aanmaakDatumtijd']), true);
+        $this->assertEquals((bool)strtotime($body['aanmaakDatumtijd']), true);
         // These are json blobs, so we can't test any validation on the json (could look like anything)
         // So we just test if the json is processed correctly.
         $this->assertEquals($body['marktOpstelling']['testKey'], 1);
@@ -102,7 +104,7 @@ class MarktConfiguratieControllerTest extends \App\Test\ApiTestCase
 
         $this->assertEquals($body['markt'], $markt->getAfkorting());
         // Should be a date string
-        $this->assertEquals((bool) strtotime($body['aanmaakDatumtijd']), true);
+        $this->assertEquals((bool)strtotime($body['aanmaakDatumtijd']), true);
         // These are json blobs, so we can't test any validation on the json (could look like anything)
         // So we just test if the json is processed correctly.
         $this->assertEquals($body['marktOpstelling']['9'], 10);
