@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\MarktConfiguratie;
+use App\Normalizer\EntityNormalizer;
+use App\Repository\MarktConfiguratieRepository;
 use App\Repository\MarktRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -13,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @OA\Tag(name="MarktConfiguratie")
@@ -21,26 +26,60 @@ class MarktConfiguratieController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private MarktRepository $marktRepository;
+    private Serializer $serializer;
+    private MarktConfiguratieRepository $marktConfiguratieRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, MarktRepository $marktRepository) {
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param MarktRepository $marktRepository
+     * @param MarktConfiguratieRepository $marktConfiguratieRepository
+     * @param CacheManager $cacheManager
+     */
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        MarktRepository $marktRepository,
+        MarktConfiguratieRepository $marktConfiguratieRepository,
+        CacheManager $cacheManager
+    ) {
         $this->entityManager = $entityManager;
         $this->marktRepository = $marktRepository;
+
+        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->marktConfiguratieRepository = $marktConfiguratieRepository;
     }
 
     /**
      * @param Request $request
-     * @param int $id
+     * @param int $marktId
      * @return Response
      *
-     * @Route("/markt/{id}/marktconfiguratie", methods={"POST"})
+     * @Route("/markt/{marktId}/marktconfiguratie/latest", methods={"GET"})
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
-    public function create(Request $request, int $id): Response
+    public function getLatest(Request $request, int $marktId): Response
     {
-        $markt = $this->marktRepository->find($id);
+        $marktConfiguratie = $this->marktConfiguratieRepository->findLatest($marktId);
+        $response = $this->serializer->serialize($marktConfiguratie, 'json');
+
+        return new Response($response, Response::HTTP_OK, [
+            'Content-type' => 'application/json'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $marktId
+     * @return Response
+     *
+     * @Route("/markt/{marktId}/marktconfiguratie", methods={"POST"})
+     * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
+     */
+    public function postByMarktId(Request $request, int $marktId): Response
+    {
+        $markt = $this->marktRepository->find($marktId);
 
         if (!$markt) {
-            return new JsonResponse(['error' => "Could not find markt with id $id"], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => "Could not find markt with id $marktId"], Response::HTTP_NOT_FOUND);
         }
 
         try {
