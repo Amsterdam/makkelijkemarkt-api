@@ -104,7 +104,7 @@ class MarktConfiguratie {
             ->setGeografie($data[self::INPUT_FIELD_GEOGRAFIE])
             ->setBranches($data[self::INPUT_FIELD_BRANCHES])
             ->setLocaties($data[self::INPUT_FIELD_LOCATIES])
-            ->setPaginas($data[self::INPUT_FIELD_LOCATIES])
+            ->setPaginas($data[self::INPUT_FIELD_PAGINAS])
             ->setMarktOpstelling($data[self::INPUT_FIELD_MARKT]);
 
         return $marktConfiguratie;

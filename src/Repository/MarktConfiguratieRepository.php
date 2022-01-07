@@ -24,7 +24,6 @@ class MarktConfiguratieRepository extends ServiceEntityRepository
 
         $query = $queryBuilder->getQuery();
 
-
         /** @var MarktConfiguratie $marktConfiguratie */
         return $query->getOneOrNullResult();
     }

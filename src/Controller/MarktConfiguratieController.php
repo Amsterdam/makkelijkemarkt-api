@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\MarktConfiguratie;
@@ -36,11 +38,12 @@ class MarktConfiguratieController extends AbstractController
      * @param CacheManager $cacheManager
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
-        MarktRepository $marktRepository,
+        EntityManagerInterface      $entityManager,
+        MarktRepository             $marktRepository,
         MarktConfiguratieRepository $marktConfiguratieRepository,
-        CacheManager $cacheManager
-    ) {
+        CacheManager                $cacheManager
+    )
+    {
         $this->entityManager = $entityManager;
         $this->marktRepository = $marktRepository;
 
@@ -59,6 +62,15 @@ class MarktConfiguratieController extends AbstractController
     public function getLatest(Request $request, int $marktId): Response
     {
         $marktConfiguratie = $this->marktConfiguratieRepository->findLatest($marktId);
+
+        if ($marktConfiguratie === null) {
+            return new Response(
+                "Markt $marktId has no Marktconfiguraties",
+                Response::HTTP_NOT_FOUND,
+                ['Content-type' => 'application/json']
+            );
+        }
+
         $response = $this->serializer->serialize($marktConfiguratie, 'json');
 
         return new Response($response, Response::HTTP_OK, [
@@ -91,6 +103,10 @@ class MarktConfiguratieController extends AbstractController
         $this->entityManager->persist($marktConfiguratie);
         $this->entityManager->flush();
 
-        return new Response($marktConfiguratie->getId(), Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return new Response(
+            $this->serializer->serialize($marktConfiguratie, 'json'),
+            Response::HTTP_OK,
+            ['Content-type' => 'application/json']
+        );
     }
 }
