@@ -2850,6 +2850,128 @@
                 ]
             }
         },
+        "/api/1.1.0/markt/{id}/marktconfiguratie/latest": {
+            "get": {
+                "tags": [
+                    "MarktConfiguratie"
+                ],
+                "summary": "Vraag een configuratie voor een Markt op",
+                "operationId": "MarktconfiguratieGetLatest",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktConfiguratie"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/markt/{id}/marktconfiguratie": {
+            "post": {
+                "tags": [
+                    "MarktConfiguratie"
+                ],
+                "summary": "Voeg een nieuwe marktconfiguratie voor een markt toe",
+                "operationId": "MarktconfiguratiePostByMarktId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktConfiguratie"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/1.1.0/markt/": {
             "get": {
                 "tags": [
@@ -6698,6 +6820,39 @@
                 },
                 "type": "object"
             },
+            "MarktConfiguratie": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "14"
+                    },
+                    "markt_id": {
+                        "type": "integer",
+                        "example": "101"
+                    },
+                    "geografie": {
+                        "type": "string"
+                    },
+                    "locaties": {
+                        "type": "string"
+                    },
+                    "marktOpstelling": {
+                        "type": "string"
+                    },
+                    "paginas": {
+                        "type": "string"
+                    },
+                    "branches": {
+                        "type": "string"
+                    },
+                    "aanmaakDatumtijd": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-07 16:52:00.000"
+                    }
+                },
+                "type": "object"
+            },
             "MarktVoorkeur": {
                 "type": "object"
             },
@@ -6932,6 +7087,9 @@
         },
         {
             "name": "Login"
+        },
+        {
+            "name": "MarktConfiguratie"
         },
         {
             "name": "Markt"

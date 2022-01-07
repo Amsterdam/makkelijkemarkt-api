@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class MarktConfiguratie
 {
-
     private const INPUT_FIELD_GEOGRAFIE = 'geografie';
     private const INPUT_FIELD_LOCATIES = 'locaties';
     private const INPUT_FIELD_BRANCHES = 'branches';
@@ -50,34 +49,46 @@ class MarktConfiguratie
     private int $id;
 
     /**
+     * @OA\Property(type="integer", example="101", property="markt_id")
+     *
      * @ORM\ManyToOne(targetEntity=Markt::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private Markt $markt;
 
     /**
+     * @OA\Property(type="string")
+     *
      * @ORM\Column(type="json")
      */
     private array $geografie;
     /**
+     * @OA\Property(type="string")
+     *
      * @ORM\Column(type="json")
      */
     private array $locaties;
     /**
+     * @OA\Property(type="string")
+     *
      * @ORM\Column(type="json")
      */
     private array $marktOpstelling;
     /**
+     * @OA\Property(type="string")
+     *
      * @ORM\Column(type="json")
      */
     private array $paginas;
     /**
+     * @OA\Property(type="string")
+     *
      * @ORM\Column(type="json")
      */
     private array $branches;
 
     /**
-     * @OA\Property()
+     * @OA\Property(example="2022-01-07 16:52:00.000")
      *
      * @var DateTimeInterface
      * @ORM\Column(type="datetime")

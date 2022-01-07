@@ -56,6 +56,25 @@ class MarktConfiguratieController extends AbstractController
      * @param int $marktId
      * @return Response
      *
+     * @OA\Get(
+     *     path="/api/1.1.0/markt/{id}/marktconfiguratie/latest",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="MarktconfiguratieGetLatest",
+     *     tags={"MarktConfiguratie"},
+     *     summary="Vraag een configuratie voor een Markt op",
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     *
      * @Route("/markt/{marktId}/marktconfiguratie/latest", methods={"GET"})
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
@@ -82,6 +101,30 @@ class MarktConfiguratieController extends AbstractController
      * @param Request $request
      * @param int $marktId
      * @return Response
+     *
+     * @OA\Post(
+     *     path="/api/1.1.0/markt/{id}/marktconfiguratie",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="MarktconfiguratiePostByMarktId",
+     *     tags={"MarktConfiguratie"},
+     *     summary="Voeg een nieuwe marktconfiguratie voor een markt toe",
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
      *
      * @Route("/markt/{marktId}/marktconfiguratie", methods={"POST"})
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
