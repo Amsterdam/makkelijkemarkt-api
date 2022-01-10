@@ -19,7 +19,8 @@ class MarktConfiguratieRepository extends ServiceEntityRepository
             ->where('m.markt = :markt_id')
             ->setParameter('markt_id', $marktId)
             ->setMaxResults(1)
-            ->orderBy('m.aanmaakDatumtijd', 'DESC');
+            ->orderBy('m.aanmaakDatumtijd', 'DESC')
+            ->orderBy('m.id', 'DESC');
 
         $query = $queryBuilder->getQuery();
 
