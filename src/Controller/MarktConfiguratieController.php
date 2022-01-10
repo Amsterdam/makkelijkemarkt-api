@@ -71,7 +71,7 @@ class MarktConfiguratieController extends AbstractController
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet of de markt heeft geen configuratie"))
      *     )
      * )
      *
@@ -117,12 +117,12 @@ class MarktConfiguratieController extends AbstractController
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="Er is foutieve input gegeven."))
      *     ),
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet"))
      *     )
      * )
      *
