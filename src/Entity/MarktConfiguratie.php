@@ -95,6 +95,13 @@ class MarktConfiguratie
      */
     private DateTimeInterface $aanmaakDatumtijd;
 
+    /**
+     * Creates a MarktConfiguratie object from Post Request in MarktConfiguratieController
+     *
+     * @param Request $request
+     * @param Markt $markt
+     * @return static
+     */
     public static function createFromPostRequest(Request $request, Markt $markt): self
     {
         $data = json_decode((string)$request->getContent(), true);
@@ -123,12 +130,19 @@ class MarktConfiguratie
     }
 
 
-    public function getMarkt(): ?string
+    /**
+     * @return string
+     */
+    public function getMarkt(): string
     {
         return $this->markt->getAfkorting();
     }
 
-    public function setMarkt(?Markt $markt): self
+    /**
+     * @param Markt $markt
+     * @return $this
+     */
+    public function setMarkt(Markt $markt): self
     {
         $this->markt = $markt;
 
@@ -146,8 +160,6 @@ class MarktConfiguratie
     }
 
     /**
-     * Get the value of aanmaakDatumtijd
-     *
      * @return  DateTimeInterface
      */
     public function getAanmaakDatumtijd(): DateTimeInterface
@@ -156,8 +168,6 @@ class MarktConfiguratie
     }
 
     /**
-     * Set the value of aanmaakDatumtijd
-     *
      * @param DateTimeInterface $aanmaakDatumtijd
      *
      * @return  self

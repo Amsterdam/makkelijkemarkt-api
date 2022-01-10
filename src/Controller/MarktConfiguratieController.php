@@ -10,6 +10,7 @@ use App\Repository\MarktConfiguratieRepository;
 use App\Repository\MarktRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -17,7 +18,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 
@@ -46,9 +46,9 @@ class MarktConfiguratieController extends AbstractController
     {
         $this->entityManager = $entityManager;
         $this->marktRepository = $marktRepository;
+        $this->marktConfiguratieRepository = $marktConfiguratieRepository;
 
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->marktConfiguratieRepository = $marktConfiguratieRepository;
     }
 
     /**
