@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\MarktConfiguratie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class MarktConfiguratieRepository extends ServiceEntityRepository
@@ -13,6 +14,11 @@ class MarktConfiguratieRepository extends ServiceEntityRepository
         parent::__construct($registry, MarktConfiguratie::class);
     }
 
+    /**
+     * @param int $marktId
+     * @return MarktConfiguratie|null
+     * @throws NonUniqueResultException
+     */
     public function findLatest(int $marktId): ?MarktConfiguratie
     {
         $queryBuilder = $this->createQueryBuilder('m')
@@ -22,9 +28,6 @@ class MarktConfiguratieRepository extends ServiceEntityRepository
             ->orderBy('m.aanmaakDatumtijd', 'DESC')
             ->orderBy('m.id', 'DESC');
 
-        $query = $queryBuilder->getQuery();
-
-        /** @var MarktConfiguratie $marktConfiguratie */
-        return $query->getOneOrNullResult();
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }
