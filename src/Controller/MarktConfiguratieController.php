@@ -82,7 +82,7 @@ class MarktConfiguratieController extends AbstractController
     {
         $marktConfiguratie = $this->marktConfiguratieRepository->findLatest($marktId);
 
-        if ($marktConfiguratie === null) {
+        if (!$marktConfiguratie) {
             return new Response(
                 "Markt $marktId has no Marktconfiguraties",
                 Response::HTTP_NOT_FOUND,
@@ -117,7 +117,7 @@ class MarktConfiguratieController extends AbstractController
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="Er is foutieve input gegeven."))
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="Er is foutieve input gegeven"))
      *     ),
      *     @OA\Response(
      *         response="404",
