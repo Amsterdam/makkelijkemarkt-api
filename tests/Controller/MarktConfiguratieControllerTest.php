@@ -39,7 +39,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
         $body = json_decode($response->getBody()->getContents(), true);
 
         $this->assertEquals($response->getStatusCode(), 200);
-        $this->assertEquals($body['markt'], $markt->getAfkorting());
+        $this->assertEquals($body['marktId'], $markt->getId());
         // Should be a date string
         $this->assertEquals((bool)strtotime($body['aanmaakDatumtijd']), true);
         // These are json blobs, so we can't test any validation on the json (could look like anything)
@@ -102,7 +102,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
 
         $this->assertEquals($response->getStatusCode(), 200);
 
-        $this->assertEquals($body['markt'], $markt->getAfkorting());
+        $this->assertEquals($body['marktId'], $markt->getId());
         // Should be a date string
         $this->assertEquals((bool)strtotime($body['aanmaakDatumtijd']), true);
         // These are json blobs, so we can't test any validation on the json (could look like anything)

@@ -49,7 +49,7 @@ class MarktConfiguratie
     private int $id;
 
     /**
-     * @OA\Property(type="integer", example="101", property="markt_id")
+     * @OA\Property(type="integer", example="101", property="marktId")
      *
      * @ORM\ManyToOne(targetEntity=Markt::class)
      * @ORM\JoinColumn(nullable=false)
@@ -131,11 +131,11 @@ class MarktConfiguratie
 
 
     /**
-     * @return string
+     * @return int
      */
-    public function getMarkt(): string
+    public function getMarktId(): int
     {
-        return $this->markt->getAfkorting();
+        return $this->markt->getId();
     }
 
     /**
