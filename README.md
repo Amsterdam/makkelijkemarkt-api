@@ -103,3 +103,10 @@ Om gegevens uit Ceniam te importeren zijn de volgende imports beschikbaar, deze 
 * Sollicitatie: php app/console makkelijkemarkt:import:perfectview:sollicitatie Sollicitatie.csv --env=prod
 * Fotos: php app/console makkelijkemarkt:import:perfectview:foto Koopman.CSV fotos/ --env=prod
 
+## Api Docs Genereren
+
+Met het volgende commando worden de docs voor de swagger opnieuw gegenereerd:
+
+`./vendor/bin/openapi src --output public/api-doc.json --format json --pattern "*.php"`
+
+Documentatie: https://github.com/zircote/swagger-php

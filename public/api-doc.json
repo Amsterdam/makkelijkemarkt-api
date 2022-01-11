@@ -2850,6 +2850,128 @@
                 ]
             }
         },
+        "/api/1.1.0/markt/{id}/marktconfiguratie/latest": {
+            "get": {
+                "tags": [
+                    "MarktConfiguratie"
+                ],
+                "summary": "Vraag een configuratie voor een Markt op",
+                "operationId": "MarktconfiguratieGetLatest",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktConfiguratie"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "De markt bestaat niet of de markt heeft geen configuratie",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/markt/{id}/marktconfiguratie": {
+            "post": {
+                "tags": [
+                    "MarktConfiguratie"
+                ],
+                "summary": "Voeg een nieuwe marktconfiguratie voor een markt toe",
+                "operationId": "MarktconfiguratiePostByMarktId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarktConfiguratie"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Er is foutieve input gegeven.",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "De markt bestaat niet",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/1.1.0/markt/": {
             "get": {
                 "tags": [
@@ -6698,6 +6820,44 @@
                 },
                 "type": "object"
             },
+            "MarktConfiguratie": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "14"
+                    },
+                    "markt_id": {
+                        "type": "integer",
+                        "example": "101"
+                    },
+                    "geografie": {
+                        "type": "string",
+                        "example": "{\"obstakels\": [{\"kraamA\": \"8\",\"kraamB\": \"9\",\"obstakel\": [\"bankje\"]},{\"kraamA\": \"81\",\"kraamB\": \"82\",\"obstakel\": [\"bankje\"]}]}"
+                    },
+                    "locaties": {
+                        "type": "string",
+                        "example": "[{\"plaatsId\": \"1\",\"branches\": [\"bak\"]},{\"plaatsId\": \"2\",\"branches\": [\"bak\"]}]"
+                    },
+                    "marktOpstelling": {
+                        "type": "string",
+                        "example": "{\"rows\": [[\"1\",\"2\",\"3\"],[\"4\"],[\"7\",\"8\"]]}"
+                    },
+                    "paginas": {
+                        "type": "string",
+                        "example": "[{\"title\": \"Markt 1\", \"indelingslijstGroup\": [{\"class\": \"block-left\", \"title\": \"Rij 1\", \"landmarkTop\": \"Kinkerstraat\", \"landmarkBottom\": \"Bellamystraat\", \"plaatsList\": [\"49\", \"48\", \"45\", \"44\", \"43\", \"41\", \"40\", \"39\", \"38\", \"37\", \"35\", \"34\", \"33\", \"32\", \"29\", \"28\", \"27\", \"26\", \"25\"]}, {\"class\": \"block-right\", \"title\": \"Rij 1\", \"landmarkTop\": \"Kinkerstraat\", \"landmarkBottom\": \"Bellamystraat\", \"plaatsList\": [\"57\", \"58\", \"59\", \"60\", \"61\", \"62\", \"64\", \"65\", \"66\", \"67\", \"68\", \"69\", \"70\", \"71\", \"74\", \"76\", \"77\", \"80\", \"81\", \"82\", \"83\", \"84\", \"85\", \"86\"]}]}, {\"title\": \"Markt 2\", \"indelingslijstGroup\": [{\"class\": \"block-left\", \"title\": \"Rij 2\", \"landmarkTop\": \"Bellamystraat\", \"landmarkBottom\": \"\", \"plaatsList\": [\"19\", \"18\", \"17\", \"16\", \"14\", \"9\", \"8\", \"7\", \"4\", \"3\", \"2\", \"1\"]}, {\"class\": \"block-right\", \"title\": \"Rij 2\", \"landmarkTop\": \"Bellamystraat\", \"landmarkBottom\": \"\", \"plaatsList\": [\"90\", \"91\", \"92\", \"93\", \"94\", \"95\", \"96\", \"97\"]}, {\"class\": \"block-left\", \"title\": \"Rij 3\", \"landmarkTop\": \"Borgerstraat\", \"landmarkBottom\": \"\", \"plaatsList\": [\"112\", \"111\"]}, {\"class\": \"block-right\", \"title\": \"Rij 3\", \"landmarkTop\": \"Borgerstraat\", \"landmarkBottom\": \"\", \"plaatsList\": [\"106\", \"105\", \"55\", \"56\"]}]}]"
+                    },
+                    "branches": {
+                        "type": "string",
+                        "example": "[{\"brancheId\": \"101-agf\",\"verplicht\": true,\"maximumPlaatsen\": 19},{\"brancheId\": \"103-brood-banket\",\"verplicht\": true,\"maximumPlaatsen\": 3}]"
+                    },
+                    "aanmaakDatumtijd": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-07 16:52:00.000"
+                    }
+                },
+                "type": "object"
+            },
             "MarktVoorkeur": {
                 "type": "object"
             },
@@ -6932,6 +7092,9 @@
         },
         {
             "name": "Login"
+        },
+        {
+            "name": "MarktConfiguratie"
         },
         {
             "name": "Markt"
