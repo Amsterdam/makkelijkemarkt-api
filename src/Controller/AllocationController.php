@@ -94,16 +94,8 @@ class AllocationController extends AbstractController
             $branche = $this->brancheRepository->findOneByAfkorting("000-EMPTY");
         }
 
-        if ($parentBrancheId == 'bak') {
-            $isBak = true;
-        } else {
-            $isBak = false;
-        }
-        if (isset($inrichting) > 0 && in_array('eigen-materieel', $inrichting) ) {
-            $hasInrichting = true;
-        } else {
-            $hasInrichting = false;
-        }
+        $isBak = $parentBrancheId === 'bak';
+        $hasInrichting = is_array($inrichting) && in_array('eigen-materieel', $inrichting);
 
         if ($isAllocated){
             if ( isset($plaatsen) ) {
@@ -257,14 +249,23 @@ class AllocationController extends AbstractController
                 ));
             }
         } catch (Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $e->getMessage(), 'data' => $data], Response::HTTP_BAD_REQUEST);
         }
 
         foreach ($allocations as $allocation) {
-            $this->entityManager->persist($allocation);
+            try {
+                $this->entityManager->persist($allocation);
+            } catch (Exception $e) {
+                return new JsonResponse(['error' => $e->getMessage(), 'data' => $allocation], Response::HTTP_BAD_REQUEST);
+
+            }
         }
 
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), 'data' => $allocations], Response::HTTP_OK);
+        }
 
         $response = $this->serializer->serialize($allocations, 'json');
 
