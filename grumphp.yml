@@ -1,0 +1,6 @@
+grumphp:
+    tasks:
+      phpcsfixer2: ~
+      #phpstan:
+        #memory_limit: "-1"
+      #phpunit: ~
