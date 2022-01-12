@@ -125,7 +125,7 @@ class Notitie
 
     public function __toString()
     {
-        return (string) $this->getId(). ') ' . substr($this->getBericht(), 0, 10);
+        return (string) $this->getId().') '.substr($this->getBericht(), 0, 10);
     }
 
     public function getId(): ?int

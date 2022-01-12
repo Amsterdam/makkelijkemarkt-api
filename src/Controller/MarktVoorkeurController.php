@@ -2,26 +2,25 @@
 
 namespace App\Controller;
 
-use App\Normalizer\EntityNormalizer;
-use App\Repository\MarktVoorkeurRepository;
-use App\Repository\MarktRepository;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use App\Entity\MarktVoorkeur;
+use App\Normalizer\EntityNormalizer;
 use App\Repository\BrancheRepository;
 use App\Repository\KoopmanRepository;
+use App\Repository\MarktRepository;
+use App\Repository\MarktVoorkeurRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
 
 class MarktVoorkeurController extends AbstractController
 {
@@ -54,8 +53,7 @@ class MarktVoorkeurController extends AbstractController
         BrancheRepository $brancheRepository,
         KoopmanRepository $koopmanRepository,
         EntityManagerInterface $entityManager
-    )
-    {
+    ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->brancheRepository = $brancheRepository;
         $this->logger = $logger;
@@ -115,67 +113,67 @@ class MarktVoorkeurController extends AbstractController
         $expectedParameters = [
             'brancheAfkorting',
             'marktAfkorting',
-            'koopmanErkenningsNummer'
+            'koopmanErkenningsNummer',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
         $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
 
-        if ( $markt === null) {
-            return new JsonResponse(['error' => "Markt not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopmanErkenningsNummer']);
 
-        if ( $koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt) !== null ){
-            return new JsonResponse(['error' => "Voorkeur already exists"], Response::HTTP_BAD_REQUEST);
+        if (null !== $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt)) {
+            return new JsonResponse(['error' => 'Voorkeur already exists'], Response::HTTP_BAD_REQUEST);
         }
 
         $branche = $this->brancheRepository->findOneByAfkorting($data['brancheAfkorting']);
 
-        if ( $branche === null) {
-            return new JsonResponse(['error' => "Branche not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $branche) {
+            return new JsonResponse(['error' => 'Branche not found'], Response::HTTP_BAD_REQUEST);
         }
 
         $marktvoorkeur = new MarktVoorkeur();
 
-        ( array_key_exists('anywhere', $data) ) ? $marktvoorkeur->setAnywhere( (bool) $data['anywhere']) : $marktvoorkeur->setAnywhere( false );
-        ( array_key_exists('minimum', $data) ) ? $marktvoorkeur->setMinimum( (int) $data['minimum']) : $marktvoorkeur->setMinimum( 1 );
-        ( array_key_exists('maximum', $data) ) ? $marktvoorkeur->setMaximum( (int) $data['maximum']) : $marktvoorkeur->setMinimum( 1 );
-        ( array_key_exists('hasInrichting', $data) ) ? $marktvoorkeur->setHasInrichting( (bool) $data['hasInrichting']) : $marktvoorkeur->setHasInrichting( false );
-        ( array_key_exists('isBak', $data) ) ? $marktvoorkeur->setIsBak((bool) $data['isBak']) : $marktvoorkeur->setIsBak( false );
+        (array_key_exists('anywhere', $data)) ? $marktvoorkeur->setAnywhere((bool) $data['anywhere']) : $marktvoorkeur->setAnywhere(false);
+        (array_key_exists('minimum', $data)) ? $marktvoorkeur->setMinimum((int) $data['minimum']) : $marktvoorkeur->setMinimum(1);
+        (array_key_exists('maximum', $data)) ? $marktvoorkeur->setMaximum((int) $data['maximum']) : $marktvoorkeur->setMinimum(1);
+        (array_key_exists('hasInrichting', $data)) ? $marktvoorkeur->setHasInrichting((bool) $data['hasInrichting']) : $marktvoorkeur->setHasInrichting(false);
+        (array_key_exists('isBak', $data)) ? $marktvoorkeur->setIsBak((bool) $data['isBak']) : $marktvoorkeur->setIsBak(false);
 
-        if ( array_key_exists('absentFrom', $data) ) {
+        if (array_key_exists('absentFrom', $data)) {
             if (strtotime($data['absentFrom'])) {
                 $absentFrom = new DateTime($data['absentFrom']);
             } else {
-                return new JsonResponse(['error' => "absentFrom is not a date"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => 'absentFrom is not a date'], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        if ( array_key_exists('absentUntil', $data) ) {
+        if (array_key_exists('absentUntil', $data)) {
             if (strtotime($data['absentUntil'])) {
                 $absentUntil = new DateTime($data['absentUntil']);
             } else {
-                return new JsonResponse(['error' => "absentUntil is not a date"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => 'absentUntil is not a date'], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        if ( array_key_exists('absentFrom', $data) &&  array_key_exists('absentUntil', $data) && $absentFrom > $absentUntil ) {
-            return new JsonResponse(['error' => "absentUntil is before absentFrom"], Response::HTTP_BAD_REQUEST);
+        if (array_key_exists('absentFrom', $data) && array_key_exists('absentUntil', $data) && $absentFrom > $absentUntil) {
+            return new JsonResponse(['error' => 'absentUntil is before absentFrom'], Response::HTTP_BAD_REQUEST);
         }
 
-        ( array_key_exists('absentFrom', $data) ) ? $marktvoorkeur->setAbsentFrom( $absentFrom ) : $marktvoorkeur->setAbsentFrom( null );
-        ( array_key_exists('absentUntil', $data) ) ? $marktvoorkeur->setAbsentFrom( $absentUntil ) : $marktvoorkeur->setAbsentUntil( null );
+        (array_key_exists('absentFrom', $data)) ? $marktvoorkeur->setAbsentFrom($absentFrom) : $marktvoorkeur->setAbsentFrom(null);
+        (array_key_exists('absentUntil', $data)) ? $marktvoorkeur->setAbsentFrom($absentUntil) : $marktvoorkeur->setAbsentUntil(null);
 
         $marktvoorkeur->setBranche($branche);
         $marktvoorkeur->setMarkt($markt);
@@ -188,7 +186,6 @@ class MarktVoorkeurController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Get(
@@ -216,17 +213,16 @@ class MarktVoorkeurController extends AbstractController
     {
         $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
-        if ( $markt === null ) {
+        if (null === $markt) {
             return new JsonResponse(['error' => 'Markt not found.'], Response::HTTP_BAD_REQUEST);
         }
 
         $marktVoorkeuren = $this->marktVoorkeurRepository->findByMarkt($markt);
 
-        $response = $this->serializer->serialize($marktVoorkeuren, 'json' );
+        $response = $this->serializer->serialize($marktVoorkeuren, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Get(
@@ -254,17 +250,16 @@ class MarktVoorkeurController extends AbstractController
     {
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
-        if ( $koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
         $marktVoorkeuren = $this->marktVoorkeurRepository->findByKoopman($koopman);
 
-        $response = $this->serializer->serialize($marktVoorkeuren, 'json' );
+        $response = $this->serializer->serialize($marktVoorkeuren, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Get(
@@ -291,30 +286,28 @@ class MarktVoorkeurController extends AbstractController
      */
     public function getByMarktAfkortingAndKoopmanErkenningsNummer(string $marktAfkorting, string $koopmanErkenningsNummer): Response
     {
-
         $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
-        if ( $markt === null ) {
+        if (null === $markt) {
             return new JsonResponse(['error' => 'Markt not found.'], Response::HTTP_NOT_FOUND);
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
-        if ( $koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
         $marktVoorkeur = $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
 
-        if ( $marktVoorkeur === null ){
+        if (null === $marktVoorkeur) {
             return new JsonResponse(['error' => "Voorkeur doesn't exist"], Response::HTTP_BAD_REQUEST);
         }
 
-        $response = $this->serializer->serialize($marktVoorkeur, 'json' );
+        $response = $this->serializer->serialize($marktVoorkeur, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Put(
@@ -372,64 +365,64 @@ class MarktVoorkeurController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
         $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
-        if ( $markt === null ) {
+        if (null === $markt) {
             return new JsonResponse(['error' => 'Markt not found.'], Response::HTTP_NOT_FOUND);
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
-        if ( $koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $marktvoorkeur = $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt( $koopman, $markt );
+        $marktvoorkeur = $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
 
-        if ( $marktvoorkeur === null ){
+        if (null === $marktvoorkeur) {
             return new JsonResponse(['error' => "Voorkeur doesn't exist"], Response::HTTP_BAD_REQUEST);
         }
 
         $branche = $this->brancheRepository->findOneByAfkorting($data['brancheAfkorting']);
 
-        if ($branche === null) {
-            return new JsonResponse(['error' => "Branche not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $branche) {
+            return new JsonResponse(['error' => 'Branche not found'], Response::HTTP_BAD_REQUEST);
         } else {
             $marktvoorkeur->setBranche($branche);
         }
 
-        ( array_key_exists('anywhere', $data) ) ? $marktvoorkeur->setAnywhere( (bool) $data['anywhere']) : $marktvoorkeur->setAnywhere( false );
-        ( array_key_exists('minimum', $data) ) ? $marktvoorkeur->setMinimum( (int) $data['minimum']) : $marktvoorkeur->setMinimum( 1 );
-        ( array_key_exists('maximum', $data) ) ? $marktvoorkeur->setMaximum( (int) $data['maximum']) : $marktvoorkeur->setMinimum( 1 );
-        ( array_key_exists('hasInrichting', $data) ) ? $marktvoorkeur->setHasInrichting( (bool) $data['hasInrichting']) : $marktvoorkeur->setHasInrichting( false );
-        ( array_key_exists('isBak', $data) ) ? $marktvoorkeur->setIsBak((bool) $data['isBak']) : $marktvoorkeur->setIsBak( false );
+        (array_key_exists('anywhere', $data)) ? $marktvoorkeur->setAnywhere((bool) $data['anywhere']) : $marktvoorkeur->setAnywhere(false);
+        (array_key_exists('minimum', $data)) ? $marktvoorkeur->setMinimum((int) $data['minimum']) : $marktvoorkeur->setMinimum(1);
+        (array_key_exists('maximum', $data)) ? $marktvoorkeur->setMaximum((int) $data['maximum']) : $marktvoorkeur->setMinimum(1);
+        (array_key_exists('hasInrichting', $data)) ? $marktvoorkeur->setHasInrichting((bool) $data['hasInrichting']) : $marktvoorkeur->setHasInrichting(false);
+        (array_key_exists('isBak', $data)) ? $marktvoorkeur->setIsBak((bool) $data['isBak']) : $marktvoorkeur->setIsBak(false);
 
-        if ( array_key_exists('absentFrom', $data) ) {
+        if (array_key_exists('absentFrom', $data)) {
             if (strtotime($data['absentFrom'])) {
                 $absentFrom = new DateTime($data['absentFrom']);
             } else {
-                return new JsonResponse(['error' => "absentFrom is not a date"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => 'absentFrom is not a date'], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        if ( array_key_exists('absentUntil', $data) ) {
+        if (array_key_exists('absentUntil', $data)) {
             if (strtotime($data['absentUntil'])) {
                 $absentUntil = new DateTime($data['absentUntil']);
             } else {
-                return new JsonResponse(['error' => "absentUntil is not a date"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => 'absentUntil is not a date'], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        if ( array_key_exists('absentFrom', $data) &&  array_key_exists('absentUntil', $data) && $absentFrom > $absentUntil ) {
-            return new JsonResponse(['error' => "absentUntil is before absentFrom"], Response::HTTP_BAD_REQUEST);
+        if (array_key_exists('absentFrom', $data) && array_key_exists('absentUntil', $data) && $absentFrom > $absentUntil) {
+            return new JsonResponse(['error' => 'absentUntil is before absentFrom'], Response::HTTP_BAD_REQUEST);
         }
 
-        ( array_key_exists('absentFrom', $data) ) ? $marktvoorkeur->setAbsentFrom( $absentFrom ) : $marktvoorkeur->setAbsentFrom( null );
-        ( array_key_exists('absentUntil', $data) ) ? $marktvoorkeur->setAbsentFrom( $absentUntil ) : $marktvoorkeur->setAbsentUntil( null );
+        (array_key_exists('absentFrom', $data)) ? $marktvoorkeur->setAbsentFrom($absentFrom) : $marktvoorkeur->setAbsentFrom(null);
+        (array_key_exists('absentUntil', $data)) ? $marktvoorkeur->setAbsentFrom($absentUntil) : $marktvoorkeur->setAbsentUntil(null);
 
         $marktvoorkeur->setBranche($branche);
         $marktvoorkeur->setMarkt($markt);
@@ -442,7 +435,6 @@ class MarktVoorkeurController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Delete(
@@ -469,8 +461,8 @@ class MarktVoorkeurController extends AbstractController
     {
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
-        if ( $koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_NOT_FOUND);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_NOT_FOUND);
         }
 
         $marktVoorkeuren = $this->marktVoorkeurRepository->findByKoopman($koopman);

@@ -16,13 +16,13 @@ use App\Repository\BtwTariefRepository;
 final class LineairplanFactuurService
 {
     /** @var Factuur */
-    protected $factuur;
+    private $factuur;
 
     /** @var Tariefplan */
-    protected $tariefplan;
+    private $tariefplan;
 
     /** @var BtwTariefRepository */
-    protected $btwTariefRepository;
+    private $btwTariefRepository;
 
     public function __construct(BtwTariefRepository $btwTariefRepository)
     {
@@ -63,7 +63,7 @@ final class LineairplanFactuurService
     /**
      * @return array<int>
      */
-    protected function berekenMeters(Dagvergunning $dagvergunning, float $btw): array
+    private function berekenMeters(Dagvergunning $dagvergunning, float $btw): array
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -133,7 +133,7 @@ final class LineairplanFactuurService
         return [$totaalMeters, $totaalKramen];
     }
 
-    protected function berekenKrachtstroom(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenKrachtstroom(Dagvergunning $dagvergunning, float $btw): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -169,7 +169,7 @@ final class LineairplanFactuurService
         }
     }
 
-    protected function berekenElektra(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenElektra(Dagvergunning $dagvergunning, float $btw): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -205,7 +205,7 @@ final class LineairplanFactuurService
         }
     }
 
-    protected function berekenAfvaleilanden(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenAfvaleilanden(Dagvergunning $dagvergunning, float $btw): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -241,7 +241,7 @@ final class LineairplanFactuurService
         }
     }
 
-    protected function berekenEenmaligElektra(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenEenmaligElektra(Dagvergunning $dagvergunning, float $btw): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -272,7 +272,7 @@ final class LineairplanFactuurService
         }
     }
 
-    protected function berekenPromotiegelden(int $meters, int $kramen, Dagvergunning $dagvergunning): void
+    private function berekenPromotiegelden(int $meters, int $kramen, Dagvergunning $dagvergunning): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();

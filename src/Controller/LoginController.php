@@ -26,16 +26,16 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class LoginController extends AbstractController
 {
-    /** @var AccountRepository $accountRepository */
+    /** @var AccountRepository */
     private $accountRepository;
 
-    /** @var UserPasswordEncoderInterface $userPasswordEncoder */
+    /** @var UserPasswordEncoderInterface */
     private $userPasswordEncoder;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
     public function __construct(
@@ -115,7 +115,7 @@ final class LoginController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -190,7 +190,7 @@ final class LoginController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -267,7 +267,7 @@ final class LoginController extends AbstractController
     private function handleAccount(?Account $account, array $data): Response
     {
         if (null === $account) {
-            return new JsonResponse(['error' => 'Account not found, id = ' . (isset($data['accountId']) ? $data['accountId'] : $data['username'])  ], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Account not found, id = '.(isset($data['accountId']) ? $data['accountId'] : $data['username'])], Response::HTTP_NOT_FOUND);
         }
 
         if (true === $account->getLocked()) {

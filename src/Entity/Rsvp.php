@@ -76,7 +76,7 @@ class Rsvp
         return $this;
     }
 
-    public function getMarkt(): ?String
+    public function getMarkt(): ?string
     {
         return $this->markt->getAfkorting();
     }
@@ -88,7 +88,7 @@ class Rsvp
         return $this;
     }
 
-    public function getKoopman(): ?String
+    public function getKoopman(): ?string
     {
         return $this->koopman->getErkenningsnummer();
     }

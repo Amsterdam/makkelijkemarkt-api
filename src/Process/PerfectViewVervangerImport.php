@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Process;
 
 use App\Entity\Koopman;
 use App\Entity\KoopmanRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\DBAL\Query\QueryBuilder;
 use App\Utils\Logger;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\EntityManager;
 
 class PerfectViewVervangerImport
 {
@@ -26,17 +27,11 @@ class PerfectViewVervangerImport
      */
     protected $logger;
 
-    /**
-     * @param \Doctrine\DBAL\Connection $conn
-     */
     public function __construct(\Doctrine\DBAL\Connection $conn)
     {
         $this->conn = $conn;
     }
 
-    /**
-     * @param Logger $logger
-     */
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
@@ -50,12 +45,12 @@ class PerfectViewVervangerImport
         $headings = $perfectViewRecords->getHeadings();
         $requiredHeadings = ['Vervanger_NFCHEX', 'Erkenningsnummer_Vervanger', 'Erkenningsnummer_Koopman'];
         foreach ($requiredHeadings as $requiredHeading) {
-            if (in_array($requiredHeading, $headings) === false) {
-                throw new \RuntimeException('Missing column "' . $requiredHeading . '" in import file');
+            if (false === in_array($requiredHeading, $headings)) {
+                throw new \RuntimeException('Missing column "'.$requiredHeading.'" in import file');
             }
         }
 
-        $sql = "DELETE FROM vervanger WHERE id >= ?";
+        $sql = 'DELETE FROM vervanger WHERE id >= ?';
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(1, 1);
         $stmt->execute();
@@ -63,7 +58,7 @@ class PerfectViewVervangerImport
         // iterate the csv-file
         foreach ($perfectViewRecords as $pvRecord) {
             // skip empty records
-            if ($pvRecord === null || $pvRecord === '') {
+            if (null === $pvRecord || '' === $pvRecord) {
                 $this->logger->info('Skip, record is empty');
                 continue;
             }
@@ -87,24 +82,22 @@ class PerfectViewVervangerImport
             $qb->insert('vervanger');
             $qb->setValue('id', 'NEXTVAL(\'vervanger_id_seq\')'); // IMPORTANT setValue on Query Builder, not via helper!
 
-
             // set data
-            $this->setValue($qb, 'koopman_id',           \PDO::PARAM_INT,  $koopmanRecord['id']);
-            $this->setValue($qb, 'vervanger_id',         \PDO::PARAM_INT,  $vervangerRecord['id']);
-            $this->setValue($qb, 'pas_uid',              \PDO::PARAM_STR,  strtoupper($pvRecord['Vervanger_NFCHEX']));
+            $this->setValue($qb, 'koopman_id', \PDO::PARAM_INT, $koopmanRecord['id']);
+            $this->setValue($qb, 'vervanger_id', \PDO::PARAM_INT, $vervangerRecord['id']);
+            $this->setValue($qb, 'pas_uid', \PDO::PARAM_STR, strtoupper($pvRecord['Vervanger_NFCHEX']));
 
             // execute insert/update query
             $result = $this->conn->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
-
         }
 
         $this->logger->info('Alle records verwerkt');
-
     }
 
     /**
      * @param string $erkenningsNummer
-     * @return NULL|array Koopman-record
+     *
+     * @return array|null Koopman-record
      */
     protected function getKoopmanRecord($erkenningsNummer)
     {
@@ -113,26 +106,25 @@ class PerfectViewVervangerImport
 
         $stmt = $this->conn->executeQuery($qb->getSQL(), $qb->getParameters());
 
-        if ($stmt->rowCount() === 0)
+        if (0 === $stmt->rowCount()) {
             return null;
+        }
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
-     * Helper function to abstract INSERT and UPDATE
+     * Helper function to abstract INSERT and UPDATE.
      *
-     * @param \Doctrine\DBAL\Query\QueryBuilder $qb
      * @param string $field
      * @param string $value
      */
-    private function setValue(\Doctrine\DBAL\Query\QueryBuilder $qb, $field, $type = null, $value = null)
+    private function setValue(QueryBuilder $qb, $field, $type = null, $value = null)
     {
-        if ($qb->getType() === QueryBuilder::UPDATE) {
-            $qb->set($field, ':' . $field)->setParameter($field, $value, $type);
+        if (QueryBuilder::UPDATE === $qb->getType()) {
+            $qb->set($field, ':'.$field)->setParameter($field, $value, $type);
         } else {
-            $qb->setValue($field, ':' . $field)->setParameter($field, $value, $type);
+            $qb->setValue($field, ':'.$field)->setParameter($field, $value, $type);
         }
     }
-
 }

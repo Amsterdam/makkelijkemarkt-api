@@ -70,7 +70,7 @@ final class ProductRepository extends ServiceEntityRepository
         ], [
             ParameterType::STRING,
             ParameterType::STRING,
-            \Doctrine\DBAL\Connection::PARAM_INT_ARRAY
+            \Doctrine\DBAL\Connection::PARAM_INT_ARRAY,
         ]);
 
         return $stmt->fetchAll();

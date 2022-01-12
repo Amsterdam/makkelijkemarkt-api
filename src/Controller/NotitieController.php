@@ -26,16 +26,16 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class NotitieController extends AbstractController
 {
-    /** @var NotitieRepository $notitieRepository */
+    /** @var NotitieRepository */
     private $notitieRepository;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -77,7 +77,7 @@ final class NotitieController extends AbstractController
         $notitie = $this->notitieRepository->find($id);
 
         if (null === $notitie) {
-            return new JsonResponse(['error' => 'Notitie not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Notitie not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($notitie, 'json', ['groups' => $this->groups]);
@@ -117,7 +117,7 @@ final class NotitieController extends AbstractController
         $markt = $marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         /** @var int $listOffset */
@@ -200,7 +200,7 @@ final class NotitieController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -220,7 +220,7 @@ final class NotitieController extends AbstractController
         $markt = $marktRepository->find($data['marktId']);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $data['marktId']], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$data['marktId']], Response::HTTP_NOT_FOUND);
         }
 
         /** @var DateTime $dt */
@@ -298,7 +298,7 @@ final class NotitieController extends AbstractController
         $notitie = $this->notitieRepository->find($id);
 
         if (null === $notitie) {
-            return new JsonResponse(['error' => 'Notitie not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Notitie not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $data = json_decode((string) $request->getContent(), true);
@@ -314,7 +314,7 @@ final class NotitieController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -374,12 +374,12 @@ final class NotitieController extends AbstractController
         $notitie = $this->notitieRepository->find($id);
 
         if (null === $notitie) {
-            return new JsonResponse(['error' => 'Notitie not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Notitie not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         // check if already deleted
         if (true === $notitie->getVerwijderd()) {
-            return new JsonResponse(['error' => 'Notitie with id ' . $id . ' already deleted'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Notitie with id '.$id.' already deleted'], Response::HTTP_NOT_FOUND);
         }
 
         // save

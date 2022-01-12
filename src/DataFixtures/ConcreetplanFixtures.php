@@ -26,7 +26,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(5.40);
@@ -40,7 +40,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(0.00);
@@ -54,7 +54,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(3.86);
@@ -68,7 +68,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(3.86);
@@ -82,7 +82,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -96,7 +96,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(11.00);
@@ -110,7 +110,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(11.00);
@@ -124,7 +124,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.60);
@@ -138,7 +138,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.60);
@@ -152,7 +152,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.60);
@@ -166,7 +166,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.60);
@@ -180,7 +180,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.60);
@@ -194,7 +194,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -208,7 +208,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(3.86);
@@ -222,7 +222,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -236,7 +236,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.80);
@@ -250,7 +250,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -264,7 +264,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.80);
@@ -278,7 +278,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.60);
@@ -292,7 +292,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.60);
@@ -306,7 +306,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(1.06);
@@ -320,7 +320,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(0.00);
@@ -334,7 +334,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.50);
@@ -348,7 +348,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -362,7 +362,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -376,7 +376,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.65);
@@ -390,7 +390,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.65);
@@ -404,7 +404,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.55);
@@ -418,7 +418,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.55);
@@ -432,7 +432,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(4.12);
@@ -446,7 +446,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.50);
@@ -460,7 +460,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.48);
@@ -474,7 +474,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.55);
@@ -488,7 +488,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.55);
@@ -502,7 +502,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.50);
@@ -516,7 +516,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -530,7 +530,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -544,7 +544,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -558,7 +558,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.60);
@@ -572,7 +572,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan);
+        $this->addReference('concreetplan_'.$i, $concreetplan);
 
         $concreetplan = new Concreetplan();
         $concreetplan->setEenMeter(2.61);
@@ -586,7 +586,7 @@ final class ConcreetplanFixtures extends BaseFixture
 
         $manager->persist($concreetplan);
         ++$i;
-        $this->addReference('concreetplan_' . $i, $concreetplan); // i=41 - used in TariefplanFixtures!
+        $this->addReference('concreetplan_'.$i, $concreetplan); // i=41 - used in TariefplanFixtures!
 
         $manager->flush();
     }

@@ -9,6 +9,7 @@ use App\Normalizer\EntityNormalizer;
 use App\Repository\AccountRepository;
 use App\Repository\TokenRepository;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,20 +17,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @OA\Tag(name="Token")
  */
 final class TokenController extends AbstractController
 {
-    /** @var TokenRepository $tokenRepository */
+    /** @var TokenRepository */
     private $tokenRepository;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -71,7 +71,7 @@ final class TokenController extends AbstractController
         $account = $accountRepository->find($accountId);
 
         if (null === $account) {
-            return new JsonResponse(['error' => 'Account not found, id = ' . $accountId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Account not found, id = '.$accountId], Response::HTTP_NOT_FOUND);
         }
 
         /** @var int $listOffset */

@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Qipsius\TCPDFBundle\Controller\TCPDFController;
-use TCPDF;
 
 class PdfFactuurService
 {
     /**
-     * @var \TCPDF $pdf
+     * @var \TCPDF
      */
     protected $pdf;
 
@@ -36,11 +35,12 @@ class PdfFactuurService
         $this->tcpdfController = $tcpdfController;
         $this->projectDir = $projectDir;
 
-        $this->fontname = \TCPDF_FONTS::addTTFfont($this->projectDir . '/public/fonts/Avenir-Roman.ttf', 'TrueTypeUnicode', '', 96);
-        $this->fontnameBold = \TCPDF_FONTS::addTTFfont($this->projectDir . '/public/fonts/Avenir-Heavy.ttf', 'TrueTypeUnicode', '', 96);
+        $this->fontname = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/Avenir-Roman.ttf', 'TrueTypeUnicode', '', 96);
+        $this->fontnameBold = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/Avenir-Heavy.ttf', 'TrueTypeUnicode', '', 96);
     }
 
-    public function generate($koopman, $dagvergunningen) {
+    public function generate($koopman, $dagvergunningen)
+    {
         $this->pdf = $this->tcpdfController->create();
 
         // set document information
@@ -55,7 +55,7 @@ class PdfFactuurService
         $this->pdf->SetAutoPageBreak(false, 0);
 
         foreach ($dagvergunningen as $vergunning) {
-            if ($vergunning->getFactuur() !== null) {
+            if (null !== $vergunning->getFactuur()) {
                 $this->addVergunning($koopman, $vergunning);
             }
         }
@@ -63,10 +63,11 @@ class PdfFactuurService
         return $this->pdf;
     }
 
-    protected function addVergunning($koopman, $vergunning) {
+    protected function addVergunning($koopman, $vergunning)
+    {
         $this->pdf->AddPage();
         $this->pdf->Image(
-            $this->projectDir . '/public/images/GASD_1.png',
+            $this->projectDir.'/public/images/GASD_1.png',
             10,
             10,
             50
@@ -77,8 +78,7 @@ class PdfFactuurService
         $this->pdf->SetFont($this->fontname, 'b', 8);
         $this->pdf->Cell(16, 6, '', 0, 0);
         $this->pdf->Cell(164, 6, '', 0, 0);
-        
-        
+
         $this->pdf->Ln(8);
 
         $this->pdf->SetFont($this->fontnameBold, 'b', 11);
@@ -89,7 +89,7 @@ class PdfFactuurService
 
         $this->pdf->SetFont($this->fontname, 'b', 11);
         $this->pdf->Cell(16, 6, '', 0, 0);
-        $this->pdf->Cell(164, 6, $koopman->getVoorletters() . ' ' . $koopman->getTussenvoegsels() . ' ' . $koopman->getAchternaam(), 0, 1);
+        $this->pdf->Cell(164, 6, $koopman->getVoorletters().' '.$koopman->getTussenvoegsels().' '.$koopman->getAchternaam(), 0, 1);
 
         $this->pdf->SetY(10);
 
@@ -138,11 +138,11 @@ class PdfFactuurService
         $this->pdf->SetFont($this->fontnameBold, 'b', 9);
         $this->pdf->Cell(26, 6, 'Factuurnummer', 0, 0);
         $this->pdf->SetFont($this->fontname, 'b', 9);
-        $this->pdf->Cell(26, 6, 'mm' . $vergunning->getFactuur()->getId(), 0, 0);
+        $this->pdf->Cell(26, 6, 'mm'.$vergunning->getFactuur()->getId(), 0, 0);
         $this->pdf->SetFont($this->fontnameBold, 'b', 9);
         $this->pdf->Cell(26, 6, 'Factuurdatum', 0, 0);
         $this->pdf->SetFont($this->fontname, 'b', 9);
-        $dag = implode('-',array_reverse(explode('-',$vergunning->getDag()->format('d-m-Y'))));
+        $dag = implode('-', array_reverse(explode('-', $vergunning->getDag()->format('d-m-Y'))));
         $this->pdf->Cell(26, 6, $dag, 0, 1);
 
         $this->pdf->Cell(16, 6, '', 0, 0);
@@ -153,24 +153,23 @@ class PdfFactuurService
         $this->pdf->SetFont($this->fontname, 'b', 9);
 
         $this->pdf->Cell(16, 6, '', 0, 0);
-        $this->pdf->Cell(164, 6, 'Markt: ' . $vergunning->getMarkt()->getNaam(), '', 1);
-
+        $this->pdf->Cell(164, 6, 'Markt: '.$vergunning->getMarkt()->getNaam(), '', 1);
 
         $btwTotaal = [];
-        $btwOver   = [];
+        $btwOver = [];
 
         foreach ($vergunning->getFactuur()->getProducten() as $product) {
             $this->pdf->Cell(16, 6, '', 0, 0);
-            $btwText = $product->getBtwHoog() > 0 ? '. excl. ' . $product->getBtwHoog() . '% BTW' : '';
-            $this->pdf->Cell(144, 6, $product->getAantal() . ' maal ' . $product->getNaam() . $btwText , '', 0);
-            $this->pdf->Cell(20, 6, number_format($product->getAantal() * $product->getBedrag(),2), 0, 0, 'R');
+            $btwText = $product->getBtwHoog() > 0 ? '. excl. '.$product->getBtwHoog().'% BTW' : '';
+            $this->pdf->Cell(144, 6, $product->getAantal().' maal '.$product->getNaam().$btwText, '', 0);
+            $this->pdf->Cell(20, 6, number_format($product->getAantal() * $product->getBedrag(), 2), 0, 0, 'R');
             if (!isset($btwTotaal[$product->getBtwHoog()])) {
                 $btwTotaal[$product->getBtwHoog()] = 0;
                 $btwOver[$product->getBtwHoog()] = 0;
             }
 
-            $btwTotaal[$product->getBtwHoog()] += number_format($product->getAantal() * $product->getBedrag() * ($product->getBtwHoog() / 100),2);
-            $btwOver[$product->getBtwHoog()] += number_format($product->getAantal() * $product->getBedrag(),2);
+            $btwTotaal[$product->getBtwHoog()] += number_format($product->getAantal() * $product->getBedrag() * ($product->getBtwHoog() / 100), 2);
+            $btwOver[$product->getBtwHoog()] += number_format($product->getAantal() * $product->getBedrag(), 2);
 
             $this->pdf->Ln(5);
         }
@@ -183,8 +182,8 @@ class PdfFactuurService
         $this->pdf->Ln(5);
         foreach ($btwTotaal as $key => $value) {
             $this->pdf->Cell(98, 6, '', 0, 0);
-            $this->pdf->Cell(41, 6, 'BTW ' . $key . '% over ' . number_format(floatval($btwOver[$key]),2), 0, 0);
-            $this->pdf->Cell(41, 6, number_format(floatval($value),2), 0, 0, 'R');
+            $this->pdf->Cell(41, 6, 'BTW '.$key.'% over '.number_format(floatval($btwOver[$key]), 2), 0, 0);
+            $this->pdf->Cell(41, 6, number_format(floatval($value), 2), 0, 0, 'R');
             $this->pdf->Ln(5);
         }
 
@@ -192,9 +191,5 @@ class PdfFactuurService
         $this->pdf->Cell(98, 6, '', 0, 0);
         $this->pdf->Cell(41, 6, 'Totaal', 'T', 0);
         $this->pdf->Cell(41, 6, $this->factuurService->getTotaal($vergunning->getFactuur()), 'T', 0, 'R');
-
-
-
-
     }
 }

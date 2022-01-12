@@ -23,24 +23,24 @@ use Doctrine\ORM\EntityManagerInterface;
 final class FactuurService
 {
     /** @var ConcreetplanFactuurService */
-    protected $concreetplanFactuurService;
+    private $concreetplanFactuurService;
 
     /** @var LineairplanFactuurService */
-    protected $lineairplanFactuurService;
+    private $lineairplanFactuurService;
 
     /** @var TariefplanRepository */
-    protected $tariefplanRepository;
+    private $tariefplanRepository;
 
     /** @var MarktRepository */
-    protected $marktRepository;
+    private $marktRepository;
 
     /** @var KoopmanRepository */
-    protected $koopmanRepository;
+    private $koopmanRepository;
 
     /** @var SollicitatieRepository */
-    protected $sollicitatieRepository;
+    private $sollicitatieRepository;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     public function __construct(
@@ -144,7 +144,7 @@ final class FactuurService
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            throw new \Exception('No markt with id ' . $marktId . ' found');
+            throw new \Exception('No markt with id '.$marktId.' found');
         }
 
         $dagvergunning->setMarkt($markt);
@@ -256,8 +256,8 @@ final class FactuurService
         $totaal = 0;
         $producten = $factuur->getProducten();
         foreach ($producten as $product) {
-            /** @var Product $product */
-            $totaal += number_format($product->getAantal() * $product->getBedrag() * ($inclusiefBtw ? ($product->getBtwHoog() / 100 + 1) : 1),2);
+            /* @var Product $product */
+            $totaal += number_format($product->getAantal() * $product->getBedrag() * ($inclusiefBtw ? ($product->getBtwHoog() / 100 + 1) : 1), 2);
         }
 
         return number_format($totaal, 2);
@@ -268,9 +268,10 @@ final class FactuurService
         $totaal = 0.00;
         $producten = $factuur->getProducten();
         foreach ($producten as $product) {
-            /** @var Product $product */
+            /* @var Product $product */
             $totaal += ($product->getAantal() * $product->getBedrag());
         }
+
         return $totaal;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Process;
@@ -6,8 +7,8 @@ namespace App\Process;
 use App\Entity\Markt;
 use App\Repository\MarktExtraDataRepository;
 use App\Repository\MarktRepository;
-use Doctrine\ORM\EntityManager;
 use App\Utils\Logger;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PerfectViewMarktImport
@@ -41,10 +42,6 @@ class PerfectViewMarktImport
      */
     protected $logger;
 
-    /**
-     * @param MarktRepository $marktRepository
-     * @param MarktExtraDataRepository $marktExtraDataRepository
-     */
     public function __construct(MarktRepository $marktRepository, MarktExtraDataRepository $marktExtraDataRepository, EntityManagerInterface $em)
     {
         $this->marktRepository = $marktRepository;
@@ -52,9 +49,6 @@ class PerfectViewMarktImport
         $this->em = $em;
     }
 
-    /**
-     * @param Logger $logger
-     */
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
@@ -68,15 +62,14 @@ class PerfectViewMarktImport
         $headings = $perfectViewRecords->getHeadings();
         $requiredHeadings = ['AFKORTING', 'MARKTNAAM', 'SOORT_MARK', 'A1_METER', 'A3_METER', 'A4_METER', 'ELEKTRA', 'KRACHTROOM'];
         foreach ($requiredHeadings as $requiredHeading) {
-            if (in_array($requiredHeading, $headings) === false) {
-                throw new \RuntimeException('Missing column "' . $requiredHeading . '" in import file');
+            if (false === in_array($requiredHeading, $headings)) {
+                throw new \RuntimeException('Missing column "'.$requiredHeading.'" in import file');
             }
         }
 
-        foreach ($perfectViewRecords as $pvRecord)
-        {
+        foreach ($perfectViewRecords as $pvRecord) {
             // skip empty records
-            if ($pvRecord === null || $pvRecord === '') {
+            if (null === $pvRecord || '' === $pvRecord) {
                 $this->logger->info('Skip, record is empty');
                 continue;
             }
@@ -85,14 +78,11 @@ class PerfectViewMarktImport
             $markt = $this->marktRepository->getByAfkorting($pvRecord['AFKORTING']);
 
             // create new markt
-            if ($markt === null)
-            {
+            if (null === $markt) {
                 $this->logger->info('Nieuwe markt, aanmaken in database', ['afkorting' => $pvRecord['AFKORTING']]);
                 $markt = new Markt();
                 $this->em->persist($markt);
-            }
-            else
-            {
+            } else {
                 $this->logger->info('Bestaande markt, bijwerken in database', ['afkorting' => $pvRecord['AFKORTING'], 'id' => $markt->getId()]);
             }
 
@@ -100,32 +90,37 @@ class PerfectViewMarktImport
             $markt->setAfkorting($pvRecord['AFKORTING']);
             $markt->setNaam($pvRecord['MARKTNAAM']);
             $markt->setSoort($this->soortMarkConversion[$pvRecord['SOORT_MARK']]);
-            $markt->setExtraMetersMogelijk($pvRecord['A1_METER'] === 'True');
-            $markt->setStandaardKraamAfmeting((($pvRecord['A3_METER'] === 'True') ? 3 : ( ($pvRecord['A4_METER'] === 'True') ? 4 : 0 )));
+            $markt->setExtraMetersMogelijk('True' === $pvRecord['A1_METER']);
+            $markt->setStandaardKraamAfmeting((('True' === $pvRecord['A3_METER']) ? 3 : (('True' === $pvRecord['A4_METER']) ? 4 : 0)));
 
             $opties = [];
-            if ($pvRecord['A3_METER'] === 'True' || $pvRecord['A3_METER'] === 'Waar')
+            if ('True' === $pvRecord['A3_METER'] || 'Waar' === $pvRecord['A3_METER']) {
                 $opties[] = '3mKramen';
-            if ($pvRecord['A4_METER'] === 'True' || $pvRecord['A4_METER'] === 'Waar')
+            }
+            if ('True' === $pvRecord['A4_METER'] || 'Waar' === $pvRecord['A4_METER']) {
                 $opties[] = '4mKramen';
-            if ($pvRecord['A1_METER'] === 'True' || $pvRecord['A1_METER'] === 'Waar')
+            }
+            if ('True' === $pvRecord['A1_METER'] || 'Waar' === $pvRecord['A1_METER']) {
                 $opties[] = 'extraMeters';
-            if ($pvRecord['KRACHTROOM'] === 'True' || $pvRecord['KRACHTROOM'] === 'Waar')
+            }
+            if ('True' === $pvRecord['KRACHTROOM'] || 'Waar' === $pvRecord['KRACHTROOM']) {
                 $opties[] = 'elektra';
-            if ($pvRecord['AFVAL'] === 'True' || $pvRecord['AFVAL'] === 'Waar')
+            }
+            if ('True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']) {
                 $opties[] = 'afvaleiland';
-            /** TODO: Zorg dat deze optie in perfectview gedefineerd wordt */
-            if ($pvRecord['AFKORTING'] === 'PEK')
+            }
+            /* TODO: Zorg dat deze optie in perfectview gedefineerd wordt */
+            if ('PEK' === $pvRecord['AFKORTING']) {
                 $opties[] = 'eenmaligElektra';
-            /** End fix */
+            }
+            /* End fix */
             $markt->setAanwezigeOpties($opties);
 
             // load additional data
             $marktExtraData = $this->marktExtraDataRepository->getByPerfectViewNumber($pvRecord['AFKORTING']);
 
             // if extra data found, attach it
-            if ($marktExtraData !== null)
-            {
+            if (null !== $marktExtraData) {
                 $this->logger->info('Extra marktdata gevonden', ['afkorting' => $pvRecord['AFKORTING']]);
                 $markt->setGeoArea($marktExtraData->getGeoArea());
                 $markt->setMarktdagen($marktExtraData->getMarktdagen());

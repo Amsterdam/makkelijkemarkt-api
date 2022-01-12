@@ -72,11 +72,11 @@ final class MarktRepository extends ServiceEntityRepository
         $stmt = $conn->executeQuery($sql, [
             $dagStart,
             $dagEind,
-            $marktIds
+            $marktIds,
         ], [
             ParameterType::STRING,
             ParameterType::STRING,
-            \Doctrine\DBAL\Connection::PARAM_INT_ARRAY
+            \Doctrine\DBAL\Connection::PARAM_INT_ARRAY,
         ]);
 
         return $stmt->fetchAll();

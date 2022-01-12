@@ -41,7 +41,7 @@ final class DefaultController extends AbstractController
                 'env' => [
                     'app_env' => $appKernel->getEnvironment(),
                     'app_debug' => $appKernel->isDebug(),
-                    'trustedProxies' => $request->getTrustedProxies()
+                    'trustedProxies' => $request->getTrustedProxies(),
                 ],
                 'request' => [
                     'clientIp' => $request->getClientIp(),
@@ -52,7 +52,7 @@ final class DefaultController extends AbstractController
                     'xForwardedPort' => isset($_SERVER['HTTP_X_FORWARDED_PORT']) ? $_SERVER['HTTP_X_FORWARDED_PORT'] : null,
                     'forwarded' => isset($_SERVER['HTTP_FORWARDED']) ? $_SERVER['HTTP_FORWARDED'] : null,
                     'https' => isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : null,
-                ]
+                ],
             ],
             Response::HTTP_OK
         );

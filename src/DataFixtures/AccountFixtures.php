@@ -14,7 +14,7 @@ final class AccountFixtures extends BaseFixture
     public const REFERENCE_USER_SENIOR = 'user_senior';
     public const REFERENCE_USER_USER = 'user_user';
 
-    /** @var UserPasswordEncoderInterface $userPasswordEncoder */
+    /** @var UserPasswordEncoderInterface */
     private $userPasswordEncoder;
 
     public function __construct(UserPasswordEncoderInterface $userPasswordEncoder)
@@ -51,7 +51,7 @@ final class AccountFixtures extends BaseFixture
             $ut = '1461067200'; // = 2016-04-19T12:00:00+00:00 in ISO 8601
 
             $account = new Account();
-            $account->setNaam($this->faker->firstName . ' ' . $this->faker->lastName);
+            $account->setNaam($this->faker->firstName.' '.$this->faker->lastName);
             $account->setEmail(sprintf('senior%d@example.local', $i));
             $account->setRole('ROLE_SENIOR');
             $account->setUsername($this->faker->unique()->username);
@@ -73,7 +73,7 @@ final class AccountFixtures extends BaseFixture
             $ut = '1461067200'; // = 2016-04-19T12:00:00+00:00 in ISO 8601
 
             $account = new Account();
-            $account->setNaam($this->faker->firstName . ' ' . $this->faker->lastName);
+            $account->setNaam($this->faker->firstName.' '.$this->faker->lastName);
             $account->setEmail(sprintf('user%d@example.local', $i));
             $account->setRole('ROLE_USER');
             $account->setUsername($this->faker->unique()->username);

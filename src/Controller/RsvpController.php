@@ -5,13 +5,13 @@ namespace App\Controller;
 use App\Entity\Rsvp;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\KoopmanRepository;
-use App\Repository\RsvpRepository;
 use App\Repository\MarktRepository;
+use App\Repository\RsvpRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use Psr\Log\LoggerInterface;
 use OpenApi\Annotations as OA;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-
 
 class RsvpController extends AbstractController
 {
@@ -46,8 +45,7 @@ class RsvpController extends AbstractController
         RsvpRepository $rsvpRepository,
         MarktRepository $marktRepository,
         KoopmanRepository $koopmanRepository
-    )
-    {
+    ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->rsvpRepository = $rsvpRepository;
@@ -55,7 +53,6 @@ class RsvpController extends AbstractController
         $this->logger = $logger;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
     }
-
 
     /**
      * @OA\Post(
@@ -102,46 +99,45 @@ class RsvpController extends AbstractController
             'marktDate',
             'attending',
             'marktAfkorting',
-            'koopmanErkenningsNummer'
+            'koopmanErkenningsNummer',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
         $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
 
-        if ( $markt === null) {
-            return new JsonResponse(['error' => "Markt not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopmanErkenningsNummer']);
 
-        if ( $koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( strtotime($data['marktDate']) )
-        {
+        if (strtotime($data['marktDate'])) {
             $marktDate = new DateTime($data['marktDate']);
         } else {
-            return new JsonResponse(['error' => "marktDate is not a date"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'marktDate is not a date'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate( $koopman, $markt, $marktDate ) !== null ){
-            return new JsonResponse(['error' => "Rsvp already exists"], Response::HTTP_BAD_REQUEST);
+        if (null !== $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate)) {
+            return new JsonResponse(['error' => 'Rsvp already exists'], Response::HTTP_BAD_REQUEST);
         }
 
         $rsvp = new Rsvp();
-        $rsvp->setMarktDate( $marktDate );
-        $rsvp->setMarkt( $markt );
-        $rsvp->setKoopman( $koopman );
-        if ( is_bool($data['attending']) ) {
+        $rsvp->setMarktDate($marktDate);
+        $rsvp->setMarkt($markt);
+        $rsvp->setKoopman($koopman);
+        if (is_bool($data['attending'])) {
             $rsvp->setAttending((bool) $data['attending']);
         } else {
-            return new JsonResponse(['error' => "attending is not a boolean"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'attending is not a boolean'], Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->persist($rsvp);
@@ -151,7 +147,6 @@ class RsvpController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Get(
@@ -184,24 +179,22 @@ class RsvpController extends AbstractController
     {
         $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
-        if ( $markt === null) {
-            return new JsonResponse(['error' => "Markt not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( strtotime($date) )
-        {
+        if (strtotime($date)) {
             $marktDate = new DateTime($date);
         } else {
-            return new JsonResponse(['error' => "Not a valid date"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
         }
 
-        $rsvp = $this->rsvpRepository->findByMarktAndDate( $markt, $marktDate );
+        $rsvp = $this->rsvpRepository->findByMarktAndDate($markt, $marktDate);
 
         $response = $this->serializer->serialize($rsvp, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Get(
@@ -234,35 +227,32 @@ class RsvpController extends AbstractController
     {
         $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
-        if ( $markt === null) {
-            return new JsonResponse(['error' => "Markt not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( strtotime($startDate) )
-        {
+        if (strtotime($startDate)) {
             $marktStartDate = new DateTime($startDate);
         } else {
-            return new JsonResponse(['error' => "StartDate is not a valid date"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'StartDate is not a valid date'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( strtotime($endDate) )
-        {
+        if (strtotime($endDate)) {
             $marktEndDate = new DateTime($endDate);
         } else {
-            return new JsonResponse(['error' => "EndDate is not a valid date"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'EndDate is not a valid date'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( $marktStartDate > $marktEndDate ) {
-            return new JsonResponse(['error' => "EndDate is before Startdate"], Response::HTTP_BAD_REQUEST);
+        if ($marktStartDate > $marktEndDate) {
+            return new JsonResponse(['error' => 'EndDate is before Startdate'], Response::HTTP_BAD_REQUEST);
         }
 
-        $rsvps = $this->rsvpRepository->findByMarktAndBetweenDates( $markt, $marktStartDate, $marktEndDate );
+        $rsvps = $this->rsvpRepository->findByMarktAndBetweenDates($markt, $marktStartDate, $marktEndDate);
 
         $response = $this->serializer->serialize($rsvps, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Put(
@@ -308,43 +298,43 @@ class RsvpController extends AbstractController
         }
 
         $expectedParameters = [
-            'attending'
+            'attending',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        $markt = $this->marktRepository->getByAfkorting( $marktAfkorting );
+        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
 
-        if ($markt === null) {
-            return new JsonResponse(['error' => "Markt not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $koopman = $this->koopmanRepository->findOneByErkenningsnummer( $koopmanErkenningsNummer );
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
-        if ($koopman === null) {
-            return new JsonResponse(['error' => "Koopman not found"], Response::HTTP_BAD_REQUEST);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
         if (strtotime($date)) {
             $marktDate = new DateTime($date);
         } else {
-            return new JsonResponse(['error' => "marktDate is not a date"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'marktDate is not a date'], Response::HTTP_BAD_REQUEST);
         }
 
         $rsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
 
-        if ($rsvp === null) {
+        if (null === $rsvp) {
             return new JsonResponse(['error' => "Rsvp doesn't exists"], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( is_bool($data['attending']) ) {
+        if (is_bool($data['attending'])) {
             $rsvp->setAttending((bool) $data['attending']);
         } else {
-            return new JsonResponse(['error' => "attending is not a boolean"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'attending is not a boolean'], Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->persist($rsvp);

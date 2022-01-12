@@ -11,7 +11,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 /**
- * Imagine resolver for Swift storage via Flysystem
+ * Imagine resolver for Swift storage via Flysystem.
  */
 class SwiftFlysystemResolver implements ResolverInterface
 {
@@ -64,20 +64,20 @@ class SwiftFlysystemResolver implements ResolverInterface
 
     protected function getHashForImagineCache(string $path, string $filter): string
     {
-        return 'imagine_swiftfly_' . md5($path . $filter);
+        return 'imagine_swiftfly_'.md5($path.$filter);
     }
 
     public function resolve($path, $filter)
     {
-        $swiftPath = '/' . $this->cacheContainer . '/' . $this->getPath($path, $filter);
-        $url = 'https://' . $this->projectId . '.' .  $this->domain . $swiftPath;
+        $swiftPath = '/'.$this->cacheContainer.'/'.$this->getPath($path, $filter);
+        $url = 'https://'.$this->projectId.'.'.$this->domain.$swiftPath;
 
         $expires = time() + (8 * 60 * 60);
         $method = 'GET';
-        $hmacBody = $method . "\n" . $expires . "\n" . $swiftPath;
+        $hmacBody = $method."\n".$expires."\n".$swiftPath;
         $secret = hash_hmac('sha1', $hmacBody, $this->swiftSecret, false);
 
-        $url .= '?temp_url_sig=' . $secret . '&temp_url_expires=' . $expires . '&inline';
+        $url .= '?temp_url_sig='.$secret.'&temp_url_expires='.$expires.'&inline';
 
         return $url;
     }
@@ -91,7 +91,7 @@ class SwiftFlysystemResolver implements ResolverInterface
             $binary->getContent(),
             ['mimetype' => $binary->getMimeType()]
         );
-        if ($result === false) {
+        if (false === $result) {
             throw new \RuntimeException('Can not save thumbnail');
         }
     }
@@ -107,6 +107,7 @@ class SwiftFlysystemResolver implements ResolverInterface
             foreach ($filters as $filter) {
                 $this->storage->deleteDir($filter);
             }
+
             return;
         }
 
@@ -119,6 +120,6 @@ class SwiftFlysystemResolver implements ResolverInterface
 
     protected function getPath($path, $filter)
     {
-        return $filter . '/' . ltrim($path, '/');
+        return $filter.'/'.ltrim($path, '/');
     }
 }

@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Command;
 
 use App\Process\PerfectViewKoopmanImport;
+use App\Utils\CsvIterator;
+use App\Utils\Logger;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Utils\Logger;
-use App\Utils\CsvIterator;
-use Symfony\Component\Console\Command\Command;
 
 class PerfectViewKoopmanImportCommand extends Command
 {
@@ -22,7 +23,8 @@ class PerfectViewKoopmanImportCommand extends Command
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
@@ -33,7 +35,8 @@ class PerfectViewKoopmanImportCommand extends Command
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Symfony\Component\Console\Command\Command::execute()
      */
     public function execute(InputInterface $input, OutputInterface $output)

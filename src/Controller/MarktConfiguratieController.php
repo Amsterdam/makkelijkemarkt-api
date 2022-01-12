@@ -31,19 +31,12 @@ class MarktConfiguratieController extends AbstractController
     private Serializer $serializer;
     private MarktConfiguratieRepository $marktConfiguratieRepository;
 
-    /**
-     * @param EntityManagerInterface $entityManager
-     * @param MarktRepository $marktRepository
-     * @param MarktConfiguratieRepository $marktConfiguratieRepository
-     * @param CacheManager $cacheManager
-     */
     public function __construct(
-        EntityManagerInterface      $entityManager,
-        MarktRepository             $marktRepository,
+        EntityManagerInterface $entityManager,
+        MarktRepository $marktRepository,
         MarktConfiguratieRepository $marktConfiguratieRepository,
-        CacheManager                $cacheManager
-    )
-    {
+        CacheManager $cacheManager
+    ) {
         $this->entityManager = $entityManager;
         $this->marktRepository = $marktRepository;
         $this->marktConfiguratieRepository = $marktConfiguratieRepository;
@@ -52,10 +45,6 @@ class MarktConfiguratieController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param int $marktId
-     * @return Response
-     *
      * @OA\Get(
      *     path="/api/1.1.0/markt/{id}/marktconfiguratie/latest",
      *     security={{"api_key": {}, "bearer": {}}},
@@ -93,15 +82,11 @@ class MarktConfiguratieController extends AbstractController
         $response = $this->serializer->serialize($marktConfiguratie, 'json');
 
         return new Response($response, Response::HTTP_OK, [
-            'Content-type' => 'application/json'
+            'Content-type' => 'application/json',
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param int $marktId
-     * @return Response
-     *
      * @OA\Post(
      *     path="/api/1.1.0/markt/{id}/marktconfiguratie",
      *     security={{"api_key": {}, "bearer": {}}},

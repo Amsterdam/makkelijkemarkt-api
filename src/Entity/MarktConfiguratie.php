@@ -35,13 +35,12 @@ class MarktConfiguratie
         self::INPUT_FIELD_LOCATIES,
         self::INPUT_FIELD_BRANCHES,
         self::INPUT_FIELD_PAGINAS,
-        self::INPUT_FIELD_MARKT
+        self::INPUT_FIELD_MARKT,
     ];
 
     /**
      * @OA\Property(example="14")
      *
-     * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -90,24 +89,22 @@ class MarktConfiguratie
     /**
      * @OA\Property(example="2022-01-07 16:52:00.000")
      *
-     * @var DateTimeInterface
      * @ORM\Column(type="datetime")
      */
     private DateTimeInterface $aanmaakDatumtijd;
 
     /**
-     * Creates a MarktConfiguratie object from Post Request in MarktConfiguratieController
+     * Creates a MarktConfiguratie object from Post Request in MarktConfiguratieController.
      *
-     * @param Request $request
-     * @param Markt $markt
      * @return static
      */
     public static function createFromPostRequest(Request $request, Markt $markt): self
     {
-        $data = json_decode((string)$request->getContent(), true);
+        $data = json_decode((string) $request->getContent(), true);
 
-        if (!$data)
-            throw new BadRequestException("Invalid input data");
+        if (!$data) {
+            throw new BadRequestException('Invalid input data');
+        }
 
         foreach (self::MANDATORY_REQUEST_FIELDS as $request_field) {
             if (!array_key_exists($request_field, $data)) {
@@ -129,17 +126,12 @@ class MarktConfiguratie
         return $marktConfiguratie;
     }
 
-
-    /**
-     * @return int
-     */
     public function getMarktId(): int
     {
         return $this->markt->getId();
     }
 
     /**
-     * @param Markt $markt
      * @return $this
      */
     public function setMarkt(Markt $markt): self
@@ -150,27 +142,20 @@ class MarktConfiguratie
     }
 
     /**
-     * Get the value of id
-     *
-     * @return  int
+     * Get the value of id.
      */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return  DateTimeInterface
-     */
     public function getAanmaakDatumtijd(): DateTimeInterface
     {
         return $this->aanmaakDatumtijd;
     }
 
     /**
-     * @param DateTimeInterface $aanmaakDatumtijd
-     *
-     * @return  self
+     * @return self
      */
     public function setAanmaakDatumtijd(DateTimeInterface $aanmaakDatumtijd): MarktConfiguratie
     {
@@ -179,17 +164,11 @@ class MarktConfiguratie
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getGeografie(): array
     {
         return $this->geografie;
     }
 
-    /**
-     * @param array $geografie
-     */
     public function setGeografie(array $geografie): self
     {
         $this->geografie = $geografie;
@@ -197,17 +176,11 @@ class MarktConfiguratie
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getLocaties(): array
     {
         return $this->locaties;
     }
 
-    /**
-     * @param array $locaties
-     */
     public function setLocaties(array $locaties): self
     {
         $this->locaties = $locaties;
@@ -215,17 +188,11 @@ class MarktConfiguratie
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMarktOpstelling(): array
     {
         return $this->marktOpstelling;
     }
 
-    /**
-     * @param array $marktOpstelling
-     */
     public function setMarktOpstelling(array $marktOpstelling): self
     {
         $this->marktOpstelling = $marktOpstelling;
@@ -233,17 +200,11 @@ class MarktConfiguratie
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getPaginas(): array
     {
         return $this->paginas;
     }
 
-    /**
-     * @param array $paginas
-     */
     public function setPaginas(array $paginas): self
     {
         $this->paginas = $paginas;
@@ -251,17 +212,11 @@ class MarktConfiguratie
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getBranches(): array
     {
         return $this->branches;
     }
 
-    /**
-     * @param array $branches
-     */
     public function setBranches(array $branches): self
     {
         $this->branches = $branches;

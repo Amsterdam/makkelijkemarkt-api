@@ -12,6 +12,7 @@ use App\Repository\SollicitatieRepository;
 use DateTime;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @OA\Tag(name="Lijst")
@@ -27,19 +27,19 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 final class SollicitatieController extends AbstractController
 {
-    /** @var MarktRepository $marktRepository */
+    /** @var MarktRepository */
     private $marktRepository;
 
-    /** @var SollicitatieRepository $sollicitatieRepository */
+    /** @var SollicitatieRepository */
     private $sollicitatieRepository;
 
     /** @var CacheManager */
     public $cacheManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -96,7 +96,7 @@ final class SollicitatieController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         /** @var array<string> $q */
@@ -143,7 +143,7 @@ final class SollicitatieController extends AbstractController
         $sollicitatie = $this->sollicitatieRepository->find($id);
 
         if (null === $sollicitatie) {
-            return new JsonResponse(['error' => 'Sollicitatie not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Sollicitatie not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
@@ -177,14 +177,14 @@ final class SollicitatieController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Sollicitatie $sollicitatie */
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, $sollicitatieNummer);
 
         if (null === $sollicitatie) {
-            return new JsonResponse(['error' => 'Sollicitatie not found, sollicitatieNummer = ' . $sollicitatieNummer], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Sollicitatie not found, sollicitatieNummer = '.$sollicitatieNummer], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
@@ -273,7 +273,7 @@ final class SollicitatieController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $sollicitaties = $this->sollicitatieRepository->findAllByMarktInPeriod($markt, $types, $startDate, $endDate);

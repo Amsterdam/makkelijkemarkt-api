@@ -16,6 +16,7 @@ use App\Repository\VergunningControleRepository;
 use DateTime;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,26 +24,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @OA\Tag(name="Rapport")
  */
 final class RapportController extends AbstractController
 {
-    /** @var DagvergunningRepository $dagvergunningRepository */
+    /** @var DagvergunningRepository */
     private $dagvergunningRepository;
 
-    /** @var KoopmanRepository $koopmanRepository */
+    /** @var KoopmanRepository */
     private $koopmanRepository;
 
     /** @var CacheManager */
     public $cacheManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -234,12 +234,12 @@ final class RapportController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (null === $$expectedParameter) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
         /** @var array<int> $marktIds */
-        if (is_string($marktIds) === true) {
+        if (true === is_string($marktIds)) {
             $marktIds = explode(',', $marktIds);
             $marktIds = array_filter($marktIds);
         }
@@ -315,8 +315,8 @@ final class RapportController extends AbstractController
         foreach ($selector as $record) {
             $dagVergunningen = $this->dagvergunningRepository->findAllByDagAndErkenningsnummer($dag, $record['erkenningsnummer']);
 
-            # Set the Factuur on the returned dagvergunningen to null since we don't use them and they cause a circular error.
-            foreach ( $dagVergunningen as $dagVergunning ) {
+            // Set the Factuur on the returned dagvergunningen to null since we don't use them and they cause a circular error.
+            foreach ($dagVergunningen as $dagVergunning) {
                 $dagVergunning->setFactuur(null);
             }
 
@@ -392,12 +392,12 @@ final class RapportController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (null === $expectedParameter) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
         /** @var array<int> $marktIds */
-        if (is_string($marktIds) === true) {
+        if (true === is_string($marktIds)) {
             $marktIds = explode(',', $marktIds);
             array_filter($marktIds);
         }
@@ -418,7 +418,7 @@ final class RapportController extends AbstractController
         $results = $marktRepository->findAllByMarktIdsInPeriod($marktIds, $dagStart, $dagEind);
 
         foreach ($results as $row) {
-            $key = $row['datum'] . '_' . $row['markt_id'];
+            $key = $row['datum'].'_'.$row['markt_id'];
             if (false === isset($rapport[$key])) {
                 $rapport[$key] = [
                     'marktId' => $row['markt_id'],
@@ -487,9 +487,9 @@ final class RapportController extends AbstractController
             }
 
             $rapport[$key]['aantalDagvergunningen'] = $rapport[$key]['aantalDagvergunningen'] + $row['aantal_dagvergunningen'];
-            $rapport[$key][$row['status_solliciatie'] . 'AantalDagvergunningen'] = $row['aantal_dagvergunningen'];
-            $rapport[$key][$row['status_solliciatie'] . 'AantalKramen'] = $row['aantal_3_meter_kramen'] + $row['aantal_4_meter_kramen'];
-            $rapport[$key][$row['status_solliciatie'] . 'AantalMeter'] = $row['totaal_aantal_meters'];
+            $rapport[$key][$row['status_solliciatie'].'AantalDagvergunningen'] = $row['aantal_dagvergunningen'];
+            $rapport[$key][$row['status_solliciatie'].'AantalKramen'] = $row['aantal_3_meter_kramen'] + $row['aantal_4_meter_kramen'];
+            $rapport[$key][$row['status_solliciatie'].'AantalMeter'] = $row['totaal_aantal_meters'];
         }
 
         foreach ($rapport as $key => $row) {
@@ -520,7 +520,7 @@ final class RapportController extends AbstractController
             $rapport[$key]['sollAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['sollAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
             $rapport[$key]['lotAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['lotAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
 
-            $rapport[$key]['totaalAantalKramen'] = $rapport[$key]['vplAantalKramen'] + $rapport[$key]['vkkAantalKramen'] + $rapport[$key]['tvplAantalKramen'] + $rapport[$key]['tvplzAantalKramen'] + $rapport[$key]['expAantalKramen'] + $rapport[$key]['expfAantalKramen']  + $rapport[$key]['sollAantalKramen'] + $rapport[$key]['lotAantalKramen'];
+            $rapport[$key]['totaalAantalKramen'] = $rapport[$key]['vplAantalKramen'] + $rapport[$key]['vkkAantalKramen'] + $rapport[$key]['tvplAantalKramen'] + $rapport[$key]['tvplzAantalKramen'] + $rapport[$key]['expAantalKramen'] + $rapport[$key]['expfAantalKramen'] + $rapport[$key]['sollAantalKramen'] + $rapport[$key]['lotAantalKramen'];
             $rapport[$key]['totaalAantalMeter'] = $rapport[$key]['vplAantalMeter'] + $rapport[$key]['vkkAantalMeter'] + $rapport[$key]['tvplAantalMeter'] + $rapport[$key]['tvplzAantalMeter'] + $rapport[$key]['expAantalMeter'] + $rapport[$key]['expfAantalMeter'] + $rapport[$key]['sollAantalMeter'] + $rapport[$key]['lotAantalMeter'];
 
             $rapport[$key]['totaalAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['totaalAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
@@ -587,7 +587,7 @@ final class RapportController extends AbstractController
 
         /** @var array<int> $marktIds */
         $marktIds = $request->query->get('marktId', []);
-        if (is_array($marktIds) === false) {
+        if (false === is_array($marktIds)) {
             $marktIds = explode(',', $marktIds);
         }
         $marktIds = array_values($marktIds);

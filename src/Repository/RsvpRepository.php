@@ -23,8 +23,8 @@ class RsvpRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Rsvp[] Returns an array of Rsvp objects
-    */
+     * @return Rsvp[] Returns an array of Rsvp objects
+     */
     public function findByMarktAndDate(Markt $markt, DateTime $date)
     {
         return $this->findBy(['markt' => $markt, 'marktDate' => $date]);
@@ -36,8 +36,8 @@ class RsvpRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Rsvp[] Returns an array of Rsvp objects
-    */
+     * @return Rsvp[] Returns an array of Rsvp objects
+     */
     public function findByMarktAndBetweenDates(Markt $markt, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this

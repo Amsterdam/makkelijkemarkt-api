@@ -136,7 +136,7 @@ class Allocation
 
     public function getDate(): ?string
     {
-        return $this->date->format("c");
+        return $this->date->format('c');
     }
 
     public function setDate(\DateTimeInterface $date): self
@@ -206,7 +206,7 @@ class Allocation
         return $this;
     }
 
-    public function getKoopman(): ?String
+    public function getKoopman(): ?string
     {
         return $this->koopman->getErkenningsnummer();
     }
@@ -218,7 +218,7 @@ class Allocation
         return $this;
     }
 
-    public function getBranche(): ?String
+    public function getBranche(): ?string
     {
         return $this->branche->getAfkorting();
     }
@@ -230,7 +230,7 @@ class Allocation
         return $this;
     }
 
-    public function getMarkt(): ?String
+    public function getMarkt(): ?string
     {
         return $this->markt->getAfkorting();
     }

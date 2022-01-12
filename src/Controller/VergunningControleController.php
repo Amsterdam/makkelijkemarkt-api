@@ -16,6 +16,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,38 +24,37 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @OA\Tag(name="VergunningControle")
  */
 final class VergunningControleController extends AbstractController
 {
-    /** @var DagvergunningRepository $dagvergunningRepository */
+    /** @var DagvergunningRepository */
     private $dagvergunningRepository;
 
-    /** @var KoopmanRepository $koopmanRepository */
+    /** @var KoopmanRepository */
     private $koopmanRepository;
 
-    /** @var SollicitatieRepository $sollicitatieRepository */
+    /** @var SollicitatieRepository */
     private $sollicitatieRepository;
 
-    /** @var VergunningControleRepository $vergunningControleRepository */
+    /** @var VergunningControleRepository */
     private $vergunningControleRepository;
 
-    /** @var FactuurService $factuurService */
+    /** @var FactuurService */
     private $factuurService;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     /** @var CacheManager */
     public $cacheManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -155,7 +155,7 @@ final class VergunningControleController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -185,7 +185,7 @@ final class VergunningControleController extends AbstractController
         $dagvergunning = $this->dagvergunningRepository->find($data['dagvergunningId']);
 
         if (null === $dagvergunning) {
-            return new JsonResponse(['error' => 'Dagvergunning not found, id = ' . $data['dagvergunningId']], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$data['dagvergunningId']], Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Account $account */
@@ -296,7 +296,7 @@ final class VergunningControleController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -327,7 +327,7 @@ final class VergunningControleController extends AbstractController
         $controle = $this->vergunningControleRepository->find($controleId);
 
         if (null === $controle) {
-            return new JsonResponse(['error' => 'VergunningControle not found, id = ' . $controleId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'VergunningControle not found, id = '.$controleId], Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Account $account */

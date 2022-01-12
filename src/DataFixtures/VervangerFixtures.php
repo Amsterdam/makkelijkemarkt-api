@@ -15,10 +15,10 @@ final class VervangerFixtures extends BaseFixture implements DependentFixtureInt
     {
         $this->createMany(10, 'vervanger', function ($i) {
             /** @var Koopman $koopman1 */
-            $koopman1 = $this->getReference('koopman_' . $i);
+            $koopman1 = $this->getReference('koopman_'.$i);
 
             /** @var Koopman $koopman2 */
-            $koopman2 = $this->getReference('koopman_' . ($i + 10));
+            $koopman2 = $this->getReference('koopman_'.($i + 10));
 
             /** @var Vervanger $vervanger */
             $vervanger = new Vervanger();

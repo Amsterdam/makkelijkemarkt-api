@@ -40,10 +40,10 @@ final class AuditController extends AbstractController
     /** @var CacheManager */
     public $cacheManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -98,7 +98,7 @@ final class AuditController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $date = new DateTime($datum);
@@ -152,7 +152,7 @@ final class AuditController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $now = new DateTime($datum);
@@ -322,7 +322,7 @@ final class AuditController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $date = new DateTime($datum);

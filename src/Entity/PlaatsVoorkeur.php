@@ -59,7 +59,7 @@ class PlaatsVoorkeur
         return $this;
     }
 
-    public function getMarkt(): ?String
+    public function getMarkt(): ?string
     {
         return $this->markt->getAfkorting();
     }
@@ -71,7 +71,7 @@ class PlaatsVoorkeur
         return $this;
     }
 
-    public function getKoopman(): ?String
+    public function getKoopman(): ?string
     {
         return $this->koopman->getErkenningsnummer();
     }

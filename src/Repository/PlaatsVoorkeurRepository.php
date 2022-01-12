@@ -22,8 +22,8 @@ class PlaatsVoorkeurRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return PlaatsVoorkeur[] Returns an array of PlaatsVoorkeur objects
-    */
+     * @return PlaatsVoorkeur[] Returns an array of PlaatsVoorkeur objects
+     */
     public function findByMarkt(Markt $markt)
     {
         return $this->findBy(['markt' => $markt]);

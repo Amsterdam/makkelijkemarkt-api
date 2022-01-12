@@ -29,7 +29,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Bijzondere Warenmarkt zon- feestdagen');
@@ -46,7 +46,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Amstelveld');
@@ -63,7 +63,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Bos en Lommerplein');
@@ -79,7 +79,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Buikslotermeerplein');
@@ -95,7 +95,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Dam Boekenmarkt');
@@ -111,7 +111,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Dappermarkt');
@@ -128,7 +128,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Ganzenhoef');
@@ -144,7 +144,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Haarlemmerplein');
@@ -160,7 +160,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Nieuwmarkt Antiek en Curiosa');
@@ -176,7 +176,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Jaarmarkt maandag t/m zaterdag');
@@ -192,7 +192,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Jaarmarkt zon-en feestdagen');
@@ -208,7 +208,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Noordermarkt maandag');
@@ -224,7 +224,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Lindengracht');
@@ -240,7 +240,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Spui Boekenmarkt');
@@ -257,7 +257,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Stadionplein (Marathonmarkt)');
@@ -273,7 +273,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('GEEN');
@@ -289,7 +289,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Nieuwmarkt');
@@ -305,7 +305,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Nieuwmarkt Bioversmarkt');
@@ -321,7 +321,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Noordermarkt Boerenmarkt');
@@ -337,7 +337,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Noordermarkt Zaterdag');
@@ -353,7 +353,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Reigersbos');
@@ -369,7 +369,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Seizoensmarkt');
@@ -385,7 +385,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Spui Kunstmarkt');
@@ -401,7 +401,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Thorbeckeplein Kunstmarkt');
@@ -417,7 +417,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Waterlooplein');
@@ -433,7 +433,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Westerstraat');
@@ -449,7 +449,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Tussen Meer');
@@ -465,7 +465,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Ten Katestraat');
@@ -481,7 +481,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Eesterenlaan Biomarkt');
@@ -497,7 +497,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Pekstraat');
@@ -513,7 +513,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Stadionpleinmarkt');
@@ -529,7 +529,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Lambertus Zijlplein');
@@ -545,7 +545,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Kraaiennest');
@@ -561,7 +561,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Anton de Komplein');
@@ -577,7 +577,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Amstel Boekenmarkt');
@@ -593,7 +593,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam("Plein '40 - '45");
@@ -609,7 +609,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $markt = new Markt();
         $markt->setNaam('Albert Cuyp');
@@ -627,7 +627,7 @@ final class MarktFixtures extends BaseFixture
 
         $manager->persist($markt);
         ++$i;
-        $this->addReference('markt_' . $i, $markt);
+        $this->addReference('markt_'.$i, $markt);
 
         $manager->flush();
     }

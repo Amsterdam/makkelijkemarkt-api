@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Utils;
@@ -27,73 +28,81 @@ class Logger implements LoggerInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::emergency()
      */
-    public function emergency($message, array $context = array())
+    public function emergency($message, array $context = [])
     {
         return $this->log('emergency', $message, $context);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::alert()
      */
-    public function alert($message, array $context = array())
+    public function alert($message, array $context = [])
     {
         return $this->log('alert', $message, $context);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::critical()
      */
-    public function critical($message, array $context = array())
+    public function critical($message, array $context = [])
     {
         return $this->log('critical', $message, $context);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::error()
      */
-    public function error($message, array $context = array())
+    public function error($message, array $context = [])
     {
         return $this->log('error', $message, $context);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::warning()
      */
-    public function warning($message, array $context = array())
+    public function warning($message, array $context = [])
     {
         return $this->log('warning', $message, $context);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::notice()
      */
-    public function notice($message, array $context = array())
+    public function notice($message, array $context = [])
     {
         return $this->log('notice', $message, $context);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::info()
      */
-    public function info($message, array $context = array())
+    public function info($message, array $context = [])
     {
         return $this->log('info', $message, $context);
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Psr\Log\LoggerInterface::debug()
      */
-    public function debug($message, array $context = array())
+    public function debug($message, array $context = [])
     {
         return $this->log('debug', $message, $context);
     }
@@ -101,42 +110,41 @@ class Logger implements LoggerInterface
     /**
      * @param string $level
      * @param string $message
-     * @param array $context
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
-        foreach ($this->outputStreams as $outputStream)
-        {
-            switch (true)
-            {
-                case ($outputStream === 'stdout'):
-                case ($outputStream === 'STDOUT'):
-                    echo '[' . $level . '] ' . $message . ' : ' . json_encode($context) . PHP_EOL;
+        foreach ($this->outputStreams as $outputStream) {
+            switch (true) {
+                case 'stdout' === $outputStream:
+                case 'STDOUT' === $outputStream:
+                    echo '['.$level.'] '.$message.' : '.json_encode($context).PHP_EOL;
                     break;
-                case ($outputStream === 'store'):
+                case 'store' === $outputStream:
                     $this->store[] = ['level' => $level, 'message' => $message, 'context' => json_encode($context)];
                     break;
-                case ($outputStream instanceof LoggerInterface):
+                case $outputStream instanceof LoggerInterface:
                     $outputStream->log($level, $message, $context);
                     break;
-                case ($outputStream instanceof OutputInterface):
-                    switch ($level)
-                    {
+                case $outputStream instanceof OutputInterface:
+                    switch ($level) {
                         case 'emergency':
                         case 'alert':
                         case 'critical':
                         case 'error':
-                            $outputStream->writeln('<error>' . $level . '</error>');
+                            $outputStream->writeln('<error>'.$level.'</error>');
+                            // no break
                         case 'warning':
                         case 'notice':
-                            $outputStream->writeln('<notice>' . $level . '</notice>');
+                            $outputStream->writeln('<notice>'.$level.'</notice>');
+                            // no break
                         case 'info':
                         default:
-                            $outputStream->writeln('<info>' . $level . '</info>');
+                            $outputStream->writeln('<info>'.$level.'</info>');
                     }
                     $outputStream->writeln($message);
-                    if ($context !== [])
+                    if ([] !== $context) {
                         $outputStream->writeln(json_encode($context));
+                    }
                     break;
             }
         }

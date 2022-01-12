@@ -21,7 +21,7 @@ final class NotitieFixtures extends BaseFixture implements DependentFixtureInter
             /* @var int $day */
             $day = 0;
             $day += $i;
-            $date = date('Y-m-') . sprintf('%02d', $day);
+            $date = date('Y-m-').sprintf('%02d', $day);
 
             /** @var DateTime $dt */
             $dt = new DateTime($date);
@@ -45,7 +45,7 @@ final class NotitieFixtures extends BaseFixture implements DependentFixtureInter
             /* @var int $day */
             $day = 0;
             $day += $i;
-            $date = date('Y-m-') . sprintf('%02d', $day);
+            $date = date('Y-m-').sprintf('%02d', $day);
 
             /** @var DateTime $dt */
             $dt = new DateTime($date);

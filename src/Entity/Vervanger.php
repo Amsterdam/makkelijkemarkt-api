@@ -151,7 +151,7 @@ class Vervanger
     {
         return $this->id;
     }
-    
+
     public function getVervangerId(): ?int
     {
         $result = null;

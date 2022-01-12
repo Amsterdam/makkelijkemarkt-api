@@ -27,19 +27,19 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class KoopmanController extends AbstractController
 {
-    /** @var KoopmanRepository $koopmanRepository */
+    /** @var KoopmanRepository */
     private $koopmanRepository;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     /** @var CacheManager */
     public $cacheManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -148,7 +148,7 @@ final class KoopmanController extends AbstractController
         $koopman = $this->koopmanRepository->find($id);
 
         if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Koopman not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $groups = ['koopman', 'vervanger', 'simpleSollicitatie', 'simpleMarkt'];
@@ -188,7 +188,7 @@ final class KoopmanController extends AbstractController
         $koopman = $this->koopmanRepository->findOneBy(['erkenningsnummer' => $erkenningsnummer]);
 
         if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found, erkenningsnummer = ' . $erkenningsnummer], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Koopman not found, erkenningsnummer = '.$erkenningsnummer], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($koopman, 'json', ['groups' => $this->groups]);
@@ -234,7 +234,7 @@ final class KoopmanController extends AbstractController
             $vervanger = $vervangerRepository->findOneBy(['pasUid' => $pasUid]);
 
             if (null === $vervanger) {
-                return new JsonResponse(['error' => 'Koopman not found, pasUid = ' . $pasUid], Response::HTTP_NOT_FOUND);
+                return new JsonResponse(['error' => 'Koopman not found, pasUid = '.$pasUid], Response::HTTP_NOT_FOUND);
             }
 
             // convert vervangersvermelding in koopman
@@ -277,7 +277,7 @@ final class KoopmanController extends AbstractController
         $koopman = $this->koopmanRepository->findOneBySollicitatienummer($marktId, $sollicitatieNummer);
 
         if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found, sollicitatieNummer = ' . $sollicitatieNummer . ' and marktId ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Koopman not found, sollicitatieNummer = '.$sollicitatieNummer.' and marktId '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($koopman, 'json', ['groups' => $this->groups]);
@@ -314,7 +314,7 @@ final class KoopmanController extends AbstractController
         $koopman = $this->koopmanRepository->find($id);
 
         if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Koopman not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var DateTime $date */

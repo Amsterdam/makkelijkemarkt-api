@@ -373,7 +373,7 @@ class Markt
      */
     public function getMarktDagen(): array
     {
-        if (null === $this->marktDagen || "" === $this->marktDagen) {
+        if (null === $this->marktDagen || '' === $this->marktDagen) {
             return [];
         }
 
@@ -387,7 +387,7 @@ class Markt
     {
         foreach ($marktDagen as $marktDag) {
             if (false === in_array($marktDag, ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'])) {
-                throw new \InvalidArgumentException('Invalid marktDag supplied "' . $marktDag . '" only ma, di, wo, do, vr, za, zo are allowed');
+                throw new \InvalidArgumentException('Invalid marktDag supplied "'.$marktDag.'" only ma, di, wo, do, vr, za, zo are allowed');
             }
         }
 

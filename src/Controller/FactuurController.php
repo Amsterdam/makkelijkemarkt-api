@@ -15,29 +15,29 @@ use App\Repository\FactuurRepository;
 use App\Repository\MarktRepository;
 use App\Service\FactuurService;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @OA\Tag(name="Factuur")
  */
 final class FactuurController extends AbstractController
 {
-    /** @var FactuurRepository $factuurRepository */
+    /** @var FactuurRepository */
     private $factuurRepository;
 
-    /** @var FactuurService $factuurService */
+    /** @var FactuurService */
     private $factuurService;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -79,7 +79,7 @@ final class FactuurController extends AbstractController
         $dagvergunning = $dagvergunningRepository->find($dagvergunningId);
 
         if (null === $dagvergunning) {
-            return new JsonResponse(['error' => 'Dagvergunning not found, id = ' . $dagvergunningId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$dagvergunningId], Response::HTTP_NOT_FOUND);
         }
 
         $factuur = $this->factuurService->createFactuur($dagvergunning);
@@ -183,7 +183,7 @@ final class FactuurController extends AbstractController
         $markt = $marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         /** @var Factuur[] $facturen */

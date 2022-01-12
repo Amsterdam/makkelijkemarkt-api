@@ -22,10 +22,10 @@ final class FactuurReportCommand extends Command
 {
     protected static $defaultName = 'app:factuur:report';
 
-    /** @var FactuurRepository $factuurRepository */
+    /** @var FactuurRepository */
     private $factuurRepository;
 
-    /** @var MarktRepository $marktRepository */
+    /** @var MarktRepository */
     private $marktRepository;
 
     public function __construct(FactuurRepository $factuurRepository, MarktRepository $marktRepository)

@@ -26,7 +26,7 @@ class ApiTestCase extends KernelTestCase
     /** @var Generator */
     protected $faker;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     protected $entityManager;
 
     /** @var array<string> */
@@ -60,7 +60,7 @@ class ApiTestCase extends KernelTestCase
 
         $this->headers = [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $token->getUuid(),
+            'Authorization' => 'Bearer '.$token->getUuid(),
             'MmAppKey' => $_SERVER['MM_APP_KEY'],
         ];
     }

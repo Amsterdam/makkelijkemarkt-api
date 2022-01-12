@@ -17,10 +17,10 @@ final class FactuurRepairCommand extends Command
 {
     protected static $defaultName = 'app:factuur:repair';
 
-    /** @var DagvergunningRepository $dagvergunningRepository */
+    /** @var DagvergunningRepository */
     private $dagvergunningRepository;
 
-    /** @var FactuurService $factuurService */
+    /** @var FactuurService */
     private $factuurService;
 
     public function __construct(DagvergunningRepository $dagvergunningRepository, FactuurService $factuurService)
@@ -54,30 +54,30 @@ final class FactuurRepairCommand extends Command
                 /** @var float $ts */
                 $ts = microtime(true);
 
-                $io->title('Processing id ' . $dagvergunning->getId());
+                $io->title('Processing id '.$dagvergunning->getId());
 
                 /** @var ?Factuur $factuur */
                 $factuur = $this->factuurService->createFactuur($dagvergunning);
 
                 $seconds = microtime(true) - $ts;
-                $io->text('Create factuur in ' . $seconds . ' seconds');
+                $io->text('Create factuur in '.$seconds.' seconds');
 
                 if (null !== $factuur) {
                     $this->factuurService->saveFactuur($factuur);
 
                     $seconds = microtime(true) - $ts;
-                    $io->text('Save factuur   in ' . $seconds . ' seconds');
+                    $io->text('Save factuur   in '.$seconds.' seconds');
                 } else {
                     $io->warning('No Factuur');
                 }
 
                 $seconds = microtime(true) - $ts;
-                $io->text('Finished       in ' . $seconds . ' seconds');
+                $io->text('Finished       in '.$seconds.' seconds');
                 ++$i;
             }
         }
 
-        $io->success('Count ' . $i);
+        $io->success('Count '.$i);
 
         return 0;
     }

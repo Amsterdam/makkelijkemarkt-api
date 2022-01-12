@@ -43,36 +43,36 @@ final class KoopmanRepository extends ServiceEntityRepository
                 $qb->expr()->like('koopman.email', ':freeSearch_email'),
                 $qb->expr()->like('koopman.erkenningsnummer', ':freeSearch_erkenningsnummer')
             ));
-            $qb->setParameter('freeSearch_voorletters', '%' . $q['freeSearch'] . '%');
-            $qb->setParameter('freeSearch_achternaam', '%' . $q['freeSearch'] . '%');
-            $qb->setParameter('freeSearch_telefoon', '%' . $q['freeSearch'] . '%');
-            $qb->setParameter('freeSearch_email', '%' . $q['freeSearch'] . '%');
-            $qb->setParameter('freeSearch_erkenningsnummer', '%' . $q['freeSearch'] . '%');
+            $qb->setParameter('freeSearch_voorletters', '%'.$q['freeSearch'].'%');
+            $qb->setParameter('freeSearch_achternaam', '%'.$q['freeSearch'].'%');
+            $qb->setParameter('freeSearch_telefoon', '%'.$q['freeSearch'].'%');
+            $qb->setParameter('freeSearch_email', '%'.$q['freeSearch'].'%');
+            $qb->setParameter('freeSearch_erkenningsnummer', '%'.$q['freeSearch'].'%');
         }
 
         if (true === isset($q['voorletters']) && null !== $q['voorletters'] && '' !== $q['voorletters']) {
             $qb->andWhere('LOWER(koopman.voorletters) LIKE LOWER(:voorletters)');
-            $qb->setParameter('voorletters', '%' . $q['voorletters'] . '%');
+            $qb->setParameter('voorletters', '%'.$q['voorletters'].'%');
         }
 
         if (true === isset($q['achternaam']) && null !== $q['achternaam'] && '' !== $q['achternaam']) {
             $qb->andWhere('LOWER(koopman.achternaam) LIKE LOWER(:achternaam)');
-            $qb->setParameter('achternaam', '%' . $q['achternaam'] . '%');
+            $qb->setParameter('achternaam', '%'.$q['achternaam'].'%');
         }
 
         if (true === isset($q['telefoon']) && null !== $q['telefoon'] && '' !== $q['telefoon']) {
             $qb->andWhere('koopman.telefoon LIKE :telefoon');
-            $qb->setParameter('telefoon', '%' . $q['telefoon'] . '%');
+            $qb->setParameter('telefoon', '%'.$q['telefoon'].'%');
         }
 
         if (true === isset($q['email']) && null !== $q['email'] && '' !== $q['email']) {
             $qb->andWhere('koopman.email LIKE :email');
-            $qb->setParameter('email', '%' . $q['email'] . '%');
+            $qb->setParameter('email', '%'.$q['email'].'%');
         }
 
         if (true === isset($q['erkenningsnummer']) && null !== $q['erkenningsnummer'] && '' !== $q['erkenningsnummer']) {
             $qb->andWhere('koopman.erkenningsnummer LIKE :erkenningsnummer');
-            $qb->setParameter('erkenningsnummer', '%' . $q['erkenningsnummer'] . '%');
+            $qb->setParameter('erkenningsnummer', '%'.$q['erkenningsnummer'].'%');
         }
 
         if (true === isset($q['status']) && null !== $q['status'] && '' !== $q['status'] && -1 !== $q['status'] && '-1' !== $q['status']) {
@@ -149,6 +149,7 @@ final class KoopmanRepository extends ServiceEntityRepository
         $qb->setParameter('doorgehaald', false);
         $qb->andWhere('dagvergunning.dag = :date');
         $qb->setParameter('date', $dag->format('Y-m-d'));
+
         return $qb->getQuery()->execute();
     }
 }

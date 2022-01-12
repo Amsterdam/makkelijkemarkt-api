@@ -31,5 +31,4 @@ class AllocationRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['markt' => $markt, 'koopman' => $koopman, 'date' => $date]);
     }
-
 }

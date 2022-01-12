@@ -26,19 +26,19 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class MarktController extends AbstractController
 {
-    /** @var MarktRepository $marktRepository */
+    /** @var MarktRepository */
     private $marktRepository;
 
     /** @var MarktExtraDataRepository */
     private $marktExtraDataRepository;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     /** @var CacheManager */
     public $cacheManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
     public function __construct(
@@ -107,7 +107,7 @@ final class MarktController extends AbstractController
         $markt = $this->marktRepository->find($id);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($markt, 'json', ['groups' => ['markt']]);
@@ -219,7 +219,7 @@ final class MarktController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -227,7 +227,7 @@ final class MarktController extends AbstractController
         $markt = $this->marktRepository->find($id);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var PropertyAccessor $accessor */
@@ -245,8 +245,8 @@ final class MarktController extends AbstractController
         $marktAfkorting = $markt->getAfkorting();
         $marktExtraData = $this->marktExtraDataRepository->getByAfkorting($marktAfkorting);
 
-        if($marktExtraData !== null){
-            $marktDagen = $markt -> getMarktDagen();
+        if (null !== $marktExtraData) {
+            $marktDagen = $markt->getMarktDagen();
             $accessor->setValue($marktExtraData, 'marktDagen', $marktDagen);
 
             $this->entityManager->persist($marktExtraData);

@@ -15,11 +15,11 @@ use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-define("IMAGE_RESOLVE_PATH", "media/cache/resolve/");
+define('IMAGE_RESOLVE_PATH', 'media/cache/resolve/');
 
 final class EntityNormalizer extends ObjectNormalizer
 {
-    /** @var CacheManager $cacheManager */
+    /** @var CacheManager */
     public $cacheManager;
 
     public function __construct(
@@ -108,7 +108,7 @@ final class EntityNormalizer extends ObjectNormalizer
         ];
 
         foreach ($properties as $prop => $dtFormat) {
-            $method = 'get' . ucfirst($prop);
+            $method = 'get'.ucfirst($prop);
 
             if ('array' === $dtFormat && method_exists($object, $method)) {
                 $data[$prop] = (array) $object->$method();
@@ -120,18 +120,14 @@ final class EntityNormalizer extends ObjectNormalizer
         return $data;
     }
 
-    /**
-     * @param string $photo
-     * @param string $imageSize
-     *
-     * @return string
-     */
-    private function getBrowserPath(string $photo, string $imageSize): string {
-        $base_url = "";
-        if(isset($_SERVER['MM_API__BASE_URL'])){
+    private function getBrowserPath(string $photo, string $imageSize): string
+    {
+        $base_url = '';
+        if (isset($_SERVER['MM_API__BASE_URL'])) {
             $base_url = $_SERVER['MM_API__BASE_URL'];
         }
-        return $base_url.IMAGE_RESOLVE_PATH.$imageSize."/".$photo;
+
+        return $base_url.IMAGE_RESOLVE_PATH.$imageSize.'/'.$photo;
     }
 
     /**
@@ -200,7 +196,7 @@ final class EntityNormalizer extends ObjectNormalizer
         if (
             Markt::class === get_class($object)
         ) {
-            $data['isABlijstIndeling'] = ($object->getIndelingstype() === 'A/B-lijst');
+            $data['isABlijstIndeling'] = ('A/B-lijst' === $object->getIndelingstype());
         }
 
         return $data;

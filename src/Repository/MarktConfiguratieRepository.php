@@ -15,8 +15,6 @@ class MarktConfiguratieRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $marktId
-     * @return MarktConfiguratie|null
      * @throws NonUniqueResultException
      */
     public function findLatest(int $marktId): ?MarktConfiguratie

@@ -16,13 +16,13 @@ use App\Repository\BtwTariefRepository;
 final class ConcreetplanFactuurService
 {
     /** @var Factuur */
-    protected $factuur;
+    private $factuur;
 
     /** @var Tariefplan */
-    protected $tariefplan;
+    private $tariefplan;
 
     /** @var BtwTariefRepository */
-    protected $btwTariefRepository;
+    private $btwTariefRepository;
 
     public function __construct(BtwTariefRepository $btwTariefRepository)
     {
@@ -62,7 +62,7 @@ final class ConcreetplanFactuurService
     /**
      * @return array<int>
      */
-    protected function berekenMeters(Dagvergunning $dagvergunning): array
+    private function berekenMeters(Dagvergunning $dagvergunning): array
     {
         $concreetplan = $this->tariefplan->getConcreetplan();
 
@@ -204,7 +204,7 @@ final class ConcreetplanFactuurService
         return [$totaalMeters, $totaalKramen];
     }
 
-    protected function berekenElektra(Dagvergunning $dagvergunning): void
+    private function berekenElektra(Dagvergunning $dagvergunning): void
     {
         $concreetplan = $this->tariefplan->getConcreetplan();
 
@@ -239,7 +239,7 @@ final class ConcreetplanFactuurService
         }
     }
 
-    protected function berekenEenmaligElektra(Dagvergunning $dagvergunning): void
+    private function berekenEenmaligElektra(Dagvergunning $dagvergunning): void
     {
         $concreetplan = $this->tariefplan->getConcreetplan();
 
@@ -269,7 +269,7 @@ final class ConcreetplanFactuurService
         }
     }
 
-    protected function berekenPromotiegelden(int $meters, int $kramen, Dagvergunning $dagvergunning): void
+    private function berekenPromotiegelden(int $meters, int $kramen, Dagvergunning $dagvergunning): void
     {
         $concreetplan = $this->tariefplan->getConcreetplan();
 
@@ -332,7 +332,7 @@ final class ConcreetplanFactuurService
         }
     }
 
-    protected function berekenAfvaleilanden(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenAfvaleilanden(Dagvergunning $dagvergunning, float $btw): void
     {
         /** @var Concreetplan $lineairplan */
         $lineairplan = $this->tariefplan->getConcreetplan();

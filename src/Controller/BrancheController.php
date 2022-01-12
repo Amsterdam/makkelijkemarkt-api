@@ -7,17 +7,16 @@ use App\Normalizer\EntityNormalizer;
 use App\Repository\BrancheRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OpenApi\Annotations as OA;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use OpenApi\Annotations as OA;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-
 
 class BrancheController extends AbstractController
 {
@@ -35,14 +34,12 @@ class BrancheController extends AbstractController
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         BrancheRepository $brancheRepository
-    )
-    {
+    ) {
         $this->brancheRepository = $brancheRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
     }
-
 
     /**
      * @OA\Post(
@@ -89,25 +86,25 @@ class BrancheController extends AbstractController
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-        if ( $this->brancheRepository->findOneByAfkorting( $data['afkorting'] ) !== null ){
-            return new JsonResponse(['error' => "Branche " . $data['afkorting'] . " already exists"], Response::HTTP_BAD_REQUEST);
+        if (null !== $this->brancheRepository->findOneByAfkorting($data['afkorting'])) {
+            return new JsonResponse(['error' => 'Branche '.$data['afkorting'].' already exists'], Response::HTTP_BAD_REQUEST);
         }
 
         $expectedParameters = [
             'afkorting',
-            'omschrijving'
+            'omschrijving',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
         $branche = new Branche();
-        $branche->setAfkorting( $data['afkorting'] );
-        $branche->setOmschrijving( $data['omschrijving'] );
-        ( !array_key_exists('color', $data) ) ?: ( $branche->setColor( $data['color']) );
+        $branche->setAfkorting($data['afkorting']);
+        $branche->setOmschrijving($data['omschrijving']);
+        (!array_key_exists('color', $data)) ?: ($branche->setColor($data['color']));
 
         $this->entityManager->persist($branche);
         $this->entityManager->flush();
@@ -116,7 +113,6 @@ class BrancheController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Get(
@@ -143,7 +139,6 @@ class BrancheController extends AbstractController
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
-
     /**
      * @OA\Get(
      *     path="/api/1.1.0/branche/{afkorting}",
@@ -168,9 +163,9 @@ class BrancheController extends AbstractController
      */
     public function getBrancheByAfkorting(string $afkorting): Response
     {
-        $branche = $this->brancheRepository->findOneByAfkorting( $afkorting );
+        $branche = $this->brancheRepository->findOneByAfkorting($afkorting);
 
-        if ( $branche === null ) {
+        if (null === $branche) {
             return new JsonResponse(['error' => 'Branche not found.'], Response::HTTP_NOT_FOUND);
         }
 
@@ -178,7 +173,6 @@ class BrancheController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 
     /**
      * @OA\Put(
@@ -224,24 +218,24 @@ class BrancheController extends AbstractController
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-        $branche = $this->brancheRepository->findOneByAfkorting( $afkorting );
+        $branche = $this->brancheRepository->findOneByAfkorting($afkorting);
 
-        if ( $branche === null ){
-            return new JsonResponse(['error' => "Branche " . $data['afkorting'] . " doesn't exist"], Response::HTTP_NOT_FOUND);
+        if (null === $branche) {
+            return new JsonResponse(['error' => 'Branche '.$data['afkorting']." doesn't exist"], Response::HTTP_NOT_FOUND);
         }
 
         $expectedParameters = [
-            'omschrijving'
+            'omschrijving',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        $branche->setOmschrijving( $data['omschrijving'] );
-        ( !array_key_exists('color', $data) ) ?: ( $branche->setColor( $data['color']) );
+        $branche->setOmschrijving($data['omschrijving']);
+        (!array_key_exists('color', $data)) ?: ($branche->setColor($data['color']));
 
         $this->entityManager->persist($branche);
         $this->entityManager->flush();
@@ -274,9 +268,9 @@ class BrancheController extends AbstractController
      */
     public function delete(string $afkorting): JsonResponse
     {
-        $branche = $this->brancheRepository->findOneByAfkorting( $afkorting );
+        $branche = $this->brancheRepository->findOneByAfkorting($afkorting);
 
-        if ( $branche === null ) {
+        if (null === $branche) {
             return new JsonResponse(['error' => 'Branche not found.'], Response::HTTP_NOT_FOUND);
         }
 

@@ -27,7 +27,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(4.50);
@@ -42,7 +42,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -57,7 +57,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -72,7 +72,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.25);
@@ -87,7 +87,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(4.50);
@@ -102,7 +102,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(1.50);
@@ -117,7 +117,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(1.75);
@@ -132,7 +132,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -147,7 +147,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -162,7 +162,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -177,7 +177,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -192,7 +192,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(4.50);
@@ -207,7 +207,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -222,7 +222,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -237,7 +237,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -252,7 +252,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -267,7 +267,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(1.50);
@@ -282,7 +282,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -297,7 +297,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -312,7 +312,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.48);
@@ -327,7 +327,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -342,7 +342,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(1.75);
@@ -357,7 +357,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(1.50);
@@ -372,7 +372,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(1.75);
@@ -387,7 +387,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.50);
@@ -402,7 +402,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -417,7 +417,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -432,7 +432,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.25);
@@ -447,7 +447,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.00);
@@ -462,7 +462,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan);
+        $this->addReference('lineairplan_'.$i, $lineairplan);
 
         $lineairplan = new Lineairplan();
         $lineairplan->setTariefPerMeter(2.22);
@@ -477,7 +477,7 @@ final class LineairplanFixtures extends BaseFixture
 
         $manager->persist($lineairplan);
         ++$i;
-        $this->addReference('lineairplan_' . $i, $lineairplan); // i=31 - used in TariefplanFixtures!
+        $this->addReference('lineairplan_'.$i, $lineairplan); // i=31 - used in TariefplanFixtures!
 
         $manager->flush();
     }

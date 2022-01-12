@@ -29,7 +29,7 @@ final class BtwTariefController extends AbstractController
     /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
     public function __construct(
@@ -113,7 +113,7 @@ final class BtwTariefController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 

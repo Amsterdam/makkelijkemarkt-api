@@ -30,7 +30,7 @@ final class TokenFixtures extends BaseFixture implements DependentFixtureInterfa
             $accountReference = round($i / 10) + 1;
 
             /** @var Account $account */
-            $account = $this->getReference(AccountFixtures::REFERENCE_USER_USER . '_' . $accountReference);
+            $account = $this->getReference(AccountFixtures::REFERENCE_USER_USER.'_'.$accountReference);
 
             /** @var Token $token */
             $token = new Token();

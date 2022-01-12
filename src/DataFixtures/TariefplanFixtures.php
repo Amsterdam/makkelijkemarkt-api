@@ -144,10 +144,10 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         foreach ($set as $data) {
             /** @var Concreetplan $concreetplan */
-            $concreetplan = $this->getReference('concreetplan_' . $data['concreetplan']);
+            $concreetplan = $this->getReference('concreetplan_'.$data['concreetplan']);
 
             /** @var Markt $markt */
-            $markt = $this->getReference('markt_' . $data['markt']);
+            $markt = $this->getReference('markt_'.$data['markt']);
 
             $tariefplan = new Tariefplan();
             $tariefplan->setConcreetplan($concreetplan);
@@ -158,7 +158,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
             $manager->persist($tariefplan);
             ++$i;
-            $this->addReference('tariefplan_' . $i, $tariefplan);
+            $this->addReference('tariefplan_'.$i, $tariefplan);
 
             $concreetplan->setTariefplan($tariefplan);
             $manager->persist($concreetplan);
@@ -179,7 +179,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -265,10 +265,10 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         foreach ($set as $data) {
             /** @var Lineairplan $lineairplan */
-            $lineairplan = $this->getReference('lineairplan_' . $data['lineairplan']);
+            $lineairplan = $this->getReference('lineairplan_'.$data['lineairplan']);
 
             /** @var Markt $markt */
-            $markt = $this->getReference('markt_' . $data['markt']);
+            $markt = $this->getReference('markt_'.$data['markt']);
 
             $tariefplan = new Tariefplan();
             $tariefplan->setLineairplan($lineairplan);
@@ -279,7 +279,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
             $manager->persist($tariefplan);
             ++$i;
-            $this->addReference('tariefplan_' . $i, $tariefplan);
+            $this->addReference('tariefplan_'.$i, $tariefplan);
 
             $lineairplan->setTariefplan($tariefplan);
             $manager->persist($lineairplan);
@@ -300,7 +300,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -320,7 +320,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -340,7 +340,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -360,7 +360,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -380,7 +380,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -400,7 +400,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -420,7 +420,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -440,7 +440,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -460,7 +460,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);
@@ -480,7 +480,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -500,7 +500,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -520,7 +520,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -540,7 +540,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -560,7 +560,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         /** @var Concreetplan $concreetplan */
         $concreetplan = $this->getReference('concreetplan_29');
@@ -577,7 +577,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -597,7 +597,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         /** @var Concreetplan $concreetplan */
         $concreetplan = $this->getReference('concreetplan_34');
@@ -614,7 +614,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -634,7 +634,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -654,7 +654,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -669,13 +669,13 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan = new Tariefplan();
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
-        $tariefplan->setNaam('Tarieven ' . date('Y'));
-        $tariefplan->setGeldigVanaf(new DateTime(date('Y') . '-01-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime(date('Y'). '-12-31 23:59:59'));
+        $tariefplan->setNaam('Tarieven '.date('Y'));
+        $tariefplan->setGeldigVanaf(new DateTime(date('Y').'-01-01 00:00:00'));
+        $tariefplan->setGeldigTot(new DateTime(date('Y').'-12-31 23:59:59'));
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $concreetplan->setTariefplan($tariefplan);
         $manager->persist($concreetplan);
@@ -692,13 +692,13 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan = new Tariefplan();
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
-        $tariefplan->setNaam('Tarieven ' . date('Y'));
-        $tariefplan->setGeldigVanaf(new DateTime(date('Y') . '-01-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime(date('Y'). '-12-31 23:59:59'));
+        $tariefplan->setNaam('Tarieven '.date('Y'));
+        $tariefplan->setGeldigVanaf(new DateTime(date('Y').'-01-01 00:00:00'));
+        $tariefplan->setGeldigTot(new DateTime(date('Y').'-12-31 23:59:59'));
 
         $manager->persist($tariefplan);
         ++$i;
-        $this->addReference('tariefplan_' . $i, $tariefplan);
+        $this->addReference('tariefplan_'.$i, $tariefplan);
 
         $lineairplan->setTariefplan($tariefplan);
         $manager->persist($lineairplan);

@@ -37,7 +37,7 @@ final class AccountRepository extends ServiceEntityRepository
         // search
         if (true === isset($q['naam']) && null !== $q['naam'] && '' !== $q['naam']) {
             $qb->andWhere('LOWER(account.naam) LIKE LOWER(:naam)');
-            $qb->setParameter('naam', '%' . $q['naam'] . '%');
+            $qb->setParameter('naam', '%'.$q['naam'].'%');
         }
 
         if (true === isset($q['active']) && null !== $q['active'] && '' !== $q['active']) {

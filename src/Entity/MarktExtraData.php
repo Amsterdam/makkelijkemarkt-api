@@ -86,7 +86,7 @@ class MarktExtraData
     {
         foreach ($marktDagen as $marktDag) {
             if (false === in_array($marktDag, ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'])) {
-                throw new \InvalidArgumentException('Invalid marktDag supplied "' . $marktDag . '" only ma, di, wo, do, vr, za, zo are allowed');
+                throw new \InvalidArgumentException('Invalid marktDag supplied "'.$marktDag.'" only ma, di, wo, do, vr, za, zo are allowed');
             }
         }
 

@@ -24,16 +24,16 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class AccountController extends AbstractController
 {
-    /** @var AccountRepository $accountRepository */
+    /** @var AccountRepository */
     private $accountRepository;
 
-    /** @var UserPasswordEncoderInterface $userPasswordEncoder */
+    /** @var UserPasswordEncoderInterface */
     private $userPasswordEncoder;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
     public function __construct(
@@ -129,7 +129,7 @@ final class AccountController extends AbstractController
         $account = $this->accountRepository->find($id);
 
         if (null === $account) {
-            return new JsonResponse(['error' => 'Account not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Account not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($account, 'json', ['groups' => 'account']);
@@ -196,7 +196,7 @@ final class AccountController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -289,7 +289,7 @@ final class AccountController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -297,7 +297,7 @@ final class AccountController extends AbstractController
         $account = $this->accountRepository->find($id);
 
         if (null === $account) {
-            return new JsonResponse(['error' => 'Account not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Account not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var array<string> $roles */
@@ -354,7 +354,7 @@ final class AccountController extends AbstractController
         $account = $this->accountRepository->find($id);
 
         if (null === $account) {
-            return new JsonResponse(['error' => 'Account not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Account not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $account->setAttempts(0);
@@ -420,7 +420,7 @@ final class AccountController extends AbstractController
         $account = $this->accountRepository->find($id);
 
         if (null === $account) {
-            return new JsonResponse(['error' => 'Account not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Account not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         // Non admin's (seniors) can't change admin's accounts

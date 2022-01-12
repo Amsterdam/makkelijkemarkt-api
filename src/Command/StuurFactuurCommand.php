@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Dagvergunning;
-use App\Repository\KoopmanRepository;
 use App\Repository\DagvergunningRepository;
+use App\Repository\KoopmanRepository;
 use App\Service\FactuurService;
 use App\Service\PdfFactuurService;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use App\Utils\Logger;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class StuurFactuurCommand extends Command
 {
@@ -53,7 +53,8 @@ class StuurFactuurCommand extends Command
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Symfony\Component\Console\Command\Command::configure()
      */
     protected function configure()
@@ -64,7 +65,8 @@ class StuurFactuurCommand extends Command
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see \Symfony\Component\Console\Command\Command::execute()
      */
     public function execute(InputInterface $input, OutputInterface $output)
@@ -73,7 +75,7 @@ class StuurFactuurCommand extends Command
         $logger->addOutput($output);
 
         $date = $input->getArgument('date');
-        if ($date === null || $date === '') {
+        if (null === $date || '' === $date) {
             $date = date('Y-m-d');
         }
         $output->writeln($date);
@@ -82,41 +84,41 @@ class StuurFactuurCommand extends Command
 
         foreach ($koopmannen as $koopman) {
             try {
-                /** @var Koopman $koopman */
-                $output->writeln('Found koopman with id: ' . $koopman->getId() . ' ' . $koopman->getErkenningsnummer());
+                /* @var Koopman $koopman */
+                $output->writeln('Found koopman with id: '.$koopman->getId().' '.$koopman->getErkenningsnummer());
 
                 if (empty($koopman->getEmail())) {
                     $output->writeln('.. Skip (no e-mail)');
                     continue;
                 }
-                $dagvergunningen = $this->dagvergunningRepository->search(array(
+                $dagvergunningen = $this->dagvergunningRepository->search([
                     'dag' => $date,
                     'koopmanId' => $koopman->getId(),
-                    'doorgehaald' => 0
-                ));
-                
+                    'doorgehaald' => 0,
+                ]);
+
                 $heeftBetaalbaarBedrag = false;
                 foreach ($dagvergunningen as $dagvergunning) {
                     /** @var Dagvergunning $dagvergunning */
                     $totaalBedrag = $this->factuurService->getTotaalExclBtw($dagvergunning->getFactuur());
-                    $output->writeln('.. Dagvergunning ' . $dagvergunning->getId() . ' / Invoice total ' . $totaalBedrag);
+                    $output->writeln('.. Dagvergunning '.$dagvergunning->getId().' / Invoice total '.$totaalBedrag);
                     if ($totaalBedrag > 0.01 || $totaalBedrag < -0.01) {
                         $heeftBetaalbaarBedrag = true;
                         $output->writeln('.... We need to send invoice');
                     }
                 }
-                if ($heeftBetaalbaarBedrag === false) {
+                if (false === $heeftBetaalbaarBedrag) {
                     $output->writeln('.. Skip (no invoiced needed)');
                     continue;
                 }
 
                 $pdf = $this->pdfFactuurService->generate($koopman, $dagvergunningen);
-                $pdfFile = $pdf->Output('koopman-' . $koopman->getId() . '.pdf', 'S');
+                $pdfFile = $pdf->Output('koopman-'.$koopman->getId().'.pdf', 'S');
 
-                $body =  "Bijgesloten ontvangt u een BTW-overzicht van het Marktbureau van de Gemeente Amsterdam als PDF-bestand. \n";
-                $body .= "Dit is voor uw eigen administratie. \n"; 
+                $body = "Bijgesloten ontvangt u een BTW-overzicht van het Marktbureau van de Gemeente Amsterdam als PDF-bestand. \n";
+                $body .= "Dit is voor uw eigen administratie. \n";
                 $body .= "U heeft reeds betaald of u moet nog betalen op de markt, per pin, bij de markttoezichthouder. \n";
-                $body .= "Het gaat hier niet om een factuur.";
+                $body .= 'Het gaat hier niet om een factuur.';
 
                 $message = (new \Swift_Message())
                     ->setSubject('BTW-overzicht Marktbureau Gemeente Amsterdam')
@@ -127,9 +129,9 @@ class StuurFactuurCommand extends Command
                 ;
 
                 $this->mailer->send($message);
-                $output->writeln('.. Mail queued for ' . $koopman->getEmail());
+                $output->writeln('.. Mail queued for '.$koopman->getEmail());
             } catch (\Exception $e) {
-                $output->writeln('.. Failure ' . get_class($e) . ' ::: ' . $e->getMessage());
+                $output->writeln('.. Failure '.get_class($e).' ::: '.$e->getMessage());
             }
         }
 

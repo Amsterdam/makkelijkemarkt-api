@@ -14,6 +14,7 @@ use App\Repository\TariefplanRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,26 +22,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @OA\Tag(name="Tariefplan")
  */
 final class TariefplanController extends AbstractController
 {
-    /** @var MarktRepository $marktRepository */
+    /** @var MarktRepository */
     private $marktRepository;
 
-    /** @var TariefplanRepository $tariefplanRepository */
+    /** @var TariefplanRepository */
     private $tariefplanRepository;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -79,7 +79,7 @@ final class TariefplanController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $tariefplannen = $this->tariefplanRepository->findBy(['markt' => $markt], ['geldigVanaf' => 'DESC']);
@@ -119,7 +119,7 @@ final class TariefplanController extends AbstractController
         $tariefplan = $this->tariefplanRepository->find($id);
 
         if (null === $tariefplan) {
-            return new JsonResponse(['error' => 'Tariefplan not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Tariefplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($tariefplan, 'json', ['groups' => $this->groups]);
@@ -192,7 +192,7 @@ final class TariefplanController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $data = json_decode((string) $request->getContent(), true);
@@ -218,7 +218,7 @@ final class TariefplanController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -309,7 +309,7 @@ final class TariefplanController extends AbstractController
         $markt = $this->marktRepository->find($marktId);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = ' . $marktId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
         $data = json_decode((string) $request->getContent(), true);
@@ -336,7 +336,7 @@ final class TariefplanController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -426,7 +426,7 @@ final class TariefplanController extends AbstractController
         $tariefplan = $this->tariefplanRepository->find($id);
 
         if (null === $tariefplan) {
-            return new JsonResponse(['error' => 'Tariefplan not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Tariefplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Concreetplan $concreetplan */
@@ -459,7 +459,7 @@ final class TariefplanController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -538,7 +538,7 @@ final class TariefplanController extends AbstractController
         $tariefplan = $this->tariefplanRepository->find($id);
 
         if (null === $tariefplan) {
-            return new JsonResponse(['error' => 'Tariefplan not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Tariefplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Lineairplan $lineairplan */
@@ -572,7 +572,7 @@ final class TariefplanController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -612,7 +612,7 @@ final class TariefplanController extends AbstractController
         $tariefplan = $this->tariefplanRepository->find($id);
 
         if (null === $tariefplan) {
-            return new JsonResponse(['error' => 'Tariefplan not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Tariefplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var Lineairplan $lineairplan */

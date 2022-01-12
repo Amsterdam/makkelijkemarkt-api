@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Process;
 
 use App\Entity\Koopman;
 use App\Entity\KoopmanRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\DBAL\Query\QueryBuilder;
 use App\Utils\Logger;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\EntityManager;
 
 class PerfectViewKoopmanImport
 {
@@ -37,17 +38,11 @@ class PerfectViewKoopmanImport
         'Vervanger' => Koopman::STATUS_VERVANGER,
     ];
 
-    /**
-     * @param \Doctrine\DBAL\Connection $conn
-     */
     public function __construct(\Doctrine\DBAL\Connection $conn)
     {
         $this->conn = $conn;
     }
 
-    /**
-     * @param Logger $logger
-     */
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
@@ -61,8 +56,8 @@ class PerfectViewKoopmanImport
         $headings = $perfectViewRecords->getHeadings();
         $requiredHeadings = ['Erkenningsnummer', 'ACHTERNAAM', 'email', 'Telefoonnummer', 'Voorletters', 'Status', 'NFCHEX', 'Tussenvoegsels'];
         foreach ($requiredHeadings as $requiredHeading) {
-            if (in_array($requiredHeading, $headings) === false) {
-                throw new \RuntimeException('Missing column "' . $requiredHeading . '" in import file');
+            if (false === in_array($requiredHeading, $headings)) {
+                throw new \RuntimeException('Missing column "'.$requiredHeading.'" in import file');
             }
         }
 
@@ -73,7 +68,7 @@ class PerfectViewKoopmanImport
         // iterate the csv-file
         foreach ($perfectViewRecords as $pvRecord) {
             // skip empty records
-            if ($pvRecord === null || $pvRecord === '') {
+            if (null === $pvRecord || '' === $pvRecord) {
                 $this->logger->info('Skip, record is empty');
                 continue;
             }
@@ -83,41 +78,40 @@ class PerfectViewKoopmanImport
             // prepare query builder
             $qb = $this->conn->createQueryBuilder();
 
-            if (($koopmanRecord !== null)) {
+            if ((null !== $koopmanRecord)) {
                 // update
                 $qb->update('koopman', 'e');
                 $qb->where('e.id = :id')->setParameter('id', $koopmanRecord['id']);
-                $aantalNieuw ++;
+                ++$aantalNieuw;
             } else {
                 // insert
                 $qb->insert('koopman');
                 $qb->setValue('id', 'NEXTVAL(\'koopman_id_seq\')'); // IMPORTANT setValue on Query Builder, not via helper!
-                $aantalBijgewerkt ++;
+                ++$aantalBijgewerkt;
             }
 
             // set data
-            $this->setValue($qb, 'erkenningsnummer',     \PDO::PARAM_STR,  str_replace('.', '', $pvRecord['Erkenningsnummer']));
-            $this->setValue($qb, 'achternaam',           \PDO::PARAM_STR,  utf8_encode(str_replace('.', '', $pvRecord['ACHTERNAAM'])));
-            $this->setValue($qb, 'email',                \PDO::PARAM_STR,  utf8_encode($pvRecord['email']));
-            $this->setValue($qb, 'telefoon',             \PDO::PARAM_STR,  str_replace('.', '', $pvRecord['Telefoonnummer']));
-            $this->setValue($qb, 'voorletters',          \PDO::PARAM_STR,  utf8_encode(str_replace('.', '', $pvRecord['Voorletters'])));
-            $this->setValue($qb, 'tussenvoegsels',       \PDO::PARAM_STR,  utf8_encode($pvRecord['Tussenvoegsels']));
-            $this->setValue($qb, 'status',               \PDO::PARAM_STR,  $this->convertKoopmanStatus($pvRecord['Status']));
+            $this->setValue($qb, 'erkenningsnummer', \PDO::PARAM_STR, str_replace('.', '', $pvRecord['Erkenningsnummer']));
+            $this->setValue($qb, 'achternaam', \PDO::PARAM_STR, utf8_encode(str_replace('.', '', $pvRecord['ACHTERNAAM'])));
+            $this->setValue($qb, 'email', \PDO::PARAM_STR, utf8_encode($pvRecord['email']));
+            $this->setValue($qb, 'telefoon', \PDO::PARAM_STR, str_replace('.', '', $pvRecord['Telefoonnummer']));
+            $this->setValue($qb, 'voorletters', \PDO::PARAM_STR, utf8_encode(str_replace('.', '', $pvRecord['Voorletters'])));
+            $this->setValue($qb, 'tussenvoegsels', \PDO::PARAM_STR, utf8_encode($pvRecord['Tussenvoegsels']));
+            $this->setValue($qb, 'status', \PDO::PARAM_STR, $this->convertKoopmanStatus($pvRecord['Status']));
             //$this->setValue($qb, 'perfect_view_nummer',  \PDO::PARAM_INT,  $pvRecord['Kaartnr']);
-            $this->setValue($qb, 'pas_uid',              \PDO::PARAM_STR,  strtoupper($pvRecord['NFCHEX']));
+            $this->setValue($qb, 'pas_uid', \PDO::PARAM_STR, strtoupper($pvRecord['NFCHEX']));
 
             // execute insert/update query
             $result = $this->conn->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
-
         }
 
         $this->logger->info('Alle records verwerkt', ['nieuw' => $aantalNieuw, 'bijgewerkt' => $aantalBijgewerkt, 'totaal' => $i]);
-
     }
 
     /**
      * @param string $erkenningsnummer
-     * @return NULL|array Koopman-record
+     *
+     * @return array|null Koopman-record
      */
     protected function getKoopmanRecord($erkenningsnummer)
     {
@@ -128,50 +122,56 @@ class PerfectViewKoopmanImport
 
         $stmt = $this->conn->executeQuery($qb->getSQL(), $qb->getParameters());
 
-        if ($stmt->rowCount() === 0)
+        if (0 === $stmt->rowCount()) {
             return null;
+        }
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
-     * Helper method for koopmanstatus
+     * Helper method for koopmanstatus.
+     *
      * @param string $status
+     *
      * @return string
      */
     private function convertKoopmanStatus($status)
     {
-        if (isset($this->soortStatusConversion[$status]) === true)
+        if (true === isset($this->soortStatusConversion[$status])) {
             return $this->soortStatusConversion[$status];
+        }
+
         return '?';
     }
 
     /**
      * @param string $datetime_string
+     *
      * @return string
      */
     private function convertToDateTimeString($datetime_string)
     {
         $object = \DateTime::createFromFormat('d-m-Y H:i:s', $datetime_string);
-        if ($object === false)
+        if (false === $object) {
             return null;
+        }
+
         return $object->format('Y-m-d H:i:s');
     }
 
     /**
-     * Helper function to abstract INSERT and UPDATE
+     * Helper function to abstract INSERT and UPDATE.
      *
-     * @param \Doctrine\DBAL\Query\QueryBuilder $qb
      * @param string $field
      * @param string $value
      */
-    private function setValue(\Doctrine\DBAL\Query\QueryBuilder $qb, $field, $type = null, $value = null)
+    private function setValue(QueryBuilder $qb, $field, $type = null, $value = null)
     {
-        if ($qb->getType() === QueryBuilder::UPDATE) {
-            $qb->set($field, ':' . $field)->setParameter($field, $value, $type);
+        if (QueryBuilder::UPDATE === $qb->getType()) {
+            $qb->set($field, ':'.$field)->setParameter($field, $value, $type);
         } else {
-            $qb->setValue($field, ':' . $field)->setParameter($field, $value, $type);
+            $qb->setValue($field, ':'.$field)->setParameter($field, $value, $type);
         }
     }
-
 }

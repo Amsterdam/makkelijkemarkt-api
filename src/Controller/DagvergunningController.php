@@ -30,22 +30,22 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class DagvergunningController extends AbstractController
 {
-    /** @var DagvergunningRepository $dagvergunningRepository */
+    /** @var DagvergunningRepository */
     private $dagvergunningRepository;
 
-    /** @var FactuurService $factuurService */
+    /** @var FactuurService */
     private $factuurService;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     /** @var CacheManager */
     public $cacheManager;
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var array<string> $groups */
+    /** @var array<string> */
     private $groups;
 
     public function __construct(
@@ -180,7 +180,7 @@ final class DagvergunningController extends AbstractController
         $dagvergunning = $this->dagvergunningRepository->find($id);
 
         if (null === $dagvergunning) {
-            return new JsonResponse(['error' => 'Dagvergunning not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
@@ -222,7 +222,7 @@ final class DagvergunningController extends AbstractController
         $koopman = $koopmanRepository->find($koopmanId);
 
         if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found, koopmanId = ' . $koopmanId], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Koopman not found, koopmanId = '.$koopmanId], Response::HTTP_NOT_FOUND);
         }
 
         $sDate = new DateTime($startDate);
@@ -302,7 +302,7 @@ final class DagvergunningController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -438,7 +438,7 @@ final class DagvergunningController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -589,7 +589,7 @@ final class DagvergunningController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -620,7 +620,7 @@ final class DagvergunningController extends AbstractController
         $dagvergunning = $this->dagvergunningRepository->find($id);
 
         if (null === $dagvergunning) {
-            return new JsonResponse(['error' => 'Dagvergunning not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var ?Account $account */
@@ -715,11 +715,11 @@ final class DagvergunningController extends AbstractController
         $dagvergunning = $this->dagvergunningRepository->find($id);
 
         if (null === $dagvergunning) {
-            return new JsonResponse(['error' => 'Dagvergunning not found, id = ' . $id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         if (true === $dagvergunning->isDoorgehaald()) {
-            return new JsonResponse(['error' => 'Dagvergunning with id = ' . $id . ' already doorgehaald'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Dagvergunning with id = '.$id.' already doorgehaald'], Response::HTTP_NOT_FOUND);
         }
 
         // modify object

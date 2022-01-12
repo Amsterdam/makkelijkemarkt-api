@@ -21,7 +21,7 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
     /** @var string */
     private $mmApiKey;
 
-    /** @var TokenRepository $tokenRepository */
+    /** @var TokenRepository */
     private $tokenRepository;
 
     public function __construct(string $mmApiKey, TokenRepository $tokenRepository)

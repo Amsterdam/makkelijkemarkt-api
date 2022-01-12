@@ -15,7 +15,7 @@ final class FactuurInfoCommand extends Command
 {
     protected static $defaultName = 'app:factuur:info';
 
-    /** @var FactuurRepository $factuurRepository */
+    /** @var FactuurRepository */
     private $factuurRepository;
 
     public function __construct(FactuurRepository $factuurRepository)
@@ -61,7 +61,7 @@ final class FactuurInfoCommand extends Command
 
         $avg = array_sum($totalen) / count($totalen);
 
-        $io->success('average ' . $avg);
+        $io->success('average '.$avg);
 
         return 0;
     }

@@ -45,7 +45,7 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
             $statusSollicitatie = $status[$i];
 
             /** @var string $ds */
-            $ds = date('Y') . '-01-01';
+            $ds = date('Y').'-01-01';
 
             /** @var DateTime $dt */
             $dt = new DateTime($ds);
