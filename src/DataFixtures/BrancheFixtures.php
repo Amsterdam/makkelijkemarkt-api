@@ -26,7 +26,5 @@ class BrancheFixtures extends BaseFixture
         $manager->persist($brancheExisting);
 
         $manager->flush();
-        // TODO: Implement loadData() method.
     }
-
 }

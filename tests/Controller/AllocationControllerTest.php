@@ -12,42 +12,6 @@ class AllocationControllerTest extends ApiTestCase
     private $indeling;
     private Koopman $allocationKoopman;
 
-    public function testGetAll(): void
-    {
-        $response = $this->client->get('/api/1.1.0/allocation/DAPP/2021-12-31', ['headers' => $this->headers]);
-        $this->assertEquals(200, $response->getStatusCode());
-    }
-
-    public function testPostAllocations(): void
-    {
-        $this->client->post('/api/1.1.0/allocation/DAPP/2021-12-31', [
-            'headers' => $this->headers,
-            'body' => $this->indeling,
-        ]);
-
-        $response = $this->client->get('/api/1.1.0/allocation/DAPP/2021-12-31', ['headers' => $this->headers]);
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string)$response->getBody(), true);
-        $this->assertEquals(3, count($responseData));
-
-        $allocation_found = false;
-        $rejection_found = false;
-        foreach ($responseData as $result) {
-            if ($result["koopman"] == $this->allocationKoopman->getErkenningsnummer()) {
-                // assert toewijzing
-                $this->assertEquals("1", $result["plaatsen"][0]);
-                $this->assertEquals("2", $result["plaatsen"][1]);
-                $allocation_found = true;
-            } else {
-                $rejection_found = true;
-                $this->assertFalse($result["isAllocated"]);
-            }
-        }
-        $this->assertTrue($allocation_found);
-        $this->assertTrue($rejection_found);
-
-    }
 
     protected function setUp(): void
     {
@@ -88,6 +52,42 @@ class AllocationControllerTest extends ApiTestCase
         }
         $json = json_encode($indeling);
         $this->indeling = $json;
+    }
+
+    public function testGetAll(): void
+    {
+        $response = $this->client->get('/api/1.1.0/allocation/DAPP/2021-12-31', ['headers' => $this->headers]);
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testPostAllocations(): void
+    {
+        $this->client->post('/api/1.1.0/allocation/DAPP/2021-12-31', [
+            'headers' => $this->headers,
+            'body' => $this->indeling,
+        ]);
+
+        $response = $this->client->get('/api/1.1.0/allocation/DAPP/2021-12-31', ['headers' => $this->headers]);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string)$response->getBody(), true);
+        $this->assertEquals(3, count($responseData));
+
+        $allocation_found = false;
+        $rejection_found = false;
+        foreach ($responseData as $result) {
+            if ($result["koopman"] == $this->allocationKoopman->getErkenningsnummer()) {
+                // assert toewijzing
+                $this->assertEquals("1", $result["plaatsen"][0]);
+                $this->assertEquals("2", $result["plaatsen"][1]);
+                $allocation_found = true;
+            } else {
+                $rejection_found = true;
+                $this->assertFalse($result["isAllocated"]);
+            }
+        }
+        $this->assertTrue($allocation_found);
+        $this->assertTrue($rejection_found);
     }
 
     protected function tearDown(): void
