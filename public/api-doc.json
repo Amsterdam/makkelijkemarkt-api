@@ -1901,7 +1901,7 @@
                             "application/json": {
                                 "schema": {
                                     "items": {
-                                        "$ref": "#/components/schemas/Dagvergunning"
+                                        "$ref": "#/components/schemas/Factuur"
                                     }
                                 }
                             }
@@ -2938,7 +2938,7 @@
                                 "schema": {
                                     "properties": {
                                         "error": {
-                                            "description": "Er is foutieve input gegeven.",
+                                            "description": "Er is foutieve input gegeven",
                                             "type": "string"
                                         }
                                     },
@@ -6826,7 +6826,7 @@
                         "type": "integer",
                         "example": "14"
                     },
-                    "markt_id": {
+                    "marktId": {
                         "type": "integer",
                         "example": "101"
                     },

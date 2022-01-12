@@ -249,26 +249,16 @@ class AllocationController extends AbstractController
                 ));
             }
         } catch (Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage(), 'data' => $data], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         foreach ($allocations as $allocation) {
-            try {
-                $this->entityManager->persist($allocation);
-            } catch (Exception $e) {
-                return new JsonResponse(['error' => $e->getMessage(), 'data' => $allocation], Response::HTTP_BAD_REQUEST);
-
-            }
+            $this->entityManager->persist($allocation);
         }
 
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage(), 'data' => $allocations], Response::HTTP_OK);
-        }
+        $this->entityManager->flush();
 
         $response = $this->serializer->serialize($allocations, 'json');
-
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
