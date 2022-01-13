@@ -50,7 +50,7 @@ RUN mkdir -p /app/var/cache \
     && chmod 775 /app/import-mercato.sh \
     && chmod 775 /app/report.sh
 
-RUN vendor/bin/grumphp run
+RUN vendor/bin/grumphp run -c grumphp-build.yml
 
 ENV FPM_PM_MAX_CHILDREN=20
 

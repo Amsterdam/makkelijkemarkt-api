@@ -4,3 +4,4 @@ grumphp:
         config: ".php_cs"
       phpstan:
         memory_limit: "-1"
+      phpunit: ~

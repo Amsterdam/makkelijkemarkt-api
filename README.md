@@ -91,3 +91,8 @@ Met het volgende commando worden de docs voor de swagger opnieuw gegenereerd:
 `./vendor/bin/openapi src --output public/api-doc.json --format json --pattern "*.php"`
 
 Documentatie: https://github.com/zircote/swagger-php
+
+## Code Quality
+Tijdens de build van de container en in een pre-commit hook draaien php-cs-fixer en phpstan, om dit handmatig te doen run je:
+
+`vendor/bin/grumphp run`
