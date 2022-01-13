@@ -44,6 +44,9 @@ class AllocationController extends AbstractController
     /** @var BrancheRepository */
     private $brancheRepository;
 
+    /** @var Serializer */
+    private $serializer;
+
     private $rejectReasons;
 
     public function __construct(

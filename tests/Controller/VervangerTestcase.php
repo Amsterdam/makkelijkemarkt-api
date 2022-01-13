@@ -14,9 +14,8 @@ class VervangerTestCase extends ApiTestCase
 
     public function testVervangerIdinKoopmanObject():void{
 
-        $this->em = $this->entityManager; 
-        $tokenRepository = $this->em->getRepository(Token::class);
-        $vervangerRepository = $this->em->getRepository(Vervanger::class);
+        $tokenRepository = $this->entityManager->getRepository(Token::class);
+        $vervangerRepository = $this->entityManager->getRepository(Vervanger::class);
 
         $token = $tokenRepository->findOneBy(['clientApp' => 'admin']);
         $vervanger = $vervangerRepository->findOneBy(['id' => 1]);

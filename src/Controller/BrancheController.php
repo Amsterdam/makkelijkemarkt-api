@@ -29,6 +29,9 @@ class BrancheController extends AbstractController
     /** @var BrancheRepository */
     private $brancheRepository;
 
+    /** @var Serializer */
+    private $serializer;
+
     public function __construct(
         CacheManager $cacheManager,
         EntityManagerInterface $entityManager,

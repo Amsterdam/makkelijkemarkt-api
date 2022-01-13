@@ -15,7 +15,7 @@ RUN apk add bash
 
 RUN apk add nginx && mkdir -p /run/nginx
 
-RUN apk add postgresql-dev bzip2-dev freetype libpng libjpeg-turbo freetype-dev libpng-dev jpeg-dev libjpeg libjpeg-turbo-dev libintl gettext gettext-dev gmp gmp-dev icu-dev libxml2-dev libxslt-dev libzip libzip-dev && \
+RUN apk add git postgresql-dev bzip2-dev freetype libpng libjpeg-turbo freetype-dev libpng-dev jpeg-dev libjpeg libjpeg-turbo-dev libintl gettext gettext-dev gmp gmp-dev icu-dev libxml2-dev libxslt-dev libzip libzip-dev && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install pdo_pgsql pgsql bcmath bz2 calendar exif gd gettext gmp intl pcntl shmop soap sockets sysvmsg sysvsem sysvshm xmlrpc xsl zip
 
@@ -49,6 +49,8 @@ RUN mkdir -p /app/var/cache \
     && chmod 775 /app/docker-entrypoint.sh \
     && chmod 775 /app/import-mercato.sh \
     && chmod 775 /app/report.sh
+
+RUN vendor/bin/grumphp run
 
 ENV FPM_PM_MAX_CHILDREN=20
 

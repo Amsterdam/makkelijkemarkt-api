@@ -13,6 +13,11 @@ use Doctrine\ORM\EntityManager;
 class PerfectViewVervangerImport
 {
     /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $conn;
+
+    /**
      * @var KoopmanRepository
      */
     protected $koopmanRepository;

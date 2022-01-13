@@ -37,6 +37,9 @@ class PlaatsVoorkeurController extends AbstractController
     /** @var KoopmanRepository */
     private $koopmanRepository;
 
+    /** @var Serializer */
+    private $serializer;
+
     public function __construct(
         CacheManager $cacheManager,
         EntityManagerInterface $entityManager,

@@ -34,7 +34,7 @@ class Logger implements LoggerInterface
      */
     public function emergency($message, array $context = [])
     {
-        return $this->log('emergency', $message, $context);
+        $this->log('emergency', $message, $context);
     }
 
     /**
@@ -44,7 +44,7 @@ class Logger implements LoggerInterface
      */
     public function alert($message, array $context = [])
     {
-        return $this->log('alert', $message, $context);
+        $this->log('alert', $message, $context);
     }
 
     /**
@@ -54,7 +54,7 @@ class Logger implements LoggerInterface
      */
     public function critical($message, array $context = [])
     {
-        return $this->log('critical', $message, $context);
+        $this->log('critical', $message, $context);
     }
 
     /**
@@ -64,7 +64,7 @@ class Logger implements LoggerInterface
      */
     public function error($message, array $context = [])
     {
-        return $this->log('error', $message, $context);
+        $this->log('error', $message, $context);
     }
 
     /**
@@ -74,7 +74,7 @@ class Logger implements LoggerInterface
      */
     public function warning($message, array $context = [])
     {
-        return $this->log('warning', $message, $context);
+        $this->log('warning', $message, $context);
     }
 
     /**
@@ -84,7 +84,7 @@ class Logger implements LoggerInterface
      */
     public function notice($message, array $context = [])
     {
-        return $this->log('notice', $message, $context);
+        $this->log('notice', $message, $context);
     }
 
     /**
@@ -94,7 +94,7 @@ class Logger implements LoggerInterface
      */
     public function info($message, array $context = [])
     {
-        return $this->log('info', $message, $context);
+        $this->log('info', $message, $context);
     }
 
     /**
@@ -104,7 +104,7 @@ class Logger implements LoggerInterface
      */
     public function debug($message, array $context = [])
     {
-        return $this->log('debug', $message, $context);
+        $this->log('debug', $message, $context);
     }
 
     /**

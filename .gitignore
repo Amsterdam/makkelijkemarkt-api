@@ -30,6 +30,10 @@ composer.phar
 /mercato
 .tool-versions
 .vscode
+.idea
 ###< local dev env
 
-.idea
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
