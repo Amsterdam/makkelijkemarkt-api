@@ -14,11 +14,11 @@ class RapportControllerTest extends ApiTestCase
         /** @var DateTime $dt */
         $dt = new DateTime();
 
-        $response = $this->client->get('/api/1.1.0/rapport/dubbelstaan/' . $dt->format('Y-m-d'), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/rapport/dubbelstaan/'.$dt->format('Y-m-d'), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responseData = json_decode((string)$response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
 
         $expectedKeys = [
             'type',
@@ -44,13 +44,13 @@ class RapportControllerTest extends ApiTestCase
         $date = $dt->format('Y-m-d');
 
         $response = $this->client->get(
-            '/api/1.1.0/rapport/staanverplichting/' . $date . '/' . $date . '/vpl',
+            '/api/1.1.0/rapport/staanverplichting/'.$date.'/'.$date.'/vpl',
             ['headers' => $this->headers]
         );
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responseData = json_decode((string)$response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
 
         $expectedKeys = [
             'type',

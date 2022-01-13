@@ -73,14 +73,14 @@ class AccountControllerTest extends ApiTestCase
         $ut = '1461067200'; // = 2016-04-19T12:00:00+00:00 in ISO 8601
 
         /** @var string $naam */
-        $naam = $this->faker->firstName . ' ' . $this->faker->lastName;
+        $naam = $this->faker->firstName.' '.$this->faker->lastName;
 
         /** @var array<string, mixed> $dataAccount */
         $dataAccount = [
-            'username' => $this->faker->unique()->username . date('YmdHis'),
+            'username' => $this->faker->unique()->username.date('YmdHis'),
             'password' => 'plain',
             'naam' => $naam,
-            'email' => date('YmdHis') . $this->faker->unique()->email,
+            'email' => date('YmdHis').$this->faker->unique()->email,
             'role' => 'ROLE_SENIOR',
             'attempts' => 0,
             'last_attempt' => $this->faker->dateTimeBetween($ut, 'now'),
@@ -91,7 +91,7 @@ class AccountControllerTest extends ApiTestCase
         /** @var Account $account */
         $account = $this->createObject($dataAccount, new Account());
 
-        $response = $this->client->get('/api/1.1.0/account/' . $account->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/account/'.$account->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -114,7 +114,7 @@ class AccountControllerTest extends ApiTestCase
      */
     public function testGetAllWithFilterNaam(Account $account): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?naam=' . $account->getNaam() . '&listLength=10', [
+        $response = $this->client->get('/api/1.1.0/account/?naam='.$account->getNaam().'&listLength=10', [
             'headers' => $this->headers,
         ]);
 
@@ -185,14 +185,14 @@ class AccountControllerTest extends ApiTestCase
     {
         /** @var array<string, mixed> $dataAccount */
         $dataAccount = [
-            'naam' => $account->getNaam() . '-1',
-            'email' => 'a-' . $account->getEmail(),
-            'username' => 'a-' . $account->getUsername(),
+            'naam' => $account->getNaam().'-1',
+            'email' => 'a-'.$account->getEmail(),
+            'username' => 'a-'.$account->getUsername(),
             'role' => 'ROLE_ADMIN',
             'active' => false,
         ];
 
-        $response = $this->client->put('/api/1.1.0/account/' . $account->getId(), [
+        $response = $this->client->put('/api/1.1.0/account/'.$account->getId(), [
             'headers' => $this->headers,
             'body' => json_encode($dataAccount),
         ]);
@@ -214,13 +214,13 @@ class AccountControllerTest extends ApiTestCase
     public function testPost(): int
     {
         /** @var string $naam */
-        $naam = $this->faker->firstName . ' ' . $this->faker->lastName;
+        $naam = $this->faker->firstName.' '.$this->faker->lastName;
 
         /** @var array<string, mixed> $dataAccount */
         $dataAccount = [
             'naam' => $naam,
-            'email' => date('YmdHis') . $this->faker->unique()->email,
-            'username' => $this->faker->unique()->username . date('YmdHis'),
+            'email' => date('YmdHis').$this->faker->unique()->email,
+            'username' => $this->faker->unique()->username.date('YmdHis'),
             'password' => 'plain',
             'role' => 'ROLE_SENIOR',
         ];
@@ -258,7 +258,7 @@ class AccountControllerTest extends ApiTestCase
             'password' => 'plain',
         ];
 
-        $response = $this->client->put('/api/1.1.0/account_password/' . $accountId, [
+        $response = $this->client->put('/api/1.1.0/account_password/'.$accountId, [
             'headers' => $this->headers,
             'body' => json_encode($data),
         ]);
@@ -272,11 +272,11 @@ class AccountControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
         $accountData = reset($responseData);
 
-        $response = $this->client->post('/api/1.1.0/account/unlock/' . $accountData['id'], ['headers' => $this->headers]);
+        $response = $this->client->post('/api/1.1.0/account/unlock/'.$accountData['id'], ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $response = $this->client->get('/api/1.1.0/account/' . $accountData['id'], ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/account/'.$accountData['id'], ['headers' => $this->headers]);
         $accountData = json_decode((string) $response->getBody(), true);
 
         $this->assertFalse($accountData['locked']);

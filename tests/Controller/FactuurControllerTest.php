@@ -38,7 +38,7 @@ class FactuurControllerTest extends ApiTestCase
             'telefoon' => $this->faker->phoneNumber,
             'email' => $this->faker->email,
             'pasUid' => strtoupper($this->faker->slug(2)),
-            'erkenningsnummer' => 'x' . date('YmdHis'),
+            'erkenningsnummer' => 'x'.date('YmdHis'),
             'status' => -1, // Onbekend
         ];
 
@@ -48,7 +48,7 @@ class FactuurControllerTest extends ApiTestCase
         /** @var array<string, mixed> $dataMarkt */
         $dataMarkt = [
             'afkorting' => $this->faker->unique()->regexify('[A-Za-z0-9]{10}'),
-            'naam' => 'Markt Factuur ' . $dt->format('YmdHis'),
+            'naam' => 'Markt Factuur '.$dt->format('YmdHis'),
             'soort' => 'dag',
             'marktDagen' => ['ma', 'di'],
             'standaardKraamAfmeting' => $this->faker->numberBetween(20, 50),
@@ -61,9 +61,9 @@ class FactuurControllerTest extends ApiTestCase
         /** @var array<string, mixed> $dataTariefplan */
         $dataTariefplan = [
             'markt' => $markt,
-            'naam' => 'Tarieven Factuur ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => new DateTime($dt->format('Y') . '-01-01 00:00:00'),
-            'geldigTot' => new DateTime($dt->format('Y'). '-12-31 23:59:59'),
+            'naam' => 'Tarieven Factuur '.$dt->format('Y-m-d H:i:s'),
+            'geldigVanaf' => new DateTime($dt->format('Y').'-01-01 00:00:00'),
+            'geldigTot' => new DateTime($dt->format('Y').'-12-31 23:59:59'),
         ];
 
         /** @var Tariefplan $tariefplan */
@@ -100,7 +100,7 @@ class FactuurControllerTest extends ApiTestCase
             'registratie_datumtijd' => $dt,
             'erkenningsnummerInvoerWaarde' => 'factuur-unit-test',
             'aanwezig' => 'Vervanger zonder toestemming',
-            'doorgehaald' => false, # important for creating invoice!
+            'doorgehaald' => false, // important for creating invoice!
             'extraMeters' => 10,
             'notitie' => '----factuur controller testPostConcept----',
             'aanmaak_datumtijd' => $dt,
@@ -116,7 +116,7 @@ class FactuurControllerTest extends ApiTestCase
         /** @var Dagvergunning $dagvergunning */
         $dagvergunning = $this->createObject($dataDagvergunning, new Dagvergunning());
 
-        $response = $this->client->post('/api/1.1.0/factuur/concept/' . $dagvergunning->getId(), [
+        $response = $this->client->post('/api/1.1.0/factuur/concept/'.$dagvergunning->getId(), [
             'headers' => $this->headers,
         ]);
 
@@ -153,10 +153,10 @@ class FactuurControllerTest extends ApiTestCase
         /** @var DateTime $dt */
         $dt = new DateTime();
 
-        $dagStart = $dt->format('Y-m') . '-01';
+        $dagStart = $dt->format('Y-m').'-01';
         $dagEind = $dt->format('Y-m-t');
 
-        $response = $this->client->get('/api/1.1.0/report/factuur/overzicht/' . $dagStart . '/' . $dagEind, [
+        $response = $this->client->get('/api/1.1.0/report/factuur/overzicht/'.$dagStart.'/'.$dagEind, [
             'headers' => $this->headers,
         ]);
 
@@ -186,11 +186,11 @@ class FactuurControllerTest extends ApiTestCase
         /** @var DateTime $dt */
         $dt = new DateTime();
 
-        $dagStart = $dt->format('Y-m') . '-01';
+        $dagStart = $dt->format('Y-m').'-01';
         $dagEind = $dt->format('Y-m-t');
 
         $response = $this->client->get(
-            '/api/1.1.0/report/factuur/overzichtmarkt/' . $marktId . '/' . $dagStart . '/' . $dagEind,
+            '/api/1.1.0/report/factuur/overzichtmarkt/'.$marktId.'/'.$dagStart.'/'.$dagEind,
             [
                 'headers' => $this->headers,
             ]

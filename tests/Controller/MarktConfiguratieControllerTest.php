@@ -41,7 +41,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
         $this->assertEquals($response->getStatusCode(), 200);
         $this->assertEquals($body['marktId'], $markt->getId());
         // Should be a date string
-        $this->assertEquals((bool)strtotime($body['aanmaakDatumtijd']), true);
+        $this->assertEquals((bool) strtotime($body['aanmaakDatumtijd']), true);
         // These are json blobs, so we can't test any validation on the json (could look like anything)
         // So we just test if the json is processed correctly.
         $this->assertEquals($body['marktOpstelling']['testKey'], 1);
@@ -70,7 +70,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
     public function testMarktDoesNotExist()
     {
         $response = $this->client->get(
-            "/api/1.1.0/markt/-1/marktconfiguratie/latest",
+            '/api/1.1.0/markt/-1/marktconfiguratie/latest',
             ['headers' => $this->headers, 'http_errors' => false]
         );
 
@@ -95,7 +95,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
 
         $response = $this->client->post("/api/1.1.0/markt/{$markt->getId()}/marktconfiguratie", [
             'headers' => $this->headers,
-            'body' => $configuratieData
+            'body' => $configuratieData,
         ]);
 
         $body = json_decode($response->getBody()->getContents(), true);
@@ -104,7 +104,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
 
         $this->assertEquals($body['marktId'], $markt->getId());
         // Should be a date string
-        $this->assertEquals((bool)strtotime($body['aanmaakDatumtijd']), true);
+        $this->assertEquals((bool) strtotime($body['aanmaakDatumtijd']), true);
         // These are json blobs, so we can't test any validation on the json (could look like anything)
         // So we just test if the json is processed correctly.
         $this->assertEquals($body['marktOpstelling']['9'], 10);
@@ -116,10 +116,10 @@ class MarktConfiguratieControllerTest extends ApiTestCase
 
     public function testPostMarktDoesNotExist()
     {
-        $response = $this->client->post("/api/1.1.0/markt/-1/marktconfiguratie", [
+        $response = $this->client->post('/api/1.1.0/markt/-1/marktconfiguratie', [
             'headers' => $this->headers,
             'body' => '',
-            'http_errors' => false
+            'http_errors' => false,
         ]);
 
         $this->assertEquals($response->getStatusCode(), 404);
@@ -145,7 +145,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
         $response = $this->client->post("/api/1.1.0/markt/{$markt->getId()}/marktconfiguratie", [
             'headers' => $this->headers,
             'body' => $configuratieData,
-            'http_errors' => false
+            'http_errors' => false,
         ]);
 
         $this->assertEquals($response->getStatusCode(), 400);

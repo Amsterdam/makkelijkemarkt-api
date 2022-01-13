@@ -160,7 +160,7 @@ class VergunningControleControllerTest extends ApiTestCase
             'ronde' => 3,
         ];
 
-        $response = $this->client->put('/api/1.1.0/controle/' . $vergunningControleId, [
+        $response = $this->client->put('/api/1.1.0/controle/'.$vergunningControleId, [
             'headers' => $this->headers,
             'body' => json_encode($dataVergunningControle),
         ]);

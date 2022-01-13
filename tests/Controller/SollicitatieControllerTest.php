@@ -27,7 +27,7 @@ class SollicitatieControllerTest extends ApiTestCase
             'soort' => Markt::SOORT_DAG,
         ]);
 
-        $response = $this->client->get('/api/1.1.0/sollicitaties/markt/' . $markt->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/sollicitaties/markt/'.$markt->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -92,7 +92,7 @@ class SollicitatieControllerTest extends ApiTestCase
             'soort' => Markt::SOORT_DAG,
         ]);
 
-        $response = $this->client->get('/api/1.1.0/sollicitaties/markt/' . $markt->getId() . '?listLength=1', ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/sollicitaties/markt/'.$markt->getId().'?listLength=1', ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertGreaterThan(1, $response->getHeader('x-api-listsize'));
@@ -143,7 +143,7 @@ class SollicitatieControllerTest extends ApiTestCase
         /** @var Sollicitatie $sollicitatie */
         $sollicitatie = $this->createObject($dataSollicitatie, new Sollicitatie());
 
-        $response = $this->client->get('/api/1.1.0/sollicitaties/id/' . $sollicitatie->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/sollicitaties/id/'.$sollicitatie->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 

@@ -30,7 +30,6 @@ class MarktConfiguratieRepositoryTest extends ApiTestCase
 
     public function testFindLatest()
     {
-
         $marktConfiguratie = new MarktConfiguratie();
         $marktConfiguratie2 = new MarktConfiguratie();
 

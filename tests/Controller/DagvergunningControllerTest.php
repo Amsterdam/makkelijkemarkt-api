@@ -121,7 +121,7 @@ class DagvergunningControllerTest extends ApiTestCase
 
         /** @var Tariefplan $tariefplan */
         $tariefplan = $tariefplanRepository->findOneBy([
-            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'naam' => 'Tarieven '.$dt->format('Y'),
             'concreetplan' => null,
         ]);
 
@@ -153,7 +153,7 @@ class DagvergunningControllerTest extends ApiTestCase
         /** @var Dagvergunning $dagvergunning */
         $dagvergunning = $this->createObject($dataDagvergunning, new Dagvergunning());
 
-        $response = $this->client->get('/api/1.1.0/dagvergunning/' . $dagvergunning->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/dagvergunning/'.$dagvergunning->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -200,7 +200,7 @@ class DagvergunningControllerTest extends ApiTestCase
 
         /** @var Tariefplan $tariefplan */
         $tariefplan = $tariefplanRepository->findOneBy([
-            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'naam' => 'Tarieven '.$dt->format('Y'),
             'concreetplan' => null,
         ]);
 
@@ -249,7 +249,7 @@ class DagvergunningControllerTest extends ApiTestCase
             'eenmalige elektra',
             'promotiegelden per koopman',
             'promotiegelden per meter',
-            'afvaleiland'
+            'afvaleiland',
         ];
 
         foreach ($expectedNames as $key => $name) {
@@ -274,7 +274,7 @@ class DagvergunningControllerTest extends ApiTestCase
 
         /** @var Tariefplan $tariefplan */
         $tariefplan = $tariefplanRepository->findOneBy([
-            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'naam' => 'Tarieven '.$dt->format('Y'),
             'concreetplan' => null,
         ]);
 
@@ -389,7 +389,7 @@ class DagvergunningControllerTest extends ApiTestCase
 
         /** @var Tariefplan $tariefplan */
         $tariefplan = $tariefplanRepository->findOneBy([
-            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'naam' => 'Tarieven '.$dt->format('Y'),
             'lineairplan' => null,
         ]);
 
@@ -541,16 +541,16 @@ class DagvergunningControllerTest extends ApiTestCase
 
         $data = [
             'marktId' => $dagvergunning->getMarkt()->getId(),
-            'dag' => date('Y') . '-02-02',
+            'dag' => date('Y').'-02-02',
             'erkenningsnummer' => 'somethingnew',
             'aanwezig' => 'zelf',
-            'doorgehaaldDatumtijd' => date('Y') . '-05-02 10:11:12',
+            'doorgehaaldDatumtijd' => date('Y').'-05-02 10:11:12',
             'doorgehaaldGeolocatie' => '55.22, 77.12',
             'aantal3MeterKramen' => 45,
             'aantal4MeterKramen' => 44,
         ];
 
-        $response = $this->client->put('/api/1.1.0/dagvergunning/' . $dagvergunning->getId(), [
+        $response = $this->client->put('/api/1.1.0/dagvergunning/'.$dagvergunning->getId(), [
             'headers' => $this->headers,
             'body' => json_encode($data),
         ]);
@@ -568,7 +568,7 @@ class DagvergunningControllerTest extends ApiTestCase
      */
     public function testDelete(int $id): void
     {
-        $response = $this->client->delete('/api/1.1.0/dagvergunning/' . $id, ['headers' => $this->headers]);
+        $response = $this->client->delete('/api/1.1.0/dagvergunning/'.$id, ['headers' => $this->headers]);
 
         /** @var DagvergunningRepository $dagvergunningRepository */
         $dagvergunningRepository = $this->entityManager->getRepository(Dagvergunning::class);
@@ -592,11 +592,11 @@ class DagvergunningControllerTest extends ApiTestCase
     public function testDeleteWithParameters(int $id): void
     {
         $data = [
-            'doorgehaaldDatumtijd' => date('Y') . '-03-02 10:11:12',
+            'doorgehaaldDatumtijd' => date('Y').'-03-02 10:11:12',
             'doorgehaaldGeolocatie' => '1234.22, 87654.12',
         ];
 
-        $response = $this->client->delete('/api/1.1.0/dagvergunning/' . $id, [
+        $response = $this->client->delete('/api/1.1.0/dagvergunning/'.$id, [
             'headers' => $this->headers,
             'body' => json_encode($data),
         ]);
@@ -624,10 +624,10 @@ class DagvergunningControllerTest extends ApiTestCase
 
         /** @var DateTime $dt */
         $dt = new DateTime();
-        $startDate = $dt->format('Y-m-') . '01';
+        $startDate = $dt->format('Y-m-').'01';
         $endDate = $dt->format('Y-m-t');
 
-        $response = $this->client->get('/api/1.1.0/dagvergunning_by_date/' . $koopman->getId() . '/' . $startDate . '/' . $endDate, [
+        $response = $this->client->get('/api/1.1.0/dagvergunning_by_date/'.$koopman->getId().'/'.$startDate.'/'.$endDate, [
             'headers' => $this->headers,
         ]);
 

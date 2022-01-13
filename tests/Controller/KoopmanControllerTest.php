@@ -62,14 +62,14 @@ class KoopmanControllerTest extends ApiTestCase
             'telefoon' => $this->faker->phoneNumber,
             'email' => $this->faker->email,
             'pasUid' => strtoupper($this->faker->slug(2)),
-            'erkenningsnummer' => 'r' . date('YmdHis'),
+            'erkenningsnummer' => 'r'.date('YmdHis'),
             'status' => 1, // Actief
         ];
 
         /** @var Koopman $koopman */
         $koopman = $this->createObject($dataKoopman, new Koopman());
 
-        $response = $this->client->get('/api/1.1.0/koopman/id/' . $koopman->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/koopman/id/'.$koopman->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -92,7 +92,7 @@ class KoopmanControllerTest extends ApiTestCase
      */
     public function testGetAllWithFilterNaam(Koopman $koopman): void
     {
-        $response = $this->client->get('/api/1.1.0/koopman/?achternaam=' . $koopman->getAchternaam() . '&listLength=10', [
+        $response = $this->client->get('/api/1.1.0/koopman/?achternaam='.$koopman->getAchternaam().'&listLength=10', [
             'headers' => $this->headers,
         ]);
 
@@ -139,14 +139,14 @@ class KoopmanControllerTest extends ApiTestCase
             'telefoon' => $this->faker->phoneNumber,
             'email' => $this->faker->email,
             'pasUid' => strtoupper($this->faker->slug(2)),
-            'erkenningsnummer' => 'e' . date('YmdHis'),
+            'erkenningsnummer' => 'e'.date('YmdHis'),
             'status' => -1, // Onbekend
         ];
 
         /** @var Koopman $koopman */
         $koopman = $this->createObject($dataKoopman, new Koopman());
 
-        $response = $this->client->get('/api/1.1.0/koopman/erkenningsnummer/' . $koopman->getErkenningsnummer(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/koopman/erkenningsnummer/'.$koopman->getErkenningsnummer(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -171,14 +171,14 @@ class KoopmanControllerTest extends ApiTestCase
             'telefoon' => $this->faker->phoneNumber,
             'email' => $this->faker->email,
             'pasUid' => strtoupper($this->faker->slug(2)),
-            'erkenningsnummer' => 'c' . date('YmdHis'),
+            'erkenningsnummer' => 'c'.date('YmdHis'),
             'status' => -1, // Onbekend
         ];
 
         /** @var Koopman $koopman */
         $koopman = $this->createObject($dataKoopman, new Koopman());
 
-        $response = $this->client->get('/api/1.1.0/koopman/pasuid/' . $koopman->getPasUid(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/koopman/pasuid/'.$koopman->getPasUid(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -204,7 +204,7 @@ class KoopmanControllerTest extends ApiTestCase
             'telefoon' => $this->faker->phoneNumber,
             'email' => $this->faker->email,
             'pasUid' => strtoupper($this->faker->slug(2)),
-            'erkenningsnummer' => 'x' . date('YmdHis'),
+            'erkenningsnummer' => 'x'.date('YmdHis'),
             'status' => -1, // Onbekend
         ];
 
@@ -215,7 +215,7 @@ class KoopmanControllerTest extends ApiTestCase
         $dt = new DateTime();
         $toggleDate = $dt->format('Y-m-d');
 
-        $response = $this->client->post('/api/1.1.0/koopman/toggle_handhavingsverzoek/' .  $koopman->getId() . '/' . $toggleDate, ['headers' => $this->headers]);
+        $response = $this->client->post('/api/1.1.0/koopman/toggle_handhavingsverzoek/'.$koopman->getId().'/'.$toggleDate, ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 

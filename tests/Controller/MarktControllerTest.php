@@ -45,7 +45,7 @@ class MarktControllerTest extends ApiTestCase
             'telefoonNummerContact',
             'makkelijkeMarktActief',
             'indelingstype',
-            'isABlijstIndeling'
+            'isABlijstIndeling',
         ];
 
         foreach ($expectedKeys as $expectedKey) {
@@ -114,7 +114,7 @@ class MarktControllerTest extends ApiTestCase
         /** @var Markt $markt */
         $markt = $this->createObject($dataMarkt, new Markt());
 
-        $response = $this->client->get('/api/1.1.0/markt/' . $markt->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/markt/'.$markt->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -155,10 +155,9 @@ class MarktControllerTest extends ApiTestCase
             'indelingstype' => 'traditioneel',
             'marktBeeindigd' => false,
             'marktDagen' => [],
-
         ];
 
-        $response = $this->client->post('/api/1.1.0/markt/' . $markt->getId(), [
+        $response = $this->client->post('/api/1.1.0/markt/'.$markt->getId(), [
             'headers' => $this->headers,
             'body' => json_encode($dataMarkt),
         ]);

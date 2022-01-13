@@ -31,7 +31,7 @@ class NotitieControllerTest extends ApiTestCase
         $dataNotitie = [
             'markt' => $markt,
             'dag' => $dt,
-            'bericht' => 'TestGetById: ' . implode(' ', (array) $this->faker->words(10)),
+            'bericht' => 'TestGetById: '.implode(' ', (array) $this->faker->words(10)),
             'aangemaakt_datumtijd' => $dt,
             'afgevinkt_status' => false,
             'verwijderd' => false,
@@ -40,7 +40,7 @@ class NotitieControllerTest extends ApiTestCase
         /** @var Notitie $notitie */
         $notitie = $this->createObject($dataNotitie, new Notitie());
 
-        $response = $this->client->get('/api/1.1.0/notitie/' . $notitie->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/notitie/'.$notitie->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -67,7 +67,7 @@ class NotitieControllerTest extends ApiTestCase
         /** @var string $day */
         $day = $notitie->getDag()->format('Y-m-d');
 
-        $response = $this->client->get('/api/1.1.0/notitie/' . $markt->getId() . '/' . $day, [
+        $response = $this->client->get('/api/1.1.0/notitie/'.$markt->getId().'/'.$day, [
             'headers' => $this->headers,
         ]);
 
@@ -118,9 +118,9 @@ class NotitieControllerTest extends ApiTestCase
         $dataNotitie = [
             'marktId' => $markt->getId(),
             'dag' => $dt->format('Y-m-d'),
-            'bericht' => 'TestPost: ' . implode(' ', (array) $this->faker->words(10)),
+            'bericht' => 'TestPost: '.implode(' ', (array) $this->faker->words(10)),
             'afgevinkt' => true,
-            'aangemaaktGeolocatie' => $this->faker->randomNumber(5) . ',' . $this->faker->randomNumber(4),
+            'aangemaaktGeolocatie' => $this->faker->randomNumber(5).','.$this->faker->randomNumber(4),
         ];
 
         $response = $this->client->post('/api/1.1.0/notitie/', [
@@ -177,11 +177,11 @@ class NotitieControllerTest extends ApiTestCase
     {
         /** @var array<string, mixed> $dataNotitie */
         $dataNotitie = [
-            'bericht' => 'testPutWithAfgevinktFalse: ' . implode(' ', (array) $this->faker->words(10)),
+            'bericht' => 'testPutWithAfgevinktFalse: '.implode(' ', (array) $this->faker->words(10)),
             'afgevinkt' => false,
         ];
 
-        $response = $this->client->put('/api/1.1.0/notitie/' . $notitieId, [
+        $response = $this->client->put('/api/1.1.0/notitie/'.$notitieId, [
             'headers' => $this->headers,
             'body' => json_encode($dataNotitie),
         ]);
@@ -205,11 +205,11 @@ class NotitieControllerTest extends ApiTestCase
 
         /** @var array<string, mixed> $dataNotitie */
         $dataNotitie = [
-            'bericht' => 'testPutWithAfgevinktTrue: ' . implode(' ', (array) $this->faker->words(10)),
+            'bericht' => 'testPutWithAfgevinktTrue: '.implode(' ', (array) $this->faker->words(10)),
             'afgevinkt' => true,
         ];
 
-        $response = $this->client->put('/api/1.1.0/notitie/' . $notitieId, [
+        $response = $this->client->put('/api/1.1.0/notitie/'.$notitieId, [
             'headers' => $this->headers,
             'body' => json_encode($dataNotitie),
         ]);
@@ -228,7 +228,7 @@ class NotitieControllerTest extends ApiTestCase
      */
     public function testDelete(int $id): void
     {
-        $response = $this->client->delete('/api/1.1.0/notitie/' . $id, ['headers' => $this->headers]);
+        $response = $this->client->delete('/api/1.1.0/notitie/'.$id, ['headers' => $this->headers]);
 
         /** @var NotitieRepository $notitieRepository */
         $notitieRepository = $this->entityManager->getRepository(Notitie::class);

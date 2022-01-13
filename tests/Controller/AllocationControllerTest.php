@@ -5,13 +5,12 @@ namespace App\Tests;
 use App\Entity\Allocation;
 use App\Entity\Koopman;
 use App\Test\ApiTestCase;
-use PHPUnit\Framework\TestCase;
 
 class AllocationControllerTest extends ApiTestCase
 {
     private $indeling;
     private Koopman $allocationKoopman;
-
+    private $koopmannen;
 
     protected function setUp(): void
     {
@@ -20,7 +19,7 @@ class AllocationControllerTest extends ApiTestCase
         $em = $this->entityManager;
         $rep = $em->getRepository(Koopman::class);
 
-        $indeling = ["afwijzingen" => [], "toewijzingen" => []];
+        $indeling = ['afwijzingen' => [], 'toewijzingen' => []];
         $kp_1 = $rep->find(5);
         $kp_2 = $rep->find(6);
         $kp_3 = $rep->find(7);
@@ -28,26 +27,26 @@ class AllocationControllerTest extends ApiTestCase
         $this->koopmannen = $entities;
         foreach ($entities as $koopman) {
             $alloc = [];
-            $alloc["marktId"] = "1";
-            $alloc["marktDate"] = "2021-12-31";
-            $alloc["erkenningsNummer"] = $koopman->getErkenningsNummer();
-            $alloc["ondernemer"] = array(
-                "description" => $koopman->getAchternaam(),
-                "erkenningsNummer" => $koopman->getErkenningsnummer(),
-                "status" => "soll",
-                "sollicitatieNummer" => $koopman->getPerfectViewNummer(),
-                "plaatsen" => [],
-                "voorkeur" => ["brancheId" => "101-agf",
-                    "anywhere" => true,
-                    "maximum" => 2, "minimum" => 1, 'parentBrancheId' => true, 'verkoopinrichting' => []],
-            );
-            if ($koopman->getId() == 5) {
+            $alloc['marktId'] = '1';
+            $alloc['marktDate'] = '2021-12-31';
+            $alloc['erkenningsNummer'] = $koopman->getErkenningsNummer();
+            $alloc['ondernemer'] = [
+                'description' => $koopman->getAchternaam(),
+                'erkenningsNummer' => $koopman->getErkenningsnummer(),
+                'status' => 'soll',
+                'sollicitatieNummer' => $koopman->getPerfectViewNummer(),
+                'plaatsen' => [],
+                'voorkeur' => ['brancheId' => '101-agf',
+                    'anywhere' => true,
+                    'maximum' => 2, 'minimum' => 1, 'parentBrancheId' => true, 'verkoopinrichting' => [], ],
+            ];
+            if (5 == $koopman->getId()) {
                 $this->allocationKoopman = $koopman;
-                $alloc["plaatsen"] = ["1", "2"];
-                $indeling["toewijzingen"][] = $alloc;
+                $alloc['plaatsen'] = ['1', '2'];
+                $indeling['toewijzingen'][] = $alloc;
             } else {
-                $alloc["reason"] = ["code" => 2, "message" => "Geen geschikte locatie"];
-                $indeling["afwijzingen"][] = $alloc;
+                $alloc['reason'] = ['code' => 2, 'message' => 'Geen geschikte locatie'];
+                $indeling['afwijzingen'][] = $alloc;
             }
         }
         $json = json_encode($indeling);
@@ -70,20 +69,20 @@ class AllocationControllerTest extends ApiTestCase
         $response = $this->client->get('/api/1.1.0/allocation/DAPP/2021-12-31', ['headers' => $this->headers]);
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responseData = json_decode((string)$response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
         $this->assertEquals(3, count($responseData));
 
         $allocation_found = false;
         $rejection_found = false;
         foreach ($responseData as $result) {
-            if ($result["koopman"] == $this->allocationKoopman->getErkenningsnummer()) {
+            if ($result['koopman'] == $this->allocationKoopman->getErkenningsnummer()) {
                 // assert toewijzing
-                $this->assertEquals("1", $result["plaatsen"][0]);
-                $this->assertEquals("2", $result["plaatsen"][1]);
+                $this->assertEquals('1', $result['plaatsen'][0]);
+                $this->assertEquals('2', $result['plaatsen'][1]);
                 $allocation_found = true;
             } else {
                 $rejection_found = true;
-                $this->assertFalse($result["isAllocated"]);
+                $this->assertFalse($result['isAllocated']);
             }
         }
         $this->assertTrue($allocation_found);

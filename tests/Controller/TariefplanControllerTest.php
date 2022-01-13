@@ -24,14 +24,14 @@ class TariefplanControllerTest extends ApiTestCase
 
         /** @var Tariefplan $tariefplan */
         $tariefplan = $tariefplanRepository->findOneBy([
-            'naam' => 'Tarieven ' . $dt->format('Y'),
+            'naam' => 'Tarieven '.$dt->format('Y'),
             'concreetplan' => null,
         ]);
 
         /** @var Markt $markt */
         $markt = $tariefplan->getMarkt();
 
-        $response = $this->client->get('/api/1.1.0/tariefplannen/list/' . $markt->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/tariefplannen/list/'.$markt->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -82,19 +82,19 @@ class TariefplanControllerTest extends ApiTestCase
         /** @var array<string, mixed> $dataTariefplan */
         $dataTariefplan = [
             'markt' => $markt,
-            'naam' => 'Tarieven ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => new DateTime($dt->format('Y') . '-01-01 00:00:00'),
-            'geldigTot' => new DateTime($dt->format('Y'). '-12-31 23:59:59'),
+            'naam' => 'Tarieven '.$dt->format('Y-m-d H:i:s'),
+            'geldigVanaf' => new DateTime($dt->format('Y').'-01-01 00:00:00'),
+            'geldigTot' => new DateTime($dt->format('Y').'-12-31 23:59:59'),
         ];
 
         /** @var Tariefplan $tariefplan */
         $tariefplan = $this->createObject($dataTariefplan, new Tariefplan());
 
-        $response = $this->client->get('/api/1.1.0/tariefplannen/get/' . $tariefplan->getId(), ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/tariefplannen/get/'.$tariefplan->getId(), ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $tariefplanData = json_decode((string)$response->getBody(), true);
+        $tariefplanData = json_decode((string) $response->getBody(), true);
 
         $expectedKeys = [
             'id',
@@ -126,9 +126,9 @@ class TariefplanControllerTest extends ApiTestCase
 
         /** @var array<string, mixed> $data */
         $data = [
-            'naam' => 'Tarieven ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => ['date' => $dt->format('Y') . '-01-01 00:00:00'],
-            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 23:59:59'],
+            'naam' => 'Tarieven '.$dt->format('Y-m-d H:i:s'),
+            'geldigVanaf' => ['date' => $dt->format('Y').'-01-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y').'-12-31 23:59:59'],
             'een_meter' => 3.00,
             'drie_meter' => 3.01,
             'vier_meter' => 3.02,
@@ -139,14 +139,14 @@ class TariefplanControllerTest extends ApiTestCase
             'eenmaligElektra' => 3.08,
         ];
 
-        $response = $this->client->post('/api/1.1.0/tariefplannen/' . $markt->getId() . '/create/concreet', [
+        $response = $this->client->post('/api/1.1.0/tariefplannen/'.$markt->getId().'/create/concreet', [
             'headers' => $this->headers,
             'body' => json_encode($data),
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responseData = json_decode((string)$response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
 
         $expectedKeys = [
             'id',
@@ -192,9 +192,9 @@ class TariefplanControllerTest extends ApiTestCase
 
         /** @var array<string, mixed> $data */
         $data = [
-            'naam' => 'Tarieven ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => ['date' => $dt->format('Y') . '-01-01 00:00:00'],
-            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 23:59:59'],
+            'naam' => 'Tarieven '.$dt->format('Y-m-d H:i:s'),
+            'geldigVanaf' => ['date' => $dt->format('Y').'-01-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y').'-12-31 23:59:59'],
             'tariefPerMeter' => 1.00,
             'reinigingPerMeter' => 1.01,
             'toeslagBedrijfsafvalPerMeter' => 1.02,
@@ -206,14 +206,14 @@ class TariefplanControllerTest extends ApiTestCase
             'eenmaligElektra' => 1.08,
         ];
 
-        $response = $this->client->post('/api/1.1.0/tariefplannen/' . $markt->getId() . '/create/lineair', [
+        $response = $this->client->post('/api/1.1.0/tariefplannen/'.$markt->getId().'/create/lineair', [
             'headers' => $this->headers,
             'body' => json_encode($data),
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responseData = json_decode((string)$response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
 
         $expectedKeys = [
             'id',
@@ -253,9 +253,9 @@ class TariefplanControllerTest extends ApiTestCase
 
         /** @var array<string, mixed> $data */
         $data = [
-            'naam' => 'Tarieven ' . $dt->format('Y'),
-            'geldigVanaf' => ['date' => $dt->format('Y') . '-02-01 00:00:00'],
-            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 22:59:59'],
+            'naam' => 'Tarieven '.$dt->format('Y'),
+            'geldigVanaf' => ['date' => $dt->format('Y').'-02-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y').'-12-31 22:59:59'],
             'een_meter' => 13.00,
             'drie_meter' => 13.01,
             'vier_meter' => 13.02,
@@ -266,14 +266,14 @@ class TariefplanControllerTest extends ApiTestCase
             'eenmaligElektra' => 13.08,
         ];
 
-        $response = $this->client->post('/api/1.1.0/tariefplannen/' . $id . '/update/concreet', [
+        $response = $this->client->post('/api/1.1.0/tariefplannen/'.$id.'/update/concreet', [
             'headers' => $this->headers,
             'body' => json_encode($data),
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responseData = json_decode((string)$response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
 
         $expectedKeys = [
             'id',
@@ -311,9 +311,9 @@ class TariefplanControllerTest extends ApiTestCase
 
         /** @var array<string, mixed> $data */
         $data = [
-            'naam' => 'Tarieven update ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => ['date' => $dt->format('Y') . '-01-01 00:00:00'],
-            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 23:59:59'],
+            'naam' => 'Tarieven update '.$dt->format('Y-m-d H:i:s'),
+            'geldigVanaf' => ['date' => $dt->format('Y').'-01-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y').'-12-31 23:59:59'],
             'tariefPerMeter' => 11.00,
             'reinigingPerMeter' => 11.01,
             'toeslagBedrijfsafvalPerMeter' => 11.02,
@@ -325,14 +325,14 @@ class TariefplanControllerTest extends ApiTestCase
             'eenmaligElektra' => 11.08,
         ];
 
-        $response = $this->client->post('/api/1.1.0/tariefplannen/' . $id . '/update/lineair', [
+        $response = $this->client->post('/api/1.1.0/tariefplannen/'.$id.'/update/lineair', [
             'headers' => $this->headers,
             'body' => json_encode($data),
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responseData = json_decode((string)$response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
 
         $expectedKeys = [
             'id',
@@ -365,7 +365,7 @@ class TariefplanControllerTest extends ApiTestCase
      */
     public function testDelete(int $id): void
     {
-        $response = $this->client->delete('/api/1.1.0/tariefplannen/delete/' . $id, ['headers' => $this->headers]);
+        $response = $this->client->delete('/api/1.1.0/tariefplannen/delete/'.$id, ['headers' => $this->headers]);
 
         /** @var TariefplanRepository $tariefplanRepository */
         $tariefplanRepository = $this->entityManager
