@@ -236,74 +236,28 @@ class DagvergunningControllerTest extends ApiTestCase
 
         $responseData = json_decode((string) $response->getBody(), true);
 
-        foreach ($dataDagvergunning as $key => $val) {
-            if (
-                'marktId' !== $key &&
-                'dag' !== $key &&
-                'registratieDatumtijd' !== $key &&
-                'registratieGeolocatie' !== $key
-            ) {
-                $this->assertEquals($val, $responseData[$key]);
-            }
-        }
-
-        $expectedDates = [
-            'registratieDatumtijd',
-            'aanmaakDatumtijd',
-        ];
-
-        /** @var DateTime $dt */
-        $dt = new DateTime();
-
-        foreach ($expectedDates as $key) {
-            $this->assertStringStartsWith($dt->format('Y-m-d'), $responseData[$key]);
-        }
-
-        $this->assertEquals($dt->format('Y-m-d'), $responseData['dag']);
-
-        $extraParameterValues = [
-            'verwijderdDatumtijd' => null,
-            'doorgehaaldDatumtijd' => null,
-            'doorgehaaldAccount' => null,
-            'audit' => false,
-            'loten' => 0,
-            'auditReason' => null,
-            'eenmaligElektra' => true,
-        ];
-
-        foreach ($extraParameterValues as $key => $val) {
-            $this->assertEquals($val, $responseData[$key]);
-        }
-
-        $extraParameters = [
-            'totaleLengte',
-            'aanmaakDatumtijd',
-            'koopman',
-            'markt',
-        ];
-
-        foreach ($extraParameters as $key) {
-            $this->assertArrayHasKey($key, $responseData);
-        }
-
-        $expectedArrays = [
-            'markt',
-            'factuur',
-            'registratieGeolocatie',
-        ];
-
-        foreach ($expectedArrays as $expectedArray) {
-            $this->assertIsArray($responseData[$expectedArray]);
-        }
-
-        /** @var string $registratieGeolocatie */
-        $registratieGeolocatie = explode(',', $dataDagvergunning['registratieGeolocatie']);
-        $this->assertEquals($registratieGeolocatie[0], $responseData['registratieGeolocatie'][0]);
-        $this->assertEquals($registratieGeolocatie[1], $responseData['registratieGeolocatie'][1]);
-
-        // and now the distinction to "just" postDagvergunning
+        $this->assertCount(8, $responseData['producten']);
         $this->assertNull($responseData['id']);
-        $this->assertNull($responseData['factuur']['id']);
+        $this->assertGreaterThan(0, $responseData['totaal']);
+        $this->assertGreaterThan(0, $responseData['exclusief']);
+
+        $expectedNames = [
+            '4 meter plaats',
+            '3 meter plaats',
+            'extra meter',
+            'elektra',
+            'eenmalige elektra',
+            'promotiegelden per koopman',
+            'promotiegelden per meter',
+            'afvaleiland'
+        ];
+
+        foreach ($expectedNames as $key => $name) {
+            $product = $responseData['producten'][$key];
+            // Should not be saved, so no ID
+            $this->assertNull($product['id']);
+            $this->assertEquals($name, $product['naam']);
+        }
     }
 
     /**

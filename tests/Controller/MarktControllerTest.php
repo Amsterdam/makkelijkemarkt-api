@@ -152,7 +152,10 @@ class MarktControllerTest extends ApiTestCase
             'marktDagenTekst' => 'makrtdaten text',
             'indelingsTijdstipTekst' => 'tijdstip text',
             'telefoonNummerContact' => null,
-            'indelingstype' => 'traditioneel'
+            'indelingstype' => 'traditioneel',
+            'marktBeeindigd' => false,
+            'marktDagen' => [],
+
         ];
 
         $response = $this->client->post('/api/1.1.0/markt/' . $markt->getId(), [

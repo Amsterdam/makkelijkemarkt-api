@@ -94,16 +94,8 @@ class AllocationController extends AbstractController
             $branche = $this->brancheRepository->findOneByAfkorting("000-EMPTY");
         }
 
-        if ($parentBrancheId == 'bak') {
-            $isBak = true;
-        } else {
-            $isBak = false;
-        }
-        if (isset($inrichting) > 0 && in_array('eigen-materieel', $inrichting) ) {
-            $hasInrichting = true;
-        } else {
-            $hasInrichting = false;
-        }
+        $isBak = $parentBrancheId === 'bak';
+        $hasInrichting = is_array($inrichting) && in_array('eigen-materieel', $inrichting);
 
         if ($isAllocated){
             if ( isset($plaatsen) ) {
@@ -267,7 +259,6 @@ class AllocationController extends AbstractController
         $this->entityManager->flush();
 
         $response = $this->serializer->serialize($allocations, 'json');
-
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 

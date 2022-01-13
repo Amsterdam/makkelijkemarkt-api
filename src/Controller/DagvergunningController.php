@@ -273,7 +273,7 @@ final class DagvergunningController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="",
-     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Dagvergunning"))
+     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Factuur"))
      *     ),
      *     @OA\Response(
      *         response="400",

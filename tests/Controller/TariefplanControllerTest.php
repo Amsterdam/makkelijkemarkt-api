@@ -127,8 +127,8 @@ class TariefplanControllerTest extends ApiTestCase
         /** @var array<string, mixed> $data */
         $data = [
             'naam' => 'Tarieven ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => $dt->format('Y') . '-01-01 00:00:00',
-            'geldigTot' => $dt->format('Y'). '-12-31 23:59:59',
+            'geldigVanaf' => ['date' => $dt->format('Y') . '-01-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 23:59:59'],
             'een_meter' => 3.00,
             'drie_meter' => 3.01,
             'vier_meter' => 3.02,
@@ -193,8 +193,8 @@ class TariefplanControllerTest extends ApiTestCase
         /** @var array<string, mixed> $data */
         $data = [
             'naam' => 'Tarieven ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => $dt->format('Y') . '-01-01 00:00:00',
-            'geldigTot' => $dt->format('Y'). '-12-31 23:59:59',
+            'geldigVanaf' => ['date' => $dt->format('Y') . '-01-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 23:59:59'],
             'tariefPerMeter' => 1.00,
             'reinigingPerMeter' => 1.01,
             'toeslagBedrijfsafvalPerMeter' => 1.02,
@@ -254,8 +254,8 @@ class TariefplanControllerTest extends ApiTestCase
         /** @var array<string, mixed> $data */
         $data = [
             'naam' => 'Tarieven ' . $dt->format('Y'),
-            'geldigVanaf' => $dt->format('Y') . '-02-01 00:00:00',
-            'geldigTot' => $dt->format('Y'). '-12-31 22:59:59',
+            'geldigVanaf' => ['date' => $dt->format('Y') . '-02-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 22:59:59'],
             'een_meter' => 13.00,
             'drie_meter' => 13.01,
             'vier_meter' => 13.02,
@@ -312,8 +312,8 @@ class TariefplanControllerTest extends ApiTestCase
         /** @var array<string, mixed> $data */
         $data = [
             'naam' => 'Tarieven update ' . $dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => $dt->format('Y') . '-01-01 00:00:00',
-            'geldigTot' => $dt->format('Y'). '-12-31 23:59:59',
+            'geldigVanaf' => ['date' => $dt->format('Y') . '-01-01 00:00:00'],
+            'geldigTot' => ['date' => $dt->format('Y'). '-12-31 23:59:59'],
             'tariefPerMeter' => 11.00,
             'reinigingPerMeter' => 11.01,
             'toeslagBedrijfsafvalPerMeter' => 11.02,
