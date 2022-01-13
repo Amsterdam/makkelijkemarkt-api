@@ -1,7 +1,8 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in('src')
+    ->in('.')
+    ->exclude(['vendor', 'var'])
 ;
 
 $config = new PhpCsFixer\Config();

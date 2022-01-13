@@ -1,7 +1,0 @@
-grumphp:
-    tasks:
-      phpcsfixer2:
-        config: ".php_cs"
-      phpstan:
-        memory_limit: "-1"
-      phpunit: ~
