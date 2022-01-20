@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataFixtures;
@@ -8,7 +9,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class PlaatseigenschapFixture extends BaseFixture
 {
-
     protected function loadData(ObjectManager $manager): void
     {
         $obstakel = new Plaatseigenschap();

@@ -6,12 +6,12 @@ use App\Entity\Plaatseigenschap;
 
 class PlaatseigenschapControllerTest extends AbstractBasicControllerTest
 {
-    function getEntityClassName(): string
+    public function getEntityClassName(): string
     {
         return Plaatseigenschap::class;
     }
 
-    function getFixtureName(): string
+    public function getFixtureName(): string
     {
         return 'Onder een boom';
     }
