@@ -100,7 +100,7 @@ class KoopmanControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
 
         foreach ($responseData as $koopmanData) {
-            $this->assertContains($koopman->getAchternaam(), $koopmanData['achternaam']);
+            $this->assertStringContainsString($koopman->getAchternaam(), $koopmanData['achternaam']);
         }
     }
 

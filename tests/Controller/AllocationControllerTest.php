@@ -20,12 +20,13 @@ class AllocationControllerTest extends ApiTestCase
         $rep = $em->getRepository(Koopman::class);
 
         $indeling = ['afwijzingen' => [], 'toewijzingen' => []];
-        $kp_1 = $rep->find(5);
-        $kp_2 = $rep->find(6);
-        $kp_3 = $rep->find(7);
+        [$kp_1, $kp_2, $kp_3] = $rep->findBy([], [], 3);
+//        $kp_1 = $rep->find(5);
+//        $kp_2 = $rep->find(6);
+//        $kp_3 = $rep->find(7);
         $entities = [$kp_1, $kp_2, $kp_3];
         $this->koopmannen = $entities;
-        foreach ($entities as $koopman) {
+        foreach ($entities as $id => $koopman) {
             $alloc = [];
             $alloc['marktId'] = '1';
             $alloc['marktDate'] = '2021-12-31';
@@ -40,7 +41,7 @@ class AllocationControllerTest extends ApiTestCase
                     'anywhere' => true,
                     'maximum' => 2, 'minimum' => 1, 'parentBrancheId' => true, 'verkoopinrichting' => [], ],
             ];
-            if (5 == $koopman->getId()) {
+            if (0 === $id) {
                 $this->allocationKoopman = $koopman;
                 $alloc['plaatsen'] = ['1', '2'];
                 $indeling['toewijzingen'][] = $alloc;

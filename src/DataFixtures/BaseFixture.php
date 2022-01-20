@@ -12,7 +12,7 @@ use Faker\Generator;
 abstract class BaseFixture extends Fixture
 {
     /** @var ObjectManager */
-    private $manager;
+    protected $manager;
 
     /** @var Generator */
     protected $faker;
