@@ -14,16 +14,14 @@ class AllocationControllerTest extends ApiTestCase
 
     protected function setUp(): void
     {
-        $data = [];
         parent::setUp();
         $em = $this->entityManager;
         $rep = $em->getRepository(Koopman::class);
 
         $indeling = ['afwijzingen' => [], 'toewijzingen' => []];
+
+        // Find the first 3 Koopmannen
         [$kp_1, $kp_2, $kp_3] = $rep->findBy([], [], 3);
-//        $kp_1 = $rep->find(5);
-//        $kp_2 = $rep->find(6);
-//        $kp_3 = $rep->find(7);
         $entities = [$kp_1, $kp_2, $kp_3];
         $this->koopmannen = $entities;
         foreach ($entities as $id => $koopman) {
@@ -50,8 +48,7 @@ class AllocationControllerTest extends ApiTestCase
                 $indeling['afwijzingen'][] = $alloc;
             }
         }
-        $json = json_encode($indeling);
-        $this->indeling = $json;
+        $this->indeling = json_encode($indeling);
     }
 
     public function testGetAll(): void
