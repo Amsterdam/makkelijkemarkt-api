@@ -8,12 +8,12 @@ use App\Entity\Obstakel;
 
 class ObstakelControllerTest extends AbstractBasicControllerTest
 {
-    function getEntityClassName(): string
+    public function getEntityClassName(): string
     {
         return Obstakel::class;
     }
 
-    function getFixtureName(): string
+    public function getFixtureName(): string
     {
         return 'Bankje';
     }

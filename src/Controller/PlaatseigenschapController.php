@@ -57,7 +57,6 @@ class PlaatseigenschapController extends AbstractBasicController
         return parent::create($request);
     }
 
-
     /**
      * @OA\Get(
      *     path="/api/1.1.0/plaatseigenschap/all",

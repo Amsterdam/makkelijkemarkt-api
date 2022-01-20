@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Tests\Controller;
@@ -17,11 +18,12 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
 
         $this->entityClassname = $this->getEntityClassName();
         $classNameWithNamespace = explode('\\', $this->entityClassname);
-        $this->apiRoute = '/api/1.1.0/' . strtolower(array_pop($classNameWithNamespace));
+        $this->apiRoute = '/api/1.1.0/'.strtolower(array_pop($classNameWithNamespace));
     }
 
-    abstract function getEntityClassName(): string;
-    abstract function getFixtureName(): string;
+    abstract public function getEntityClassName(): string;
+
+    abstract public function getFixtureName(): string;
 
     public function testCreate()
     {
@@ -57,7 +59,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
         $response = $this->client->post($this->apiRoute, [
             'headers' => $this->headers,
             'body' => json_encode($data),
-            'http_errors' => false
+            'http_errors' => false,
         ]);
 
         $this->assertEquals($response->getStatusCode(), 400);
@@ -65,8 +67,8 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
 
     public function testGetAll()
     {
-        $response = $this->client->get($this->apiRoute . '/all', [
-            'headers' => $this->headers
+        $response = $this->client->get($this->apiRoute.'/all', [
+            'headers' => $this->headers,
         ]);
 
         $this->assertEquals($response->getStatusCode(), 200);
