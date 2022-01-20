@@ -94,7 +94,7 @@ class VergunningControleControllerTest extends ApiTestCase
         $dt = new DateTime();
 
         foreach ($expectedDates as $key) {
-            $this->assertContains($dt->format('Y-m-d'), $responseData[$key]);
+            $this->assertStringContainsString($dt->format('Y-m-d'), $responseData[$key]);
         }
 
         $this->assertEquals($dt->format('Y-m-d'), $responseData['dag']);

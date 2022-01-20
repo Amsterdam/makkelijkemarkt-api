@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Test;
 
+use App\Entity\Account;
 use App\Entity\Token;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
@@ -51,11 +52,17 @@ class ApiTestCase extends KernelTestCase
         $this->purgeDatabase();
 
         $this->entityManager = $this->getService('doctrine.orm.default_entity_manager');
+
+        $accountRepository = $this->entityManager->getRepository(Account::class);
         $tokenRepository = $this->entityManager->getRepository(Token::class);
+
+        $account = $accountRepository->findOneBy([
+            'naam' => 'Super Admin',
+        ]);
 
         /** @var Token $token */
         $token = $tokenRepository->findOneBy([
-            'account' => 1,
+            'account' => $account->getId(),
         ]);
 
         $this->headers = [
