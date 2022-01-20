@@ -115,7 +115,7 @@ abstract class AbstractBasicController extends AbstractController
         $instance = $this->repository->find($id);
 
         if (null === $instance) {
-            return new JsonResponse(['error' => $this->entityClassName.$data['id']." doesn't exist"], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => $this->entityClassName.$id." doesn't exist"], Response::HTTP_NOT_FOUND);
         }
 
         foreach (self::BASIC_DATABASE_FIELDS as $expectedParameter) {

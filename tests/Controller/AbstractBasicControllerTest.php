@@ -6,6 +6,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Obstakel;
 use App\Test\ApiTestCase;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 abstract class AbstractBasicControllerTest extends ApiTestCase
 {
@@ -27,7 +28,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
 
     public function testCreate()
     {
-        /** @var Repository $repository */
+        /** @var ServiceEntityRepository $repository */
         $repository = $this->entityManager
             ->getRepository($this->entityClassname);
 
@@ -76,5 +77,115 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
         $data = json_decode($response->getBody()->getContents(), true);
 
         $this->assertEquals($data[0]['naam'], $this->getFixtureName());
+    }
+
+    public function testGetById()
+    {
+        /** @var ServiceEntityRepository $repository */
+        $repository = $this->entityManager
+            ->getRepository($this->entityClassname);
+
+        $instance = $repository->findOneBy([
+            'naam' => 'Update Obstakel',
+        ]);
+
+        $id = $instance->getId();
+
+        $response = $this->client->get($this->apiRoute."/$id", [
+            'headers' => $this->headers,
+            'http_errors' => false,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        $this->assertEquals('Update Obstakel', $data['naam']);
+    }
+
+    public function testGetByIdNonExistant()
+    {
+        $response = $this->client->get($this->apiRoute.'/-1', [
+            'headers' => $this->headers,
+            'http_errors' => false,
+        ]);
+
+        $this->assertEquals($response->getStatusCode(), 404);
+    }
+
+    public function testUpdate()
+    {
+        /** @var ServiceEntityRepository $repository */
+        $repository = $this->entityManager
+            ->getRepository($this->entityClassname);
+
+        $instance = $repository->findOneBy([
+            'naam' => 'Update Obstakel',
+        ]);
+
+        $id = $instance->getId();
+
+        $result = $this->client->put($this->apiRoute."/$id", [
+            'headers' => $this->headers,
+            'body' => json_encode(['naam' => 'New Name']),
+        ]);
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+        $newInstance = $repository->find($id);
+
+        $this->assertEquals('Update Obstakel', $newInstance->getNaam());
+
+        $this->client->put($this->apiRoute."/$id", [
+            'headers' => $this->headers,
+            'body' => json_encode(['naam' => 'Update Obstakel']),
+        ]);
+    }
+
+    public function testUpdateGives404WithInvalidInput()
+    {
+        $result = $this->client->put($this->apiRoute.'/-1', [
+            'headers' => $this->headers,
+            'body' => json_encode(['naam' => 'New Name']),
+            'http_errors' => false,
+        ]);
+
+        $this->assertEquals(404, $result->getStatusCode());
+    }
+
+    public function testDelete()
+    {
+        /** @var ServiceEntityRepository $repository */
+        $repository = $this->entityManager
+            ->getRepository($this->entityClassname);
+
+        $instance = $repository->findOneBy([
+            'naam' => 'Delete Obstakel',
+        ]);
+
+        $id = $instance->getId();
+
+        $result = $this->client->delete($this->apiRoute."/$id", [
+            'headers' => $this->headers,
+        ]);
+
+        $this->assertEquals(204, $result->getStatusCode());
+
+        $response = $this->client->get($this->apiRoute."/$id", [
+            'headers' => $this->headers,
+            'http_errors' => false,
+        ]);
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testDeleteGives404WithInvalidId()
+    {
+        $result = $this->client->delete($this->apiRoute.'/-1', [
+            'headers' => $this->headers,
+            'http_errors' => false,
+        ]);
+
+        $this->assertEquals(404, $result->getStatusCode());
     }
 }
