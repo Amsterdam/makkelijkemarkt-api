@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Obstakel;
+use App\Entity\Plaatseigenschap;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,33 +11,33 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ObstakelController extends AbstractBasicController
+class PlaatseigenschapController extends AbstractBasicController
 {
     protected function getEntityClassname(): string
     {
-        return Obstakel::class;
+        return Plaatseigenschap::class;
     }
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/obstakel",
+     *     path="/api/1.1.0/plaatseigenschap",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="ObstakelCreate",
-     *     tags={"Obstakel"},
-     *     summary="Maakt nieuwe Obstakel aan",
+     *     operationId="PlaatseigenschapCreate",
+     *     tags={"Plaatseigenschap"},
+     *     summary="Maakt nieuwe Plaatseigenschap aan",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="naam", type="string", description="naam van het obstakel")
+     *                 @OA\Property(property="naam", type="string", description="naam van het plaatseigenschap")
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
+     *         @OA\JsonContent(ref="#/components/schemas/Plaatseigenschap")
      *     ),
      *     @OA\Response(
      *         response="400",
@@ -49,7 +50,7 @@ class ObstakelController extends AbstractBasicController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/obstakel", methods={"POST"})
+     * @Route("/plaatseigenschap", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response
@@ -59,18 +60,18 @@ class ObstakelController extends AbstractBasicController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/obstakel/all",
+     *     path="/api/1.1.0/plaatseigenschap/all",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="ObstakelGetAll",
-     *     tags={"Obstakel"},
-     *     summary="Vraag alle obstakels op.",
+     *     operationId="PlaatseigenschapGetAll",
+     *     tags={"Plaatseigenschap"},
+     *     summary="Vraag alle plaatseigenschaps op.",
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
+     *         @OA\JsonContent(ref="#/components/schemas/Plaatseigenschap")
      *     )
      * )
-     * @Route("/obstakel/all", methods={"GET"})
+     * @Route("/plaatseigenschap/all", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAll(): Response
@@ -80,16 +81,16 @@ class ObstakelController extends AbstractBasicController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/obstakel/{id}",
+     *     path="/api/1.1.0/plaatseigenschap/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="ObstakelGetById",
-     *     tags={"Obstakel"},
-     *     summary="Vraag obstakel op met een id.",
+     *     operationId="PlaatseigenschapGetById",
+     *     tags={"Plaatseigenschap"},
+     *     summary="Vraag plaatseigenschap op met een id.",
      *     @OA\Parameter(name="id", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
+     *         @OA\JsonContent(ref="#/components/schemas/Plaatseigenschap")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -97,7 +98,7 @@ class ObstakelController extends AbstractBasicController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/obstakel/{id}", methods={"GET"})
+     * @Route("/plaatseigenschap/{id}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getById(string $id): Response
@@ -107,24 +108,24 @@ class ObstakelController extends AbstractBasicController
 
     /**
      * @OA\Put(
-     *     path="/api/1.1.0/obstakel/{id}",
+     *     path="/api/1.1.0/plaatseigenschap/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="ObstakelUpdate",
-     *     tags={"Obstakel"},
-     *     summary="Past een Obstakel aan",
+     *     operationId="PlaatseigenschapUpdate",
+     *     tags={"Plaatseigenschap"},
+     *     summary="Past een Plaatseigenschap aan",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(property="naam", type="string", description="naam van het obstakel"),
+     *                 @OA\Property(property="naam", type="string", description="naam van het plaatseigenschap"),
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
+     *         @OA\JsonContent(ref="#/components/schemas/Plaatseigenschap")
      *     ),
      *     @OA\Response(
      *         response="400",
@@ -137,7 +138,7 @@ class ObstakelController extends AbstractBasicController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/obstakel/{id}", methods={"PUT"})
+     * @Route("/plaatseigenschap/{id}", methods={"PUT"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function update(Request $request, string $id): Response
@@ -147,11 +148,11 @@ class ObstakelController extends AbstractBasicController
 
     /**
      * @OA\Delete(
-     *     path="/api/1.1.0/obstakel/{id}",
+     *     path="/api/1.1.0/plaatseigenschap/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="ObstakelDelete",
-     *     summary="Verwijdert een obstakel",
-     *     @OA\Parameter(name="id", @OA\Schema(type="string"), in="path", required=true , description="id van het obstakel"),
+     *     operationId="PlaatseigenschapDelete",
+     *     summary="Verwijdert een plaatseigenschap",
+     *     @OA\Parameter(name="id", @OA\Schema(type="string"), in="path", required=true , description="id van het plaatseigenschap"),
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -162,7 +163,7 @@ class ObstakelController extends AbstractBasicController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/obstakel/{id}", methods={"DELETE"})
+     * @Route("/plaatseigenschap/{id}", methods={"DELETE"})
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function delete(string $id): JsonResponse
