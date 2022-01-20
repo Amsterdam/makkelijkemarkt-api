@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Plaatseigenschap;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -57,6 +56,7 @@ class PlaatseigenschapController extends AbstractBasicController
     {
         return parent::create($request);
     }
+
 
     /**
      * @OA\Get(

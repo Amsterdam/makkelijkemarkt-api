@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -11,7 +12,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use http\Exception\InvalidArgumentException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use OpenStack\Images\v2\Service;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,7 +44,7 @@ abstract class AbstractBasicController extends AbstractController
         $this->entityClassName = $this->getEntityClassname();
 
         if (!new $this->entityClassName() instanceof AbstractBasicEntity) {
-            throw new InvalidArgumentException("Entity should be instance of " . AbstractBasicEntity::class);
+            throw new InvalidArgumentException('Entity should be instance of '.AbstractBasicEntity::class);
         }
 
         $this->repository = new ServiceEntityRepository($managerRegistry, $this->entityClassName);
@@ -63,10 +63,6 @@ abstract class AbstractBasicController extends AbstractController
 
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (null !== $this->repository->find($data['id'])) {
-            return new JsonResponse(['error' => $this->entityClassName . ' ' . $data['id'] . ' already exists'], Response::HTTP_BAD_REQUEST);
         }
 
         foreach (self::BASIC_DATABASE_FIELDS as $expectedParameter) {
@@ -100,7 +96,7 @@ abstract class AbstractBasicController extends AbstractController
         $instance = $this->repository->find($id);
 
         if (null === $instance) {
-            return new JsonResponse(['error' => $this->entityClassName . ' not found.'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => $this->entityClassName.' not found.'], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($instance, 'json');
@@ -119,7 +115,7 @@ abstract class AbstractBasicController extends AbstractController
         $instance = $this->repository->find($id);
 
         if (null === $instance) {
-            return new JsonResponse(['error' => $this->entityClassName . $data['id']. " doesn't exist"], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => $this->entityClassName.$data['id']." doesn't exist"], Response::HTTP_NOT_FOUND);
         }
 
         foreach (self::BASIC_DATABASE_FIELDS as $expectedParameter) {
@@ -143,7 +139,7 @@ abstract class AbstractBasicController extends AbstractController
         $instance = $this->repository->find($id);
 
         if (null === $instance) {
-            return new JsonResponse(['error' => $this->entityClassName . ' not found.'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => $this->entityClassName.' not found.'], Response::HTTP_NOT_FOUND);
         }
 
         $this->entityManager->remove($instance);
