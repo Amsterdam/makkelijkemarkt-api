@@ -86,7 +86,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
             ->getRepository($this->entityClassname);
 
         $instance = $repository->findOneBy([
-            'naam' => 'Update Obstakel',
+            'naam' => 'Update',
         ]);
 
         $id = $instance->getId();
@@ -100,7 +100,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
 
         $data = json_decode($response->getBody()->getContents(), true);
 
-        $this->assertEquals('Update Obstakel', $data['naam']);
+        $this->assertEquals('Update', $data['naam']);
     }
 
     public function testGetByIdNonExistant()
@@ -120,7 +120,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
             ->getRepository($this->entityClassname);
 
         $instance = $repository->findOneBy([
-            'naam' => 'Update Obstakel',
+            'naam' => 'Update',
         ]);
 
         $id = $instance->getId();
@@ -134,11 +134,11 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
 
         $newInstance = $repository->find($id);
 
-        $this->assertEquals('Update Obstakel', $newInstance->getNaam());
+        $this->assertEquals('Update', $newInstance->getNaam());
 
         $this->client->put($this->apiRoute."/$id", [
             'headers' => $this->headers,
-            'body' => json_encode(['naam' => 'Update Obstakel']),
+            'body' => json_encode(['naam' => 'Update']),
         ]);
     }
 
@@ -160,7 +160,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
             ->getRepository($this->entityClassname);
 
         $instance = $repository->findOneBy([
-            'naam' => 'Delete Obstakel',
+            'naam' => 'Delete',
         ]);
 
         $id = $instance->getId();
