@@ -150,6 +150,7 @@ class ObstakelController extends AbstractBasicController
      *     path="/api/1.1.0/obstakel/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="ObstakelDelete",
+     *     tags={"Obstakel"},
      *     summary="Verwijdert een obstakel",
      *     @OA\Parameter(name="id", @OA\Schema(type="string"), in="path", required=true , description="id van het obstakel"),
      *     @OA\Response(

@@ -63,7 +63,7 @@ class PlaatseigenschapController extends AbstractBasicController
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="PlaatseigenschapGetAll",
      *     tags={"Plaatseigenschap"},
-     *     summary="Vraag alle plaatseigenschaps op.",
+     *     summary="Vraag alle plaatseigenschappen op.",
      *     @OA\Response(
      *         response="200",
      *         description="Success",
@@ -150,6 +150,7 @@ class PlaatseigenschapController extends AbstractBasicController
      *     path="/api/1.1.0/plaatseigenschap/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="PlaatseigenschapDelete",
+     *     tags={"Plaatseigenschap"},
      *     summary="Verwijdert een plaatseigenschap",
      *     @OA\Parameter(name="id", @OA\Schema(type="string"), in="path", required=true , description="id van het plaatseigenschap"),
      *     @OA\Response(
