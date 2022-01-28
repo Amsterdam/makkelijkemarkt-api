@@ -71,7 +71,7 @@ class RsvpController extends AbstractController
      *             @OA\Schema(
      *                 @OA\Property(property="marktDate", type="string", description="datum van de markt (als YYYY-MM-DD)"),
      *                 @OA\Property(property="attending", type="boolean", description="rsvp status van de koopman"),
-     *                 @OA\Property(property="marktAfkorting", type="string", description="afkorting van de markt"),
+     *                 @OA\Property(property="marktId", type="string", description="afkorting van de markt"),
      *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
      *             )
      *         )
@@ -101,7 +101,7 @@ class RsvpController extends AbstractController
         $expectedParameters = [
             'marktDate',
             'attending',
-            'marktAfkorting',
+            'marktId',
             'koopmanErkenningsNummer',
         ];
 
@@ -111,7 +111,7 @@ class RsvpController extends AbstractController
             }
         }
 
-        $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
+        $markt = $this->marktRepository->getById($data['marktId']);
 
         if (null === $markt) {
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
@@ -130,10 +130,11 @@ class RsvpController extends AbstractController
         }
 
         if (null !== $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate)) {
-            return new JsonResponse(['error' => 'Rsvp already exists'], Response::HTTP_BAD_REQUEST);
+            $rsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
+        } else {
+            $rsvp = new Rsvp();
         }
 
-        $rsvp = new Rsvp();
         $rsvp->setMarktDate($marktDate);
         $rsvp->setMarkt($markt);
         $rsvp->setKoopman($koopman);
@@ -153,12 +154,12 @@ class RsvpController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/rsvp/{marktAfkorting}/{date}",
+     *     path="/api/1.1.0/rsvp/koopman/{erkenningsnummer}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="RsvpGetByMarktAfkortingAndDate",
+     *     operationId="RsvpGetByErkenninsnummer",
      *     tags={"Rsvp"},
-     *     summary="Vraag Rsvp's op met een marktAfkorting en een datum.",
-     *     @OA\Parameter(name="marktAfkorting", @OA\Schema(type="string"), in="path", required=true),
+     *     summary="Vraag Rsvp's van deze week en volgende week van een erkenningsnummer.",
+     *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
@@ -175,24 +176,21 @@ class RsvpController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/rsvp/{marktAfkorting}/{date}", methods={"GET"})
+     * @Route("/rsvp/koopman/{erkenningsnummer}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getRsvpByMarktAfkorting(string $marktAfkorting, string $date): Response
+    public function getRsvpByErkenningsnummer(string $erkenningsnummer): Response
     {
-        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsnummer);
 
-        if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (strtotime($date)) {
-            $marktDate = new DateTime($date);
-        } else {
-            return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
-        }
+        $monday = new DateTime("Monday this week");
+        $later = (new DateTime("Monday this week"))->modify("+2 weeks");
 
-        $rsvp = $this->rsvpRepository->findByMarktAndDate($markt, $marktDate);
+        $rsvp = $this->rsvpRepository->findByKoopmanAndBetweenDates($koopman, $monday, $later);
 
         $response = $this->serializer->serialize($rsvp, 'json');
 
@@ -201,12 +199,13 @@ class RsvpController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/rsvp/{marktAfkorting}/{startDate}/{endDate}",
+     *     path="/api/1.1.0/rsvp/markt/{marktId}/date/{marktDate}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="RsvpGetByMarktAfkortingAndBetweenDates",
+     *     operationId="RsvpGetByMarktId",
      *     tags={"Rsvp"},
-     *     summary="Vraag Rsvp's op met een marktAfkorting en tussen twee data.",
-     *     @OA\Parameter(name="marktAfkorting", @OA\Schema(type="string"), in="path", required=true),
+     *     summary="Vraag Rsvp's van een markt voor een dag op",
+     *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Parameter(name="marktDate", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
@@ -223,128 +222,81 @@ class RsvpController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/rsvp/{marktAfkorting}/{startDate}/{endDate}", methods={"GET"})
+     * @Route("/rsvp/markt/{marktId}/date/{marktDate}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getRsvpByMarktAfkortingBetweenDates(string $marktAfkorting, string $startDate, string $endDate): Response
+    public function getRsvpByMarktId(int $marktId, string $marktDate): Response
     {
-        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        $markt = $this->marktRepository->getById($marktId);
 
         if (null === $markt) {
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (strtotime($startDate)) {
-            $marktStartDate = new DateTime($startDate);
+        if (strtotime($marktDate)) {
+            $date = new DateTime($marktDate);
         } else {
-            return new JsonResponse(['error' => 'StartDate is not a valid date'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (strtotime($endDate)) {
-            $marktEndDate = new DateTime($endDate);
-        } else {
-            return new JsonResponse(['error' => 'EndDate is not a valid date'], Response::HTTP_BAD_REQUEST);
-        }
 
-        if ($marktStartDate > $marktEndDate) {
-            return new JsonResponse(['error' => 'EndDate is before Startdate'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $rsvps = $this->rsvpRepository->findByMarktAndBetweenDates($markt, $marktStartDate, $marktEndDate);
-
-        $response = $this->serializer->serialize($rsvps, 'json');
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
-    }
-
-    /**
-     * @OA\Put(
-     *     path="/api/1.1.0/rsvp/{marktAfkorting}/{koopmanErkenningsNummer}/{date}",
-     *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="RsvpUpdate",
-     *     tags={"Rsvp"},
-     *     summary="Past een Rsvp aan",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(property="attending", type="boolean", description="rsvp status van een koopman")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
-     *     ),
-     *     @OA\Response(
-     *         response="400",
-     *         description="Bad Request",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
-     *     ),
-     *     @OA\Response(
-     *         response="404",
-     *         description="Not Found",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
-     *     )
-     * )
-     * @Route("/rsvp/{marktAfkorting}/{koopmanErkenningsNummer}/{date}", methods={"PUT"})
-     * @Security("is_granted('ROLE_SENIOR')")
-     */
-    public function update(Request $request, string $marktAfkorting, string $koopmanErkenningsNummer, string $date): Response
-    {
-        $data = json_decode((string) $request->getContent(), true);
-
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'attending',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
-
-        if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
-
-        if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (strtotime($date)) {
-            $marktDate = new DateTime($date);
-        } else {
-            return new JsonResponse(['error' => 'marktDate is not a date'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $rsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
-
-        if (null === $rsvp) {
-            return new JsonResponse(['error' => "Rsvp doesn't exists"], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (is_bool($data['attending'])) {
-            $rsvp->setAttending((bool) $data['attending']);
-        } else {
-            return new JsonResponse(['error' => 'attending is not a boolean'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $this->entityManager->persist($rsvp);
-        $this->entityManager->flush();
+        $rsvp = $this->rsvpRepository->findByMarktAndDate($markt, $date);
 
         $response = $this->serializer->serialize($rsvp, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/rsvp/markt/{marktId}/koopman/{erkenningsnummer}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="RsvpGetByMarktIdAndErkenninsnummer",
+     *     tags={"Rsvp"},
+     *     summary="Vraag Rsvp's van deze week en volgende week van een erkenningsnummer.",
+     *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/rsvp/marktt/{marktId}/koopman/{erkenningsnummer}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getRsvpByMarktIdAndErkenningsnummer(int $marktId, string $erkenningsnummer): Response
+    {
+        $markt = $this->marktRepository->getById($marktId);
+
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsnummer);
+
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $monday = new DateTime("Monday this week");
+        $later = (new DateTime("Monday this week"))->modify("+2 weeks");
+
+        $rsvp = $this->rsvpRepository->findByMarktAndKoopmanAndBetweenDates($markt, $koopman, $monday, $later);
+
+        $response = $this->serializer->serialize($rsvp, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
 }

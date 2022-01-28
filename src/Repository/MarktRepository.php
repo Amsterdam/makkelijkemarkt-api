@@ -86,4 +86,9 @@ final class MarktRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['afkorting' => $afkorting]);
     }
+
+    public function getById(int $id): ?Markt
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
 }

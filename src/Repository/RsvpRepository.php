@@ -38,6 +38,46 @@ class RsvpRepository extends ServiceEntityRepository
     /**
      * @return Rsvp[] Returns an array of Rsvp objects
      */
+    public function findByMarktAndKoopmanAndBetweenDates(Markt $markt, Koopman $koopman, DateTime $startDate, DateTime $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->addSelect('r')
+            ->where('r.markt = :markt')
+            ->andWhere('r.koopman = :koopman')
+            ->andWhere('r.marktDate >= :startDate')
+            ->andWhere('r.marktDate <= :endDate')
+            ->setParameter('markt', $markt)
+            ->setParameter('koopman', $koopman)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return Rsvp[] Returns an array of Rsvp objects
+     */
+    public function findByKoopmanAndBetweenDates(Koopman $koopman, DateTime $startDate, DateTime $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->addSelect('r')
+            ->where('r.koopman = :koopman')
+            ->andWhere('r.marktDate >= :startDate')
+            ->andWhere('r.marktDate <= :endDate')
+            ->setParameter('koopman', $koopman)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return Rsvp[] Returns an array of Rsvp objects
+     */
     public function findByMarktAndBetweenDates(Markt $markt, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this
