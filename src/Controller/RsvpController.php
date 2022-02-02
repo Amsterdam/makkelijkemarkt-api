@@ -187,8 +187,8 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $monday = new DateTime("Monday this week");
-        $later = (new DateTime("Monday this week"))->modify("+2 weeks");
+        $monday = new DateTime('Monday this week');
+        $later = (new DateTime('Monday this week'))->modify('+2 weeks');
 
         $rsvp = $this->rsvpRepository->findByKoopmanAndBetweenDates($koopman, $monday, $later);
 
@@ -225,7 +225,7 @@ class RsvpController extends AbstractController
      * @Route("/rsvp/markt/{marktId}/date/{marktDate}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getRsvpByMarktId(int $marktId, string $marktDate): Response
+    public function getRsvpByMarktIdAndMarktDate(int $marktId, string $marktDate): Response
     {
         $markt = $this->marktRepository->getById($marktId);
 
@@ -238,7 +238,6 @@ class RsvpController extends AbstractController
         } else {
             return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
         }
-
 
         $rsvp = $this->rsvpRepository->findByMarktAndDate($markt, $date);
 
@@ -272,7 +271,7 @@ class RsvpController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/rsvp/marktt/{marktId}/koopman/{erkenningsnummer}", methods={"GET"})
+     * @Route("/rsvp/markt/{marktId}/koopman/{erkenningsnummer}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getRsvpByMarktIdAndErkenningsnummer(int $marktId, string $erkenningsnummer): Response
@@ -289,8 +288,8 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $monday = new DateTime("Monday this week");
-        $later = (new DateTime("Monday this week"))->modify("+2 weeks");
+        $monday = new DateTime('Monday this week');
+        $later = (new DateTime('Monday this week'))->modify('+2 weeks');
 
         $rsvp = $this->rsvpRepository->findByMarktAndKoopmanAndBetweenDates($markt, $koopman, $monday, $later);
 
@@ -298,5 +297,4 @@ class RsvpController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
-
 }
