@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Entity\Obstakel;
 use App\Test\ApiTestCase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -45,11 +44,11 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
         $id = (int) json_decode($response->getBody()->getContents(), true)['id'];
 
         /**
-         * @var Obstakel $obstakel
+         * @var AbstractBasicEntity $entity
          */
-        $obstakel = $repository->find($id);
+        $entity = $repository->find($id);
 
-        $this->assertEquals($name, $obstakel->getNaam());
+        $this->assertEquals($name, $entity->getNaam());
     }
 
     public function testCreateReturnsBadRequestWithoutName()
