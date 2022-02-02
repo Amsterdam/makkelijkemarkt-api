@@ -71,7 +71,7 @@ class RsvpController extends AbstractController
      *             @OA\Schema(
      *                 @OA\Property(property="marktDate", type="string", description="datum van de markt (als YYYY-MM-DD)"),
      *                 @OA\Property(property="attending", type="boolean", description="rsvp status van de koopman"),
-     *                 @OA\Property(property="marktId", type="string", description="afkorting van de markt"),
+     *                 @OA\Property(property="marktId", type="string", description="id van de markt"),
      *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
      *             )
      *         )
