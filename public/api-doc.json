@@ -5264,8 +5264,8 @@
                                         "description": "rsvp status van de koopman",
                                         "type": "boolean"
                                     },
-                                    "marktAfkorting": {
-                                        "description": "afkorting van de markt",
+                                    "marktId": {
+                                        "description": "id van de markt",
                                         "type": "string"
                                     },
                                     "koopmanErkenningsNummer": {
@@ -5314,16 +5314,16 @@
                 ]
             }
         },
-        "/api/1.1.0/rsvp/{marktAfkorting}/{date}": {
+        "/api/1.1.0/rsvp/koopman/{erkenningsnummer}": {
             "get": {
                 "tags": [
                     "Rsvp"
                 ],
-                "summary": "Vraag Rsvp's op met een marktAfkorting en een datum.",
-                "operationId": "RsvpGetByMarktAfkortingAndDate",
+                "summary": "Vraag Rsvp's van deze week en volgende week van een erkenningsnummer.",
+                "operationId": "RsvpGetByErkenninsnummer",
                 "parameters": [
                     {
-                        "name": "marktAfkorting",
+                        "name": "erkenningsnummer",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -5383,16 +5383,24 @@
                 ]
             }
         },
-        "/api/1.1.0/rsvp/{marktAfkorting}/{startDate}/{endDate}": {
+        "/api/1.1.0/rsvp/markt/{marktId}/date/{marktDate}": {
             "get": {
                 "tags": [
                     "Rsvp"
                 ],
-                "summary": "Vraag Rsvp's op met een marktAfkorting en tussen twee data.",
-                "operationId": "RsvpGetByMarktAfkortingAndBetweenDates",
+                "summary": "Vraag Rsvp's van een markt voor een dag op",
+                "operationId": "RsvpGetByMarktId",
                 "parameters": [
                     {
-                        "name": "marktAfkorting",
+                        "name": "marktId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "marktDate",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -5452,29 +5460,31 @@
                 ]
             }
         },
-        "/api/1.1.0/rsvp/{marktAfkorting}/{koopmanErkenningsNummer}/{date}": {
-            "put": {
+        "/api/1.1.0/rsvp/markt/{marktId}/koopman/{erkenningsnummer}": {
+            "get": {
                 "tags": [
                     "Rsvp"
                 ],
-                "summary": "Past een Rsvp aan",
-                "operationId": "RsvpUpdate",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "attending": {
-                                        "description": "rsvp status van een koopman",
-                                        "type": "boolean"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "summary": "Vraag Rsvp's van deze week en volgende week van een erkenningsnummer.",
+                "operationId": "RsvpGetByMarktIdAndErkenninsnummer",
+                "parameters": [
+                    {
+                        "name": "marktId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "erkenningsnummer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
