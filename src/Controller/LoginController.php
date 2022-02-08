@@ -366,6 +366,7 @@ final class LoginController extends AbstractController
             ->setUsername(self::READONLY_ACCOUNT_NAME)
             ->setNaam(self::READONLY_ACCOUNT_NAME)
             ->setEmail('')
+            ->setAttempts(0)
             ->setPassword(password_hash((string) rand(16, 16), PASSWORD_BCRYPT))
             ->setRole(self::READONLY_ACCOUNT_ROLE);
 
