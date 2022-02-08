@@ -48,6 +48,9 @@ class AllocationController extends AbstractController
     private $serializer;
 
     private $rejectReasons;
+    private $allocations;
+    private $marktDate;
+    private $markt;
 
     public function __construct(
         CacheManager $cacheManager,
@@ -142,23 +145,23 @@ class AllocationController extends AbstractController
         return $allocation;
     }
 
-
-    private function default($value, $defaultValue){
-        return isset($value)?$value:$defaultValue;
+    private function default($value, $defaultValue)
+    {
+        return isset($value) ? $value : $defaultValue;
     }
 
-    private function cleanObject($obj, $isAllocated){
-
+    private function cleanObject($obj, $isAllocated)
+    {
         // fill in missing data with defaults
         $plaatsvoorkeuren = $this->default($obj['ondernemer']['plaatsen'], []);
         $anywhere = $this->default($obj['ondernemer']['voorkeur']['anywhere'], true);
         $minimum = $this->default($obj['ondernemer']['voorkeur']['minimum'], 1);
         $maximum = $this->default($obj['ondernemer']['voorkeur']['maximum'], 1);
-        $parentBranche = $this->default($obj['ondernemer']['voorkeur']['parentBrancheId'], "");
-        $verkoopinrichting = $this->default($obj['ondernemer']['voorkeur']['verkoopinrichting'], "");
+        $parentBranche = $this->default($obj['ondernemer']['voorkeur']['parentBrancheId'], '');
+        $verkoopinrichting = $this->default($obj['ondernemer']['voorkeur']['verkoopinrichting'], '');
         $erkenningsNummer = $obj['erkenningsNummer'];
-        $brancheId = $this->default($obj['ondernemer']['voorkeur']['brancheId'], "");
-        $reasonCode = $isAllocated?null:$this->default($obj['reason']['code'], 0);
+        $brancheId = $this->default($obj['ondernemer']['voorkeur']['brancheId'], '');
+        $reasonCode = $isAllocated ? null : $this->default($obj['reason']['code'], 0);
         $plaatsen = $this->default($obj['plaatsen'], []);
 
         //prepare arguments for 'createAllocation' call
@@ -175,18 +178,19 @@ class AllocationController extends AbstractController
             $erkenningsNummer,
             $brancheId,
             $reasonCode,
-            $plaatsen
+            $plaatsen,
         ];
     }
 
-    private function cleanAndSaveInput(array $data){
+    private function cleanAndSaveInput(array $data)
+    {
         foreach ($data['toewijzingen'] as $obj) {
             $args = $this->cleanObject($obj, true);
-            array_push($this->allocations, call_user_func_array(array($this, "createAllocation"), $args));
+            array_push($this->allocations, call_user_func_array([$this, 'createAllocation'], $args));
         }
         foreach ($data['afwijzingen'] as $obj) {
             $args = $this->cleanObject($obj, false);
-            array_push($this->allocations, call_user_func_array(array($this, "createAllocation"), $args));
+            array_push($this->allocations, call_user_func_array([$this, 'createAllocation'], $args));
         }
     }
 
@@ -256,7 +260,7 @@ class AllocationController extends AbstractController
         $this->marktDate = $marktDate;
         $this->markt = $markt;
 
-        try{
+        try {
             $this->cleanAndSaveInput($data);
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
