@@ -28,7 +28,7 @@ class MarktConfiguratie
     private const INPUT_FIELD_LOCATIES = 'locaties';
     private const INPUT_FIELD_BRANCHES = 'branches';
     private const INPUT_FIELD_PAGINAS = 'paginas';
-    private const INPUT_FIELD_MARKT = 'markt_opstelling';
+    private const INPUT_FIELD_MARKT = 'marktOpstelling';
 
     private const MANDATORY_REQUEST_FIELDS = [
         self::INPUT_FIELD_GEOGRAFIE,
