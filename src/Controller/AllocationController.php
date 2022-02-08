@@ -164,7 +164,7 @@ class AllocationController extends AbstractController
         $reasonCode = $isAllocated ? null : $this->default($obj['reason']['code'], 0);
         $plaatsen = $this->default($obj['plaatsen'], []);
 
-        //prepare arguments for 'createAllocation' call
+        // prepare arguments for 'createAllocation' call
         return [
             $this->markt,
             $this->marktDate,
