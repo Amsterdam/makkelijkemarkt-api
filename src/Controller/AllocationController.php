@@ -255,7 +255,12 @@ class AllocationController extends AbstractController
         $this->allocations = [];
         $this->marktDate = $marktDate;
         $this->markt = $markt;
-        $this->cleanAndSaveInput($data);
+
+        try{
+            $this->cleanAndSaveInput($data);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
 
         foreach ($this->allocations as $allocation) {
             $this->entityManager->persist($allocation);
