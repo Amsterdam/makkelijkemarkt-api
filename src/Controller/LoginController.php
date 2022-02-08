@@ -26,6 +26,10 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class LoginController extends AbstractController
 {
+    private const API_KEY_PARAMETER_NAME = 'api_key';
+    private const READONLY_ACCOUNT_NAME = 'Readonly';
+    private const READONLY_ACCOUNT_ROLE = 'ROLE_ADMIN';
+
     /** @var AccountRepository */
     private $accountRepository;
 
@@ -199,6 +203,54 @@ final class LoginController extends AbstractController
 
         return $this->handleAccount($account, $data);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/1.1.0/login/apiKey/",
+     *     security={{"api_key": {}}},
+     *     operationId="LoginPostByApiKey",
+     *     tags={"Login"},
+     *     summary="Genereert een nieuw token op apiKey",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="accountId", @OA\Schema(type="integer"), description="Account ID"),
+     *                 @OA\Property(property="password", @OA\Schema(type="string"), example="string"),
+     *                 @OA\Property(property="deviceUuid", @OA\Schema(type="string"), description="UUID van het gebruikte device", example="string"),
+     *                 @OA\Property(property="clientApp", @OA\Schema(type="string"), description="appliciatie type", example="string"),
+     *                 @OA\Property(property="clientVersion", @OA\Schema(type="string"), description="Versie van de client", example="string"),
+     *                 required={"api_key"}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/Token")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/login/apiKey/", methods={"POST"})
+     */
+    public function postByApiKey(Request $request): Response
+    {
+        $data = json_decode((string) $request->getContent(), true);
+
+        if ($data === null) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!array_key_exists(self::API_KEY_PARAMETER_NAME, $data)) {
+            return new JsonResponse(['error' => 'api_key missing in body'], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->handleApiKey($data);
+    }
 
     /**
      * @OA\Get(
@@ -259,6 +311,68 @@ final class LoginController extends AbstractController
         $roles = Account::allRoles();
 
         return new JsonResponse($roles, Response::HTTP_OK, []);
+    }
+
+    private function handleApiKey(array $data): Response
+    {
+        $expectedKey = $this->getParameter(self::API_KEY_PARAMETER_NAME);
+
+        if ($expectedKey !== $data[self::API_KEY_PARAMETER_NAME]) {
+            return new JsonResponse(['error' => 'API Key is incorrect'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $account = $this->accountRepository->findOneBy(['username' => self::READONLY_ACCOUNT_NAME]);
+
+        if (!$account) {
+            $account = $this->createReadonlyAccount();
+        }
+
+        // now the token
+        $defaultParameters = [
+            'clientApp' => null,
+            'clientVersion' => null,
+            'deviceUuid' => null,
+        ];
+
+        foreach ($defaultParameters as $key => $val) {
+            if (false === isset($data[$key])) {
+                $data[$key] = $val;
+            }
+        }
+
+        /** @var Token $token */
+        $token = new Token();
+        $token->setClientApp($data['clientApp']);
+        $token->setClientVersion($data['clientVersion']);
+        $token->setDeviceUuid($data['deviceUuid']);
+        $token->setLifeTime($token->getDefaultLifeTime());
+        $token->setAccount($account);
+
+        $this->entityManager->persist($token);
+        $this->entityManager->flush();
+
+        $response = $this->serializer->serialize($token, 'json', ['groups' => ['token', 'account']]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+
+    }
+
+    private function createReadonlyAccount(): Account
+    {
+        $account = new Account();
+
+        $account->setActive(true)
+            ->setLocked(false)
+            ->setUsername(self::READONLY_ACCOUNT_NAME)
+            ->setNaam(self::READONLY_ACCOUNT_NAME)
+            ->setEmail('')
+            ->setPassword(password_hash((string) rand(16, 16), PASSWORD_BCRYPT))
+            ->setRole(self::READONLY_ACCOUNT_ROLE);
+
+        $this->entityManager->persist($account);
+        $this->entityManager->flush();
+
+        return $account;
     }
 
     /**

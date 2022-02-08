@@ -4,6 +4,7 @@ parameters:
     app_android_version: '%env(APP_ANDROID_VERSION)%'
     app_android_build: '%env(APP_ANDROID_BUILD)%'
     app_mm_key: '%env(APP_MM_KEY)%'
+    api_key: '%env(API_KEY)%'
     data_dir: '%kernel.project_dir%/var/data'
     swift_flysystem_container_fotos: 'fotos'
     swift_flysystem_container_thumbs: 'thumbs'
