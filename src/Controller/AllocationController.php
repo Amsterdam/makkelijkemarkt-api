@@ -142,6 +142,54 @@ class AllocationController extends AbstractController
         return $allocation;
     }
 
+
+    private function default($value, $defaultValue){
+        return isset($value)?$value:$defaultValue;
+    }
+
+    private function cleanObject($obj, $isAllocated){
+
+        // fill in missing data with defaults
+        $plaatsvoorkeuren = $this->default($obj['ondernemer']['plaatsen'], []);
+        $anywhere = $this->default($obj['ondernemer']['voorkeur']['anywhere'], true);
+        $minimum = $this->default($obj['ondernemer']['voorkeur']['minimum'], 1);
+        $maximum = $this->default($obj['ondernemer']['voorkeur']['maximum'], 1);
+        $parentBranche = $this->default($obj['ondernemer']['voorkeur']['parentBrancheId'], "");
+        $verkoopinrichting = $this->default($obj['ondernemer']['voorkeur']['verkoopinrichting'], "");
+        $erkenningsNummer = $obj['erkenningsNummer'];
+        $brancheId = $this->default($obj['ondernemer']['voorkeur']['brancheId'], "");
+        $reasonCode = $isAllocated?null:$this->default($obj['reason']['code'], 0);
+        $plaatsen = $this->default($obj['plaatsen'], []);
+
+        //prepare arguments for 'createAllocation' call
+        return [
+            $this->markt,
+            $this->marktDate,
+            $isAllocated,
+            $plaatsvoorkeuren,
+            $anywhere,
+            $minimum,
+            $maximum,
+            $parentBranche,
+            $verkoopinrichting,
+            $erkenningsNummer,
+            $brancheId,
+            $reasonCode,
+            $plaatsen
+        ];
+    }
+
+    private function cleanAndSaveInput(array $data){
+        foreach ($data['toewijzingen'] as $obj) {
+            $args = $this->cleanObject($obj, true);
+            array_push($this->allocations, call_user_func_array(array($this, "createAllocation"), $args));
+        }
+        foreach ($data['afwijzingen'] as $obj) {
+            $args = $this->cleanObject($obj, false);
+            array_push($this->allocations, call_user_func_array(array($this, "createAllocation"), $args));
+        }
+    }
+
     /**
      * @OA\Post(
      *     path="/api/1.1.0/allocation/{marktAfkorting}/{date}",
@@ -202,66 +250,20 @@ class AllocationController extends AbstractController
         foreach ($this->allocationRepository->findAllByMarktAndDate($markt, $marktDate) as $allocation) {
             $this->entityManager->remove($allocation);
         }
+        $this->entityManager->flush();
 
-        $allocations = [];
+        $this->allocations = [];
+        $this->marktDate = $marktDate;
+        $this->markt = $markt;
+        $this->cleanAndSaveInput($data);
 
-        try {
-            foreach ($data['afwijzingen'] as $afwijzing) {
-                if ([] == $afwijzing['ondernemer']['plaatsen']) {
-                    $plaatsvoorkeuren = null;
-                } else {
-                    $plaatsvoorkeuren = $afwijzing['ondernemer']['plaatsen'];
-                }
-                array_push($allocations, $this->createAllocation(
-                    $markt,
-                    $marktDate,
-                    false,
-                    $plaatsvoorkeuren,
-                    $afwijzing['ondernemer']['voorkeur']['anywhere'],
-                    $afwijzing['ondernemer']['voorkeur']['minimum'],
-                    $afwijzing['ondernemer']['voorkeur']['maximum'],
-                    $afwijzing['ondernemer']['voorkeur']['parentBrancheId'],
-                    $afwijzing['ondernemer']['voorkeur']['verkoopinrichting'],
-                    $afwijzing['erkenningsNummer'],
-                    $afwijzing['ondernemer']['voorkeur']['brancheId'],
-                    $afwijzing['reason']['code'],
-                    null
-                ));
-            }
-
-            foreach ($data['toewijzingen'] as $toewijzing) {
-                if ([] == $toewijzing['ondernemer']['plaatsen']) {
-                    $plaatsvoorkeuren = null;
-                } else {
-                    $plaatsvoorkeuren = $toewijzing['ondernemer']['plaatsen'];
-                }
-                array_push($allocations, $this->createAllocation(
-                    $markt,
-                    $marktDate,
-                    true,
-                    $plaatsvoorkeuren,
-                    $toewijzing['ondernemer']['voorkeur']['anywhere'],
-                    $toewijzing['ondernemer']['voorkeur']['minimum'],
-                    $toewijzing['ondernemer']['voorkeur']['maximum'],
-                    $toewijzing['ondernemer']['voorkeur']['parentBrancheId'],
-                    $toewijzing['ondernemer']['voorkeur']['verkoopinrichting'],
-                    $toewijzing['erkenningsNummer'],
-                    $toewijzing['ondernemer']['voorkeur']['brancheId'],
-                    null,
-                    $toewijzing['plaatsen']
-                ));
-            }
-        } catch (Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        }
-
-        foreach ($allocations as $allocation) {
+        foreach ($this->allocations as $allocation) {
             $this->entityManager->persist($allocation);
         }
 
         $this->entityManager->flush();
 
-        $response = $this->serializer->serialize($allocations, 'json');
+        $response = $this->serializer->serialize($this->allocations, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
