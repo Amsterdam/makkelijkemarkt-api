@@ -90,7 +90,7 @@ class MarktConfiguratieControllerTest extends ApiTestCase
                             "locaties": {"3": 4},
                             "branches": {"5": 6},
                             "paginas": {"7": 8},
-                            "markt": {"9": 10}
+                            "marktOpstelling": {"9": 10}
                         }';
 
         $response = $this->client->post("/api/1.1.0/markt/{$markt->getId()}/marktconfiguratie", [
