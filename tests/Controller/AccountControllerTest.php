@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Controller\LoginController;
 use App\Entity\Account;
 use App\Test\ApiTestCase;
 
@@ -176,6 +177,21 @@ class AccountControllerTest extends ApiTestCase
         foreach ($responseData as $accountData) {
             $this->assertFalse($accountData['locked']);
         }
+    }
+
+    public function testGetAllHasNoInvisibleUsers(): void
+    {
+        $response = $this->client->get('/api/1.1.0/account/', ['headers' => $this->headers]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        $invisibleAccounts = array_filter($responseData, function ($account) {
+            return $account['naam'] === LoginController::READONLY_ACCOUNT_NAME;
+        });
+
+        self::assertCount(0, $invisibleAccounts);
     }
 
     /**

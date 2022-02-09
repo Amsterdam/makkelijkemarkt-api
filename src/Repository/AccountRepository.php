@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Controller\LoginController;
 use App\Entity\Account;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -17,6 +18,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 final class AccountRepository extends ServiceEntityRepository
 {
+    private const INVISIBLE_ACCOUNT_NAMES = [LoginController::READONLY_ACCOUNT_NAME];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Account::class);
@@ -33,6 +36,12 @@ final class AccountRepository extends ServiceEntityRepository
             ->createQueryBuilder('account')
             ->select('account')
         ;
+
+        foreach (self::INVISIBLE_ACCOUNT_NAMES as $i => $name) {
+            $paramName = "naam$i";
+            $qb->andWhere("account.naam != :$paramName");
+            $qb->setParameter($paramName, $name);
+        }
 
         // search
         if (true === isset($q['naam']) && null !== $q['naam'] && '' !== $q['naam']) {
