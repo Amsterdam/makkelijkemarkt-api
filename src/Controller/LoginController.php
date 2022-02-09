@@ -26,8 +26,8 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class LoginController extends AbstractController
 {
+    public const READONLY_ACCOUNT_NAME = 'Readonly';
     private const API_KEY_PARAMETER_NAME = 'api_key';
-    private const READONLY_ACCOUNT_NAME = 'Readonly';
     private const READONLY_ACCOUNT_ROLE = 'ROLE_ADMIN';
 
     /** @var AccountRepository */

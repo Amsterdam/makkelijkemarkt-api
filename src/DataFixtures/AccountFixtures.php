@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Controller\LoginController;
 use App\Entity\Account;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -26,6 +27,23 @@ final class AccountFixtures extends BaseFixture
     {
         /** @var string $ut */
         $ut = '1461067200'; // = 2016-04-19T12:00:00+00:00 in ISO 8601
+
+        $account = new Account();
+        $account->setNaam(LoginController::READONLY_ACCOUNT_NAME);
+        $account->setEmail('test@example.com');
+        $account->setRole('ROLE_ADMIN');
+        $account->setUsername(LoginController::READONLY_ACCOUNT_NAME);
+        $account->setAttempts(0);
+        $account->setLastAttempt($this->faker->dateTimeBetween($ut, 'now'));
+        $account->setLocked(false);
+        $account->setActive(true);
+        $account->setPassword($this->userPasswordEncoder->encodePassword(
+            $account,
+            'insecure'
+        ));
+
+        $manager->persist($account);
+        $manager->flush();
 
         $account = new Account();
         $account->setNaam('Super Admin');
