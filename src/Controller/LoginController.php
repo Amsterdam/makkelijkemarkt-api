@@ -384,8 +384,6 @@ final class LoginController extends AbstractController
             return new JsonResponse(['error' => 'Account not found, id = '.(isset($data['accountId']) ? $data['accountId'] : $data['username'])], Response::HTTP_NOT_FOUND);
         }
 
-        if ($account->getNaam() === self::READONLY_ACCOUNT_NAME)
-
         if (true === $account->getLocked()) {
             return new JsonResponse(['error' => 'Account is locked'], Response::HTTP_LOCKED);
         }
