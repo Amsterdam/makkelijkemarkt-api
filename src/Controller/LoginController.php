@@ -203,6 +203,7 @@ final class LoginController extends AbstractController
 
         return $this->handleAccount($account, $data);
     }
+
     /**
      * @OA\Post(
      *     path="/api/1.1.0/login/apiKey/",
@@ -240,7 +241,7 @@ final class LoginController extends AbstractController
     {
         $data = json_decode((string) $request->getContent(), true);
 
-        if ($data === null) {
+        if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
@@ -353,7 +354,6 @@ final class LoginController extends AbstractController
         $response = $this->serializer->serialize($token, 'json', ['groups' => ['token', 'account']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
-
     }
 
     private function createReadonlyAccount(): Account
@@ -380,7 +380,7 @@ final class LoginController extends AbstractController
      */
     private function handleAccount(?Account $account, array $data): Response
     {
-        if (null === $account || $account->getNaam() === self::READONLY_ACCOUNT_NAME) {
+        if (null === $account || self::READONLY_ACCOUNT_NAME === $account->getNaam()) {
             return new JsonResponse(['error' => 'Account not found, id = '.(isset($data['accountId']) ? $data['accountId'] : $data['username'])], Response::HTTP_NOT_FOUND);
         }
 

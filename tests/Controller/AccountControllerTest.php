@@ -188,7 +188,7 @@ class AccountControllerTest extends ApiTestCase
         $responseData = json_decode($response->getBody()->getContents(), true);
 
         $invisibleAccounts = array_filter($responseData, function ($account) {
-            return $account['naam'] === LoginController::READONLY_ACCOUNT_NAME;
+            return LoginController::READONLY_ACCOUNT_NAME === $account['naam'];
         });
 
         self::assertCount(0, $invisibleAccounts);

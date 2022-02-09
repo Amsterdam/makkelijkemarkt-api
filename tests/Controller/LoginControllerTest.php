@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\LoginController;
 use App\Test\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,10 +19,10 @@ class LoginControllerTest extends ApiTestCase
     public function testPostByApiKey(): void
     {
         $response = $this->client->post(
-            "/api/1.1.0/login/apiKey/",
+            '/api/1.1.0/login/apiKey/',
             [
                 'headers' => $this->headers,
-                'body' => '{"api_key": "' . $this->apiKey . '"}'
+                'body' => '{"api_key": "'.$this->apiKey.'"}',
                 ]
         );
 
@@ -40,32 +39,32 @@ class LoginControllerTest extends ApiTestCase
     public function testPostByApiKeyThrowsOnInvalidInput(): void
     {
         $response = $this->client->post(
-            "/api/1.1.0/login/apiKey/",
+            '/api/1.1.0/login/apiKey/',
             [
                 'headers' => $this->headers,
-                'body' => '{"api_key": "' . 'NotTheCorrectKey' . '"}',
-                'http_errors' => false
+                'body' => '{"api_key": "'.'NotTheCorrectKey'.'"}',
+                'http_errors' => false,
             ]
         );
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
 
         $response = $this->client->post(
-            "/api/1.1.0/login/apiKey/",
+            '/api/1.1.0/login/apiKey/',
             [
                 'headers' => $this->headers,
-                'http_errors' => false
+                'http_errors' => false,
             ]
         );
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
 
         $response = $this->client->post(
-            "/api/1.1.0/login/apiKey/",
+            '/api/1.1.0/login/apiKey/',
             [
                 'headers' => $this->headers,
-                'body' => '{"not_api_key": "' . $this->apiKey . '"}',
-                'http_errors' => false
+                'body' => '{"not_api_key": "'.$this->apiKey.'"}',
+                'http_errors' => false,
             ]
         );
 
