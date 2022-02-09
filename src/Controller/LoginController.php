@@ -380,9 +380,11 @@ final class LoginController extends AbstractController
      */
     private function handleAccount(?Account $account, array $data): Response
     {
-        if (null === $account) {
+        if (null === $account || $account->getNaam() === self::READONLY_ACCOUNT_NAME) {
             return new JsonResponse(['error' => 'Account not found, id = '.(isset($data['accountId']) ? $data['accountId'] : $data['username'])], Response::HTTP_NOT_FOUND);
         }
+
+        if ($account->getNaam() === self::READONLY_ACCOUNT_NAME)
 
         if (true === $account->getLocked()) {
             return new JsonResponse(['error' => 'Account is locked'], Response::HTTP_LOCKED);
