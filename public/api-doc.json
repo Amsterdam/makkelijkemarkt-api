@@ -2784,6 +2784,78 @@
                 ]
             }
         },
+        "/api/1.1.0/login/apiKey/": {
+            "post": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Genereert een nieuw token op apiKey",
+                "operationId": "LoginPostByApiKey",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "api_key"
+                                ],
+                                "properties": {
+                                    "api_key": {
+                                        "example": "string"
+                                    },
+                                    "deviceUuid": {
+                                        "description": "UUID van het gebruikte device",
+                                        "example": "string"
+                                    },
+                                    "clientApp": {
+                                        "description": "appliciatie type",
+                                        "example": "string"
+                                    },
+                                    "clientVersion": {
+                                        "description": "Versie van de client",
+                                        "example": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
         "/api/1.1.0/login/whoami/": {
             "get": {
                 "tags": [
