@@ -181,7 +181,7 @@ class MarktVoorkeur
 
     public function getMarkt(): ?string
     {
-        return $this->markt->getAfkorting();
+        return $this->markt->getId();
     }
 
     public function setMarkt(?Markt $markt): self
