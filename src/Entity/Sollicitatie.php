@@ -127,7 +127,7 @@ class Sollicitatie
      * @SerializedName("grootPerMeter")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $grootPerMeter;
 
@@ -137,7 +137,7 @@ class Sollicitatie
      * @SerializedName("kleinPerMeter")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinPerMeter;
 
@@ -147,7 +147,7 @@ class Sollicitatie
      * @SerializedName("grootReiniging")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $grootReiniging;
 
@@ -157,7 +157,7 @@ class Sollicitatie
      * @SerializedName("kleinReiniging")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinReiniging;
 
@@ -167,7 +167,7 @@ class Sollicitatie
      * @SerializedName("afvalEilandAgf")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $afvalEilandAgf;
 
@@ -177,7 +177,7 @@ class Sollicitatie
      * @SerializedName("krachtstroomPerStuk")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $krachtstroomPerStuk;
 

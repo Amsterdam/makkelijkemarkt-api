@@ -125,7 +125,7 @@ trait MarktKraamTrait
      * @SerializedName("grootPerMeter")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $grootPerMeter;
 
@@ -135,7 +135,7 @@ trait MarktKraamTrait
      * @SerializedName("kleinPerMeter")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinPerMeter;
 
@@ -145,7 +145,7 @@ trait MarktKraamTrait
      * @SerializedName("grootReiniging")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $grootReiniging;
 
@@ -155,7 +155,7 @@ trait MarktKraamTrait
      * @SerializedName("kleinReiniging")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinReiniging;
 
@@ -165,7 +165,7 @@ trait MarktKraamTrait
      * @SerializedName("afvalEilandAgf")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $afvalEilandAgf;
 
@@ -175,7 +175,7 @@ trait MarktKraamTrait
      * @SerializedName("krachtstroomPerStuk")
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $krachtstroomPerStuk;
 
