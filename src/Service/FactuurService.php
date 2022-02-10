@@ -130,6 +130,12 @@ final class FactuurService
         int $extraMeters,
         int $aantalElektra,
         int $afvaleiland,
+        int $grootPerMeter,
+        int $kleinPerMeter,
+        int $grootReiniging,
+        int $kleinReiniging,
+        int $afvalEilandAgf,
+        int $krachtstroomPerStuk,
         bool $eenmaligElektra,
         bool $krachtstroom,
         bool $reiniging,
@@ -196,6 +202,12 @@ final class FactuurService
         $dagvergunning->setAantalElektra($aantalElektra);
         $dagvergunning->setEenmaligElektra($eenmaligElektra);
         $dagvergunning->setAfvaleiland($afvaleiland);
+        $dagvergunning->setGrootPerMeter($grootPerMeter);
+        $dagvergunning->setKleinPerMeter($kleinPerMeter);
+        $dagvergunning->setGrootReiniging($grootReiniging);
+        $dagvergunning->setKleinReiniging($kleinReiniging);
+        $dagvergunning->setAfvalEilandAgf($afvalEilandAgf);
+        $dagvergunning->setKrachtstroomPerStuk($krachtstroomPerStuk);
         $dagvergunning->setKrachtstroom($krachtstroom);
         $dagvergunning->setReiniging($reiniging);
         $dagvergunning->setNotitie($notitie);

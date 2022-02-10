@@ -167,6 +167,12 @@ final class VergunningControleController extends AbstractController
             'extraMeters' => 0,
             'aantalElektra' => 0,
             'afvaleiland' => 0,
+            'grootPerMeter' => 0,
+            'kleinPerMeter' => 0,
+            'grootReiniging' => 0,
+            'kleinReiniging' => 0,
+            'afvalEilandAgf' => 0,
+            'krachtstroomPerStuk' => 0,
             'registratieGeolocatie' => null,
             'vervangerErkenningsnummer' => null,
             'eenmaligElektra' => false,
@@ -212,6 +218,12 @@ final class VergunningControleController extends AbstractController
             $data['aantalElektra'],
             $data['eenmaligElektra'],
             $data['afvaleiland'],
+            $data['grootPerMeter'],
+            $data['kleinPerMeter'],
+            $data['grootReiniging'],
+            $data['kleinReiniging'],
+            $data['afvalEilandAgf'],
+            $data['krachtstroomPerStuk'],
             $data['krachtstroom'],
             $data['reiniging'],
             $data['notitie'],
@@ -308,6 +320,12 @@ final class VergunningControleController extends AbstractController
             'extraMeters' => 0,
             'aantalElektra' => 0,
             'afvaleiland' => 0,
+            'grootPerMeter' => 0,
+            'kleinPerMeter' => 0,
+            'grootReiniging' => 0,
+            'kleinReiniging' => 0,
+            'afvalEilandAgf' => 0,
+            'krachtstroomPerStuk' => 0,
             'registratieGeolocatie' => null,
             'vervangerErkenningsnummer' => null,
             'eenmaligElektra' => false,
@@ -347,6 +365,12 @@ final class VergunningControleController extends AbstractController
             $data['aantalElektra'],
             $data['eenmaligElektra'],
             $data['afvaleiland'],
+            $data['grootPerMeter'],
+            $data['kleinPerMeter'],
+            $data['grootReiniging'],
+            $data['kleinReiniging'],
+            $data['afvalEilandAgf'],
+            $data['krachtstroomPerStuk'],
             $data['krachtstroom'],
             $data['reiniging'],
             $data['notitie'],
@@ -376,6 +400,12 @@ final class VergunningControleController extends AbstractController
         int $aantalElektra,
         bool $eenmaligElektra,
         int $afvaleiland,
+        int $grootPerMeter,
+        int $kleinPerMeter,
+        int $grootReiniging,
+        int $kleinReiniging,
+        int $afvalEilandAgf,
+        int $krachtstroomPerStuk,
         bool $krachtstroom,
         bool $reiniging,
         string $notitie,
@@ -415,6 +445,12 @@ final class VergunningControleController extends AbstractController
         $vergunningControle->setAantalElektra((int) $aantalElektra);
         $vergunningControle->setEenmaligElektra((bool) $eenmaligElektra);
         $vergunningControle->setAfvaleiland((int) $afvaleiland);
+        $vergunningControle->setGrootPerMeter($grootPerMeter);
+        $vergunningControle->setKleinPerMeter($kleinPerMeter);
+        $vergunningControle->setGrootReiniging($grootReiniging);
+        $vergunningControle->setKleinReiniging($kleinReiniging);
+        $vergunningControle->setAfvalEilandAgf($afvalEilandAgf);
+        $vergunningControle->setKrachtstroomPerStuk($krachtstroomPerStuk);
         $vergunningControle->setKrachtstroom((bool) $krachtstroom);
         $vergunningControle->setReiniging((bool) $reiniging);
         $vergunningControle->setNotitie($notitie);
