@@ -102,7 +102,7 @@ class MarktVoorkeurController extends AbstractController
      * @Route("/marktvoorkeur", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function create(Request $request): Response
+    public function createOrUpdate(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
 
@@ -186,8 +186,12 @@ class MarktVoorkeurController extends AbstractController
             return new JsonResponse(['error' => 'absentUntil is before absentFrom'], Response::HTTP_BAD_REQUEST);
         }
 
-        (array_key_exists('absentFrom', $data)) ? $marktvoorkeur->setAbsentFrom($absentFrom) : $marktvoorkeur->setAbsentFrom(null);
-        (array_key_exists('absentUntil', $data)) ? $marktvoorkeur->setAbsentUntil($absentUntil) : $marktvoorkeur->setAbsentUntil(null);
+        if (array_key_exists('absentFrom', $data)) {
+            $marktvoorkeur->setAbsentFrom($absentFrom);
+        }
+        if (array_key_exists('absentUntil', $data)) {
+            $marktvoorkeur->setAbsentUntil($absentUntil);
+        }
 
         $marktvoorkeur->setBranche($branche);
         $marktvoorkeur->setMarkt($markt);
