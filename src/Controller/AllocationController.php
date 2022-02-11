@@ -196,7 +196,7 @@ class AllocationController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/allocation/{marktAfkorting}/{date}",
+     *     path="/api/1.1.0/allocation/{marktId}/{date}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="AllocationCreate",
      *     tags={"Allocation"},
@@ -222,10 +222,10 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/{marktAfkorting}/{date}", methods={"POST"})
+     * @Route("/allocation/{marktId}/{date}", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function create(Request $request, string $marktAfkorting, string $date): Response
+    public function create(Request $request, string $marktId, string $date): Response
     {
         $data = json_decode((string) $request->getContent(), true);
 
@@ -235,7 +235,7 @@ class AllocationController extends AbstractController
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        $markt = $this->marktRepository->getById($marktId);
 
         if (null === $markt) {
             $this->logger->error('Markt not found');
@@ -279,7 +279,7 @@ class AllocationController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/allocation/{markt}/{date}",
+     *     path="/api/1.1.0/allocation/{marktId}/{date}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="AllocationGetByMarktAndByDate",
      *     tags={"Allocation"},
@@ -300,12 +300,12 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/{marktAfkorting}/{date}", methods={"GET"})
+     * @Route("/allocation/{marktId}/{date}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getAllocationsByMarktAndDate(string $marktAfkorting, string $date): Response
+    public function getAllocationsByMarktAndDate(string $marktId, string $date): Response
     {
-        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        $markt = $this->marktRepository->getById($marktId);
 
         if (null === $markt) {
             $this->logger->error('Markt not found');
