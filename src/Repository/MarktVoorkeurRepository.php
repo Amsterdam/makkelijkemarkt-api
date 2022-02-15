@@ -45,7 +45,7 @@ class MarktVoorkeurRepository extends ServiceEntityRepository
         return $this->findBy(['koopman' => $koopman, 'markt' => $markt]);
     }
 
-    public function findOneByKoopmanAndMarkt(Koopman $koopman, Markt $markt): MarktVoorkeur
+    public function findOneByKoopmanAndMarkt(Koopman $koopman, Markt $markt): ?MarktVoorkeur
     {
         return $this->findOneBy(['koopman' => $koopman, 'markt' => $markt]);
     }
