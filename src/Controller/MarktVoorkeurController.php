@@ -140,25 +140,38 @@ class MarktVoorkeurController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $branche = $this->brancheRepository->findOneByAfkorting($data['branche']);
-
-        if (null === $branche) {
-            $this->logger->warning('Branche not found');
-
-            return new JsonResponse(['error' => 'Branche not found'], Response::HTTP_BAD_REQUEST);
-        }
-
         $marktvoorkeur = $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
-
         if (null === $marktvoorkeur) {
             $marktvoorkeur = new MarktVoorkeur();
+            // if the first 'creation' submit comes from the plaatsvoorkeur page
+            $marktvoorkeur->setHasInrichting(false);
+            $marktvoorkeur->setIsBak(false);
+            $branche = $this->brancheRepository->findOneByAfkorting('000-EMPTY');
+            $marktvoorkeur->setBranche($branche);
+        }
+
+        // branche will not be submitted from the 'plaatsvoorkeur' form
+        if (array_key_exists('branche', $data) && null !== $data['branche']) {
+            $branche = $this->brancheRepository->findOneByAfkorting($data['branche']);
+            if (null === $branche) {
+                $this->logger->warning('Branche not found');
+
+                return new JsonResponse(['error' => 'Branche not found'], Response::HTTP_BAD_REQUEST);
+            }
+            $marktvoorkeur->setBranche($branche);
         }
 
         (array_key_exists('anywhere', $data)) ? $marktvoorkeur->setAnywhere((bool) $data['anywhere']) : $marktvoorkeur->setAnywhere(false);
         (array_key_exists('minimum', $data)) ? $marktvoorkeur->setMinimum((int) $data['minimum']) : $marktvoorkeur->setMinimum(1);
         (array_key_exists('maximum', $data)) ? $marktvoorkeur->setMaximum((int) $data['maximum']) : $marktvoorkeur->setMinimum(1);
-        (array_key_exists('hasInrichting', $data)) ? $marktvoorkeur->setHasInrichting((bool) $data['hasInrichting']) : $marktvoorkeur->setHasInrichting(false);
-        (array_key_exists('isBak', $data)) ? $marktvoorkeur->setIsBak((bool) $data['isBak']) : $marktvoorkeur->setIsBak(false);
+
+        // hasInrichting and isBak  will not be submitted from the 'plaatsvoorkeur' form
+        if (array_key_exists('hasInrichting', $data) && null !== $data['hasInrichting']) {
+            $marktvoorkeur->setHasInrichting((bool) $data['hasInrichting']);
+        }
+        if (array_key_exists('isBak', $data) && null !== $data['isBak']) {
+            $marktvoorkeur->setIsBak((bool) $data['isBak']);
+        }
 
         if (array_key_exists('absentFrom', $data)) {
             if (strtotime($data['absentFrom'])) {
@@ -193,7 +206,6 @@ class MarktVoorkeurController extends AbstractController
             $marktvoorkeur->setAbsentUntil($absentUntil);
         }
 
-        $marktvoorkeur->setBranche($branche);
         $marktvoorkeur->setMarkt($markt);
         $marktvoorkeur->setKoopman($koopman);
 
