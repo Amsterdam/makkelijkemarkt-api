@@ -141,30 +141,34 @@ class MarktVoorkeurController extends AbstractController
         }
 
         $marktvoorkeur = $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
+        if (null === $marktvoorkeur) {
+            $marktvoorkeur = new MarktVoorkeur();
+        }
 
         // branche will not be submitted from the 'plaatsvoorkeur' form
-        if(array_key_exists('branche', $data) && $data['branche'] !== null){
+        if (array_key_exists('branche', $data) && null !== $data['branche']) {
             $branche = $this->brancheRepository->findOneByAfkorting($data['branche']);
             if (null === $branche) {
+                $branche = $this->brancheRepository->findOneByAfkorting('000-EMPTY');
+            }
+            if (null === $branche) {
                 $this->logger->warning('Branche not found');
+
                 return new JsonResponse(['error' => 'Branche not found'], Response::HTTP_BAD_REQUEST);
             }
             $marktvoorkeur->setBranche($branche);
         }
 
-        if (null === $marktvoorkeur) {
-            $marktvoorkeur = new MarktVoorkeur();
-        }
 
         (array_key_exists('anywhere', $data)) ? $marktvoorkeur->setAnywhere((bool) $data['anywhere']) : $marktvoorkeur->setAnywhere(false);
         (array_key_exists('minimum', $data)) ? $marktvoorkeur->setMinimum((int) $data['minimum']) : $marktvoorkeur->setMinimum(1);
         (array_key_exists('maximum', $data)) ? $marktvoorkeur->setMaximum((int) $data['maximum']) : $marktvoorkeur->setMinimum(1);
 
         // hasInrichting and isBak  will not be submitted from the 'plaatsvoorkeur' form
-        if(array_key_exists('hasInrichting', $data) && $data['hasInrichting'] !== null){
+        if (array_key_exists('hasInrichting', $data) && null !== $data['hasInrichting']) {
             $marktvoorkeur->setHasInrichting((bool) $data['hasInrichting']);
         }
-        if(array_key_exists('isBak', $data) && $data['isBak'] !== null){
+        if (array_key_exists('isBak', $data) && null !== $data['isBak']) {
             $marktvoorkeur->setIsBak((bool) $data['isBak']);
         }
 
