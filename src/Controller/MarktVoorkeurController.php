@@ -143,14 +143,16 @@ class MarktVoorkeurController extends AbstractController
         $marktvoorkeur = $this->marktVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
         if (null === $marktvoorkeur) {
             $marktvoorkeur = new MarktVoorkeur();
+            // if the first 'creation' submit comes from the plaatsvoorkeur page
+            $marktvoorkeur->setHasInrichting(false);
+            $marktvoorkeur->setIsBak(false);
+            $branche = $this->brancheRepository->findOneByAfkorting('000-EMPTY');
+            $marktvoorkeur->setBranche($branche);
         }
 
         // branche will not be submitted from the 'plaatsvoorkeur' form
         if (array_key_exists('branche', $data) && null !== $data['branche']) {
             $branche = $this->brancheRepository->findOneByAfkorting($data['branche']);
-            if (null === $branche) {
-                $branche = $this->brancheRepository->findOneByAfkorting('000-EMPTY');
-            }
             if (null === $branche) {
                 $this->logger->warning('Branche not found');
 
