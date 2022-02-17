@@ -115,9 +115,6 @@ final class LineairplanFactuurService
 
     private function berekenMetersGrootTarief(Dagvergunning $dagvergunning, float $btw): int
     {
-        // Vaste meters??
-        // Promo ??
-
         $aantal = $dagvergunning->getGrootPerMeter();
         $this->addMetersToFactuur(self::GROOTTE_GROOT, $aantal, $btw);
 
@@ -126,9 +123,6 @@ final class LineairplanFactuurService
 
     private function berekenMetersKleinTarief(Dagvergunning $dagvergunning, float $btw): int
     {
-        // Vaste meters??
-        // Promo ??
-
         $aantal = $dagvergunning->getKleinPerMeter();
         $this->addMetersToFactuur(self::GROOTTE_KLEIN, $aantal, $btw);
 
@@ -188,8 +182,8 @@ final class LineairplanFactuurService
         $nameReiniging = "reiniging ($grootte tarief)";
 
         $cost = $this->tariefplan->getLineairplan()->getTariefPerMeter();
-        if ($grootte === self::GROOTTE_KLEIN) $grootte = $this->tariefplan->getLineairplan()->getTariefPerMeterKlein();
-        if ($grootte === self::GROOTTE_GROOT) $grootte = $this->tariefplan->getLineairplan()->getTariefPerMeterGroot();
+        if ($grootte === self::GROOTTE_KLEIN) $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterKlein();
+        if ($grootte === self::GROOTTE_GROOT) $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterGroot();
 
         $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeter();
         if ($grootte === self::GROOTTE_KLEIN) $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterKlein();
