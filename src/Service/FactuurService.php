@@ -220,7 +220,9 @@ final class FactuurService
         if (null !== $sollicitatie) {
             $dagvergunning->setAantal3meterKramenVast($sollicitatie->getAantal3MeterKramen());
             $dagvergunning->setAantal4meterKramenVast($sollicitatie->getAantal4MeterKramen());
+            $dagvergunning->setAantalMetersGrootVast($sollicitatie->getGrootPerMeter());
             $dagvergunning->setAantalExtraMetersVast($sollicitatie->getAantalExtraMeters());
+            $dagvergunning->setAantalMetersGrootVast($sollicitatie->getKleinPerMeter());
             $dagvergunning->setAantalElektraVast($sollicitatie->getAantalElektra());
             $dagvergunning->setKrachtstroomVast($sollicitatie->getKrachtstroom());
             $dagvergunning->setAfvaleilandVast($sollicitatie->getAantalAfvaleilanden());

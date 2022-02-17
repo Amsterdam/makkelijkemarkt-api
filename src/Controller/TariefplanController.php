@@ -323,8 +323,12 @@ final class TariefplanController extends AbstractController
             'naam',
             'geldigVanaf',
             'geldigTot',
+            'tariefPerMeterGroot',
             'tariefPerMeter',
+            'tariefPerMeterKlein',
+            'reinigingPerMeterGroot',
             'reinigingPerMeter',
+            'reinigingPerMeterKlein',
             'toeslagBedrijfsafvalPerMeter',
             'toeslagKrachtstroomPerAansluiting',
             'promotieGeldenPerMeter',
@@ -332,6 +336,7 @@ final class TariefplanController extends AbstractController
             'afvaleiland',
             'elektra',
             'eenmaligElektra',
+            'agfPerMeter'
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -559,8 +564,12 @@ final class TariefplanController extends AbstractController
             'naam',
             'geldigVanaf',
             'geldigTot',
+            'tariefPerMeterGroot',
             'tariefPerMeter',
+            'tariefPerMeterKlein',
+            'reinigingPerMeterGroot',
             'reinigingPerMeter',
+            'reinigingPerMeterKlein',
             'toeslagBedrijfsafvalPerMeter',
             'toeslagKrachtstroomPerAansluiting',
             'promotieGeldenPerMeter',
@@ -568,6 +577,7 @@ final class TariefplanController extends AbstractController
             'afvaleiland',
             'elektra',
             'eenmaligElektra',
+            'agfPerMeter'
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -678,8 +688,12 @@ final class TariefplanController extends AbstractController
         $tariefplan->setNaam($data['naam']);
         $tariefplan->setGeldigVanaf($geldigVanaf);
         $tariefplan->setGeldigTot($geldigTot);
+        $lineairplan->setTariefPerMeterGroot((float) $data['tariefPerMeterGroot']);
         $lineairplan->setTariefPerMeter((float) $data['tariefPerMeter']);
+        $lineairplan->setTariefPerMeterKlein((float) $data['tariefPerMeterKlein']);
+        $lineairplan->setReinigingPerMeterGroot((float) $data['reinigingPerMeterGroot']);
         $lineairplan->setReinigingPerMeter((float) $data['reinigingPerMeter']);
+        $lineairplan->setReinigingPerMeterKlein((float) $data['reinigingPerMeterKlein']);
         $lineairplan->setToeslagBedrijfsafvalPerMeter((float) $data['toeslagBedrijfsafvalPerMeter']);
         $lineairplan->setToeslagKrachtstroomPerAansluiting((float) $data['toeslagKrachtstroomPerAansluiting']);
         $lineairplan->setPromotieGeldenPerMeter((float) $data['promotieGeldenPerMeter']);
@@ -687,6 +701,7 @@ final class TariefplanController extends AbstractController
         $lineairplan->setAfvaleiland((float) $data['afvaleiland']);
         $lineairplan->setEenmaligElektra((float) $data['eenmaligElektra']);
         $lineairplan->setElektra((float) $data['elektra']);
+        $lineairplan->setAgfPerMeter((float) $data['agfPerMeter']);
 
         return $lineairplan;
     }

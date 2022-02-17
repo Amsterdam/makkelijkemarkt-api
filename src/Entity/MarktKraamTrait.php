@@ -234,7 +234,23 @@ trait MarktKraamTrait
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
+    private $aantalMetersGrootVast;
+
+    /**
+     * @Groups("vergunningControle")
+     *
+     * @var ?int
+     * @ORM\Column(type="integer", nullable=true)
+     */
     private $aantalExtraMetersVast;
+
+    /**
+     * @Groups("vergunningControle")
+     *
+     * @var ?int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $aantalMetersKleinVast;
 
     /**
      * @Groups("vergunningControle")
@@ -731,5 +747,37 @@ trait MarktKraamTrait
     public function setAfvalEilandAgf(int $afvalEilandAgf): void
     {
         $this->afvalEilandAgf = $afvalEilandAgf;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAantalMetersKleinVast(): ?int
+    {
+        return $this->aantalMetersKleinVast;
+    }
+
+    /**
+     * @param int|null $aantalMetersKleinVast
+     */
+    public function setAantalMetersKleinVast(?int $aantalMetersKleinVast): void
+    {
+        $this->aantalMetersKleinVast = $aantalMetersKleinVast;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAantalMetersGrootVast(): ?int
+    {
+        return $this->aantalMetersGrootVast;
+    }
+
+    /**
+     * @param int|null $aantalMetersGrootVast
+     */
+    public function setAantalMetersGrootVast(?int $aantalMetersGrootVast): void
+    {
+        $this->aantalMetersGrootVast = $aantalMetersGrootVast;
     }
 }

@@ -116,8 +116,6 @@ class PerfectViewMarktImport
             if ('WAT-2022' === $pvRecord['AFKORTING']) {
                 $opties[] = 'grootPerMeter';
                 $opties[] = 'kleinPerMeter';
-                $opties[] = 'grootReiniging';
-                $opties[] = 'kleinReiniging';
                 $opties[] = 'afvalEilandAgf';
                 $opties[] = 'krachtstroomPerStuk';
             }
