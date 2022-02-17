@@ -173,31 +173,29 @@ class MarktVoorkeurController extends AbstractController
             $marktvoorkeur->setIsBak((bool) $data['isBak']);
         }
 
-        if (array_key_exists('absentFrom', $data)) {
+        if (array_key_exists('absentFrom', $data) && $data['absentFrom'] !== null) {
             if (strtotime($data['absentFrom'])) {
                 $absentFrom = new DateTime($data['absentFrom']);
             } else {
                 $this->logger->warning('absentFrom is not a date');
-
                 return new JsonResponse(['error' => 'absentFrom is not a date'], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        if (array_key_exists('absentUntil', $data)) {
+        if (array_key_exists('absentUntil', $data) && $data['absentUntil'] !== null) {
             if (strtotime($data['absentUntil'])) {
                 $absentUntil = new DateTime($data['absentUntil']);
             } else {
                 $this->logger->warning('absentUntil is not a date');
-
                 return new JsonResponse(['error' => 'absentUntil is not a date'], Response::HTTP_BAD_REQUEST);
             }
         }
 
         if (array_key_exists('absentFrom', $data) && array_key_exists('absentUntil', $data) && $absentFrom > $absentUntil) {
             $this->logger->warning('absentUntil is before absentFrom');
-
             return new JsonResponse(['error' => 'absentUntil is before absentFrom'], Response::HTTP_BAD_REQUEST);
         }
+
 
         if (array_key_exists('absentFrom', $data)) {
             $marktvoorkeur->setAbsentFrom($absentFrom);
