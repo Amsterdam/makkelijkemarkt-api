@@ -62,14 +62,14 @@ class PlaatsVoorkeurController extends AbstractController
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="PlaatsVoorkeurCreate",
      *     tags={"PlaatsVoorkeur"},
-     *     summary="Maakt nieuwe PlaatsVoorkeur aan",
+     *     summary="Maakt nieuwe of bewerkt bestaande PlaatsVoorkeur",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Items(items="plaatsen", type="array", description="array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)"),
-     *                 @OA\Property(property="marktAfkorting", type="string", description="afkorting van de markt"),
+     *                 @OA\Property(property="marktId", type="string", description="id van de markt"),
      *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
      *             )
      *         )
@@ -88,57 +88,68 @@ class PlaatsVoorkeurController extends AbstractController
      * @Route("/plaatsvoorkeur", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function create(Request $request): Response
+    public function createOrUpdate(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
 
         if (null === $data) {
+            $this->logger->warning('No data');
+
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
         $expectedParameters = [
             'plaatsen',
-            'marktAfkorting',
-            'koopmanErkenningsNummer',
+            'markt',
+            'koopman',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
+                $this->logger->warning("parameter '".$expectedParameter."' missing");
+
                 return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
+        $markt = $this->marktRepository->getById($data['markt']);
 
         if (null === $markt) {
+            $this->logger->warning('Markt not found');
+
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopmanErkenningsNummer']);
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopman']);
 
         if (null === $koopman) {
+            $this->logger->warning('Koopman not found');
+
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (null !== $this->plaatsVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt)) {
-            return new JsonResponse(['error' => 'PlaatsVoorkeur already exists'], Response::HTTP_BAD_REQUEST);
-        }
+        $plaatsVoorkeur = $this->plaatsVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
 
-        $plaatsVoorkeur = new PlaatsVoorkeur();
+        if (null === $plaatsVoorkeur) {
+            $plaatsVoorkeur = new PlaatsVoorkeur();
+            $plaatsVoorkeur->setMarkt($markt);
+            $plaatsVoorkeur->setKoopman($koopman);
+        }
 
         if (is_array($data['plaatsen'])) {
             foreach ($data['plaatsen'] as $plaats) {
                 if (!is_int($plaats)) {
+                    $this->logger->warning('Plaatsen contains an invalid value');
+
                     return new JsonResponse(['error' => 'Plaatsen contains an invalid value'], Response::HTTP_BAD_REQUEST);
                 }
             }
             $plaatsVoorkeur->setPlaatsen($data['plaatsen']);
         } else {
+            $this->logger->warning('Plaatsen is not an array');
+
             return new JsonResponse(['error' => 'Plaatsen is not an array'], Response::HTTP_BAD_REQUEST);
         }
-
-        $plaatsVoorkeur->setMarkt($markt);
-        $plaatsVoorkeur->setKoopman($koopman);
 
         $this->entityManager->persist($plaatsVoorkeur);
         $this->entityManager->flush();
@@ -150,12 +161,11 @@ class PlaatsVoorkeurController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/plaatsvoorkeur/{marktAfkorting}",
+     *     path="/api/1.1.0/plaatsvoorkeur/markt/{marktId}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="PlaatsVoorkeurGetByMarktAfkorting",
+     *     operationId="PlaatsVoorkeurGetByMarktId",
      *     tags={"PlaatsVoorkeur"},
-     *     summary="Vraag PlaatsVoorkeuren op met een marktAfkorting.",
-     *     @OA\Parameter(name="marktAfkorting", @OA\Schema(type="string"), in="path", required=true),
+     *     summary="Vraag PlaatsVoorkeuren op met een marktId.",
      *     @OA\Response(
      *         response="200",
      *         description="Success",
@@ -167,14 +177,16 @@ class PlaatsVoorkeurController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/plaatsvoorkeur/{marktAfkorting}", methods={"GET"})
+     * @Route("/plaatsvoorkeur/markt/{marktId}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getPlaatsVoorkeurByMarktAfkorting(string $marktAfkorting): Response
+    public function getPlaatsVoorkeurByMarktId(string $marktId): Response
     {
-        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        $markt = $this->marktRepository->getById($marktId);
 
         if (null === $markt) {
+            $this->logger->warning('Markt not found');
+
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -187,12 +199,11 @@ class PlaatsVoorkeurController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/plaatsvoorkeur/{marktAfkorting}/{koopmanErkenningsNummer}",
+     *     path="/api/1.1.0/plaatsvoorkeur/markt/{marktId}/koopman/{koopmanErkenningsNummer}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="PlaatsVoorkeurGetByMarktAfkortingAndKoopmanErkenningsNummer",
+     *     operationId="PlaatsVoorkeurGetByMarktIdAndKoopmanErkenningsNummer",
      *     tags={"PlaatsVoorkeur"},
-     *     summary="Vraag PlaatsVoorkeuren op met een marktAfkorting en koopmanErkenningsnummer.",
-     *     @OA\Parameter(name="marktAfkorting", @OA\Schema(type="string"), in="path", required=true),
+     *     summary="Vraag PlaatsVoorkeuren op met een marktId en koopmanErkenningsnummer.",
      *     @OA\Response(
      *         response="200",
      *         description="Success",
@@ -204,59 +215,45 @@ class PlaatsVoorkeurController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/plaatsvoorkeur/{marktAfkorting}/{koopmanErkenningsNummer}", methods={"GET"})
+     * @Route("/plaatsvoorkeur/markt/{marktId}/koopman/{koopmanErkenningsNummer}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getPlaatsVoorkeurByMarktAfkortingAndKoopmanErkenningsNummer(string $marktAfkorting, string $koopmanErkenningsNummer): Response
+    public function getPlaatsVoorkeurByMarktIdAndKoopmanErkenningsNummer(string $marktId, string $koopmanErkenningsNummer): Response
     {
-        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        $markt = $this->marktRepository->getById($marktId);
 
         if (null === $markt) {
+            $this->logger->warning('Markt not found');
+
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
         if (null === $koopman) {
+            $this->logger->warning('Koopman not found');
+
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $plaatsVoorkeur = $this->plaatsVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
+        $plaatsVoorkeuren = $this->plaatsVoorkeurRepository->findByKoopmanAndMarkt($koopman, $markt);
 
-        if (null === $plaatsVoorkeur) {
-            return new JsonResponse(['error' => "PlaatsVoorkeur doesn't exist"], Response::HTTP_NOT_FOUND);
-        }
-
-        $response = $this->serializer->serialize($plaatsVoorkeur, 'json');
+        $response = $this->serializer->serialize($plaatsVoorkeuren, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
     /**
-     * @OA\Put(
-     *     path="/api/1.1.0/plaatsvoorkeur/{marktAfkorting}/{KoopmanErkenningsNummer}",
+     * @OA\Get(
+     *     path="/api/1.1.0/plaatsvoorkeur/koopman/{koopmanErkenningsNummer}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="PlaatsVoorkeurUpdate",
+     *     operationId="PlaatsVoorkeurGetByKoopmanErkenningsNummer",
      *     tags={"PlaatsVoorkeur"},
-     *     summary="Past een PlaatsVoorkeur aan",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Items(items="plaatsen", type="array", description="array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)"),
-     *             )
-     *         )
-     *     ),
+     *     summary="Vraag PlaatsVoorkeuren op met een koopmanErkenningsnummer.",
      *     @OA\Response(
      *         response="200",
      *         description="Success",
      *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
-     *     ),
-     *     @OA\Response(
-     *         response="400",
-     *         description="Bad Request",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -264,60 +261,22 @@ class PlaatsVoorkeurController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/plaatsvoorkeur/{marktAfkorting}/{koopmanErkenningsNummer}", methods={"PUT"})
+     * @Route("/plaatsvoorkeur/koopman/{koopmanErkenningsNummer}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function update(Request $request, string $marktAfkorting, string $koopmanErkenningsNummer): Response
+    public function getPlaatsVoorkeurByKoopmanErkenningsNummer(string $koopmanErkenningsNummer): Response
     {
-        $data = json_decode((string) $request->getContent(), true);
-
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'plaatsen',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
-
-        if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopmanErkenningsNummer']);
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
         if (null === $koopman) {
+            $this->logger->warning('Koopman not found');
+
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $plaatsVoorkeur = $this->plaatsVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
+        $plaatsVoorkeuren = $this->plaatsVoorkeurRepository->findByKoopman($koopman);
 
-        if (null === $plaatsVoorkeur) {
-            return new JsonResponse(['error' => "PlaatsVoorkeur doesn't exist"], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (is_array($data['plaatsen'])) {
-            foreach ($data['plaatsen'] as $plaats) {
-                if (!is_int($plaats)) {
-                    return new JsonResponse(['error' => 'Plaatsen contains an invalid value'], Response::HTTP_BAD_REQUEST);
-                }
-            }
-            $plaatsVoorkeur->setPlaatsen($data['plaatsen']);
-        } else {
-            return new JsonResponse(['error' => 'Plaatsen is not an array'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $this->entityManager->persist($plaatsVoorkeur);
-        $this->entityManager->flush();
-
-        $response = $this->serializer->serialize($plaatsVoorkeur, 'json');
+        $response = $this->serializer->serialize($plaatsVoorkeuren, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
