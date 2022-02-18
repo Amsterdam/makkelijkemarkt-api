@@ -652,130 +652,81 @@ trait MarktKraamTrait
         return $this;
     }
 
-
-    /**
-     * @return int
-     */
     public function getKrachtstroomPerStuk(): int
     {
         return $this->krachtstroomPerStuk;
     }
 
-    /**
-     * @param int $krachtstroomPerStuk
-     */
     public function setKrachtstroomPerStuk(int $krachtstroomPerStuk): void
     {
         $this->krachtstroomPerStuk = $krachtstroomPerStuk;
     }
 
-    /**
-     * @return int
-     */
     public function getGrootPerMeter(): int
     {
         return $this->grootPerMeter;
     }
 
-    /**
-     * @param int $grootPerMeter
-     */
     public function setGrootPerMeter(int $grootPerMeter): void
     {
         $this->grootPerMeter = $grootPerMeter;
     }
 
-    /**
-     * @return int
-     */
     public function getKleinPerMeter(): int
     {
         return $this->kleinPerMeter;
     }
 
-    /**
-     * @param int $kleinPerMeter
-     */
     public function setKleinPerMeter(int $kleinPerMeter): void
     {
         $this->kleinPerMeter = $kleinPerMeter;
     }
 
-    /**
-     * @return int
-     */
     public function getGrootReiniging(): int
     {
         return $this->grootReiniging;
     }
 
-    /**
-     * @param int $grootReiniging
-     */
     public function setGrootReiniging(int $grootReiniging): void
     {
         $this->grootReiniging = $grootReiniging;
     }
 
-    /**
-     * @return int
-     */
     public function getKleinReiniging(): int
     {
         return $this->kleinReiniging;
     }
 
-    /**
-     * @param int $kleinReiniging
-     */
     public function setKleinReiniging(int $kleinReiniging): void
     {
         $this->kleinReiniging = $kleinReiniging;
     }
 
-    /**
-     * @return int
-     */
     public function getAfvalEilandAgf(): int
     {
         return $this->afvalEilandAgf;
     }
 
-    /**
-     * @param int $afvalEilandAgf
-     */
     public function setAfvalEilandAgf(int $afvalEilandAgf): void
     {
         $this->afvalEilandAgf = $afvalEilandAgf;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAantalMetersKleinVast(): ?int
     {
         return $this->aantalMetersKleinVast;
     }
 
-    /**
-     * @param int|null $aantalMetersKleinVast
-     */
     public function setAantalMetersKleinVast(?int $aantalMetersKleinVast): void
     {
         $this->aantalMetersKleinVast = $aantalMetersKleinVast;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAantalMetersGrootVast(): ?int
     {
         return $this->aantalMetersGrootVast;
     }
 
-    /**
-     * @param int|null $aantalMetersGrootVast
-     */
     public function setAantalMetersGrootVast(?int $aantalMetersGrootVast): void
     {
         $this->aantalMetersGrootVast = $aantalMetersGrootVast;

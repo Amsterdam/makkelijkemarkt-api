@@ -80,7 +80,7 @@ final class LineairplanFactuurService
      */
     private function berekenMetersNormaalTarief(Dagvergunning $dagvergunning, float $btw): int
     {
-        /** @var Lineairplan $lineairplan */
+        /* @var Lineairplan $lineairplan */
 
         $meters[4] = $dagvergunning->getAantal4MeterKramen();
         $meters[3] = $dagvergunning->getAantal3MeterKramen();
@@ -169,7 +169,8 @@ final class LineairplanFactuurService
         }
     }
 
-    private function addMetersToFactuur(string $grootte, int $amount, float $btw): void {
+    private function addMetersToFactuur(string $grootte, int $amount, float $btw): void
+    {
         if ($amount < 1) {
             return;
         }
@@ -182,12 +183,20 @@ final class LineairplanFactuurService
         $nameReiniging = "reiniging ($grootte tarief)";
 
         $cost = $this->tariefplan->getLineairplan()->getTariefPerMeter();
-        if ($grootte === self::GROOTTE_KLEIN) $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterKlein();
-        if ($grootte === self::GROOTTE_GROOT) $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterGroot();
+        if (self::GROOTTE_KLEIN === $grootte) {
+            $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterKlein();
+        }
+        if (self::GROOTTE_GROOT === $grootte) {
+            $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterGroot();
+        }
 
         $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeter();
-        if ($grootte === self::GROOTTE_KLEIN) $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterKlein();
-        if ($grootte === self::GROOTTE_GROOT) $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterGroot();
+        if (self::GROOTTE_KLEIN === $grootte) {
+            $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterKlein();
+        }
+        if (self::GROOTTE_GROOT === $grootte) {
+            $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterGroot();
+        }
 
         /** @var Product $product */
         $product = new Product();
@@ -206,7 +215,6 @@ final class LineairplanFactuurService
         $product->setAantal($amount);
         $product->setBtwHoog($btw);
         $this->factuur->addProducten($product);
-
     }
 
     private function berekenBedrijfsAfval(Dagvergunning $dagvergunning, int $meters, float $btw): void

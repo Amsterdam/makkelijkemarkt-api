@@ -336,7 +336,7 @@ final class TariefplanController extends AbstractController
             'afvaleiland',
             'elektra',
             'eenmaligElektra',
-            'agfPerMeter'
+            'agfPerMeter',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -577,7 +577,7 @@ final class TariefplanController extends AbstractController
             'afvaleiland',
             'elektra',
             'eenmaligElektra',
-            'agfPerMeter'
+            'agfPerMeter',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {

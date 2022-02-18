@@ -62,7 +62,6 @@ class Lineairplan
      */
     private $reinigingPerMeterGroot;
 
-
     /**
      * @OA\Property()
      * @Groups("lineairplan")
@@ -290,81 +289,51 @@ class Lineairplan
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getTariefPerMeterGroot(): float
     {
         return (float) $this->tariefPerMeterGroot;
     }
 
-    /**
-     * @param float $tariefPerMeterGroot
-     */
     public function setTariefPerMeterGroot(float $tariefPerMeterGroot): void
     {
         $this->tariefPerMeterGroot = $tariefPerMeterGroot;
     }
 
-    /**
-     * @return float
-     */
     public function getTariefPerMeterKlein(): float
     {
         return (float) $this->tariefPerMeterKlein;
     }
 
-    /**
-     * @param float $tariefPerMeterKlein
-     */
     public function setTariefPerMeterKlein(float $tariefPerMeterKlein): void
     {
         $this->tariefPerMeterKlein = $tariefPerMeterKlein;
     }
 
-    /**
-     * @return float
-     */
     public function getAgfPerMeter(): float
     {
         return (float) $this->agfPerMeter;
     }
 
-    /**
-     * @param float $agfPerMeter
-     */
     public function setAgfPerMeter(float $agfPerMeter): void
     {
         $this->agfPerMeter = $agfPerMeter;
     }
 
-    /**
-     * @return float
-     */
     public function getReinigingPerMeterGroot(): float
     {
         return (float) $this->reinigingPerMeterGroot;
     }
 
-    /**
-     * @param float $reinigingPerMeterGroot
-     */
     public function setReinigingPerMeterGroot(float $reinigingPerMeterGroot): void
     {
         $this->reinigingPerMeterGroot = $reinigingPerMeterGroot;
     }
 
-    /**
-     * @return float
-     */
     public function getReinigingPerMeterKlein(): float
     {
         return (float) $this->reinigingPerMeterKlein;
     }
 
-    /**
-     * @param float $reinigingPerMeterKlein
-     */
     public function setReinigingPerMeterKlein(float $reinigingPerMeterKlein): void
     {
         $this->reinigingPerMeterKlein = $reinigingPerMeterKlein;
