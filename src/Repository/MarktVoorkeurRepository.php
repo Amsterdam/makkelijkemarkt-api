@@ -37,6 +37,14 @@ class MarktVoorkeurRepository extends ServiceEntityRepository
         return $this->findAll(['koopman' => $koopman]);
     }
 
+    /**
+     * @return MarktVoorkeur[] Returns an array of PlaatsVoorkeur objects
+     */
+    public function findByKoopmanAndMarkt(Koopman $koopman, Markt $markt)
+    {
+        return $this->findBy(['koopman' => $koopman, 'markt' => $markt]);
+    }
+
     public function findOneByKoopmanAndMarkt(Koopman $koopman, Markt $markt): ?MarktVoorkeur
     {
         return $this->findOneBy(['koopman' => $koopman, 'markt' => $markt]);
