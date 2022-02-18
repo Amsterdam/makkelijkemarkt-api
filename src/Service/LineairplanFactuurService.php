@@ -55,9 +55,9 @@ final class LineairplanFactuurService
             $btw = $btwTarief->getHoog();
         }
 
-        $totaalMetersGroot = $this->berekenMetersGrootTarief($dagvergunning, $btw);
-        $totaalMetersNormaal = $this->berekenMetersNormaalTarief($dagvergunning, $btw);
-        $totaalMetersKlein = $this->berekenMetersKleinTarief($dagvergunning, $btw);
+        $totaalMetersGroot = $this->berekenMetersGrootTarief($dagvergunning, $btw) ?: 0;
+        $totaalMetersNormaal = $this->berekenMetersNormaalTarief($dagvergunning, $btw) ?: 0;
+        $totaalMetersKlein = $this->berekenMetersKleinTarief($dagvergunning, $btw) ?: 0;
 
         $totaalMeters = $totaalMetersGroot + $totaalMetersNormaal + $totaalMetersKlein;
         $totaalKramen = $totaalMeters > 1 ? 1 : 0;
@@ -169,9 +169,9 @@ final class LineairplanFactuurService
         }
     }
 
-    private function addMetersToFactuur(string $grootte, int $amount, float $btw): void
+    private function addMetersToFactuur(string $grootte, ?int $amount, float $btw): void
     {
-        if ($amount < 1) {
+        if ($amount < 1 || null === $amount) {
             return;
         }
 
@@ -217,8 +217,12 @@ final class LineairplanFactuurService
         $this->factuur->addProducten($product);
     }
 
-    private function berekenBedrijfsAfval(Dagvergunning $dagvergunning, int $meters, float $btw): void
+    private function berekenBedrijfsAfval(Dagvergunning $dagvergunning, ?int $meters, float $btw): void
     {
+        if (!$meters || $meters < 1) {
+            return;
+        }
+
         $plan = $this->tariefplan->getLineairplan();
 
         /** @var Product $product */

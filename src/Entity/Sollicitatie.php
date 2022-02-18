@@ -467,62 +467,62 @@ class Sollicitatie
         return $this;
     }
 
-    public function getKrachtstroomPerStuk(): int
+    public function getKrachtstroomPerStuk(): ?int
     {
         return $this->krachtstroomPerStuk;
     }
 
-    public function setKrachtstroomPerStuk(int $krachtstroomPerStuk): void
+    public function setKrachtstroomPerStuk(?int $krachtstroomPerStuk): void
     {
         $this->krachtstroomPerStuk = $krachtstroomPerStuk;
     }
 
-    public function getGrootPerMeter(): int
+    public function getGrootPerMeter(): ?int
     {
         return $this->grootPerMeter;
     }
 
-    public function setGrootPerMeter(int $grootPerMeter): void
+    public function setGrootPerMeter(?int $grootPerMeter): void
     {
         $this->grootPerMeter = $grootPerMeter;
     }
 
-    public function getKleinPerMeter(): int
+    public function getKleinPerMeter(): ?int
     {
         return $this->kleinPerMeter;
     }
 
-    public function setKleinPerMeter(int $kleinPerMeter): void
+    public function setKleinPerMeter(?int $kleinPerMeter): void
     {
         $this->kleinPerMeter = $kleinPerMeter;
     }
 
-    public function getGrootReiniging(): int
+    public function getGrootReiniging(): ?int
     {
         return $this->grootReiniging;
     }
 
-    public function setGrootReiniging(int $grootReiniging): void
+    public function setGrootReiniging(?int $grootReiniging): void
     {
         $this->grootReiniging = $grootReiniging;
     }
 
-    public function getKleinReiniging(): int
+    public function getKleinReiniging(): ?int
     {
         return $this->kleinReiniging;
     }
 
-    public function setKleinReiniging(int $kleinReiniging): void
+    public function setKleinReiniging(?int $kleinReiniging): void
     {
         $this->kleinReiniging = $kleinReiniging;
     }
 
-    public function getAfvalEilandAgf(): int
+    public function getAfvalEilandAgf(): ?int
     {
         return $this->afvalEilandAgf;
     }
 
-    public function setAfvalEilandAgf(int $afvalEilandAgf): void
+    public function setAfvalEilandAgf(?int $afvalEilandAgf): void
     {
         $this->afvalEilandAgf = $afvalEilandAgf;
     }
