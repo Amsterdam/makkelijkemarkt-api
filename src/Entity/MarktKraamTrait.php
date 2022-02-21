@@ -120,6 +120,66 @@ trait MarktKraamTrait
     private $afvaleiland;
 
     /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("grootPerMeter")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $grootPerMeter;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("kleinPerMeter")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $kleinPerMeter;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("grootReiniging")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $grootReiniging;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("kleinReiniging")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $kleinReiniging;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("afvalEilandAgf")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $afvalEilandAgf;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("krachtstroomPerStuk")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $krachtstroomPerStuk;
+
+    /**
      * @Groups("vergunningControle")
      * @SerializedName("eenmaligElektra")
      *
@@ -174,7 +234,23 @@ trait MarktKraamTrait
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
+    private $aantalMetersGrootVast;
+
+    /**
+     * @Groups("vergunningControle")
+     *
+     * @var ?int
+     * @ORM\Column(type="integer", nullable=true)
+     */
     private $aantalExtraMetersVast;
+
+    /**
+     * @Groups("vergunningControle")
+     *
+     * @var ?int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $aantalMetersKleinVast;
 
     /**
      * @Groups("vergunningControle")
@@ -544,12 +620,12 @@ trait MarktKraamTrait
 
     public function getTotaleLengte(): int
     {
-        return ($this->getAantal3MeterKramen() * 3) + ($this->getAantal4MeterKramen() * 4) + $this->getExtraMeters();
+        return ($this->getAantal3MeterKramen() * 3) + ($this->getAantal4MeterKramen() * 4) + $this->getExtraMeters() + $this->getGrootPerMeter() + $this->getKleinPerMeter();
     }
 
     public function getTotaleLengteVast(): int
     {
-        return ($this->getAantal3meterKramenVast() * 3) + ($this->getAantal4meterKramenVast() * 4) + $this->getExtraMeters();
+        return ($this->getAantal3meterKramenVast() * 3) + ($this->getAantal4meterKramenVast() * 4) + $this->getAantalExtraMetersVast() + $this->getAantalMetersGrootVast() + $this->getAantalMetersKleinVast();
     }
 
     public function getStatusSolliciatie(): ?string
@@ -574,5 +650,85 @@ trait MarktKraamTrait
         $this->sollicitatie = $sollicitatie;
 
         return $this;
+    }
+
+    public function getKrachtstroomPerStuk(): ?int
+    {
+        return $this->krachtstroomPerStuk;
+    }
+
+    public function setKrachtstroomPerStuk(int $krachtstroomPerStuk = null): void
+    {
+        $this->krachtstroomPerStuk = $krachtstroomPerStuk;
+    }
+
+    public function getGrootPerMeter(): ?int
+    {
+        return $this->grootPerMeter;
+    }
+
+    public function setGrootPerMeter(int $grootPerMeter = null): void
+    {
+        $this->grootPerMeter = $grootPerMeter;
+    }
+
+    public function getKleinPerMeter(): ?int
+    {
+        return $this->kleinPerMeter;
+    }
+
+    public function setKleinPerMeter(int $kleinPerMeter = null): void
+    {
+        $this->kleinPerMeter = $kleinPerMeter;
+    }
+
+    public function getGrootReiniging(): ?int
+    {
+        return $this->grootReiniging;
+    }
+
+    public function setGrootReiniging(int $grootReiniging = null): void
+    {
+        $this->grootReiniging = $grootReiniging;
+    }
+
+    public function getKleinReiniging(): ?int
+    {
+        return $this->kleinReiniging;
+    }
+
+    public function setKleinReiniging(int $kleinReiniging = null): void
+    {
+        $this->kleinReiniging = $kleinReiniging;
+    }
+
+    public function getAfvalEilandAgf(): ?int
+    {
+        return $this->afvalEilandAgf;
+    }
+
+    public function setAfvalEilandAgf(int $afvalEilandAgf = null): void
+    {
+        $this->afvalEilandAgf = $afvalEilandAgf;
+    }
+
+    public function getAantalMetersKleinVast(): ?int
+    {
+        return $this->aantalMetersKleinVast;
+    }
+
+    public function setAantalMetersKleinVast(?int $aantalMetersKleinVast): void
+    {
+        $this->aantalMetersKleinVast = $aantalMetersKleinVast;
+    }
+
+    public function getAantalMetersGrootVast(): ?int
+    {
+        return $this->aantalMetersGrootVast;
+    }
+
+    public function setAantalMetersGrootVast(?int $aantalMetersGrootVast): void
+    {
+        $this->aantalMetersGrootVast = $aantalMetersGrootVast;
     }
 }

@@ -15,6 +15,12 @@ use App\Repository\BtwTariefRepository;
 
 final class LineairplanFactuurService
 {
+    private const GROOTTE_GROOT = 'groot';
+    private const GROOTTE_NORMAAL = 'normaal';
+    private const GROOTTE_KLEIN = 'klein';
+
+    private const ALLE_GROOTTES = [self::GROOTTE_GROOT, self::GROOTTE_KLEIN, self::GROOTTE_NORMAAL];
+
     /** @var Factuur */
     private $factuur;
 
@@ -49,12 +55,21 @@ final class LineairplanFactuurService
             $btw = $btwTarief->getHoog();
         }
 
-        [$totaalMeters, $totaalKramen] = $this->berekenMeters($dagvergunning, $btw);
+        $totaalMetersGroot = $this->berekenMetersGrootTarief($dagvergunning, $btw) ?: 0;
+        $totaalMetersNormaal = $this->berekenMetersNormaalTarief($dagvergunning, $btw) ?: 0;
+        $totaalMetersKlein = $this->berekenMetersKleinTarief($dagvergunning, $btw) ?: 0;
+
+        $totaalMeters = $totaalMetersGroot + $totaalMetersNormaal + $totaalMetersKlein;
+        $totaalKramen = $totaalMeters > 1 ? 1 : 0;
 
         $this->berekenElektra($dagvergunning, $btw);
         $this->berekenKrachtstroom($dagvergunning, $btw);
         $this->berekenEenmaligElektra($dagvergunning, $btw);
         $this->berekenAfvaleilanden($dagvergunning, $btw);
+        $this->berekenAfvaleilandenAgf($dagvergunning, $btw);
+        $this->berekenKrachtstroomPerStuk($dagvergunning, $btw);
+        $this->berekenBedrijfsAfval($dagvergunning, $totaalMeters, $btw);
+
         $this->berekenPromotiegelden($totaalMeters, $totaalKramen, $dagvergunning);
 
         return $this->factuur;
@@ -63,10 +78,9 @@ final class LineairplanFactuurService
     /**
      * @return array<int>
      */
-    private function berekenMeters(Dagvergunning $dagvergunning, float $btw): array
+    private function berekenMetersNormaalTarief(Dagvergunning $dagvergunning, float $btw): int
     {
-        /** @var Lineairplan $lineairplan */
-        $lineairplan = $this->tariefplan->getLineairplan();
+        /* @var Lineairplan $lineairplan */
 
         $meters[4] = $dagvergunning->getAantal4MeterKramen();
         $meters[3] = $dagvergunning->getAantal3MeterKramen();
@@ -76,15 +90,8 @@ final class LineairplanFactuurService
         $metersvast[3] = $dagvergunning->getAantal3meterKramenVast();
         $metersvast[1] = $dagvergunning->getAantalExtraMetersVast();
 
-        $totaalKramen = 0;
-
-        $tariefPerMeter = $lineairplan->getTariefPerMeter();
         $totaalMeters = $meters[4] * 4 + $meters[3] * 3 + $meters[1];
         $totaalMetersVast = $metersvast[4] * 4 + $metersvast[3] * 3 + $metersvast[1];
-
-        if ($totaalMeters > 1) {
-            $totaalKramen = 1;
-        }
 
         $teBetalenMeters = $totaalMeters;
 
@@ -101,36 +108,131 @@ final class LineairplanFactuurService
             $this->factuur->addProducten($product);
         }
 
-        if ($teBetalenMeters >= 1) {
-            /** @var Product $product */
-            $product = new Product();
-            $product->setNaam('afgenomen meters');
-            $product->setBedrag($tariefPerMeter);
-            $product->setFactuur($this->factuur);
-            $product->setAantal($teBetalenMeters);
-            $product->setBtwHoog(0);
-            $this->factuur->addProducten($product);
+        $this->addMetersToFactuur(self::GROOTTE_NORMAAL, $teBetalenMeters, $btw);
 
-            /** @var Product $product */
-            $product = new Product();
-            $product->setNaam('reiniging');
-            $product->setBedrag($lineairplan->getReinigingPerMeter());
-            $product->setFactuur($this->factuur);
-            $product->setAantal($teBetalenMeters);
-            $product->setBtwHoog($btw);
-            $this->factuur->addProducten($product);
+        return $totaalMeters;
+    }
 
+    private function berekenMetersGrootTarief(Dagvergunning $dagvergunning, float $btw): int
+    {
+        $aantal = $dagvergunning->getGrootPerMeter();
+        $this->addMetersToFactuur(self::GROOTTE_GROOT, $aantal, $btw);
+
+        return $aantal;
+    }
+
+    private function berekenMetersKleinTarief(Dagvergunning $dagvergunning, float $btw): int
+    {
+        $aantal = $dagvergunning->getKleinPerMeter();
+        $this->addMetersToFactuur(self::GROOTTE_KLEIN, $aantal, $btw);
+
+        return $aantal;
+    }
+
+    private function berekenAfvaleilandenAgf(Dagvergunning $dagvergunning, float $btw): void
+    {
+        /** @var Lineairplan $lineairplan */
+        $lineairplan = $this->tariefplan->getLineairplan();
+
+        $afname = $dagvergunning->getAfvalEilandAgf();
+        $kosten = $lineairplan->getAgfPerMeter();
+
+        if (null !== $kosten && $kosten > 0 && $afname >= 1) {
             /** @var Product $product */
             $product = new Product();
-            $product->setNaam('toeslag bedrijfsafval');
-            $product->setBedrag($lineairplan->getToeslagBedrijfsafvalPerMeter());
+            $product->setNaam('Afvaleiland AGF');
+            $product->setBedrag($kosten);
             $product->setFactuur($this->factuur);
-            $product->setAantal($teBetalenMeters);
+            $product->setAantal($afname);
             $product->setBtwHoog($btw);
             $this->factuur->addProducten($product);
         }
+    }
 
-        return [$totaalMeters, $totaalKramen];
+    private function berekenKrachtstroomPerStuk(Dagvergunning $dagvergunning, float $btw): void
+    {
+        /** @var Lineairplan $lineairplan */
+        $lineairplan = $this->tariefplan->getLineairplan();
+
+        $afname = $dagvergunning->getKrachtstroomPerStuk();
+        $kosten = $lineairplan->getToeslagKrachtstroomPerAansluiting();
+
+        if (null !== $kosten && $kosten > 0 && $afname >= 1) {
+            /** @var Product $product */
+            $product = new Product();
+            $product->setNaam('elektra krachtstroom');
+            $product->setBedrag($kosten);
+            $product->setFactuur($this->factuur);
+            $product->setAantal($afname);
+            $product->setBtwHoog($btw);
+            $this->factuur->addProducten($product);
+        }
+    }
+
+    private function addMetersToFactuur(string $grootte, ?int $amount, float $btw): void
+    {
+        if ($amount < 1 || null === $amount) {
+            return;
+        }
+
+        if (!in_array($grootte, self::ALLE_GROOTTES)) {
+            return;
+        }
+
+        $name = "afgenomen meters ($grootte tarief)";
+        $nameReiniging = "reiniging ($grootte tarief)";
+
+        $cost = $this->tariefplan->getLineairplan()->getTariefPerMeter();
+        if (self::GROOTTE_KLEIN === $grootte) {
+            $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterKlein();
+        }
+        if (self::GROOTTE_GROOT === $grootte) {
+            $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterGroot();
+        }
+
+        $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeter();
+        if (self::GROOTTE_KLEIN === $grootte) {
+            $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterKlein();
+        }
+        if (self::GROOTTE_GROOT === $grootte) {
+            $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterGroot();
+        }
+
+        /** @var Product $product */
+        $product = new Product();
+        $product->setNaam($name);
+        $product->setBedrag($cost);
+        $product->setFactuur($this->factuur);
+        $product->setAantal($amount);
+        $product->setBtwHoog(0);
+        $this->factuur->addProducten($product);
+
+        /** @var Product $product */
+        $product = new Product();
+        $product->setNaam($nameReiniging);
+        $product->setBedrag($costReiniging);
+        $product->setFactuur($this->factuur);
+        $product->setAantal($amount);
+        $product->setBtwHoog($btw);
+        $this->factuur->addProducten($product);
+    }
+
+    private function berekenBedrijfsAfval(Dagvergunning $dagvergunning, ?int $meters, float $btw): void
+    {
+        if (!$meters || $meters < 1) {
+            return;
+        }
+
+        $plan = $this->tariefplan->getLineairplan();
+
+        /** @var Product $product */
+        $product = new Product();
+        $product->setNaam('toeslag bedrijfsafval');
+        $product->setBedrag($plan->getToeslagBedrijfsafvalPerMeter());
+        $product->setFactuur($this->factuur);
+        $product->setAantal($meters);
+        $product->setBtwHoog($btw);
+        $this->factuur->addProducten($product);
     }
 
     private function berekenKrachtstroom(Dagvergunning $dagvergunning, float $btw): void

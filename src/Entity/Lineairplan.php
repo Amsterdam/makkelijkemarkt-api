@@ -31,6 +31,15 @@ class Lineairplan
      * @Groups("lineairplan")
      *
      * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $tariefPerMeterGroot;
+
+    /**
+     * @OA\Property()
+     * @Groups("lineairplan")
+     *
+     * @var float
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $tariefPerMeter;
@@ -40,9 +49,36 @@ class Lineairplan
      * @Groups("lineairplan")
      *
      * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $tariefPerMeterKlein;
+
+    /**
+     * @OA\Property()
+     * @Groups("lineairplan")
+     *
+     * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $reinigingPerMeterGroot;
+
+    /**
+     * @OA\Property()
+     * @Groups("lineairplan")
+     *
+     * @var float
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $reinigingPerMeter;
+
+    /**
+     * @OA\Property()
+     * @Groups("lineairplan")
+     *
+     * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $reinigingPerMeterKlein;
 
     /**
      * @OA\Property()
@@ -106,6 +142,15 @@ class Lineairplan
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $elektra;
+
+    /**
+     * @OA\Property()
+     * @Groups("lineairplan")
+     *
+     * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $agfPerMeter;
 
     /**
      * @var Tariefplan
@@ -242,5 +287,55 @@ class Lineairplan
         $this->tariefplan = $tariefplan;
 
         return $this;
+    }
+
+    public function getTariefPerMeterGroot(): float
+    {
+        return (float) $this->tariefPerMeterGroot;
+    }
+
+    public function setTariefPerMeterGroot(float $tariefPerMeterGroot): void
+    {
+        $this->tariefPerMeterGroot = $tariefPerMeterGroot;
+    }
+
+    public function getTariefPerMeterKlein(): float
+    {
+        return (float) $this->tariefPerMeterKlein;
+    }
+
+    public function setTariefPerMeterKlein(float $tariefPerMeterKlein): void
+    {
+        $this->tariefPerMeterKlein = $tariefPerMeterKlein;
+    }
+
+    public function getAgfPerMeter(): float
+    {
+        return (float) $this->agfPerMeter;
+    }
+
+    public function setAgfPerMeter(float $agfPerMeter): void
+    {
+        $this->agfPerMeter = $agfPerMeter;
+    }
+
+    public function getReinigingPerMeterGroot(): float
+    {
+        return (float) $this->reinigingPerMeterGroot;
+    }
+
+    public function setReinigingPerMeterGroot(float $reinigingPerMeterGroot): void
+    {
+        $this->reinigingPerMeterGroot = $reinigingPerMeterGroot;
+    }
+
+    public function getReinigingPerMeterKlein(): float
+    {
+        return (float) $this->reinigingPerMeterKlein;
+    }
+
+    public function setReinigingPerMeterKlein(float $reinigingPerMeterKlein): void
+    {
+        $this->reinigingPerMeterKlein = $reinigingPerMeterKlein;
     }
 }

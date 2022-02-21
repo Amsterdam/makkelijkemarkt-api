@@ -642,7 +642,7 @@ class Dagvergunning
 
     public function getTotaleLengte(): int
     {
-        return ($this->getAantal3MeterKramen() * 3) + ($this->getAantal4MeterKramen() * 4) + $this->getExtraMeters();
+        return ($this->getAantal3MeterKramen() * 3) + ($this->getAantal4MeterKramen() * 4) + $this->getExtraMeters() + $this->getGrootPerMeter() + $this->getKleinPerMeter();
     }
 
     public function getAantalElektra(): int
@@ -767,7 +767,7 @@ class Dagvergunning
 
     public function getTotaleLengteVast(): int
     {
-        return ($this->getAantal3meterKramenVast() * 3) + ($this->getAantal4meterKramenVast() * 4) + $this->getExtraMeters();
+        return ($this->getAantal3meterKramenVast() * 3) + ($this->getAantal4meterKramenVast() * 4) + $this->getAantalExtraMetersVast() + $this->getAantalMetersGrootVast() + $this->getAantalMetersKleinVast();
     }
 
     public function getAantalElektraVast(): ?int

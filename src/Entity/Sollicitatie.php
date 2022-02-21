@@ -124,6 +124,66 @@ class Sollicitatie
     /**
      * @OA\Property()
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("grootPerMeter")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $grootPerMeter;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("kleinPerMeter")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $kleinPerMeter;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("grootReiniging")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $grootReiniging;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("kleinReiniging")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $kleinReiniging;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("afvalEilandAgf")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $afvalEilandAgf;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @SerializedName("krachtstroomPerStuk")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $krachtstroomPerStuk;
+
+    /**
+     * @OA\Property()
+     * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?bool
      * @ORM\Column(type="boolean", nullable=true)
@@ -405,5 +465,65 @@ class Sollicitatie
         $this->koopman = $koopman;
 
         return $this;
+    }
+
+    public function getKrachtstroomPerStuk(): ?int
+    {
+        return $this->krachtstroomPerStuk;
+    }
+
+    public function setKrachtstroomPerStuk(?int $krachtstroomPerStuk): void
+    {
+        $this->krachtstroomPerStuk = $krachtstroomPerStuk;
+    }
+
+    public function getGrootPerMeter(): ?int
+    {
+        return $this->grootPerMeter;
+    }
+
+    public function setGrootPerMeter(?int $grootPerMeter): void
+    {
+        $this->grootPerMeter = $grootPerMeter;
+    }
+
+    public function getKleinPerMeter(): ?int
+    {
+        return $this->kleinPerMeter;
+    }
+
+    public function setKleinPerMeter(?int $kleinPerMeter): void
+    {
+        $this->kleinPerMeter = $kleinPerMeter;
+    }
+
+    public function getGrootReiniging(): ?int
+    {
+        return $this->grootReiniging;
+    }
+
+    public function setGrootReiniging(?int $grootReiniging): void
+    {
+        $this->grootReiniging = $grootReiniging;
+    }
+
+    public function getKleinReiniging(): ?int
+    {
+        return $this->kleinReiniging;
+    }
+
+    public function setKleinReiniging(?int $kleinReiniging): void
+    {
+        $this->kleinReiniging = $kleinReiniging;
+    }
+
+    public function getAfvalEilandAgf(): ?int
+    {
+        return $this->afvalEilandAgf;
+    }
+
+    public function setAfvalEilandAgf(?int $afvalEilandAgf): void
+    {
+        $this->afvalEilandAgf = $afvalEilandAgf;
     }
 }
