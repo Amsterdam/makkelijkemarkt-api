@@ -110,7 +110,7 @@ final class LineairplanFactuurService
 
         $this->addMetersToFactuur(self::GROOTTE_NORMAAL, $teBetalenMeters, $btw);
 
-        return $totaalMeters;
+        return $teBetalenMeters;
     }
 
     private function berekenMetersGrootTarief(Dagvergunning $dagvergunning, float $btw): int
