@@ -412,7 +412,6 @@ final class LineairplanFactuurService
 
         if (null !== $perMeter && $perMeter > 0 && $meters > 0) {
             if ($vasteMeters >= 1) {
-                $meters = $meters - $vasteMeters;
 
                 /** @var Product $product */
                 $product = new Product();
