@@ -280,4 +280,50 @@ class PlaatsVoorkeurController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/1.1.0/plaatsvoorkeur/markt/{marktId}/koopman/{koopmanErkenningsNummer}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="PlaatsVoorkeurRemoveByMarktIdAndKoopmanErkenningsNummer",
+     *     tags={"PlaatsVoorkeur"},
+     *     summary="Verwijder PlaatsVoorkeuren met een marktId en koopmanErkenningsnummer.",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/plaatsvoorkeur/markt/{marktId}/koopman/{koopmanErkenningsNummer}", methods={"DELETE"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function removePlaatsVoorkeurByMarktIdAndKoopmanErkenningsNummer(string $marktId, string $koopmanErkenningsNummer): Response
+    {
+        $markt = $this->marktRepository->getById($marktId);
+
+        if (null === $markt) {
+            $this->logger->warning('Markt not found');
+
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
+
+        if (null === $koopman) {
+            $this->logger->warning('Koopman not found');
+
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $plaatsVoorkeur = $this->plaatsVoorkeurRepository->findOneByKoopmanAndMarkt($koopman, $markt);
+
+        $this->entityManager->remove($plaatsVoorkeur);
+        $this->entityManager->flush();
+
+        return new Response(Response::HTTP_NO_CONTENT);
+    }
 }
