@@ -145,24 +145,21 @@ class AllocationController extends AbstractController
         return $allocation;
     }
 
-    private function default($value, $defaultValue)
-    {
-        return isset($value) ? $value : $defaultValue;
-    }
-
     private function cleanObject($obj, $isAllocated)
     {
         // fill in missing data with defaults
-        $plaatsvoorkeuren = $this->default($obj['ondernemer']['plaatsen'], []);
-        $anywhere = $this->default($obj['ondernemer']['voorkeur']['anywhere'], true);
-        $minimum = $this->default($obj['ondernemer']['voorkeur']['minimum'], 1);
-        $maximum = $this->default($obj['ondernemer']['voorkeur']['maximum'], 1);
-        $parentBranche = $this->default($obj['ondernemer']['voorkeur']['parentBrancheId'], '');
-        $verkoopinrichting = $this->default($obj['ondernemer']['voorkeur']['verkoopinrichting'], '');
+        $data = $obj['ondernemer']['voorkeur'];
+
+        $plaatsvoorkeuren = (array_key_exists('plaatsen', $obj['ondernemer']) ? (int) $obj['ondernemer']['plaatsen'] : []);
+        $anywhere = (array_key_exists('anywhere', $data) ? (int) $data['anywhere'] : true);
+        $minimum = (array_key_exists('minimum', $data) ? (int) $data['minimum'] : 1);
+        $maximum = (array_key_exists('maximum', $data) ? (int) $data['maximum'] : 1);
+        $parentBranche = (array_key_exists('parentBrancheId', $data) ? (int) $data['parentBrancheId'] : '');
+        $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? (int) $data['verkoopinrichting'] : '');
         $erkenningsNummer = $obj['erkenningsNummer'];
-        $brancheId = $this->default($obj['ondernemer']['voorkeur']['brancheId'], '');
-        $reasonCode = $isAllocated ? null : $this->default($obj['reason']['code'], 0);
-        $plaatsen = $this->default($obj['plaatsen'], []);
+        $brancheId = (array_key_exists('brancheId', $data) ? (int) $data['brancheId'] : '');
+        $reasonCode = $isAllocated ? null : (array_key_exists('brancheId', $data) ? $obj['reason']['code'] : 0);
+        $plaatsen = (array_key_exists('plaatsen', $obj) ? (int) $obj['plaatsen'] : []);
 
         // prepare arguments for 'createAllocation' call
         return [
