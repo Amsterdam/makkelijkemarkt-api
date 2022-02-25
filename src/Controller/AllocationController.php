@@ -150,16 +150,16 @@ class AllocationController extends AbstractController
         // fill in missing data with defaults
         $data = $obj['ondernemer']['voorkeur'];
 
-        $plaatsvoorkeuren = (array_key_exists('plaatsen', $obj['ondernemer']) ? (int) $obj['ondernemer']['plaatsen'] : []);
-        $anywhere = (array_key_exists('anywhere', $data) ? (int) $data['anywhere'] : true);
+        $plaatsvoorkeuren = (array_key_exists('plaatsen', $obj['ondernemer']) ? $obj['ondernemer']['plaatsen'] : []);
+        $anywhere = (array_key_exists('anywhere', $data) ? $data['anywhere'] : true);
         $minimum = (array_key_exists('minimum', $data) ? (int) $data['minimum'] : 1);
         $maximum = (array_key_exists('maximum', $data) ? (int) $data['maximum'] : 1);
-        $parentBranche = (array_key_exists('parentBrancheId', $data) ? (int) $data['parentBrancheId'] : '');
-        $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? (int) $data['verkoopinrichting'] : '');
+        $parentBranche = (array_key_exists('parentBrancheId', $data) ? $data['parentBrancheId'] : '');
+        $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? $data['verkoopinrichting'] : '');
         $erkenningsNummer = $obj['erkenningsNummer'];
-        $brancheId = (array_key_exists('brancheId', $data) ? (int) $data['brancheId'] : '');
+        $brancheId = (array_key_exists('brancheId', $data) ? $data['brancheId'] : '');
         $reasonCode = $isAllocated ? null : (array_key_exists('brancheId', $data) ? $obj['reason']['code'] : 0);
-        $plaatsen = (array_key_exists('plaatsen', $obj) ? (int) $obj['plaatsen'] : []);
+        $plaatsen = (array_key_exists('plaatsen', $obj) ? $obj['plaatsen'] : []);
 
         // prepare arguments for 'createAllocation' call
         return [
