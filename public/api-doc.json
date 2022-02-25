@@ -4338,6 +4338,40 @@
                         "bearer": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "PlaatsVoorkeur"
+                ],
+                "summary": "Verwijder PlaatsVoorkeuren met een marktId en koopmanErkenningsnummer.",
+                "operationId": "PlaatsVoorkeurRemoveByMarktIdAndKoopmanErkenningsNummer",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/1.1.0/plaatsvoorkeur/koopman/{koopmanErkenningsNummer}": {
@@ -7119,11 +7153,27 @@
                         "type": "integer",
                         "example": "14"
                     },
+                    "tariefPerMeterGroot": {
+                        "type": "number",
+                        "format": "float"
+                    },
                     "tariefPerMeter": {
                         "type": "number",
                         "format": "float"
                     },
+                    "tariefPerMeterKlein": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "reinigingPerMeterGroot": {
+                        "type": "number",
+                        "format": "float"
+                    },
                     "reinigingPerMeter": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "reinigingPerMeterKlein": {
                         "type": "number",
                         "format": "float"
                     },
@@ -7152,6 +7202,10 @@
                         "format": "float"
                     },
                     "elektra": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "agfPerMeter": {
                         "type": "number",
                         "format": "float"
                     }
@@ -7414,6 +7468,24 @@
                     "aantalExtraMeters": {},
                     "aantalElektra": {},
                     "aantalAfvaleilanden": {
+                        "type": "integer"
+                    },
+                    "grootPerMeter": {
+                        "type": "integer"
+                    },
+                    "kleinPerMeter": {
+                        "type": "integer"
+                    },
+                    "grootReiniging": {
+                        "type": "integer"
+                    },
+                    "kleinReiniging": {
+                        "type": "integer"
+                    },
+                    "afvalEilandAgf": {
+                        "type": "integer"
+                    },
+                    "krachtstroomPerStuk": {
                         "type": "integer"
                     },
                     "krachtstroom": {},
