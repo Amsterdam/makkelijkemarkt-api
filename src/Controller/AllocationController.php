@@ -117,7 +117,7 @@ class AllocationController extends AbstractController
         } else {
             if (isset($rejectReason)) {
                 if (!array_key_exists($rejectReason, $this->rejectReasons)) {
-                    throw new Exception('rejectReason not valid.');
+                    throw new Exception($rejectReason.' rejectReason not valid.');
                 }
             } else {
                 throw new Exception('rejectReason not set for unallocated allocation.');
@@ -129,7 +129,7 @@ class AllocationController extends AbstractController
 
         $allocation = new Allocation();
         $allocation->setIsAllocated($isAllocated);
-        $allocation->setPlaatsen($plaatsen);
+        $allocation->setPlaatsen($plaatsen ?? null);
         $allocation->setPlaatsvoorkeuren($plaatsvoorkeuren);
         $allocation->setrejectReason($this->rejectReasons[$rejectReason] ?? null);
         $allocation->setDate($marktDate);
@@ -158,8 +158,8 @@ class AllocationController extends AbstractController
         $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? $data['verkoopinrichting'] : []);
         $erkenningsNummer = $obj['erkenningsNummer'];
         $brancheId = (array_key_exists('brancheId', $data) ? $data['brancheId'] : '');
-        $reasonCode = $isAllocated ? null : (array_key_exists('brancheId', $data) ? $obj['reason']['code'] : 0);
-        $plaatsen = (array_key_exists('plaatsen', $obj) ? $obj['plaatsen'] : []);
+        $reasonCode = $isAllocated ? null : (array_key_exists('code', $obj['reason']) ? $obj['reason']['code'] : 0);
+        $plaatsen = (array_key_exists('plaatsen', $obj) ? $obj['plaatsen'] : null);
 
         // prepare arguments for 'createAllocation' call
         return [
