@@ -26,7 +26,7 @@ class MarktVoorkeurRepository extends ServiceEntityRepository
      */
     public function findByMarkt(Markt $markt)
     {
-        return $this->findAll(['markt' => $markt]);
+        return $this->findBy(['markt' => $markt]);
     }
 
     /**
@@ -34,7 +34,7 @@ class MarktVoorkeurRepository extends ServiceEntityRepository
      */
     public function findByKoopman(Koopman $koopman)
     {
-        return $this->findAll(['koopman' => $koopman]);
+        return $this->findBy(['koopman' => $koopman]);
     }
 
     /**
