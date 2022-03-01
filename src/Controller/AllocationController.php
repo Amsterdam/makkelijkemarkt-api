@@ -68,7 +68,14 @@ class AllocationController extends AbstractController
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->rejectReasons = [1 => 'BRANCHE_FULL', 2 => 'ADJACENT_UNAVAILABLE', 3 => 'MINIMUM_UNAVAILABLE', 4 => 'MARKET_FULL'];
+        $this->rejectReasons = [
+            1 => 'BRANCHE_FULL',
+            2 => 'ADJACENT_UNAVAILABLE',
+            3 => 'MINIMUM_UNAVAILABLE',
+            4 => 'MARKET_FULL',
+            5 => 'VPL_POSITION_NOT_AVAILABLE',
+            6 => 'PREF_NOT_AVAILABLE'
+        ];
     }
 
     private function createAllocation(
@@ -102,13 +109,7 @@ class AllocationController extends AbstractController
         $hasInrichting = is_array($inrichting) && in_array('eigen-materieel', $inrichting);
 
         if ($isAllocated) {
-            if (isset($plaatsen)) {
-                foreach ($plaatsen as $item) {
-                    if (false === filter_var($item, FILTER_VALIDATE_INT)) {
-                        throw new Exception('plaatsen contains an invalid item (not an int)');
-                    }
-                }
-            } else {
+            if (!isset($plaatsen)) {
                 throw new Exception('plaatsen not set for allocated allocation.');
             }
             if (isset($rejectReason)) {
