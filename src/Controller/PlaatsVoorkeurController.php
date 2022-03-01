@@ -137,13 +137,6 @@ class PlaatsVoorkeurController extends AbstractController
         }
 
         if (is_array($data['plaatsen'])) {
-            foreach ($data['plaatsen'] as $plaats) {
-                if (!is_int($plaats)) {
-                    $this->logger->warning('Plaatsen contains an invalid value');
-
-                    return new JsonResponse(['error' => 'Plaatsen contains an invalid value'], Response::HTTP_BAD_REQUEST);
-                }
-            }
             $plaatsVoorkeur->setPlaatsen($data['plaatsen']);
         } else {
             $this->logger->warning('Plaatsen is not an array');
