@@ -74,7 +74,7 @@ class AllocationController extends AbstractController
             3 => 'MINIMUM_UNAVAILABLE',
             4 => 'MARKET_FULL',
             5 => 'VPL_POSITION_NOT_AVAILABLE',
-            6 => 'PREF_NOT_AVAILABLE'
+            6 => 'PREF_NOT_AVAILABLE',
         ];
     }
 
@@ -118,7 +118,7 @@ class AllocationController extends AbstractController
         } else {
             if (isset($rejectReason)) {
                 if (!array_key_exists($rejectReason, $this->rejectReasons)) {
-                    throw new Exception($rejectReason.' rejectReason not valid.');
+                    throw new Exception('rejectReason not valid.');
                 }
             } else {
                 throw new Exception('rejectReason not set for unallocated allocation.');
