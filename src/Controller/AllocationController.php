@@ -68,7 +68,14 @@ class AllocationController extends AbstractController
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->rejectReasons = [1 => 'BRANCHE_FULL', 2 => 'ADJACENT_UNAVAILABLE', 3 => 'MINIMUM_UNAVAILABLE', 4 => 'MARKET_FULL'];
+        $this->rejectReasons = [
+            1 => 'BRANCHE_FULL',
+            2 => 'ADJACENT_UNAVAILABLE',
+            3 => 'MINIMUM_UNAVAILABLE',
+            4 => 'MARKET_FULL',
+            5 => 'VPL_POSITION_NOT_AVAILABLE',
+            6 => 'PREF_NOT_AVAILABLE',
+        ];
     }
 
     private function createAllocation(
@@ -102,13 +109,7 @@ class AllocationController extends AbstractController
         $hasInrichting = is_array($inrichting) && in_array('eigen-materieel', $inrichting);
 
         if ($isAllocated) {
-            if (isset($plaatsen)) {
-                foreach ($plaatsen as $item) {
-                    if (false === filter_var($item, FILTER_VALIDATE_INT)) {
-                        throw new Exception('plaatsen contains an invalid item (not an int)');
-                    }
-                }
-            } else {
+            if (!isset($plaatsen)) {
                 throw new Exception('plaatsen not set for allocated allocation.');
             }
             if (isset($rejectReason)) {
@@ -129,7 +130,7 @@ class AllocationController extends AbstractController
 
         $allocation = new Allocation();
         $allocation->setIsAllocated($isAllocated);
-        $allocation->setPlaatsen($plaatsen);
+        $allocation->setPlaatsen($plaatsen ?? null);
         $allocation->setPlaatsvoorkeuren($plaatsvoorkeuren);
         $allocation->setrejectReason($this->rejectReasons[$rejectReason] ?? null);
         $allocation->setDate($marktDate);
@@ -155,11 +156,11 @@ class AllocationController extends AbstractController
         $minimum = (array_key_exists('minimum', $data) ? (int) $data['minimum'] : 1);
         $maximum = (array_key_exists('maximum', $data) ? (int) $data['maximum'] : 1);
         $parentBranche = (array_key_exists('parentBrancheId', $data) ? $data['parentBrancheId'] : '');
-        $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? $data['verkoopinrichting'] : '');
+        $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? $data['verkoopinrichting'] : []);
         $erkenningsNummer = $obj['erkenningsNummer'];
         $brancheId = (array_key_exists('brancheId', $data) ? $data['brancheId'] : '');
-        $reasonCode = $isAllocated ? null : (array_key_exists('brancheId', $data) ? $obj['reason']['code'] : 0);
-        $plaatsen = (array_key_exists('plaatsen', $obj) ? $obj['plaatsen'] : []);
+        $reasonCode = $isAllocated ? null : (array_key_exists('code', $obj['reason']) ? $obj['reason']['code'] : 0);
+        $plaatsen = (array_key_exists('plaatsen', $obj) ? $obj['plaatsen'] : null);
 
         // prepare arguments for 'createAllocation' call
         return [

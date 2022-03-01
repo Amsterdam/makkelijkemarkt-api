@@ -173,6 +173,7 @@ class MarktVoorkeurController extends AbstractController
             $marktvoorkeur->setIsBak((bool) $data['isBak']);
         }
 
+        $absentFrom = null;
         if (array_key_exists('absentFrom', $data) && null !== $data['absentFrom']) {
             if (strtotime($data['absentFrom'])) {
                 $absentFrom = new DateTime($data['absentFrom']);
@@ -183,6 +184,7 @@ class MarktVoorkeurController extends AbstractController
             }
         }
 
+        $absentUntil = null;
         if (array_key_exists('absentUntil', $data) && null !== $data['absentUntil']) {
             if (strtotime($data['absentUntil'])) {
                 $absentUntil = new DateTime($data['absentUntil']);
