@@ -113,7 +113,7 @@ class PerfectViewMarktImport
             if ('PEK' === $pvRecord['AFKORTING']) {
                 $opties[] = 'eenmaligElektra';
             }
-            if ('WAT-2022' === $pvRecord['AFKORTING'] || 'DAPP' === $pvRecord['AFKORTING']) {
+            if ('WAT-2022' === $pvRecord['AFKORTING']) {
                 $opties[] = 'grootPerMeter';
                 $opties[] = 'kleinPerMeter';
                 $opties[] = 'afvalEilandAgf';
