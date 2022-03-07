@@ -144,12 +144,12 @@ class BrancheController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/branche/{afkorting}",
+     *     path="/api/1.1.0/branche/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="BrancheGetByAfkorting",
      *     tags={"Branche"},
      *     summary="Vraag branches op met een bracheAfkorting.",
-     *     @OA\Parameter(name="afkorting", @OA\Schema(type="string"), in="path", required=true),
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
@@ -161,12 +161,12 @@ class BrancheController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/branche/{afkorting}", methods={"GET"})
+     * @Route("/branche/{id}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getBrancheByAfkorting(string $afkorting): Response
+    public function getBrancheByAfkorting(int $id): Response
     {
-        $branche = $this->brancheRepository->findOneByAfkorting($afkorting);
+        $branche = $this->brancheRepository->findOneById($id);
 
         if (null === $branche) {
             return new JsonResponse(['error' => 'Branche not found.'], Response::HTTP_NOT_FOUND);
@@ -179,7 +179,7 @@ class BrancheController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/api/1.1.0/branche/{afkorting}",
+     *     path="/api/1.1.0/branche/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="BranchUpdate",
      *     tags={"Branche"},
@@ -189,6 +189,7 @@ class BrancheController extends AbstractController
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
+     *                 @OA\Property(property="afkorting", type="string", description="afkorting van de branche"),
      *                 @OA\Property(property="omschrijving", type="string", description="omschrijving van de branche"),
      *                 @OA\Property(property="color", type="string", description="kleur van de branche"),
      *             )
@@ -210,10 +211,10 @@ class BrancheController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/branche/{afkorting}", methods={"PUT"})
+     * @Route("/branche/{id}", methods={"PUT"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function update(Request $request, string $afkorting): Response
+    public function update(Request $request, string $id): Response
     {
         $data = json_decode((string) $request->getContent(), true);
 
@@ -221,23 +222,14 @@ class BrancheController extends AbstractController
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-        $branche = $this->brancheRepository->findOneByAfkorting($afkorting);
+        $branche = $this->brancheRepository->findOneById($id);
 
         if (null === $branche) {
-            return new JsonResponse(['error' => 'Branche '.$data['afkorting']." doesn't exist"], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Branche doesn\'t exist'], Response::HTTP_NOT_FOUND);
         }
 
-        $expectedParameters = [
-            'omschrijving',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        $branche->setOmschrijving($data['omschrijving']);
+        (!array_key_exists('afkorting', $data)) ?: ($branche->setAfkorting($data['afkorting']));
+        (!array_key_exists('omschrijving', $data)) ?: ($branche->setOmschrijving($data['omschrijving']));
         (!array_key_exists('color', $data)) ?: ($branche->setColor($data['color']));
 
         $this->entityManager->persist($branche);
@@ -250,12 +242,12 @@ class BrancheController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/api/1.1.0/branche/{afkorting}",
+     *     path="/api/1.1.0/branche/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="BrancheDelete",
-     *     tags={"Notitie"},
+     *     tags={"Branche"},
      *     summary="Verwijderd een branche",
-     *     @OA\Parameter(name="afkorting", @OA\Schema(type="string"), in="path", required=true , description="afkorting van de branche"),
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true , description="id van de branche"),
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -266,12 +258,12 @@ class BrancheController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/branche/{afkorting}", methods={"DELETE"})
+     * @Route("/branche/{id}", methods={"DELETE"})
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
-    public function delete(string $afkorting): JsonResponse
+    public function delete(string $id): JsonResponse
     {
-        $branche = $this->brancheRepository->findOneByAfkorting($afkorting);
+        $branche = $this->brancheRepository->findOneById($id);
 
         if (null === $branche) {
             return new JsonResponse(['error' => 'Branche not found.'], Response::HTTP_NOT_FOUND);

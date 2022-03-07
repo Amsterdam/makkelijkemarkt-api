@@ -903,7 +903,7 @@
                 ]
             }
         },
-        "/api/1.1.0/branche/{afkorting}": {
+        "/api/1.1.0/branche/{id}": {
             "get": {
                 "tags": [
                     "Branche"
@@ -912,11 +912,11 @@
                 "operationId": "BrancheGetByAfkorting",
                 "parameters": [
                     {
-                        "name": "afkorting",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -967,6 +967,10 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
+                                    "afkorting": {
+                                        "description": "afkorting van de branche",
+                                        "type": "string"
+                                    },
                                     "omschrijving": {
                                         "description": "omschrijving van de branche",
                                         "type": "string"
@@ -1034,18 +1038,18 @@
             },
             "delete": {
                 "tags": [
-                    "Notitie"
+                    "Branche"
                 ],
                 "summary": "Verwijderd een branche",
                 "operationId": "BrancheDelete",
                 "parameters": [
                     {
-                        "name": "afkorting",
+                        "name": "id",
                         "in": "path",
-                        "description": "afkorting van de branche",
+                        "description": "id van de branche",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],

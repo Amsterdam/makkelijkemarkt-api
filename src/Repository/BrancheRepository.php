@@ -19,8 +19,8 @@ class BrancheRepository extends ServiceEntityRepository
         parent::__construct($registry, Branche::class);
     }
 
-    public function findOneByAfkorting(string $afkorting)
+    public function findOneId(int $id)
     {
-        return $this->findOneBy(['afkorting' => $afkorting]);
+        return $this->findOneBy(['id' => $id]);
     }
 }
