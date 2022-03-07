@@ -214,7 +214,7 @@ class BrancheController extends AbstractController
      * @Route("/branche/{id}", methods={"PUT"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function update(Request $request, string $id): Response
+    public function update(Request $request, int $id): Response
     {
         $data = json_decode((string) $request->getContent(), true);
 
@@ -261,7 +261,7 @@ class BrancheController extends AbstractController
      * @Route("/branche/{id}", methods={"DELETE"})
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
-    public function delete(string $id): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         $branche = $this->brancheRepository->findOneById($id);
 
