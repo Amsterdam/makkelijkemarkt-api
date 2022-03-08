@@ -254,6 +254,10 @@ class BrancheController extends AbstractController
      *         description="No Content"
      *     ),
      *     @OA\Response(
+     *         response="409",
+     *         description="Conflict"
+     *     ),
+     *     @OA\Response(
      *         response="404",
      *         description="Not Found",
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))

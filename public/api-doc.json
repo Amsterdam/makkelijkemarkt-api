@@ -1057,6 +1057,9 @@
                     "204": {
                         "description": "No Content"
                     },
+                    "409": {
+                        "description": "Conflict"
+                    },
                     "404": {
                         "description": "Not Found",
                         "content": {
