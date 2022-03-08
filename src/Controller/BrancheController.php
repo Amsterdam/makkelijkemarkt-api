@@ -6,6 +6,7 @@ use App\Entity\Branche;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\BrancheRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
@@ -270,7 +271,14 @@ class BrancheController extends AbstractController
         }
 
         $this->entityManager->remove($branche);
-        $this->entityManager->flush();
+
+        try {
+            $this->entityManager->flush();
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage());
+
+            return new JsonResponse([], Response::HTTP_CONFLICT);
+        }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
