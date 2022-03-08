@@ -497,7 +497,7 @@ class Markt
 
         return $this;
     }
-    
+
     public function getMaxAantalKramenPerOndernemer(): ?int
     {
         return $this->maxAantalKramenPerOndernemer;
