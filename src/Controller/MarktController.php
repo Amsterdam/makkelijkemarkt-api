@@ -198,6 +198,7 @@ final class MarktController extends AbstractController
 
         $expectedParameters = [
             'aantalKramen',
+            'maxAantalKramenPerOndernemer',
             'aantalMeter',
             'auditMax',
             'kiesJeKraamActief',
