@@ -108,7 +108,7 @@ class BrancheController extends AbstractController
         $branche = new Branche();
         $branche->setAfkorting($data['afkorting']);
         $branche->setOmschrijving($data['omschrijving']);
-        (!array_key_exists('color', $data)) ?: ($branche->setColor($data['color']));
+        (!array_key_exists('color', $data)) ?: ($branche->setColor(str_replace('#', '', $data['color'])));
 
         $this->entityManager->persist($branche);
         $this->entityManager->flush();

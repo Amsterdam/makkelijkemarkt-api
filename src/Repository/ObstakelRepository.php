@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Obstakel;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class ObstakelRepository extends ServiceEntityRepository
+class ObstakelRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -37,7 +39,6 @@ class MarktConfiguratie
         self::INPUT_FIELD_PAGINAS,
         self::INPUT_FIELD_MARKT,
     ];
-
     /**
      * @OA\Property(example="14")
      *
@@ -46,7 +47,6 @@ class MarktConfiguratie
      * @ORM\Column(type="integer")
      */
     private int $id;
-
     /**
      * @OA\Property(type="integer", example="101", property="marktId")
      *
@@ -54,7 +54,6 @@ class MarktConfiguratie
      * @ORM\JoinColumn(nullable=false)
      */
     private Markt $markt;
-
     /**
      * @OA\Property(type="string", example="{""obstakels"": [{""kraamA"": ""8"",""kraamB"": ""9"",""obstakel"": [""bankje""]},{""kraamA"": ""81"",""kraamB"": ""82"",""obstakel"": [""bankje""]}]}")
      *
@@ -85,7 +84,6 @@ class MarktConfiguratie
      * @ORM\Column(type="json")
      */
     private array $branches;
-
     /**
      * @OA\Property(example="2022-01-07 16:52:00.000")
      *
@@ -94,12 +92,51 @@ class MarktConfiguratie
     private DateTimeInterface $aanmaakDatumtijd;
 
     /**
+     * @ORM\OneToMany(targetEntity="MarktGeografie", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     */
+    public Collection $marktGeografies;
+
+    /**
+     * @ORM\OneToMany(targetEntity="MarktLocatie", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     */
+    public Collection $marktLocaties;
+
+    /**
+     * @ORM\OneToMany(targetEntity="MarktPagina", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     */
+    public Collection $marktPaginas;
+
+    /**
+     * @ORM\OneToMany(targetEntity="MarktBrancheEigenschap", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     */
+    public Collection $marktBrancheEigenschaps;
+
+    /**
+     * @ORM\OneToMany(targetEntity="MarktOpstelling", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     */
+    public Collection $marktOpstellings;
+
+    public function __construct()
+    {
+        $this->marktGeografies = new ArrayCollection();
+        $this->marktLocaties = new ArrayCollection();
+        $this->marktPaginas = new ArrayCollection();
+        $this->marktBrancheEigenschaps = new ArrayCollection();
+        $this->marktOpstellings = new ArrayCollection();
+    }
+
+    /**
      * Creates a MarktConfiguratie object from Post Request in MarktConfiguratieController.
      *
      * @return static
      */
-    public static function createFromPostRequest(Request $request, Markt $markt): self
-    {
+    public static function createFromPostRequest(
+        Request $request,
+        Markt $markt,
+        array $branches,
+        array $obstakels,
+        array $plaatsEigenschappen
+    ): self {
         $data = json_decode((string) $request->getContent(), true);
 
         if (!$data) {
@@ -123,12 +160,34 @@ class MarktConfiguratie
             ->setPaginas($data[self::INPUT_FIELD_PAGINAS])
             ->setMarktOpstelling($data[self::INPUT_FIELD_MARKT]);
 
-        return $marktConfiguratie;
-    }
+        foreach ($data[self::INPUT_FIELD_GEOGRAFIE]['obstakels'] as $obstakel) {
+            $geografie = MarktGeografie::createFromObstakelJson($obstakel, $marktConfiguratie, $obstakels);
+            $marktConfiguratie->marktGeografies->add($geografie);
+        }
 
-    public function getMarktId(): int
-    {
-        return $this->markt->getId();
+        foreach ($data[self::INPUT_FIELD_LOCATIES] as $locatieJson) {
+            $locatie = MarktLocatie::createFromLocatieJson($locatieJson, $marktConfiguratie, $branches, $plaatsEigenschappen);
+            $marktConfiguratie->marktLocaties->add($locatie);
+        }
+
+        foreach ($data[self::INPUT_FIELD_BRANCHES] as $brancheJson) {
+            $branche = MarktBrancheEigenschap::createFromBrancheJson($brancheJson, $marktConfiguratie, $branches);
+            $marktConfiguratie->marktBrancheEigenschaps->add($branche);
+        }
+
+        foreach ($data[self::INPUT_FIELD_MARKT] as $opstellingJson) {
+            foreach ($opstellingJson as $position => $row) {
+                $opstelling = MarktOpstelling::createFromMarktOpstellingJson($row, $marktConfiguratie, (int) $position);
+                $marktConfiguratie->marktOpstellings->add($opstelling);
+            }
+        }
+
+        foreach ($data[self::INPUT_FIELD_PAGINAS] as $paginaJson) {
+            $pagina = MarktPagina::createFromMarktPaginaJson($paginaJson, $marktConfiguratie);
+            $marktConfiguratie->marktPaginas->add($pagina);
+        }
+
+        return $marktConfiguratie;
     }
 
     /**
@@ -139,6 +198,11 @@ class MarktConfiguratie
         $this->markt = $markt;
 
         return $this;
+    }
+
+    public function getMarktId(): int
+    {
+        return $this->markt->getId();
     }
 
     /**

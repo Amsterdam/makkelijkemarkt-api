@@ -6,8 +6,11 @@ namespace App\Controller;
 
 use App\Entity\MarktConfiguratie;
 use App\Normalizer\EntityNormalizer;
+use App\Repository\BrancheRepository;
 use App\Repository\MarktConfiguratieRepository;
 use App\Repository\MarktRepository;
+use App\Repository\ObstakelRepository;
+use App\Repository\PlaatseigenschapRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
@@ -30,10 +33,16 @@ class MarktConfiguratieController extends AbstractController
     private MarktRepository $marktRepository;
     private Serializer $serializer;
     private MarktConfiguratieRepository $marktConfiguratieRepository;
+    private BrancheRepository $brancheRepository;
+    private ObstakelRepository $obstakelRepository;
+    private PlaatseigenschapRepository $plaatseigenschapRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         MarktRepository $marktRepository,
+        BrancheRepository $brancheRepository,
+        ObstakelRepository $obstakelRepository,
+        PlaatseigenschapRepository $plaatseigenschapRepository,
         MarktConfiguratieRepository $marktConfiguratieRepository,
         CacheManager $cacheManager
     ) {
@@ -42,6 +51,9 @@ class MarktConfiguratieController extends AbstractController
         $this->marktConfiguratieRepository = $marktConfiguratieRepository;
 
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->brancheRepository = $brancheRepository;
+        $this->obstakelRepository = $obstakelRepository;
+        $this->plaatseigenschapRepository = $plaatseigenschapRepository;
     }
 
     /**
@@ -122,8 +134,12 @@ class MarktConfiguratieController extends AbstractController
             return new JsonResponse(['error' => "Could not find markt with id $marktId"], Response::HTTP_NOT_FOUND);
         }
 
+        $branches = $this->brancheRepository->findAllAsMap('afkorting');
+        $obstakels = $this->obstakelRepository->findAllAsMap('naam');
+        $plaatsEigenschappen = $this->plaatseigenschapRepository->findAllAsMap('naam');
+
         try {
-            $marktConfiguratie = MarktConfiguratie::createFromPostRequest($request, $markt);
+            $marktConfiguratie = MarktConfiguratie::createFromPostRequest($request, $markt, $branches, $obstakels, $plaatsEigenschappen);
         } catch (BadRequestException $exception) {
             return new JsonResponse(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
         }
