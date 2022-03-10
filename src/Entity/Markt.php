@@ -149,6 +149,15 @@ class Markt
      * @var int
      * @ORM\Column(type="integer", nullable=true)
      */
+    private $maxAantalKramenPerOndernemer;
+
+    /**
+     * @OA\Property()
+     * @Groups("markt")
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
     private $aantalMeter;
 
     /**
@@ -308,6 +317,7 @@ class Markt
         $this->makkelijkeMarktActief = true;
         $this->kiesJeKraamMededelingActief = false;
         $this->indelingstype = 'a/b-lijst';
+        $this->maxAantalKramenPerOndernemer = null;
     }
 
     public function __toString()
@@ -484,6 +494,18 @@ class Markt
     public function setAantalKramen(int $aantalKramen = null): self
     {
         $this->aantalKramen = $aantalKramen;
+
+        return $this;
+    }
+
+    public function getMaxAantalKramenPerOndernemer(): ?int
+    {
+        return $this->maxAantalKramenPerOndernemer;
+    }
+
+    public function setMaxAantalKramenPerOndernemer(int $aantalKramen = null): self
+    {
+        $this->maxAantalKramenPerOndernemer = $aantalKramen;
 
         return $this;
     }

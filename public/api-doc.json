@@ -7271,6 +7271,9 @@
                     "aantalKramen": {
                         "type": "integer"
                     },
+                    "maxAantalKramenPerOndernemer": {
+                        "type": "integer"
+                    },
                     "aantalMeter": {
                         "type": "integer"
                     },
