@@ -93,26 +93,31 @@ class MarktConfiguratie
 
     /**
      * @ORM\OneToMany(targetEntity="MarktGeografie", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktGeografies;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktLocatie", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktLocaties;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktPagina", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktPaginas;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktBrancheEigenschap", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktBrancheEigenschaps;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktOpstelling", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     public Collection $marktOpstellings;
 
@@ -188,6 +193,21 @@ class MarktConfiguratie
         }
 
         return $marktConfiguratie;
+    }
+
+    public static function toJson(
+        MarktConfiguratie $marktConfiguratie
+    ): array {
+        return [
+            'marktId' => $marktConfiguratie->getMarktId(),
+            'id' => $marktConfiguratie->getId(),
+            'aanmaakDatumtijd' => $marktConfiguratie->getAanmaakDatumtijd()->format('Y-m-d H:i:s'),
+            'geografie' => ['obstakels' => MarktGeografie::toJson($marktConfiguratie->marktGeografies)],
+            'locaties' => MarktLocatie::toJson($marktConfiguratie->marktLocaties),
+            'marktOpstelling' => ['rows' => MarktOpstelling::toJson($marktConfiguratie->marktOpstellings)],
+            'paginas' => MarktPagina::toJson($marktConfiguratie->marktPaginas),
+            'branches' => MarktBrancheEigenschap::toJson($marktConfiguratie->marktBrancheEigenschaps),
+        ];
     }
 
     /**

@@ -27,6 +27,7 @@ class MarktPagina
 
     /**
      * @ORM\OneToMany(targetEntity="MarktPaginaIndelingslijstGroup", mappedBy="marktPagina", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktPaginaIndelingslijstGroups;
 
@@ -53,6 +54,21 @@ class MarktPagina
         }
 
         return $pagina;
+    }
+
+    /**
+     * @param Collection<MarktPagina> $marktPaginas
+     */
+    public static function toJson(Collection $marktPaginas): array
+    {
+        return array_map(function (MarktPagina $marktPagina) {
+            return [
+                'title' => $marktPagina->getTitle(),
+                'indelingslijstGroup' => MarktPaginaIndelingslijstGroup::toJson(
+                        $marktPagina->marktPaginaIndelingslijstGroups
+                    ),
+            ];
+        }, iterator_to_array($marktPaginas));
     }
 
     public function getId(): int

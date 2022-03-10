@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -29,42 +31,54 @@ class MarktLocatie
     private ?string $plaatsId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Branche")
+     * @ORM\ManyToMany(targetEntity="Branche")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
-    private ?Branche $branche;
+    private Collection $branches;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Plaatseigenschap")
+     * @ORM\ManyToMany(targetEntity="Plaatseigenschap")
+     * @ORM\OrderBy({"id" = "ASC"})
      */
-    private ?Plaatseigenschap $plaatseigenschap;
+    private Collection $plaatseigenschappen;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $verkoopInrichting;
 
+    public function __construct()
+    {
+        $this->branches = new ArrayCollection();
+        $this->plaatseigenschappen = new ArrayCollection();
+    }
+
+    /**
+     * @param Branche[]          $branches
+     * @param Plaatseigenschap[] $plaatsEigenschappen
+     *
+     * @return static
+     */
     public static function createFromLocatieJson(array $input, MarktConfiguratie $marktConfiguratie, array $branches, array $plaatsEigenschappen): self
     {
         $locatie = new self();
 
         if (array_key_exists('branches', $input) && count($input['branches']) > 0) {
-            $brancheNaam = $input['branches'][0];
-            $branche = $branches[$brancheNaam];
-            $locatie->setBranche($branche);
-        } else {
-            $locatie->setBranche(null);
+            foreach ($input['branches'] as $brancheNaam) {
+                $branche = $branches[$brancheNaam];
+                $locatie->getBranches()->add($branche);
+            }
         }
 
         if (array_key_exists('properties', $input) && count($input['properties']) > 0) {
-            $propertyNaam = $input['properties'][0];
-            $plaatsEigenschap = $plaatsEigenschappen[$propertyNaam];
-            $locatie->setPlaatseigenschap($plaatsEigenschap);
-        } else {
-            $locatie->setPlaatseigenschap(null);
+            foreach ($input['properties'] as $propertyNaam) {
+                $plaatsEigenschap = $plaatsEigenschappen[$propertyNaam];
+                $locatie->getPlaatseigenschappen()->add($plaatsEigenschap);
+            }
         }
 
-        if (array_key_exists('verkoopInrichting', $input) && count($input['verkoopInrichting']) > 0) {
-            $locatie->setVerkoopInrichting($input['verkoopInrichting'][0]);
+        if (array_key_exists('verkoopinrichting', $input) && count($input['verkoopinrichting']) > 0) {
+            $locatie->setVerkoopInrichting($input['verkoopinrichting'][0]);
         } else {
             $locatie->setVerkoopInrichting(null);
         }
@@ -73,6 +87,45 @@ class MarktLocatie
         $locatie->setPlaatsId($input['plaatsId']);
 
         return $locatie;
+    }
+
+    /**
+     * @param Collection<MarktLocatie> $marktLocaties
+     *
+     * @return void
+     */
+    public static function toJson(Collection $marktLocaties): array
+    {
+        return array_map(function (MarktLocatie $marktLocatie) {
+            $locatieJson = [
+                'plaatsId' => $marktLocatie->getPlaatsId(),
+                'branches' => [],
+                'properties' => [],
+                'verkoopinrichting' => [],
+            ];
+
+            if ($marktLocatie->getBranches()->count() > 0) {
+                $locatieJson['branches'] = array_map(function (Branche $branche) {
+                    return $branche->getAfkorting();
+                }, $marktLocatie->getBranches()->toArray());
+
+                sort($locatieJson['branches']);
+            }
+
+            if ($marktLocatie->getPlaatseigenschappen()->count() > 0) {
+                $locatieJson['properties'] = array_map(function (Plaatseigenschap $plaatseigenschap) {
+                    return $plaatseigenschap->getNaam();
+                }, $marktLocatie->getPlaatseigenschappen()->toArray());
+
+                sort($locatieJson['properties']);
+            }
+
+            if ($marktLocatie->getVerkoopInrichting()) {
+                $locatieJson['verkoopinrichting'] = [$marktLocatie->getVerkoopInrichting()];
+            }
+
+            return $locatieJson;
+        }, iterator_to_array($marktLocaties));
     }
 
     public function getId(): int
@@ -105,26 +158,6 @@ class MarktLocatie
         $this->plaatsId = $plaatsId;
     }
 
-    public function getPlaatseigenschap(): ?Plaatseigenschap
-    {
-        return $this->plaatseigenschap;
-    }
-
-    public function setPlaatseigenschap(?Plaatseigenschap $plaatseigenschap): void
-    {
-        $this->plaatseigenschap = $plaatseigenschap;
-    }
-
-    public function getBranche(): ?Branche
-    {
-        return $this->branche;
-    }
-
-    public function setBranche(?Branche $branche): void
-    {
-        $this->branche = $branche;
-    }
-
     public function getVerkoopInrichting(): ?string
     {
         return $this->verkoopInrichting;
@@ -133,5 +166,29 @@ class MarktLocatie
     public function setVerkoopInrichting(?string $verkoopInrichting): void
     {
         $this->verkoopInrichting = $verkoopInrichting;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getBranches()
+    {
+        return $this->branches;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getPlaatseigenschappen()
+    {
+        return $this->plaatseigenschappen;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $plaatseigenschappen
+     */
+    public function setPlaatseigenschappen($plaatseigenschappen): void
+    {
+        $this->plaatseigenschappen = $plaatseigenschappen;
     }
 }

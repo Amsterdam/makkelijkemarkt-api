@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -60,6 +61,19 @@ class MarktPaginaIndelingslijstGroup
         $group->setPlaatsList($input['plaatsList']);
 
         return $group;
+    }
+
+    public static function toJson(Collection $marktPaginaIndelingslijstGroup): array
+    {
+        return array_map(function (MarktPaginaIndelingslijstGroup $group) {
+            return [
+                'class' => $group->getClass(),
+                'title' => $group->getTitle(),
+                'landmarkTop' => $group->getLandmarkTop(),
+                'landmarkBottom' => $group->getLandmarkBottom(),
+                'plaatsList' => $group->getPlaatsList(),
+            ];
+        }, iterator_to_array($marktPaginaIndelingslijstGroup));
     }
 
     public function getId(): int

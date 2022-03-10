@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -42,6 +43,18 @@ class MarktOpstelling
         $opstelling->setElements($input);
 
         return $opstelling;
+    }
+
+    /**
+     * @param Collection<MarktOpstelling> $marktOpstellings
+     *
+     * @return void
+     */
+    public static function toJson(Collection $marktOpstellings): array
+    {
+        return array_map(function (MarktOpstelling $marktOpstelling) {
+            return $marktOpstelling->getElements();
+        }, iterator_to_array($marktOpstellings));
     }
 
     public function getId(): int

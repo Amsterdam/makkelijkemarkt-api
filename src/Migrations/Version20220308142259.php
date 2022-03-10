@@ -20,8 +20,8 @@ final class Version20220308142259 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP SEQUENCE markt_branche_id_seq CASCADE');
-        $this->addSql('CREATE SEQUENCE markt_branche_eigenschap_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('DROP SEQUENCE IF EXISTS markt_branche_id_seq CASCADE');
+        $this->addSql('CREATE SEQUENCE IF NOT EXISTS markt_branche_eigenschap_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE markt_branche_eigenschap (id INT NOT NULL, markt_configuratie_id INT DEFAULT NULL, branche_id INT DEFAULT NULL, verplicht BOOLEAN DEFAULT NULL, maximum_plaatsen INT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_276ED4CCCDCD1898 ON markt_branche_eigenschap (markt_configuratie_id)');
         $this->addSql('CREATE INDEX IDX_276ED4CC9DDF9A9E ON markt_branche_eigenschap (branche_id)');

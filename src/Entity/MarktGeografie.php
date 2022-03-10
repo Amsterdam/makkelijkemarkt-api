@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -34,18 +36,24 @@ class MarktGeografie
     private string $kraamB;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Obstakel")
+     * @ORM\ManyToMany(targetEntity="Obstakel")
      */
-    private Obstakel $obstakel;
+    private Collection $obstakels;
+
+    public function __construct()
+    {
+        $this->obstakels = new ArrayCollection();
+    }
 
     public static function createFromObstakelJson(array $input, MarktConfiguratie $marktConfiguratie, array $obstakels): self
     {
         $geografie = new self();
 
         if (array_key_exists('obstakel', $input) && count($input['obstakel']) > 0) {
-            $obstakelNaam = $input['obstakel'][0];
-            $obstakel = $obstakels[$obstakelNaam];
-            $geografie->setObstakel($obstakel);
+            foreach ($input['obstakel'] as $obstakelNaam) {
+                $obstakel = $obstakels[$obstakelNaam];
+                $geografie->getObstakels()->add($obstakel);
+            }
         }
 
         $geografie->setKraamA($input['kraamA']);
@@ -55,14 +63,21 @@ class MarktGeografie
         return $geografie;
     }
 
-    public function getObstakel(): Obstakel
+    public static function toJson(Collection $geografies): array
     {
-        return $this->obstakel;
-    }
+        return array_map(function (MarktGeografie $geografie) {
+            $obstakels = array_map(function (Obstakel $obstakel) {
+                return $obstakel->getNaam();
+            }, $geografie->getObstakels()->toArray());
 
-    public function setObstakel(Obstakel $obstakel): void
-    {
-        $this->obstakel = $obstakel;
+            sort($obstakels);
+
+            return [
+                'kraamA' => $geografie->getKraamA(),
+                'kraamB' => $geografie->getKraamB(),
+                'obstakel' => $obstakels,
+            ];
+        }, iterator_to_array($geografies));
     }
 
     public function getKraamB(): string
@@ -103,5 +118,21 @@ class MarktGeografie
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getObstakels()
+    {
+        return $this->obstakels;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $obstakels
+     */
+    public function setObstakels($obstakels): void
+    {
+        $this->obstakels = $obstakels;
     }
 }

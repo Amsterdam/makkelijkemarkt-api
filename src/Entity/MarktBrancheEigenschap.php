@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -58,6 +59,28 @@ class MarktBrancheEigenschap
         $marktBrancheEigenschap->setMarktConfiguratie($marktConfiguratie);
 
         return $marktBrancheEigenschap;
+    }
+
+    /**
+     * @param Collection<MarktBrancheEigenschap> $branches
+     */
+    public static function toJson(Collection $branches): array
+    {
+        return array_map(function (MarktBrancheEigenschap $branche) {
+            $json = [
+                'brancheId' => $branche->getBranche()->getAfkorting(),
+            ];
+
+            if ($branche->getMaximumPlaatsen()) {
+                $json['maximumPlaatsen'] = $branche->getMaximumPlaatsen();
+            }
+
+            if (null !== $branche->getVerplicht()) {
+                $json['verplicht'] = $branche->getVerplicht();
+            }
+
+            return $json;
+        }, iterator_to_array($branches));
     }
 
     public function getMaximumPlaatsen(): ?int

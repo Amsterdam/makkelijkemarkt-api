@@ -99,6 +99,50 @@ class MarktConfiguratieController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/1.1.0/markt/{id}/marktconfiguratie/latestRelational",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="MarktconfiguratieGetLatest",
+     *     tags={"MarktConfiguratie"},
+     *     summary="Vraag een configuratie voor een Markt op",
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet of de markt heeft geen configuratie"))
+     *     )
+     * )
+     *
+     * @Route("/markt/{marktId}/marktconfiguratie/latestRelational", methods={"GET"})
+     * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
+     */
+    public function getLatestRelational(Request $request, int $marktId): Response
+    {
+        $marktConfiguratie = $this->marktConfiguratieRepository->findLatest($marktId);
+
+        if (!$marktConfiguratie) {
+            return new Response(
+                "Markt $marktId has no Marktconfiguraties",
+                Response::HTTP_NOT_FOUND,
+                ['Content-type' => 'application/json']
+            );
+        }
+
+        $json = MarktConfiguratie::toJson($marktConfiguratie);
+
+        $response = $this->serializer->serialize($json, 'json');
+
+        return new Response($response, Response::HTTP_OK, [
+            'Content-type' => 'application/json',
+        ]);
+    }
+
+    /**
      * @OA\Post(
      *     path="/api/1.1.0/markt/{id}/marktconfiguratie",
      *     security={{"api_key": {}, "bearer": {}}},
