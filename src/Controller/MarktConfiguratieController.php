@@ -58,6 +58,48 @@ class MarktConfiguratieController extends AbstractController
 
     /**
      * @OA\Get(
+     *     path="/api/1.1.0/markt/{id}/marktconfiguratie/latestOld",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="MarktconfiguratieGetLatest",
+     *     tags={"MarktConfiguratie"},
+     *     summary="Vraag een configuratie voor een Markt op",
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet of de markt heeft geen configuratie"))
+     *     )
+     * )
+     *
+     * @Route("/markt/{marktId}/marktconfiguratie/latestOld", methods={"GET"})
+     * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
+     */
+    public function getLatestOld(Request $request, int $marktId): Response
+    {
+        $marktConfiguratie = $this->marktConfiguratieRepository->findLatest($marktId);
+
+        if (!$marktConfiguratie) {
+            return new Response(
+                "Markt $marktId has no Marktconfiguraties",
+                Response::HTTP_NOT_FOUND,
+                ['Content-type' => 'application/json']
+            );
+        }
+
+        $response = $this->serializer->serialize($marktConfiguratie, 'json');
+
+        return new Response($response, Response::HTTP_OK, [
+            'Content-type' => 'application/json',
+        ]);
+    }
+
+    /**
+     * @OA\Get(
      *     path="/api/1.1.0/markt/{id}/marktconfiguratie/latest",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="MarktconfiguratieGetLatest",
@@ -80,48 +122,6 @@ class MarktConfiguratieController extends AbstractController
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function getLatest(Request $request, int $marktId): Response
-    {
-        $marktConfiguratie = $this->marktConfiguratieRepository->findLatest($marktId);
-
-        if (!$marktConfiguratie) {
-            return new Response(
-                "Markt $marktId has no Marktconfiguraties",
-                Response::HTTP_NOT_FOUND,
-                ['Content-type' => 'application/json']
-            );
-        }
-
-        $response = $this->serializer->serialize($marktConfiguratie, 'json');
-
-        return new Response($response, Response::HTTP_OK, [
-            'Content-type' => 'application/json',
-        ]);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/1.1.0/markt/{id}/marktconfiguratie/latestRelational",
-     *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="MarktconfiguratieGetLatest",
-     *     tags={"MarktConfiguratie"},
-     *     summary="Vraag een configuratie voor een Markt op",
-     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
-     *     @OA\Response(
-     *         response="200",
-     *         description="",
-     *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
-     *     ),
-     *     @OA\Response(
-     *         response="404",
-     *         description="Not Found",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet of de markt heeft geen configuratie"))
-     *     )
-     * )
-     *
-     * @Route("/markt/{marktId}/marktconfiguratie/latestRelational", methods={"GET"})
-     * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
-     */
-    public function getLatestRelational(Request $request, int $marktId): Response
     {
         $marktConfiguratie = $this->marktConfiguratieRepository->findLatest($marktId);
 
