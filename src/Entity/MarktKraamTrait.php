@@ -120,7 +120,6 @@ trait MarktKraamTrait
     private $afvaleiland;
 
     /**
-     * @OA\Property()
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      * @SerializedName("grootPerMeter")
      *
@@ -130,7 +129,6 @@ trait MarktKraamTrait
     private $grootPerMeter;
 
     /**
-     * @OA\Property()
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      * @SerializedName("kleinPerMeter")
      *
@@ -140,7 +138,6 @@ trait MarktKraamTrait
     private $kleinPerMeter;
 
     /**
-     * @OA\Property()
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      * @SerializedName("grootReiniging")
      *
@@ -150,7 +147,6 @@ trait MarktKraamTrait
     private $grootReiniging;
 
     /**
-     * @OA\Property()
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      * @SerializedName("kleinReiniging")
      *
@@ -160,7 +156,6 @@ trait MarktKraamTrait
     private $kleinReiniging;
 
     /**
-     * @OA\Property()
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      * @SerializedName("afvalEilandAgf")
      *
@@ -170,7 +165,6 @@ trait MarktKraamTrait
     private $afvalEilandAgf;
 
     /**
-     * @OA\Property()
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      * @SerializedName("krachtstroomPerStuk")
      *
