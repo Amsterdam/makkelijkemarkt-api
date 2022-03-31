@@ -105,6 +105,7 @@ class PerfectViewMarktImport
             }
             if ('True' === $pvRecord['KRACHTROOM'] || 'Waar' === $pvRecord['KRACHTROOM']) {
                 $opties[] = 'elektra';
+                $opties[] = 'krachtstroom';
             }
             if ('True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']) {
                 $opties[] = 'afvaleiland';
