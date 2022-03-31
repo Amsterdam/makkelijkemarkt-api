@@ -103,12 +103,12 @@ class PerfectViewMarktImport
             if ('True' === $pvRecord['A1_METER'] || 'Waar' === $pvRecord['A1_METER']) {
                 $opties[] = 'extraMeters';
             }
+            if ('True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']) {
+                $opties[] = 'afvaleiland';
+            }
             if ('True' === $pvRecord['KRACHTROOM'] || 'Waar' === $pvRecord['KRACHTROOM']) {
                 $opties[] = 'elektra';
                 $opties[] = 'krachtstroom';
-            }
-            if ('True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']) {
-                $opties[] = 'afvaleiland';
             }
             /* TODO: Zorg dat deze optie in perfectview gedefineerd wordt */
             if ('PEK' === $pvRecord['AFKORTING']) {
