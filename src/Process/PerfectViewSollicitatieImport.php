@@ -201,7 +201,7 @@ class PerfectViewSollicitatieImport
      */
     private function convertMarktstatus($status)
     {
-        if (true === in_array(strtolower($status), ['vpl', 'vkk', 'soll'])) {
+        if (true === in_array(strtolower($status), ['vpl', 'vkk', 'soll', 'eb'])) {
             return strtolower($status);
         }
         if ('tvpl' == strtolower($status)) {
