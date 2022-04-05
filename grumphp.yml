@@ -6,7 +6,6 @@ grumphp:
         memory_limit: "-1"
       phpcs:
         standard: ['PSR2']
-        report: code
-        severity: 5
-        warning_severity: 0
-        error_severity: 5
+        report: full
+        ignore_patterns:
+          - /src/Migrations/*
