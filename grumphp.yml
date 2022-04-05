@@ -4,3 +4,9 @@ grumphp:
         config: ".php_cs"
       phpstan:
         memory_limit: "-1"
+      phpcs:
+        standard: ['PSR2']
+        report: code
+        severity: 5
+        warning_severity: 0
+        error_severity: 5
