@@ -82,16 +82,16 @@ class AllocationController extends AbstractController
         Markt $markt,
         Datetime $marktDate,
         bool $isAllocated,
-        ?array $plaatsvoorkeuren = null,
-        ?bool $anywhere = true,
-        ?int $minimum = 0,
-        ?int $maximum = 0,
         ?bool $parentBrancheId,
         ?array $inrichting,
         string $koopmanErkenningsNummer,
         string $brancheAfkorting,
         ?string $rejectReason,
-        ?array $plaatsen
+        ?array $plaatsen,
+        ?array $plaatsvoorkeuren = null,
+        ?bool $anywhere = true,
+        ?int $minimum = 0,
+        ?int $maximum = 0
     ) {
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
@@ -167,16 +167,16 @@ class AllocationController extends AbstractController
             $this->markt,
             $this->marktDate,
             $isAllocated,
-            $plaatsvoorkeuren,
-            $anywhere,
-            $minimum,
-            $maximum,
             $parentBranche,
             $verkoopinrichting,
             $erkenningsNummer,
             $brancheId,
             $reasonCode,
             $plaatsen,
+            $plaatsvoorkeuren,
+            $anywhere,
+            $minimum,
+            $maximum,
         ];
     }
 
