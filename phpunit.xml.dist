@@ -18,7 +18,7 @@
         <server name="MM_APP_TOKEN" value="effdb4f3-20c4-4cf9-b4e1-efb152fe9630" />
         <server name="KERNEL_CLASS" value="App\Kernel"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
-        <server name="DATABASE_URL" value="postgresql://makkelijkemarkt:insecure@database:5432/makkelijkemarkt?serverVersion=11&amp;charset=utf8"/>
+        <server name="DATABASE_URL" value="postgresql://makkelijkemarkt:insecure@127.0.0.1:5432/makkelijkemarkt?serverVersion=11&amp;charset=utf8"/>
     </php>
 
     <testsuites>
