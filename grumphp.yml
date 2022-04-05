@@ -6,6 +6,8 @@ grumphp:
         memory_limit: "-1"
       phpcs:
         standard: ['PSR2']
-        report: full
+        report: code
         ignore_patterns:
           - /src/Migrations/*
+        exclude:
+          - Generic.Files.LineLength
