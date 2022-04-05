@@ -162,8 +162,7 @@ class DagvergunningControllerTest extends ApiTestCase
         $this->assertEquals($dagvergunning->getId(), $responseData['id']);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if (
-                'koopman' !== $key &&
+            if ('koopman' !== $key &&
                 'markt' !== $key &&
                 'dag' !== $key &&
                 'registratie_datumtijd' !== $key &&
@@ -311,8 +310,7 @@ class DagvergunningControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if (
-                'marktId' !== $key &&
+            if ('marktId' !== $key &&
                 'dag' !== $key &&
                 'registratieDatumtijd' !== $key &&
                 'registratieGeolocatie' !== $key
@@ -426,8 +424,7 @@ class DagvergunningControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if (
-                'marktId' !== $key &&
+            if ('marktId' !== $key &&
                 'dag' !== $key &&
                 'registratieDatumtijd' !== $key &&
                 'registratieGeolocatie' !== $key

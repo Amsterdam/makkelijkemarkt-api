@@ -60,7 +60,7 @@ class AllocationController extends AbstractController
         KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
         BrancheRepository $brancheRepository
-        ) {
+    ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->brancheRepository = $brancheRepository;

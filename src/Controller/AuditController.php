@@ -190,8 +190,7 @@ final class AuditController extends AbstractController
             /** @var Koopman $koopman */
             $koopman = $dagvergunning->getKoopman();
 
-            if (
-                null !== $koopman->getHandhavingsVerzoek() &&
+            if (null !== $koopman->getHandhavingsVerzoek() &&
                 $now <= $koopman->getHandhavingsVerzoek()
             ) {
                 $dagvergunning->setAuditReason(Dagvergunning::AUDIT_HANDHAVINGS_VERZOEK);
@@ -211,8 +210,7 @@ final class AuditController extends AbstractController
             $koopman = $dagvergunning->getKoopman();
 
             // verwijder iedereen uit deze poule die al in de lijst zit (want handhavingsverzoek)
-            if (
-                null !== $koopman->getHandhavingsVerzoek() &&
+            if (null !== $koopman->getHandhavingsVerzoek() &&
                 $now <= $koopman->getHandhavingsVerzoek()
             ) {
                 return false;
@@ -231,8 +229,7 @@ final class AuditController extends AbstractController
             $koopman = $dagvergunning->getKoopman();
 
             // verwijder iedereen uit deze poule die al in de lijst zit (want handhavingsverzoek)
-            if (
-                null !== $koopman->getHandhavingsVerzoek() &&
+            if (null !== $koopman->getHandhavingsVerzoek() &&
                 $now <= $koopman->getHandhavingsVerzoek()
             ) {
                 return false;
