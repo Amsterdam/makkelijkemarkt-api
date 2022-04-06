@@ -125,7 +125,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
      *
      * @return Sollicitatie[]
      */
-    public function findAllByMarktInPeriod(Markt $markt, array $types = [], ?DateTime $startDate, ?DateTime $endDate): array
+    public function findAllByMarktInPeriod(Markt $markt, ?DateTime $startDate, ?DateTime $endDate, array $types = []): array
     {
         $dql = 'SELECT DISTINCT s
                 FROM App\Entity\Sollicitatie s

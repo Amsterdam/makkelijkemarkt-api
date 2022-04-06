@@ -347,7 +347,6 @@ final class DagvergunningController extends AbstractController
                 $data['aanwezig'],
                 $data['erkenningsnummerInvoerMethode'],
                 $data['registratieDatumtijd'],
-                $data['registratieGeolocatie'],
                 (int) $data['aantal3MeterKramen'],
                 (int) $data['aantal4MeterKramen'],
                 (int) $data['extraMeters'],
@@ -363,6 +362,7 @@ final class DagvergunningController extends AbstractController
                 (bool) $data['krachtstroom'],
                 (bool) $data['reiniging'],
                 $data['notitie'],
+                $data['registratieGeolocatie'],
                 $account,
                 $data['vervangerErkenningsnummer']
             );
@@ -495,7 +495,6 @@ final class DagvergunningController extends AbstractController
                 $data['aanwezig'],
                 $data['erkenningsnummerInvoerMethode'],
                 $data['registratieDatumtijd'],
-                $data['registratieGeolocatie'],
                 (int) $data['aantal3MeterKramen'],
                 (int) $data['aantal4MeterKramen'],
                 (int) $data['extraMeters'],
@@ -511,6 +510,7 @@ final class DagvergunningController extends AbstractController
                 (bool) $data['krachtstroom'],
                 (bool) $data['reiniging'],
                 $data['notitie'],
+                $data['registratieGeolocatie'],
                 $account,
                 $data['vervangerErkenningsnummer']
             );
@@ -665,7 +665,6 @@ final class DagvergunningController extends AbstractController
                 $data['aanwezig'],
                 $data['erkenningsnummerInvoerMethode'],
                 $data['registratieDatumtijd'],
-                $data['registratieGeolocatie'],
                 (int) $data['aantal3MeterKramen'],
                 (int) $data['aantal4MeterKramen'],
                 (int) $data['extraMeters'],
@@ -681,6 +680,7 @@ final class DagvergunningController extends AbstractController
                 (bool) $data['krachtstroom'],
                 (bool) $data['reiniging'],
                 $data['notitie'],
+                $data['registratieGeolocatie'],
                 $account,
                 $data['vervangerErkenningsnummer']
             );

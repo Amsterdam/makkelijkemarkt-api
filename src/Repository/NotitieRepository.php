@@ -49,8 +49,7 @@ final class NotitieRepository extends ServiceEntityRepository
             $qb->setParameter('dag', $q['dag']);
         }
 
-        if (
-                true === isset($q['verwijderdStatus']) &&
+        if (true === isset($q['verwijderdStatus']) &&
                 null !== $q['verwijderdStatus'] &&
                 '' !== $q['verwijderdStatus'] &&
                 (self::VERWIJDERDSTATUS_ACTIVE === $q['verwijderdStatus'] || self::VERWIJDERDSTATUS_REMOVED === $q['verwijderdStatus'])
