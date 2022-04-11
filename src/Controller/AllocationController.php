@@ -86,7 +86,7 @@ class AllocationController extends AbstractController
         ?bool $anywhere = true,
         ?int $minimum = 0,
         ?int $maximum = 0,
-        ?bool $parentBrancheId,
+        ?string $bakType,
         ?array $inrichting,
         string $koopmanErkenningsNummer,
         string $brancheAfkorting,
@@ -105,7 +105,6 @@ class AllocationController extends AbstractController
             $branche = $this->brancheRepository->findOneByAfkorting('000-EMPTY');
         }
 
-        $isBak = 'bak' === $parentBrancheId;
         $hasInrichting = is_array($inrichting) && in_array('eigen-materieel', $inrichting);
 
         if ($isAllocated) {
@@ -137,7 +136,7 @@ class AllocationController extends AbstractController
         $allocation->setAnywhere($anywhere);
         $allocation->setMinimum($minimum);
         $allocation->setMaximum($maximum);
-        $allocation->setIsBak($isBak);
+        $allocation->setBakType($bakType);
         $allocation->setHasInrichting($hasInrichting);
         $allocation->setMarkt($markt);
         $allocation->setKoopman($koopman);

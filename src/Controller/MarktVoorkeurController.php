@@ -79,7 +79,7 @@ class MarktVoorkeurController extends AbstractController
      *                 @OA\Property(property="minimum", type="integer", description="minimaal aantal plaatsen"),
      *                 @OA\Property(property="maximum", type="integer", description="maximaal aantal plaatsen"),
      *                 @OA\Property(property="hasInrichting", type="boolean", description="heeft de koopman een eigen inrichting?"),
-     *                 @OA\Property(property="isBak", type="boolean", description="gaat de koopman bakken?"),
+     *                 @OA\Property(property="bakType", type="string", description="gaat de koopman bakken en hoe?"),
      *                 @OA\Property(property="absentFrom", type="string", description="begindatum absentie periode (als YYYY-MM-DD)"),
      *                 @OA\Property(property="absentUntil", type="string", description="einddatum absentie periode (als YYYY-MM-DD)"),
      *                 @OA\Property(property="branche", type="string", description="afkorting van de branche"),
@@ -145,7 +145,7 @@ class MarktVoorkeurController extends AbstractController
             $marktvoorkeur = new MarktVoorkeur();
             // if the first 'creation' submit comes from the plaatsvoorkeur page
             $marktvoorkeur->setHasInrichting(false);
-            $marktvoorkeur->setIsBak(false);
+            $marktvoorkeur->setBakType("geen");
             $branche = $this->brancheRepository->findOneByAfkorting('000-EMPTY');
             $marktvoorkeur->setBranche($branche);
         }
@@ -165,12 +165,12 @@ class MarktVoorkeurController extends AbstractController
         (array_key_exists('minimum', $data)) ? $marktvoorkeur->setMinimum((int) $data['minimum']) : $marktvoorkeur->setMinimum(1);
         (array_key_exists('maximum', $data)) ? $marktvoorkeur->setMaximum((int) $data['maximum']) : $marktvoorkeur->setMinimum(1);
 
-        // hasInrichting and isBak  will not be submitted from the 'plaatsvoorkeur' form
+        // hasInrichting and bakType  will not be submitted from the 'plaatsvoorkeur' form
         if (array_key_exists('hasInrichting', $data) && null !== $data['hasInrichting']) {
             $marktvoorkeur->setHasInrichting((bool) $data['hasInrichting']);
         }
-        if (array_key_exists('isBak', $data) && null !== $data['isBak']) {
-            $marktvoorkeur->setIsBak((bool) $data['isBak']);
+        if (array_key_exists('bakType', $data) && null !== $data['bakType']) {
+            $marktvoorkeur->setBakType($data['bakType']);
         }
 
         $absentFrom = null;
