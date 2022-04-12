@@ -31,6 +31,11 @@ class MarktLocatie
     private ?string $plaatsId;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $bakType = null;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Branche")
      * @ORM\OrderBy({"id" = "DESC"})
      */
@@ -54,7 +59,7 @@ class MarktLocatie
     }
 
     /**
-     * @param Branche[]          $branches
+     * @param Branche[] $branches
      * @param Plaatseigenschap[] $plaatsEigenschappen
      *
      * @return static
@@ -85,8 +90,33 @@ class MarktLocatie
 
         $locatie->setMarktConfiguratie($marktConfiguratie);
         $locatie->setPlaatsId($input['plaatsId']);
+        $locatie->setBakType($input['bakType']);
 
         return $locatie;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getBranches()
+    {
+        return $this->branches;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getPlaatseigenschappen()
+    {
+        return $this->plaatseigenschappen;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $plaatseigenschappen
+     */
+    public function setPlaatseigenschappen($plaatseigenschappen): void
+    {
+        $this->plaatseigenschappen = $plaatseigenschappen;
     }
 
     /**
@@ -98,6 +128,7 @@ class MarktLocatie
     {
         return array_map(function (MarktLocatie $marktLocatie) {
             $locatieJson = [
+                'bakType' => $marktLocatie->getBakType(),
                 'plaatsId' => $marktLocatie->getPlaatsId(),
                 'branches' => [],
                 'properties' => [],
@@ -128,24 +159,28 @@ class MarktLocatie
         }, iterator_to_array($marktLocaties));
     }
 
-    public function getId(): int
+    /**
+     * @return string
+     */
+    public function getBakType(): string
     {
-        return $this->id;
+        if ($this->bakType !== null) return $this->bakType;
+
+        $brancheNames = array_map(function (Branche $branche) {
+            return $branche->getAfkorting();
+        }, $this->branches->toArray());
+
+        if (in_array('bak', $brancheNames)) return 'bak';
+
+        return 'geen';
     }
 
-    public function setId(int $id): void
+    /**
+     * @param string $bakType
+     */
+    public function setBakType(string $bakType): void
     {
-        $this->id = $id;
-    }
-
-    public function getMarktConfiguratie(): MarktConfiguratie
-    {
-        return $this->marktConfiguratie;
-    }
-
-    public function setMarktConfiguratie(MarktConfiguratie $marktConfiguratie): void
-    {
-        $this->marktConfiguratie = $marktConfiguratie;
+        $this->bakType = $bakType;
     }
 
     public function getPlaatsId(): string
@@ -168,27 +203,23 @@ class MarktLocatie
         $this->verkoopInrichting = $verkoopInrichting;
     }
 
-    /**
-     * @return ArrayCollection|Collection
-     */
-    public function getBranches()
+    public function getId(): int
     {
-        return $this->branches;
+        return $this->id;
     }
 
-    /**
-     * @return ArrayCollection|Collection
-     */
-    public function getPlaatseigenschappen()
+    public function setId(int $id): void
     {
-        return $this->plaatseigenschappen;
+        $this->id = $id;
     }
 
-    /**
-     * @param ArrayCollection|Collection $plaatseigenschappen
-     */
-    public function setPlaatseigenschappen($plaatseigenschappen): void
+    public function getMarktConfiguratie(): MarktConfiguratie
     {
-        $this->plaatseigenschappen = $plaatseigenschappen;
+        return $this->marktConfiguratie;
+    }
+
+    public function setMarktConfiguratie(MarktConfiguratie $marktConfiguratie): void
+    {
+        $this->marktConfiguratie = $marktConfiguratie;
     }
 }
