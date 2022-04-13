@@ -220,7 +220,7 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/{marktId}/{date}", methods={"POST"})
+     * @Route("/allocation/markt/{marktId}/date/{date}", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request, string $marktId, string $date): Response
@@ -371,7 +371,7 @@ class AllocationController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/allocation/{marktId}/{date}",
+     *     path="/api/1.1.0/allocation/markt/{marktId}/date/{date}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="AllocationGetByMarktAndByDate",
      *     tags={"Allocation"},
@@ -392,7 +392,7 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/{marktId}/{date}", methods={"GET"})
+     * @Route("/allocation/markt/{marktId}/date/{date}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationsByMarktAndDate(string $marktId, string $date): Response
