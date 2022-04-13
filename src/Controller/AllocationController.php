@@ -285,7 +285,7 @@ class AllocationController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Branche")
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
      *     @OA\Response(
      *         response="400",
@@ -320,6 +320,100 @@ class AllocationController extends AbstractController
         }
 
         $allocations = $this->allocationRepository->findAllByMarktAndDate($markt, $marktDate);
+
+        $response = $this->serializer->serialize($allocations, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/allocation/markt/{marktId}/koopman/{erkenningsNummer}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="AllocationGetByMarktAndByErkenningsNummer",
+     *     tags={"Allocation"},
+     *     summary="Vraag alle allocaties van een markt en een koopman op.",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/allocation/markt/{marktId}/koopman/{erkenningsNummer}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getAllocationByMarktAndErkenningsNummer(string $marktId, string $erkenningsNummer): Response
+    {
+        $markt = $this->marktRepository->getById($marktId);
+
+        if (null === $markt) {
+            $this->logger->error('Markt not found');
+
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsNummer);
+
+        if (null === $koopman) {
+            $this->logger->error('Koopman not found');
+
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $allocations = $this->allocationRepository->findAllByMarktAndKoopman($markt, $koopman);
+
+        $response = $this->serializer->serialize($allocations, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/allocation/koopman/{erkenningsNummer}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="AllocationGetByErkenningsNummer",
+     *     tags={"Allocation"},
+     *     summary="Vraag alle allocaties van een koopman op.",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/allocation/koopman/{erkenningsNummer}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getAllocationByErkenningsNummer(string $erkenningsNummer): Response
+    {
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsNummer);
+
+        if (null === $koopman) {
+            $this->logger->error('Koopman not found');
+
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $allocations = $this->allocationRepository->findAllByKoopman($koopman);
 
         $response = $this->serializer->serialize($allocations, 'json');
 
