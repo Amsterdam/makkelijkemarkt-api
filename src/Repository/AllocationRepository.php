@@ -27,8 +27,13 @@ class AllocationRepository extends ServiceEntityRepository
         return $this->findBy(['markt' => $markt, 'date' => $date]);
     }
 
-    public function findOneByMarktAndKoopmanAndDate(Markt $markt, Koopman $koopman, DateTime $date)
+    public function findAllByMarktAndKoopman(Markt $markt, Koopman $koopman)
     {
-        return $this->findOneBy(['markt' => $markt, 'koopman' => $koopman, 'date' => $date]);
+        return $this->findBy(['markt' => $markt, 'koopman' => $koopman]);
+    }
+
+    public function findAllByKoopman(Koopman $koopman)
+    {
+        return $this->findBy(['koopman' => $koopman]);
     }
 }
