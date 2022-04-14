@@ -220,7 +220,7 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/{marktId}/{date}", methods={"POST"})
+     * @Route("/allocation/markt/{marktId}/date/{date}", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request, string $marktId, string $date): Response
@@ -271,57 +271,6 @@ class AllocationController extends AbstractController
         $this->entityManager->flush();
 
         $response = $this->serializer->serialize($this->allocations, 'json');
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/1.1.0/allocation/{marktId}/{date}",
-     *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="AllocationGetByMarktAndByDate",
-     *     tags={"Allocation"},
-     *     summary="Vraag alle allocaties van een markt en een dag (YYYY-MM-DD) op.",
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
-     *     ),
-     *     @OA\Response(
-     *         response="400",
-     *         description="Bad Request",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
-     *     ),
-     *     @OA\Response(
-     *         response="404",
-     *         description="Not Found",
-     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
-     *     )
-     * )
-     * @Route("/allocation/{marktId}/{date}", methods={"GET"})
-     * @Security("is_granted('ROLE_SENIOR')")
-     */
-    public function getAllocationsByMarktAndDate(string $marktId, string $date): Response
-    {
-        $markt = $this->marktRepository->getById($marktId);
-
-        if (null === $markt) {
-            $this->logger->error('Markt not found');
-
-            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        if (strtotime($date)) {
-            $marktDate = new DateTime($date);
-        } else {
-            $this->logger->error('date is not a date');
-
-            return new JsonResponse(['error' => 'date is not a date'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $allocations = $this->allocationRepository->findAllByMarktAndDate($markt, $marktDate);
-
-        $response = $this->serializer->serialize($allocations, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -414,6 +363,57 @@ class AllocationController extends AbstractController
         }
 
         $allocations = $this->allocationRepository->findAllByKoopman($koopman);
+
+        $response = $this->serializer->serialize($allocations, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/allocation/markt/{marktId}/date/{date}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="AllocationGetByMarktAndByDate",
+     *     tags={"Allocation"},
+     *     summary="Vraag alle allocaties van een markt en een dag (YYYY-MM-DD) op.",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/allocation/markt/{marktId}/date/{date}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getAllocationsByMarktAndDate(string $marktId, string $date): Response
+    {
+        $markt = $this->marktRepository->getById($marktId);
+
+        if (null === $markt) {
+            $this->logger->error('Markt not found');
+
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (strtotime($date)) {
+            $marktDate = new DateTime($date);
+        } else {
+            $this->logger->error('date is not a date');
+
+            return new JsonResponse(['error' => 'date is not a date'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $allocations = $this->allocationRepository->findAllByMarktAndDate($markt, $marktDate);
 
         $response = $this->serializer->serialize($allocations, 'json');
 
