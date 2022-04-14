@@ -59,7 +59,7 @@ class MarktLocatie
     }
 
     /**
-     * @param Branche[] $branches
+     * @param Branche[]          $branches
      * @param Plaatseigenschap[] $plaatsEigenschappen
      *
      * @return static
@@ -159,25 +159,23 @@ class MarktLocatie
         }, iterator_to_array($marktLocaties));
     }
 
-    /**
-     * @return string
-     */
     public function getBakType(): string
     {
-        if ($this->bakType !== null) return $this->bakType;
+        if (null !== $this->bakType) {
+            return $this->bakType;
+        }
 
         $brancheNames = array_map(function (Branche $branche) {
             return $branche->getAfkorting();
         }, $this->branches->toArray());
 
-        if (in_array('bak', $brancheNames)) return 'bak';
+        if (in_array('bak', $brancheNames)) {
+            return 'bak';
+        }
 
         return 'geen';
     }
 
-    /**
-     * @param string $bakType
-     */
     public function setBakType(string $bakType): void
     {
         $this->bakType = $bakType;

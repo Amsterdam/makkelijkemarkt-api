@@ -145,7 +145,7 @@ class MarktVoorkeurController extends AbstractController
             $marktvoorkeur = new MarktVoorkeur();
             // if the first 'creation' submit comes from the plaatsvoorkeur page
             $marktvoorkeur->setHasInrichting(false);
-            $marktvoorkeur->setBakType("geen");
+            $marktvoorkeur->setBakType('geen');
             $branche = $this->brancheRepository->findOneByAfkorting('000-EMPTY');
             $marktvoorkeur->setBranche($branche);
         }
