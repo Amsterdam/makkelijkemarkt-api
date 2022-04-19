@@ -61,9 +61,9 @@ class Allocation
     private $maximum;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string")
      */
-    private $isBak;
+    private $bakType;
 
     /**
      * @ORM\Column(type="boolean")
@@ -182,14 +182,14 @@ class Allocation
         return $this;
     }
 
-    public function getIsBak(): ?bool
+    public function getBakType(): ?string
     {
-        return $this->isBak;
+        return $this->bakType;
     }
 
-    public function setIsBak(bool $isBak): self
+    public function setBakType(string $bak): self
     {
-        $this->isBak = $isBak;
+        $this->bakType = $bak;
 
         return $this;
     }
