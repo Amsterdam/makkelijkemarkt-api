@@ -124,7 +124,6 @@ final class FactuurService
         string $aanwezig,
         string $erkenningsnummerInvoerMethode,
         string $registratieDatumtijd,
-        $registratieGeolocatie = null,
         int $aantal3MeterKramen,
         int $aantal4MeterKramen,
         int $extraMeters,
@@ -140,6 +139,7 @@ final class FactuurService
         bool $krachtstroom,
         bool $reiniging,
         string $notitie,
+        $registratieGeolocatie = null,
         Account $user = null,
         string $vervangerErkenningsnummer = null
     ): Dagvergunning {

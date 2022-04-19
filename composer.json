@@ -7,26 +7,29 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "1.11.*",
+        "doctrine/doctrine-bundle": "^2.2",
         "doctrine/doctrine-fixtures-bundle": "3.4.*",
         "doctrine/doctrine-migrations-bundle": "3.0.*",
+        "doctrine/orm": "^2.8",
         "fzaninotto/faker": "1.9.*",
         "liip/imagine-bundle": "2.4.*",
         "nimbusoft/flysystem-openstack-swift": "^0.3.4",
+        "phpdocumentor/reflection-docblock": "^5.2",
         "qipsius/tcpdf-bundle": "^2.0",
         "sensio/framework-extra-bundle": "5.6.*",
         "symfony/console": "5.2.*",
         "symfony/dotenv": "5.2.*",
         "symfony/expression-language": "5.2.*",
-        "symfony/flex": "1.11.*",
+        "symfony/flex": "^1.11",
         "symfony/framework-bundle": "5.2.*",
         "symfony/monolog-bundle": "^3.6",
-        "symfony/orm-pack": "1.0.*",
         "symfony/property-access": "5.2.*",
+        "symfony/property-info": "5.2.*",
         "symfony/security-bundle": "5.2.*",
         "symfony/security-core": "5.2.*",
         "symfony/security-guard": "5.2.*",
         "symfony/security-http": "5.2.*",
-        "symfony/serializer-pack": "1.0.*",
+        "symfony/serializer": "5.2.*",
         "symfony/swiftmailer-bundle": "^3.5",
         "symfony/yaml": "5.2.*",
         "tecnickcom/tcpdf": "^6.3",
@@ -38,17 +41,24 @@
         "phpro/grumphp": "^1.5",
         "phpstan/phpstan": "0.12.*",
         "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.6",
         "symfony/browser-kit": "5.2.*",
+        "symfony/css-selector": "5.2.*",
         "symfony/maker-bundle": "^1.26",
         "symfony/phpunit-bridge": "^5.2",
-        "symfony/profiler-pack": "1.0.*",
-        "symfony/test-pack": "^1.0"
+        "symfony/stopwatch": "5.2.*",
+        "symfony/twig-bundle": "5.2.*",
+        "symfony/web-profiler-bundle": "5.2.*"
     },
     "config": {
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpro/grumphp": true,
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {

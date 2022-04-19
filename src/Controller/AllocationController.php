@@ -60,7 +60,7 @@ class AllocationController extends AbstractController
         KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
         BrancheRepository $brancheRepository
-        ) {
+    ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->brancheRepository = $brancheRepository;
@@ -82,16 +82,16 @@ class AllocationController extends AbstractController
         Markt $markt,
         Datetime $marktDate,
         bool $isAllocated,
-        ?array $plaatsvoorkeuren = null,
-        ?bool $anywhere = true,
-        ?int $minimum = 0,
-        ?int $maximum = 0,
         ?string $bakType,
         ?array $inrichting,
         string $koopmanErkenningsNummer,
         string $brancheAfkorting,
         ?string $rejectReason,
-        ?array $plaatsen
+        ?array $plaatsen,
+        ?array $plaatsvoorkeuren = null,
+        ?bool $anywhere = true,
+        ?int $minimum = 0,
+        ?int $maximum = 0
     ) {
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
@@ -166,16 +166,16 @@ class AllocationController extends AbstractController
             $this->markt,
             $this->marktDate,
             $isAllocated,
-            $plaatsvoorkeuren,
-            $anywhere,
-            $minimum,
-            $maximum,
             $parentBranche,
             $verkoopinrichting,
             $erkenningsNummer,
             $brancheId,
             $reasonCode,
             $plaatsen,
+            $plaatsvoorkeuren,
+            $anywhere,
+            $minimum,
+            $maximum,
         ];
     }
 
@@ -219,7 +219,7 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/{marktId}/{date}", methods={"POST"})
+     * @Route("/allocation/markt/{marktId}/date/{date}", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request, string $marktId, string $date): Response
@@ -276,15 +276,15 @@ class AllocationController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/allocation/{marktId}/{date}",
+     *     path="/api/1.1.0/allocation/markt/{marktId}/koopman/{erkenningsNummer}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="AllocationGetByMarktAndByDate",
+     *     operationId="AllocationGetByMarktAndByErkenningsNummer",
      *     tags={"Allocation"},
-     *     summary="Vraag alle allocaties van een markt en een dag (YYYY-MM-DD) op.",
+     *     summary="Vraag alle allocaties van een markt en een koopman op.",
      *     @OA\Response(
      *         response="200",
      *         description="Success",
-     *         @OA\JsonContent(ref="#/components/schemas/Branche")
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
      *     @OA\Response(
      *         response="400",
@@ -297,7 +297,101 @@ class AllocationController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * @Route("/allocation/{marktId}/{date}", methods={"GET"})
+     * @Route("/allocation/markt/{marktId}/koopman/{erkenningsNummer}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getAllocationByMarktAndErkenningsNummer(string $marktId, string $erkenningsNummer): Response
+    {
+        $markt = $this->marktRepository->getById($marktId);
+
+        if (null === $markt) {
+            $this->logger->error('Markt not found');
+
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsNummer);
+
+        if (null === $koopman) {
+            $this->logger->error('Koopman not found');
+
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $allocations = $this->allocationRepository->findAllByMarktAndKoopman($markt, $koopman);
+
+        $response = $this->serializer->serialize($allocations, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/allocation/koopman/{erkenningsNummer}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="AllocationGetByErkenningsNummer",
+     *     tags={"Allocation"},
+     *     summary="Vraag alle allocaties van een koopman op.",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/allocation/koopman/{erkenningsNummer}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getAllocationByErkenningsNummer(string $erkenningsNummer): Response
+    {
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsNummer);
+
+        if (null === $koopman) {
+            $this->logger->error('Koopman not found');
+
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $allocations = $this->allocationRepository->findAllByKoopman($koopman);
+
+        $response = $this->serializer->serialize($allocations, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/allocation/markt/{marktId}/date/{date}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="AllocationGetByMarktAndByDate",
+     *     tags={"Allocation"},
+     *     summary="Vraag alle allocaties van een markt en een dag (YYYY-MM-DD) op.",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/allocation/markt/{marktId}/date/{date}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationsByMarktAndDate(string $marktId, string $date): Response

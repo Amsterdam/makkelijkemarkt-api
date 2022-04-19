@@ -164,8 +164,7 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['concreetplan']);
 
         foreach ($data as $key => $val) {
-            if (
-                'naam' !== $key &&
+            if ('naam' !== $key &&
                 'geldigVanaf' !== $key &&
                 'geldigTot' !== $key
             ) {
@@ -231,8 +230,7 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['lineairplan']);
 
         foreach ($data as $key => $val) {
-            if (
-                'naam' !== $key &&
+            if ('naam' !== $key &&
                 'geldigVanaf' !== $key &&
                 'geldigTot' !== $key
             ) {
@@ -291,8 +289,7 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['concreetplan']);
 
         foreach ($data as $key => $val) {
-            if (
-                'naam' !== $key &&
+            if ('naam' !== $key &&
                 'geldigVanaf' !== $key &&
                 'geldigTot' !== $key
             ) {
@@ -350,8 +347,7 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['lineairplan']);
 
         foreach ($data as $key => $val) {
-            if (
-                'naam' !== $key &&
+            if ('naam' !== $key &&
                 'geldigVanaf' !== $key &&
                 'geldigTot' !== $key
             ) {

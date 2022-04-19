@@ -65,8 +65,8 @@ class MarktPagina
             return [
                 'title' => $marktPagina->getTitle(),
                 'indelingslijstGroup' => MarktPaginaIndelingslijstGroup::toJson(
-                        $marktPagina->marktPaginaIndelingslijstGroups
-                    ),
+                    $marktPagina->marktPaginaIndelingslijstGroups
+                ),
             ];
         }, iterator_to_array($marktPaginas));
     }

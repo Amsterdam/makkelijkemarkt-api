@@ -276,7 +276,7 @@ final class SollicitatieController extends AbstractController
             return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
-        $sollicitaties = $this->sollicitatieRepository->findAllByMarktInPeriod($markt, $types, $startDate, $endDate);
+        $sollicitaties = $this->sollicitatieRepository->findAllByMarktInPeriod($markt, $startDate, $endDate, $types);
         $response = $this->serializer->serialize($sollicitaties, 'json', ['groups' => $this->groups]);
 
         return new Response($response, Response::HTTP_OK, [

@@ -73,8 +73,7 @@ class VergunningControleControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if (
-                'koopman' !== $key &&
+            if ('koopman' !== $key &&
                 'markt' !== $key &&
                 'erkenningsnummer_invoer_waarde' !== $key &&
                 'dag' !== $key &&
