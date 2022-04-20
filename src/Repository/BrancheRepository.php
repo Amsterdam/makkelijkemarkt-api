@@ -22,4 +22,9 @@ class BrancheRepository extends BaseRepository
     {
         return $this->findOneBy(['id' => $id]);
     }
+
+    public function findOneByAfkorting(string $afkorting)
+    {
+        return $this->findOneBy(['afkorting' => $afkorting]);
+    }
 }
