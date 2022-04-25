@@ -154,7 +154,7 @@ class AllocationController extends AbstractController
         $anywhere = (array_key_exists('anywhere', $data) ? $data['anywhere'] : true);
         $minimum = (array_key_exists('minimum', $data) ? (int) $data['minimum'] : 1);
         $maximum = (array_key_exists('maximum', $data) ? (int) $data['maximum'] : 1);
-        $bakType = (array_key_exists('bakType', $data) ? $ $data['bakType'] : 'geen');
+        $bakType = (array_key_exists('bakType', $data) ? $data['bakType'] : 'geen');
         $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? $data['verkoopinrichting'] : []);
         $erkenningsNummer = $obj['erkenningsNummer'];
         $brancheId = (array_key_exists('branches', $data) ? $data['branches'][0] : '');
