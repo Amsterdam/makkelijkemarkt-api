@@ -143,7 +143,7 @@ class BrancheController extends AbstractController
             return '000-EMPTY' !== $b->getAfkorting();
         });
 
-        $response = $this->serializer->serialize($branches, 'json');
+        $response = $this->serializer->serialize(array_values($branches), 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
