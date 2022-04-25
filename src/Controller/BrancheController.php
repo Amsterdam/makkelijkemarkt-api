@@ -139,7 +139,7 @@ class BrancheController extends AbstractController
         $branches = $this->brancheRepository->findAll();
 
         //we don't return the 000-EMPTY branche because it has no value outside of makkelijkemarkt-api
-        $branches = array_filter($branches, function ($b) {
+        $branches = array_filter($branches, function (Branche $b) {
             return '000-EMPTY' !== $b->afkorting;
         });
 
