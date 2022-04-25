@@ -138,6 +138,11 @@ class BrancheController extends AbstractController
     {
         $branches = $this->brancheRepository->findAll();
 
+        //we don't return the 000-EMPTY branche because it has no value outside of makkelijkemarkt-api
+        $branches = array_filter($branches, function (Branche $b) {
+            return '000-EMPTY' !== $b->getAfkorting();
+        });
+
         $response = $this->serializer->serialize($branches, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
