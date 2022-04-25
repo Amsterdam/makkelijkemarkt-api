@@ -152,9 +152,9 @@ class BrancheController extends AbstractController
      * @OA\Get(
      *     path="/api/1.1.0/branche/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="BrancheGetByAfkorting",
+     *     operationId="BrancheGetById",
      *     tags={"Branche"},
-     *     summary="Vraag branches op met een bracheAfkorting.",
+     *     summary="Vraag branches op met een bracheId.",
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Response(
      *         response="200",
@@ -170,7 +170,7 @@ class BrancheController extends AbstractController
      * @Route("/branche/{id}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getBrancheByAfkorting(int $id): Response
+    public function getBrancheById(int $id): Response
     {
         $branche = $this->brancheRepository->findOneById($id);
 

@@ -82,12 +82,12 @@ class AllocationController extends AbstractController
         Markt $markt,
         Datetime $marktDate,
         bool $isAllocated,
-        ?string $bakType,
         ?array $inrichting,
         string $koopmanErkenningsNummer,
         string $brancheAfkorting,
         ?string $rejectReason,
         ?array $plaatsen,
+        ?string $bakType,
         ?array $plaatsvoorkeuren = null,
         ?bool $anywhere = true,
         ?int $minimum = 0,
@@ -155,7 +155,6 @@ class AllocationController extends AbstractController
         $minimum = (array_key_exists('minimum', $data) ? (int) $data['minimum'] : 1);
         $maximum = (array_key_exists('maximum', $data) ? (int) $data['maximum'] : 1);
         $bakType = (array_key_exists('bakType', $data) ? $ $data['bakType'] : 'geen');
-        $parentBranche = (array_key_exists('parentBrancheId', $data) ? $data['parentBrancheId'] : '');
         $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? $data['verkoopinrichting'] : []);
         $erkenningsNummer = $obj['erkenningsNummer'];
         $brancheId = (array_key_exists('branches', $data) ? $data['branches'][0] : '');
@@ -167,13 +166,12 @@ class AllocationController extends AbstractController
             $this->markt,
             $this->marktDate,
             $isAllocated,
-            $bakType,
-            $parentBranche,
             $verkoopinrichting,
             $erkenningsNummer,
             $brancheId,
             $reasonCode,
             $plaatsen,
+            $bakType,
             $plaatsvoorkeuren,
             $anywhere,
             $minimum,
