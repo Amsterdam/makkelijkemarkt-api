@@ -157,7 +157,7 @@ class AllocationController extends AbstractController
         $parentBranche = (array_key_exists('parentBrancheId', $data) ? $data['parentBrancheId'] : '');
         $verkoopinrichting = (array_key_exists('verkoopinrichting', $data) ? $data['verkoopinrichting'] : []);
         $erkenningsNummer = $obj['erkenningsNummer'];
-        $brancheId = (array_key_exists('brancheId', $data) ? $data['brancheId'] : '');
+        $brancheId = (array_key_exists('branches', $data) ? $data['branches'][0] : '');
         $reasonCode = $isAllocated ? null : (array_key_exists('code', $obj['reason']) ? $obj['reason']['code'] : 0);
         $plaatsen = (array_key_exists('plaatsen', $obj) ? $obj['plaatsen'] : null);
 
