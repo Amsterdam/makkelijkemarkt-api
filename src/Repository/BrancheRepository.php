@@ -18,7 +18,7 @@ class BrancheRepository extends BaseRepository
         parent::__construct($registry, Branche::class);
     }
 
-    public function findOneId(int $id)
+    public function findOneById(int $id)
     {
         return $this->findOneBy(['id' => $id]);
     }
