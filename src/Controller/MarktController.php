@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\Markt;
 use App\Normalizer\EntityNormalizer;
-use App\Repository\MarktExtraDataRepository;
 use App\Repository\MarktRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
@@ -29,9 +28,6 @@ final class MarktController extends AbstractController
     /** @var MarktRepository */
     private $marktRepository;
 
-    /** @var MarktExtraDataRepository */
-    private $marktExtraDataRepository;
-
     /** @var EntityManagerInterface */
     private $entityManager;
 
@@ -43,12 +39,10 @@ final class MarktController extends AbstractController
 
     public function __construct(
         MarktRepository $marktRepository,
-        MarktExtraDataRepository $marktExtraDataRepository,
         EntityManagerInterface $entityManager,
         CacheManager $cacheManager
     ) {
         $this->marktRepository = $marktRepository;
-        $this->marktExtraDataRepository = $marktExtraDataRepository;
         $this->entityManager = $entityManager;
 
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
@@ -237,20 +231,6 @@ final class MarktController extends AbstractController
         foreach ($expectedParameters as $key) {
             $value = $data[$key];
             $accessor->setValue($markt, $key, $value);
-        }
-
-        /*
-        * Marktdagen is being saved in marktExtraData, in order to prevent marktDagen is being reset when the
-        * Mercator Import scripts run (file: PerfectViewMarktImport.php)
-        */
-        $marktAfkorting = $markt->getAfkorting();
-        $marktExtraData = $this->marktExtraDataRepository->getByAfkorting($marktAfkorting);
-
-        if (null !== $marktExtraData) {
-            $marktDagen = $markt->getMarktDagen();
-            $accessor->setValue($marktExtraData, 'marktDagen', $marktDagen);
-
-            $this->entityManager->persist($marktExtraData);
         }
 
         $this->entityManager->persist($markt);
