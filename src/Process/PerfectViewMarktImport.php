@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Process;
 
 use App\Entity\Markt;
-use App\Repository\MarktExtraDataRepository;
 use App\Repository\MarktRepository;
 use App\Utils\Logger;
 use Doctrine\ORM\EntityManager;
@@ -17,11 +16,6 @@ class PerfectViewMarktImport
      * @var MarktRepository
      */
     protected $marktRepository;
-
-    /**
-     * @var MarktExtraDataRepository
-     */
-    protected $marktExtraDataRepository;
 
     /**
      * @var EntityManager
@@ -42,10 +36,9 @@ class PerfectViewMarktImport
      */
     protected $logger;
 
-    public function __construct(MarktRepository $marktRepository, MarktExtraDataRepository $marktExtraDataRepository, EntityManagerInterface $em)
+    public function __construct(MarktRepository $marktRepository, EntityManagerInterface $em)
     {
         $this->marktRepository = $marktRepository;
-        $this->marktExtraDataRepository = $marktExtraDataRepository;
         $this->em = $em;
     }
 
@@ -122,17 +115,6 @@ class PerfectViewMarktImport
             }
             /* End fix */
             $markt->setAanwezigeOpties($opties);
-
-            // load additional data
-            $marktExtraData = $this->marktExtraDataRepository->getByPerfectViewNumber($pvRecord['AFKORTING']);
-
-            // if extra data found, attach it
-            if (null !== $marktExtraData) {
-                $this->logger->info('Extra marktdata gevonden', ['afkorting' => $pvRecord['AFKORTING']]);
-                $markt->setGeoArea($marktExtraData->getGeoArea());
-                $markt->setMarktdagen($marktExtraData->getMarktdagen());
-                $markt->setAanwezigeOpties(array_merge($opties, $marktExtraData->getAanwezigeOpties()));
-            }
         }
 
         $this->em->flush();
