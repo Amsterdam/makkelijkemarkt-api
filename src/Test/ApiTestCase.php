@@ -38,7 +38,7 @@ class ApiTestCase extends KernelTestCase
         self::bootKernel();
 
         self::$staticClient = new Client([
-            'base_uri' => 'http://172.101.0.1:8081',
+            'base_uri' => 'http://127.0.0.1:8080',
         ]);
 
         self::$staticFaker = Factory::create();

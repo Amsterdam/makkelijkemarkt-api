@@ -9,16 +9,17 @@
 >
     <php>
         <ini name="error_reporting" value="-1" />
-        <server name="APP_ENV" value="test" force="true" />
-        <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
-        <server name="MM_APP_KEY" value="insecure" />
-        <server name="API_KEY" value="insecure" />
-        <server name="MM_APP_TOKEN" value="effdb4f3-20c4-4cf9-b4e1-efb152fe9630" />
-        <server name="KERNEL_CLASS" value="App\Kernel"/>
+        <env name="SHELL_VERBOSITY" value="-1" />
+        <env name="SYMFONY_PHPUNIT_REMOVE" value="" />
+        <env name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
+        <env name="MM_APP_KEY" value="insecure" />
+        <env name="API_KEY" value="insecure" />
+        <env name="MM_APP_TOKEN" value="insecure" />
+        <env name="KERNEL_CLASS" value="App\Kernel"/>
+        <env name="APP_SECRET" value="insecure"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
-        <server name="DATABASE_URL" value="postgresql://makkelijkemarkt:insecure@127.0.0.1:5432/makkelijkemarkt?serverVersion=11&amp;charset=utf8"/>
+        <env name="APP_ENV" value="dev"/>
+        <env name="DATABASE_URL" value="postgresql://makkelijkemarkt:insecure@127.0.0.1:5432/makkelijkemarkt?serverVersion=11&amp;charset=utf8"/>
     </php>
 
     <testsuites>
