@@ -19,7 +19,7 @@
         <env name="APP_SECRET" value="insecure"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
         <env name="APP_ENV" value="dev"/>
-        <env name="DATABASE_URL" value="postgresql://makkelijkemarkt:insecure@127.0.0.1:5432/makkelijkemarkt?serverVersion=11&amp;charset=utf8"/>
+        <env name="DATABASE_URL" value="postgresql://makkelijkemarkt:insecure@postgres:5432/makkelijkemarkt?serverVersion=11&amp;charset=utf8"/>
     </php>
 
     <testsuites>
