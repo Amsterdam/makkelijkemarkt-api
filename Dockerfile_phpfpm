@@ -25,7 +25,8 @@ RUN docker-php-ext-install \
     intl \
     pdo_pgsql \
     gd \
-    zip
+    zip \
+    opcache
 
 COPY docker-phpfpm/php-ini-overrides.ini /usr/local/etc/php/conf.d/
 
