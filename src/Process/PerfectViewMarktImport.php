@@ -67,20 +67,22 @@ class PerfectViewMarktImport
                 continue;
             }
 
-            $this->logger->info('PerfectView record import', ['afkorting' => $pvRecord['AFKORTING']]);
-            $markt = $this->marktRepository->getByAfkorting($pvRecord['AFKORTING']);
+            $upperCaseAfkorting = strtoupper($pvRecord['AFKORTING']);
+
+            $this->logger->info('PerfectView record import', ['afkorting' => $upperCaseAfkorting]);
+            $markt = $this->marktRepository->getByAfkorting($upperCaseAfkorting);
 
             // create new markt
             if (null === $markt) {
-                $this->logger->info('Nieuwe markt, aanmaken in database', ['afkorting' => $pvRecord['AFKORTING']]);
+                $this->logger->info('Nieuwe markt, aanmaken in database', ['afkorting' => $upperCaseAfkorting]);
                 $markt = new Markt();
                 $this->em->persist($markt);
             } else {
-                $this->logger->info('Bestaande markt, bijwerken in database', ['afkorting' => $pvRecord['AFKORTING'], 'id' => $markt->getId()]);
+                $this->logger->info('Bestaande markt, bijwerken in database', ['afkorting' => $upperCaseAfkorting, 'id' => $markt->getId()]);
             }
 
             // update markt
-            $markt->setAfkorting($pvRecord['AFKORTING']);
+            $markt->setAfkorting($upperCaseAfkorting);
             $markt->setNaam($pvRecord['MARKTNAAM']);
             $markt->setSoort($this->soortMarkConversion[$pvRecord['SOORT_MARK']]);
             $markt->setExtraMetersMogelijk('True' === $pvRecord['A1_METER']);
@@ -104,10 +106,10 @@ class PerfectViewMarktImport
                 $opties[] = 'krachtstroom';
             }
             /* TODO: Zorg dat deze optie in perfectview gedefineerd wordt */
-            if ('PEK' === $pvRecord['AFKORTING']) {
+            if ('PEK' === $upperCaseAfkorting) {
                 $opties[] = 'eenmaligElektra';
             }
-            if ('WAT-2022' === $pvRecord['AFKORTING']) {
+            if ('WAT-2022' === $upperCaseAfkorting) {
                 $opties[] = 'grootPerMeter';
                 $opties[] = 'kleinPerMeter';
                 $opties[] = 'afvalEilandAgf';
