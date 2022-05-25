@@ -7,24 +7,22 @@ use Doctrine\Persistence\ObjectManager;
 
 class BrancheFixtures extends BaseFixture
 {
+    public const BRANCHES_JSON = BaseFixture::FILE_BASED_FIXTURES_DIR . '/branches.json';
+
     protected function loadData(ObjectManager $manager): void
     {
-        $branche = new Branche();
+        $jsonString = file_get_contents(self::BRANCHES_JSON);
+        $branches = json_decode($jsonString, true);
 
-        $branche->setAfkorting('000-EMPTY');
-        $branche->setColor('blue');
-        $branche->setOmschrijving('Empty');
+        foreach ($branches as $branche) {
+            $newBranche = new Branche();
+            $newBranche->setAfkorting($branche['afkorting']);
+            $newBranche->setColor($branche['color']);
+            $newBranche->setOmschrijving($branche['omschrijving']);
 
-        $manager->persist($branche);
-
-        $brancheExisting = new Branche();
-
-        $brancheExisting->setAfkorting('101-agf');
-        $brancheExisting->setColor('green');
-        $brancheExisting->setOmschrijving('AGF');
-
-        $manager->persist($brancheExisting);
-
+            $manager->persist($newBranche);
+            $this->addReference(Branche::class . $branche['id'], $newBranche);
+        }
         $manager->flush();
     }
 }

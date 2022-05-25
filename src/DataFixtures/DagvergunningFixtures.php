@@ -17,10 +17,10 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
     {
         $this->createMany(4, 'dagvergunning', function ($i) {
             /** @var Markt $markt */
-            $markt = $this->getReference('markt_1');
+            $markt = $this->getReference('markt_AC-2022');
 
             /** @var Koopman $koopman */
-            $koopman = $this->getReference('koopman_1');
+            $koopman = $this->getReference(Koopman::class . 746);
 
             /** @var array<string> $enims */
             $enims = [

@@ -629,6 +629,28 @@ final class MarktFixtures extends BaseFixture
         ++$i;
         $this->addReference('markt_'.$i, $markt);
 
+        $markt = new Markt();
+        $markt->setNaam('Albert Cuyp-2022');
+        $markt->setAfkorting('AC-2022');
+        $markt->setSoort(Markt::SOORT_DAG);
+        $markt->setPerfectViewNummer(1);
+        $markt->setMarktDagen(['ma', 'di', 'wo', 'do', 'vr', 'za']);
+        $markt->setStandaardKraamAfmeting(4);
+        $markt->setExtraMetersMogelijk(true);
+        $markt->setAanwezigeOpties(['4mKramen', 'extraMeters', 'afvaleiland', 'krachtstroom']);
+        $markt->setAantalKramen(264);
+        $markt->setAantalMeter(1056);
+        $markt->setAuditMax(10);
+        $markt->setKiesJeKraamActief(true);
+        $markt->setKiesJeKraamGeblokkeerdePlaatsen('131,158,251');
+        $markt->setKiesJeKraamFase('wenperiode');
+        $markt->setMakkelijkeMarktActief(true);
+        $markt->setIndelingstype('a/b-lijst');
+        $markt->setIndelingstype('setMaxAantalKramenPerOndernemer');
+
+        $manager->persist($markt);
+        $this->addReference('markt_AC-2022', $markt);
+
         $manager->flush();
     }
 }
