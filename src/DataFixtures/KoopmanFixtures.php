@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\DataFixtures\BrancheFixtures;
-use App\DataFixtures\MarktFixtures;
 use App\Entity\Branche;
 use App\Entity\Koopman;
-use App\Entity\PlaatsVoorkeur;
 use App\Entity\MarktVoorkeur;
+use App\Entity\PlaatsVoorkeur;
 use App\Entity\Rsvp;
 use App\Entity\Sollicitatie;
 use DateTime;
@@ -29,7 +27,8 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
     protected function loadData(ObjectManager $manager): void
     {
         $koopmanData = json_decode(file_get_contents(
-            BaseFixture::FILE_BASED_FIXTURES_DIR . '/koopman.json'), true);
+            BaseFixture::FILE_BASED_FIXTURES_DIR.'/koopman.json'
+        ), true);
         foreach ($koopmanData as $data) {
             $koopman = new Koopman();
             $koopman->setVoorletters($data['voorletters']);
@@ -40,15 +39,16 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
             $koopman->setPerfectViewNummer($data['perfect_view_nummer']);
             $koopman->setStatus($data['status']);
             $manager->persist($koopman);
-            $this->addReference(Koopman::class . $data['id'], $koopman);
+            $this->addReference(Koopman::class.$data['id'], $koopman);
         }
 
         $markt = $this->getReference('markt_AC-2022');
 
         $sollicitatieData = json_decode(file_get_contents(
-            BaseFixture::FILE_BASED_FIXTURES_DIR . '/sollicitatie.json'), true);
+            BaseFixture::FILE_BASED_FIXTURES_DIR.'/sollicitatie.json'
+        ), true);
         foreach ($sollicitatieData as $data) {
-            $koopman = $this->getReference(Koopman::class . $data['koopman_id']);
+            $koopman = $this->getReference(Koopman::class.$data['koopman_id']);
             $sollicitatie = new Sollicitatie();
             $sollicitatie->setMarkt($markt);
             $sollicitatie->setKoopman($koopman);
@@ -67,9 +67,10 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
         }
 
         $rsvpData = json_decode(file_get_contents(
-            BaseFixture::FILE_BASED_FIXTURES_DIR . '/rsvp.json'), true);
+            BaseFixture::FILE_BASED_FIXTURES_DIR.'/rsvp.json'
+        ), true);
         foreach ($rsvpData as $data) {
-            $koopman = $this->getReference(Koopman::class . $data['koopman_id']);
+            $koopman = $this->getReference(Koopman::class.$data['koopman_id']);
             $rsvp = new Rsvp();
             $rsvp->setMarkt($markt);
             $rsvp->setKoopman($koopman);
@@ -79,9 +80,10 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
         }
 
         $plaatsVoorkeurData = json_decode(file_get_contents(
-            BaseFixture::FILE_BASED_FIXTURES_DIR . '/plaatsVoorkeur.json'), true);
+            BaseFixture::FILE_BASED_FIXTURES_DIR.'/plaatsVoorkeur.json'
+        ), true);
         foreach ($plaatsVoorkeurData as $data) {
-            $koopman = $this->getReference(Koopman::class . $data['koopman_id']);
+            $koopman = $this->getReference(Koopman::class.$data['koopman_id']);
             $plaatsVoorkeur = new PlaatsVoorkeur();
             $plaatsVoorkeur->setMarkt($markt);
             $plaatsVoorkeur->setKoopman($koopman);
@@ -90,10 +92,11 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
         }
 
         $marktVoorkeurData = json_decode(file_get_contents(
-            BaseFixture::FILE_BASED_FIXTURES_DIR . '/marktVoorkeur.json'), true);
+            BaseFixture::FILE_BASED_FIXTURES_DIR.'/marktVoorkeur.json'
+        ), true);
         foreach ($marktVoorkeurData as $data) {
-            $koopman = $this->getReference(Koopman::class . $data['koopman_id']);
-            $branche = $this->getReference(Branche::class . $data['branche_id']);
+            $koopman = $this->getReference(Koopman::class.$data['koopman_id']);
+            $branche = $this->getReference(Branche::class.$data['branche_id']);
             $marktVoorkeur = new MarktVoorkeur();
             $marktVoorkeur->setMarkt($markt);
             $marktVoorkeur->setKoopman($koopman);

@@ -7,7 +7,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class BrancheFixtures extends BaseFixture
 {
-    public const BRANCHES_JSON = BaseFixture::FILE_BASED_FIXTURES_DIR . '/branches.json';
+    public const BRANCHES_JSON = BaseFixture::FILE_BASED_FIXTURES_DIR.'/branches.json';
 
     protected function loadData(ObjectManager $manager): void
     {
@@ -21,7 +21,7 @@ class BrancheFixtures extends BaseFixture
             $newBranche->setOmschrijving($branche['omschrijving']);
 
             $manager->persist($newBranche);
-            $this->addReference(Branche::class . $branche['id'], $newBranche);
+            $this->addReference(Branche::class.$branche['id'], $newBranche);
         }
         $manager->flush();
     }
