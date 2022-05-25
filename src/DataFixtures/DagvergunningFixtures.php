@@ -20,7 +20,7 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
             $markt = $this->getReference('markt_AC-2022');
 
             /** @var Koopman $koopman */
-            $koopman = $this->getReference(Koopman::class . 746);
+            $koopman = $this->getReference(Koopman::class. 746);
 
             /** @var array<string> $enims */
             $enims = [
