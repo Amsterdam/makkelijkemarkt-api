@@ -1,0 +1,452 @@
+[
+  {
+    "id": 330,
+    "markt_id": 204,
+    "koopman_id": 1308,
+    "plaatsen": "93"
+  },
+  {
+    "id": 331,
+    "markt_id": 204,
+    "koopman_id": 2395,
+    "plaatsen": "245,247"
+  },
+  {
+    "id": 364,
+    "markt_id": 204,
+    "koopman_id": 1565,
+    "plaatsen": "84"
+  },
+  {
+    "id": 315,
+    "markt_id": 204,
+    "koopman_id": 6468,
+    "plaatsen": "18,111,113,115,117"
+  },
+  {
+    "id": 317,
+    "markt_id": 204,
+    "koopman_id": 10934,
+    "plaatsen": "93"
+  },
+  {
+    "id": 430,
+    "markt_id": 204,
+    "koopman_id": 6783,
+    "plaatsen": "191"
+  },
+  {
+    "id": 431,
+    "markt_id": 204,
+    "koopman_id": 1654,
+    "plaatsen": "162"
+  },
+  {
+    "id": 432,
+    "markt_id": 204,
+    "koopman_id": 4188,
+    "plaatsen": "47"
+  },
+  {
+    "id": 368,
+    "markt_id": 204,
+    "koopman_id": 419,
+    "plaatsen": "131"
+  },
+  {
+    "id": 318,
+    "markt_id": 204,
+    "koopman_id": 10974,
+    "plaatsen": "19,16,17,18,10,63,65,67"
+  },
+  {
+    "id": 369,
+    "markt_id": 204,
+    "koopman_id": 241,
+    "plaatsen": "131"
+  },
+  {
+    "id": 370,
+    "markt_id": 204,
+    "koopman_id": 1320,
+    "plaatsen": "251"
+  },
+  {
+    "id": 305,
+    "markt_id": 204,
+    "koopman_id": 696,
+    "plaatsen": "1,217,248"
+  },
+  {
+    "id": 306,
+    "markt_id": 204,
+    "koopman_id": 4993,
+    "plaatsen": "1,217,248"
+  },
+  {
+    "id": 307,
+    "markt_id": 204,
+    "koopman_id": 9450,
+    "plaatsen": "1,217,248"
+  },
+  {
+    "id": 308,
+    "markt_id": 204,
+    "koopman_id": 2953,
+    "plaatsen": "500"
+  },
+  {
+    "id": 312,
+    "markt_id": 204,
+    "koopman_id": 3284,
+    "plaatsen": "23"
+  },
+  {
+    "id": 433,
+    "markt_id": 204,
+    "koopman_id": 1415,
+    "plaatsen": "5"
+  },
+  {
+    "id": 313,
+    "markt_id": 204,
+    "koopman_id": 8158,
+    "plaatsen": "10,16,20,116,129,111"
+  },
+  {
+    "id": 324,
+    "markt_id": 204,
+    "koopman_id": 9281,
+    "plaatsen": "21,43,68"
+  },
+  {
+    "id": 371,
+    "markt_id": 204,
+    "koopman_id": 2755,
+    "plaatsen": "191"
+  },
+  {
+    "id": 325,
+    "markt_id": 204,
+    "koopman_id": 10969,
+    "plaatsen": "23,5,100"
+  },
+  {
+    "id": 409,
+    "markt_id": 204,
+    "koopman_id": 3293,
+    "plaatsen": "200"
+  },
+  {
+    "id": 326,
+    "markt_id": 204,
+    "koopman_id": 10930,
+    "plaatsen": "146,246,82"
+  },
+  {
+    "id": 434,
+    "markt_id": 204,
+    "koopman_id": 2129,
+    "plaatsen": "133"
+  },
+  {
+    "id": 327,
+    "markt_id": 204,
+    "koopman_id": 10920,
+    "plaatsen": "1,29"
+  },
+  {
+    "id": 328,
+    "markt_id": 204,
+    "koopman_id": 10509,
+    "plaatsen": "16"
+  },
+  {
+    "id": 372,
+    "markt_id": 204,
+    "koopman_id": 10774,
+    "plaatsen": "187"
+  },
+  {
+    "id": 338,
+    "markt_id": 204,
+    "koopman_id": 10799,
+    "plaatsen": "158,162"
+  },
+  {
+    "id": 339,
+    "markt_id": 204,
+    "koopman_id": 2496,
+    "plaatsen": "134"
+  },
+  {
+    "id": 340,
+    "markt_id": 204,
+    "koopman_id": 846,
+    "plaatsen": "12"
+  },
+  {
+    "id": 341,
+    "markt_id": 204,
+    "koopman_id": 7907,
+    "plaatsen": "131"
+  },
+  {
+    "id": 343,
+    "markt_id": 204,
+    "koopman_id": 11500,
+    "plaatsen": "137"
+  },
+  {
+    "id": 345,
+    "markt_id": 204,
+    "koopman_id": 10628,
+    "plaatsen": "223"
+  },
+  {
+    "id": 346,
+    "markt_id": 204,
+    "koopman_id": 12104,
+    "plaatsen": "261"
+  },
+  {
+    "id": 347,
+    "markt_id": 204,
+    "koopman_id": 2372,
+    "plaatsen": "251"
+  },
+  {
+    "id": 348,
+    "markt_id": 204,
+    "koopman_id": 10596,
+    "plaatsen": "131"
+  },
+  {
+    "id": 349,
+    "markt_id": 204,
+    "koopman_id": 12068,
+    "plaatsen": "158"
+  },
+  {
+    "id": 350,
+    "markt_id": 204,
+    "koopman_id": 12039,
+    "plaatsen": "251"
+  },
+  {
+    "id": 374,
+    "markt_id": 204,
+    "koopman_id": 10235,
+    "plaatsen": "253"
+  },
+  {
+    "id": 352,
+    "markt_id": 204,
+    "koopman_id": 9464,
+    "plaatsen": "243"
+  },
+  {
+    "id": 354,
+    "markt_id": 204,
+    "koopman_id": 12056,
+    "plaatsen": "198"
+  },
+  {
+    "id": 355,
+    "markt_id": 204,
+    "koopman_id": 11296,
+    "plaatsen": "177"
+  },
+  {
+    "id": 375,
+    "markt_id": 204,
+    "koopman_id": 11227,
+    "plaatsen": "266"
+  },
+  {
+    "id": 376,
+    "markt_id": 204,
+    "koopman_id": 11520,
+    "plaatsen": "255"
+  },
+  {
+    "id": 314,
+    "markt_id": 204,
+    "koopman_id": 5407,
+    "plaatsen": "12,76,78,80,38,40,84,31,33"
+  },
+  {
+    "id": 377,
+    "markt_id": 204,
+    "koopman_id": 4392,
+    "plaatsen": "78"
+  },
+  {
+    "id": 359,
+    "markt_id": 204,
+    "koopman_id": 3426,
+    "plaatsen": "12,50,66,68,13,47"
+  },
+  {
+    "id": 381,
+    "markt_id": 204,
+    "koopman_id": 852,
+    "plaatsen": "47"
+  },
+  {
+    "id": 386,
+    "markt_id": 204,
+    "koopman_id": 5004,
+    "plaatsen": "183"
+  },
+  {
+    "id": 387,
+    "markt_id": 204,
+    "koopman_id": 938,
+    "plaatsen": "50"
+  },
+  {
+    "id": 361,
+    "markt_id": 204,
+    "koopman_id": 1159,
+    "plaatsen": "12,50,66,68,13,47"
+  },
+  {
+    "id": 389,
+    "markt_id": 204,
+    "koopman_id": 782,
+    "plaatsen": "1"
+  },
+  {
+    "id": 362,
+    "markt_id": 204,
+    "koopman_id": 6712,
+    "plaatsen": "12,50,66,68,13,47"
+  },
+  {
+    "id": 363,
+    "markt_id": 204,
+    "koopman_id": 669,
+    "plaatsen": "66"
+  },
+  {
+    "id": 400,
+    "markt_id": 204,
+    "koopman_id": 11749,
+    "plaatsen": "66"
+  },
+  {
+    "id": 410,
+    "markt_id": 204,
+    "koopman_id": 5587,
+    "plaatsen": "3"
+  },
+  {
+    "id": 394,
+    "markt_id": 204,
+    "koopman_id": 7161,
+    "plaatsen": "21"
+  },
+  {
+    "id": 395,
+    "markt_id": 204,
+    "koopman_id": 11023,
+    "plaatsen": "54"
+  },
+  {
+    "id": 396,
+    "markt_id": 204,
+    "koopman_id": 10385,
+    "plaatsen": "20,54"
+  },
+  {
+    "id": 397,
+    "markt_id": 204,
+    "koopman_id": 10282,
+    "plaatsen": "20,54"
+  },
+  {
+    "id": 411,
+    "markt_id": 204,
+    "koopman_id": 11631,
+    "plaatsen": "137"
+  },
+  {
+    "id": 399,
+    "markt_id": 204,
+    "koopman_id": 7878,
+    "plaatsen": "54"
+  },
+  {
+    "id": 405,
+    "markt_id": 204,
+    "koopman_id": 4747,
+    "plaatsen": "3,5,9"
+  },
+  {
+    "id": 438,
+    "markt_id": 204,
+    "koopman_id": 9708,
+    "plaatsen": "192"
+  },
+  {
+    "id": 439,
+    "markt_id": 204,
+    "koopman_id": 2016,
+    "plaatsen": "270"
+  },
+  {
+    "id": 440,
+    "markt_id": 204,
+    "koopman_id": 7999,
+    "plaatsen": "40"
+  },
+  {
+    "id": 421,
+    "markt_id": 204,
+    "koopman_id": 5429,
+    "plaatsen": "146"
+  },
+  {
+    "id": 423,
+    "markt_id": 204,
+    "koopman_id": 9748,
+    "plaatsen": "251"
+  },
+  {
+    "id": 424,
+    "markt_id": 204,
+    "koopman_id": 10768,
+    "plaatsen": "158"
+  },
+  {
+    "id": 425,
+    "markt_id": 204,
+    "koopman_id": 2456,
+    "plaatsen": "157"
+  },
+  {
+    "id": 426,
+    "markt_id": 204,
+    "koopman_id": 746,
+    "plaatsen": "131"
+  },
+  {
+    "id": 427,
+    "markt_id": 204,
+    "koopman_id": 5819,
+    "plaatsen": "137"
+  },
+  {
+    "id": 429,
+    "markt_id": 204,
+    "koopman_id": 3594,
+    "plaatsen": "191"
+  },
+  {
+    "id": 388,
+    "markt_id": 204,
+    "koopman_id": 1791,
+    "plaatsen": "5,1,3"
+  }
+]

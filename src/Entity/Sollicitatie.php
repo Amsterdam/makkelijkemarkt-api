@@ -37,6 +37,9 @@ class Sollicitatie
     /** @var string */
     public const STATUS_VKK = 'vkk';
 
+    /** @var string */
+    public const STATUS_EB = 'eb';
+
     /**
      * @OA\Property(example="14")
      * @Groups({"sollicitatie", "simpleSollicitatie"})
@@ -280,7 +283,7 @@ class Sollicitatie
 
     public function setStatus(string $status): self
     {
-        if (false === in_array($status, [self::STATUS_SOLL, self::STATUS_VKK, self::STATUS_VPL], true)) {
+        if (false === in_array($status, [self::STATUS_SOLL, self::STATUS_VKK, self::STATUS_VPL, self::STATUS_EB], true)) {
             throw new \InvalidArgumentException();
         }
 

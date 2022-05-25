@@ -13,21 +13,13 @@ final class VervangerFixtures extends BaseFixture implements DependentFixtureInt
 {
     protected function loadData(ObjectManager $manager): void
     {
-        $this->createMany(10, 'vervanger', function ($i) {
-            /** @var Koopman $koopman1 */
-            $koopman1 = $this->getReference('koopman_'.$i);
+        $vervanger = new Vervanger();
+        $vervanger->setKoopman($this->getReference(Koopman::class . 9014));
+        $vervanger->setVervanger($this->getReference(Koopman::class . 12073));
+        $vervanger->setPasUid((string) $this->faker->numberBetween(39000000000, 42000000000));
+        $manager->persist($vervanger);
 
-            /** @var Koopman $koopman2 */
-            $koopman2 = $this->getReference('koopman_'.($i + 10));
-
-            /** @var Vervanger $vervanger */
-            $vervanger = new Vervanger();
-            $vervanger->setKoopman($koopman1);
-            $vervanger->setVervanger($koopman2);
-            $vervanger->setPasUid((string) $this->faker->numberBetween(39000000000, 42000000000));
-
-            return $vervanger;
-        });
+        $manager->flush();
     }
 
     /**

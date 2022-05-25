@@ -46,10 +46,10 @@ final class AccountFixtures extends BaseFixture
         $manager->flush();
 
         $account = new Account();
-        $account->setNaam('Super Admin');
+        $account->setNaam('Salmagundi');
         $account->setEmail('webmaster@example.local');
         $account->setRole('ROLE_ADMIN');
-        $account->setUsername('admin');
+        $account->setUsername('salmagundi');
         $account->setPassword('plain-for-now');
         $account->setAttempts(0);
         $account->setLastAttempt($this->faker->dateTimeBetween($ut, 'now'));
@@ -57,7 +57,7 @@ final class AccountFixtures extends BaseFixture
         $account->setActive(true);
         $account->setPassword($this->userPasswordEncoder->encodePassword(
             $account,
-            'admin'
+            'insecure'
         ));
 
         $manager->persist($account);

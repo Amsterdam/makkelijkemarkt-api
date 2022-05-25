@@ -1,0 +1,1857 @@
+[
+  {
+    "id": 47737,
+    "markt_configuratie_id": 248,
+    "plaats_id": "8",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47738,
+    "markt_configuratie_id": 248,
+    "plaats_id": "10",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47739,
+    "markt_configuratie_id": 248,
+    "plaats_id": "12",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47740,
+    "markt_configuratie_id": 248,
+    "plaats_id": "14",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47741,
+    "markt_configuratie_id": 248,
+    "plaats_id": "16",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47742,
+    "markt_configuratie_id": 248,
+    "plaats_id": "18",
+    "verkoop_inrichting": null,
+    "bak_type": "bak-licht"
+  },
+  {
+    "id": 47743,
+    "markt_configuratie_id": 248,
+    "plaats_id": "20",
+    "verkoop_inrichting": null,
+    "bak_type": "bak-licht"
+  },
+  {
+    "id": 47744,
+    "markt_configuratie_id": 248,
+    "plaats_id": "22",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47745,
+    "markt_configuratie_id": 248,
+    "plaats_id": "24",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47746,
+    "markt_configuratie_id": 248,
+    "plaats_id": "26",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47747,
+    "markt_configuratie_id": 248,
+    "plaats_id": "28",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47748,
+    "markt_configuratie_id": 248,
+    "plaats_id": "30",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47749,
+    "markt_configuratie_id": 248,
+    "plaats_id": "32",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47750,
+    "markt_configuratie_id": 248,
+    "plaats_id": "34",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47751,
+    "markt_configuratie_id": 248,
+    "plaats_id": "36",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47752,
+    "markt_configuratie_id": 248,
+    "plaats_id": "38",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47753,
+    "markt_configuratie_id": 248,
+    "plaats_id": "40",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47754,
+    "markt_configuratie_id": 248,
+    "plaats_id": "42",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47755,
+    "markt_configuratie_id": 248,
+    "plaats_id": "44",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47756,
+    "markt_configuratie_id": 248,
+    "plaats_id": "46",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47757,
+    "markt_configuratie_id": 248,
+    "plaats_id": "48",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47758,
+    "markt_configuratie_id": 248,
+    "plaats_id": "50",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47759,
+    "markt_configuratie_id": 248,
+    "plaats_id": "52",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47760,
+    "markt_configuratie_id": 248,
+    "plaats_id": "54",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47761,
+    "markt_configuratie_id": 248,
+    "plaats_id": "56",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47762,
+    "markt_configuratie_id": 248,
+    "plaats_id": "58",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47763,
+    "markt_configuratie_id": 248,
+    "plaats_id": "60",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47764,
+    "markt_configuratie_id": 248,
+    "plaats_id": "62",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47765,
+    "markt_configuratie_id": 248,
+    "plaats_id": "64",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47766,
+    "markt_configuratie_id": 248,
+    "plaats_id": "66",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47767,
+    "markt_configuratie_id": 248,
+    "plaats_id": "68",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47768,
+    "markt_configuratie_id": 248,
+    "plaats_id": "70",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47769,
+    "markt_configuratie_id": 248,
+    "plaats_id": "72",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47770,
+    "markt_configuratie_id": 248,
+    "plaats_id": "74",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47771,
+    "markt_configuratie_id": 248,
+    "plaats_id": "76",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47772,
+    "markt_configuratie_id": 248,
+    "plaats_id": "1",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47773,
+    "markt_configuratie_id": 248,
+    "plaats_id": "3",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47774,
+    "markt_configuratie_id": 248,
+    "plaats_id": "5",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47775,
+    "markt_configuratie_id": 248,
+    "plaats_id": "7",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47776,
+    "markt_configuratie_id": 248,
+    "plaats_id": "9",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47777,
+    "markt_configuratie_id": 248,
+    "plaats_id": "11",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47778,
+    "markt_configuratie_id": 248,
+    "plaats_id": "13",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47779,
+    "markt_configuratie_id": 248,
+    "plaats_id": "15",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47780,
+    "markt_configuratie_id": 248,
+    "plaats_id": "17",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47781,
+    "markt_configuratie_id": 248,
+    "plaats_id": "19",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47782,
+    "markt_configuratie_id": 248,
+    "plaats_id": "21",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47783,
+    "markt_configuratie_id": 248,
+    "plaats_id": "23",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47784,
+    "markt_configuratie_id": 248,
+    "plaats_id": "25",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47785,
+    "markt_configuratie_id": 248,
+    "plaats_id": "27",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47786,
+    "markt_configuratie_id": 248,
+    "plaats_id": "29",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47787,
+    "markt_configuratie_id": 248,
+    "plaats_id": "31",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47788,
+    "markt_configuratie_id": 248,
+    "plaats_id": "33",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47789,
+    "markt_configuratie_id": 248,
+    "plaats_id": "35",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47790,
+    "markt_configuratie_id": 248,
+    "plaats_id": "37",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47791,
+    "markt_configuratie_id": 248,
+    "plaats_id": "39",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47792,
+    "markt_configuratie_id": 248,
+    "plaats_id": "41",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47793,
+    "markt_configuratie_id": 248,
+    "plaats_id": "43",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47794,
+    "markt_configuratie_id": 248,
+    "plaats_id": "45",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47795,
+    "markt_configuratie_id": 248,
+    "plaats_id": "47",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47796,
+    "markt_configuratie_id": 248,
+    "plaats_id": "49",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47797,
+    "markt_configuratie_id": 248,
+    "plaats_id": "51",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47798,
+    "markt_configuratie_id": 248,
+    "plaats_id": "53",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47799,
+    "markt_configuratie_id": 248,
+    "plaats_id": "55",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47800,
+    "markt_configuratie_id": 248,
+    "plaats_id": "57",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47801,
+    "markt_configuratie_id": 248,
+    "plaats_id": "59",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47802,
+    "markt_configuratie_id": 248,
+    "plaats_id": "61",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47803,
+    "markt_configuratie_id": 248,
+    "plaats_id": "63",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47804,
+    "markt_configuratie_id": 248,
+    "plaats_id": "65",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47805,
+    "markt_configuratie_id": 248,
+    "plaats_id": "67",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47806,
+    "markt_configuratie_id": 248,
+    "plaats_id": "69",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47807,
+    "markt_configuratie_id": 248,
+    "plaats_id": "71",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47808,
+    "markt_configuratie_id": 248,
+    "plaats_id": "73",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47809,
+    "markt_configuratie_id": 248,
+    "plaats_id": "75",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47810,
+    "markt_configuratie_id": 248,
+    "plaats_id": "78",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47811,
+    "markt_configuratie_id": 248,
+    "plaats_id": "80",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47812,
+    "markt_configuratie_id": 248,
+    "plaats_id": "82",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47813,
+    "markt_configuratie_id": 248,
+    "plaats_id": "84",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47814,
+    "markt_configuratie_id": 248,
+    "plaats_id": "86",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47815,
+    "markt_configuratie_id": 248,
+    "plaats_id": "88",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47816,
+    "markt_configuratie_id": 248,
+    "plaats_id": "90",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47817,
+    "markt_configuratie_id": 248,
+    "plaats_id": "92",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47818,
+    "markt_configuratie_id": 248,
+    "plaats_id": "94",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47819,
+    "markt_configuratie_id": 248,
+    "plaats_id": "96",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47820,
+    "markt_configuratie_id": 248,
+    "plaats_id": "98",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47821,
+    "markt_configuratie_id": 248,
+    "plaats_id": "100",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47822,
+    "markt_configuratie_id": 248,
+    "plaats_id": "102",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47823,
+    "markt_configuratie_id": 248,
+    "plaats_id": "104",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47824,
+    "markt_configuratie_id": 248,
+    "plaats_id": "106",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47825,
+    "markt_configuratie_id": 248,
+    "plaats_id": "108",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47826,
+    "markt_configuratie_id": 248,
+    "plaats_id": "110",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47827,
+    "markt_configuratie_id": 248,
+    "plaats_id": "112",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47828,
+    "markt_configuratie_id": 248,
+    "plaats_id": "114",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47829,
+    "markt_configuratie_id": 248,
+    "plaats_id": "116",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47830,
+    "markt_configuratie_id": 248,
+    "plaats_id": "118",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47831,
+    "markt_configuratie_id": 248,
+    "plaats_id": "120",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47832,
+    "markt_configuratie_id": 248,
+    "plaats_id": "122",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47833,
+    "markt_configuratie_id": 248,
+    "plaats_id": "124",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47834,
+    "markt_configuratie_id": 248,
+    "plaats_id": "126",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47835,
+    "markt_configuratie_id": 248,
+    "plaats_id": "128",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47836,
+    "markt_configuratie_id": 248,
+    "plaats_id": "130",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47837,
+    "markt_configuratie_id": 248,
+    "plaats_id": "132",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47838,
+    "markt_configuratie_id": 248,
+    "plaats_id": "134",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47839,
+    "markt_configuratie_id": 248,
+    "plaats_id": "136",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47840,
+    "markt_configuratie_id": 248,
+    "plaats_id": "138",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47841,
+    "markt_configuratie_id": 248,
+    "plaats_id": "140",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47842,
+    "markt_configuratie_id": 248,
+    "plaats_id": "142",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47843,
+    "markt_configuratie_id": 248,
+    "plaats_id": "144",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47844,
+    "markt_configuratie_id": 248,
+    "plaats_id": "146",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47845,
+    "markt_configuratie_id": 248,
+    "plaats_id": "148",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47846,
+    "markt_configuratie_id": 248,
+    "plaats_id": "150",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47847,
+    "markt_configuratie_id": 248,
+    "plaats_id": "152",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47848,
+    "markt_configuratie_id": 248,
+    "plaats_id": "154",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47849,
+    "markt_configuratie_id": 248,
+    "plaats_id": "77",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47850,
+    "markt_configuratie_id": 248,
+    "plaats_id": "79",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47851,
+    "markt_configuratie_id": 248,
+    "plaats_id": "81",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47852,
+    "markt_configuratie_id": 248,
+    "plaats_id": "83",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47853,
+    "markt_configuratie_id": 248,
+    "plaats_id": "85",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47854,
+    "markt_configuratie_id": 248,
+    "plaats_id": "87",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47855,
+    "markt_configuratie_id": 248,
+    "plaats_id": "89",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47856,
+    "markt_configuratie_id": 248,
+    "plaats_id": "91",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47857,
+    "markt_configuratie_id": 248,
+    "plaats_id": "93",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47858,
+    "markt_configuratie_id": 248,
+    "plaats_id": "95",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47859,
+    "markt_configuratie_id": 248,
+    "plaats_id": "97",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47860,
+    "markt_configuratie_id": 248,
+    "plaats_id": "99",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47861,
+    "markt_configuratie_id": 248,
+    "plaats_id": "101",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47862,
+    "markt_configuratie_id": 248,
+    "plaats_id": "103",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47863,
+    "markt_configuratie_id": 248,
+    "plaats_id": "105",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47864,
+    "markt_configuratie_id": 248,
+    "plaats_id": "107",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47865,
+    "markt_configuratie_id": 248,
+    "plaats_id": "109",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47866,
+    "markt_configuratie_id": 248,
+    "plaats_id": "111",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47867,
+    "markt_configuratie_id": 248,
+    "plaats_id": "113",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47868,
+    "markt_configuratie_id": 248,
+    "plaats_id": "115",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47869,
+    "markt_configuratie_id": 248,
+    "plaats_id": "117",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47870,
+    "markt_configuratie_id": 248,
+    "plaats_id": "119",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47871,
+    "markt_configuratie_id": 248,
+    "plaats_id": "121",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47872,
+    "markt_configuratie_id": 248,
+    "plaats_id": "123",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47873,
+    "markt_configuratie_id": 248,
+    "plaats_id": "125",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47874,
+    "markt_configuratie_id": 248,
+    "plaats_id": "127",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47875,
+    "markt_configuratie_id": 248,
+    "plaats_id": "129",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47876,
+    "markt_configuratie_id": 248,
+    "plaats_id": "131",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47877,
+    "markt_configuratie_id": 248,
+    "plaats_id": "133",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47878,
+    "markt_configuratie_id": 248,
+    "plaats_id": "135",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47879,
+    "markt_configuratie_id": 248,
+    "plaats_id": "137",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47880,
+    "markt_configuratie_id": 248,
+    "plaats_id": "139",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47881,
+    "markt_configuratie_id": 248,
+    "plaats_id": "141",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47882,
+    "markt_configuratie_id": 248,
+    "plaats_id": "143",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47883,
+    "markt_configuratie_id": 248,
+    "plaats_id": "156",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47884,
+    "markt_configuratie_id": 248,
+    "plaats_id": "158",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47885,
+    "markt_configuratie_id": 248,
+    "plaats_id": "160",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47886,
+    "markt_configuratie_id": 248,
+    "plaats_id": "162",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47887,
+    "markt_configuratie_id": 248,
+    "plaats_id": "164",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47888,
+    "markt_configuratie_id": 248,
+    "plaats_id": "166",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47889,
+    "markt_configuratie_id": 248,
+    "plaats_id": "168",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47890,
+    "markt_configuratie_id": 248,
+    "plaats_id": "170",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47891,
+    "markt_configuratie_id": 248,
+    "plaats_id": "172",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47892,
+    "markt_configuratie_id": 248,
+    "plaats_id": "174",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47893,
+    "markt_configuratie_id": 248,
+    "plaats_id": "176",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47894,
+    "markt_configuratie_id": 248,
+    "plaats_id": "178",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47895,
+    "markt_configuratie_id": 248,
+    "plaats_id": "180",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47896,
+    "markt_configuratie_id": 248,
+    "plaats_id": "182",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47897,
+    "markt_configuratie_id": 248,
+    "plaats_id": "184",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47898,
+    "markt_configuratie_id": 248,
+    "plaats_id": "186",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47899,
+    "markt_configuratie_id": 248,
+    "plaats_id": "188",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47900,
+    "markt_configuratie_id": 248,
+    "plaats_id": "190",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47901,
+    "markt_configuratie_id": 248,
+    "plaats_id": "192",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47902,
+    "markt_configuratie_id": 248,
+    "plaats_id": "194",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47903,
+    "markt_configuratie_id": 248,
+    "plaats_id": "196",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47904,
+    "markt_configuratie_id": 248,
+    "plaats_id": "198",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47905,
+    "markt_configuratie_id": 248,
+    "plaats_id": "200",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47906,
+    "markt_configuratie_id": 248,
+    "plaats_id": "202",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47907,
+    "markt_configuratie_id": 248,
+    "plaats_id": "204",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47908,
+    "markt_configuratie_id": 248,
+    "plaats_id": "206",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47909,
+    "markt_configuratie_id": 248,
+    "plaats_id": "208",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47910,
+    "markt_configuratie_id": 248,
+    "plaats_id": "145",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47911,
+    "markt_configuratie_id": 248,
+    "plaats_id": "147",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47912,
+    "markt_configuratie_id": 248,
+    "plaats_id": "149",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47913,
+    "markt_configuratie_id": 248,
+    "plaats_id": "151",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47914,
+    "markt_configuratie_id": 248,
+    "plaats_id": "153",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47915,
+    "markt_configuratie_id": 248,
+    "plaats_id": "155",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47916,
+    "markt_configuratie_id": 248,
+    "plaats_id": "157",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47917,
+    "markt_configuratie_id": 248,
+    "plaats_id": "159",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47918,
+    "markt_configuratie_id": 248,
+    "plaats_id": "161",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47919,
+    "markt_configuratie_id": 248,
+    "plaats_id": "163",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47920,
+    "markt_configuratie_id": 248,
+    "plaats_id": "165",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47921,
+    "markt_configuratie_id": 248,
+    "plaats_id": "167",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47922,
+    "markt_configuratie_id": 248,
+    "plaats_id": "169",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47923,
+    "markt_configuratie_id": 248,
+    "plaats_id": "171",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47924,
+    "markt_configuratie_id": 248,
+    "plaats_id": "173",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47925,
+    "markt_configuratie_id": 248,
+    "plaats_id": "175",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47926,
+    "markt_configuratie_id": 248,
+    "plaats_id": "177",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47927,
+    "markt_configuratie_id": 248,
+    "plaats_id": "179",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47928,
+    "markt_configuratie_id": 248,
+    "plaats_id": "181",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47929,
+    "markt_configuratie_id": 248,
+    "plaats_id": "183",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47930,
+    "markt_configuratie_id": 248,
+    "plaats_id": "185",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47931,
+    "markt_configuratie_id": 248,
+    "plaats_id": "187",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47932,
+    "markt_configuratie_id": 248,
+    "plaats_id": "189",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47933,
+    "markt_configuratie_id": 248,
+    "plaats_id": "191",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47934,
+    "markt_configuratie_id": 248,
+    "plaats_id": "193",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47935,
+    "markt_configuratie_id": 248,
+    "plaats_id": "195",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47936,
+    "markt_configuratie_id": 248,
+    "plaats_id": "197",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47937,
+    "markt_configuratie_id": 248,
+    "plaats_id": "199",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47938,
+    "markt_configuratie_id": 248,
+    "plaats_id": "201",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47939,
+    "markt_configuratie_id": 248,
+    "plaats_id": "203",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47940,
+    "markt_configuratie_id": 248,
+    "plaats_id": "210",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47941,
+    "markt_configuratie_id": 248,
+    "plaats_id": "212",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47942,
+    "markt_configuratie_id": 248,
+    "plaats_id": "214",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47943,
+    "markt_configuratie_id": 248,
+    "plaats_id": "216",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47944,
+    "markt_configuratie_id": 248,
+    "plaats_id": "218",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47945,
+    "markt_configuratie_id": 248,
+    "plaats_id": "220",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47946,
+    "markt_configuratie_id": 248,
+    "plaats_id": "222",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47947,
+    "markt_configuratie_id": 248,
+    "plaats_id": "224",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47948,
+    "markt_configuratie_id": 248,
+    "plaats_id": "226",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47949,
+    "markt_configuratie_id": 248,
+    "plaats_id": "228",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47950,
+    "markt_configuratie_id": 248,
+    "plaats_id": "230",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47951,
+    "markt_configuratie_id": 248,
+    "plaats_id": "232",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47952,
+    "markt_configuratie_id": 248,
+    "plaats_id": "234",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47953,
+    "markt_configuratie_id": 248,
+    "plaats_id": "236",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47954,
+    "markt_configuratie_id": 248,
+    "plaats_id": "238",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47955,
+    "markt_configuratie_id": 248,
+    "plaats_id": "240",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47956,
+    "markt_configuratie_id": 248,
+    "plaats_id": "242",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47957,
+    "markt_configuratie_id": 248,
+    "plaats_id": "244",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47958,
+    "markt_configuratie_id": 248,
+    "plaats_id": "246",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47959,
+    "markt_configuratie_id": 248,
+    "plaats_id": "248",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47960,
+    "markt_configuratie_id": 248,
+    "plaats_id": "250",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47961,
+    "markt_configuratie_id": 248,
+    "plaats_id": "252",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47962,
+    "markt_configuratie_id": 248,
+    "plaats_id": "256",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47963,
+    "markt_configuratie_id": 248,
+    "plaats_id": "258",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47964,
+    "markt_configuratie_id": 248,
+    "plaats_id": "260",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47965,
+    "markt_configuratie_id": 248,
+    "plaats_id": "262",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47966,
+    "markt_configuratie_id": 248,
+    "plaats_id": "264",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47967,
+    "markt_configuratie_id": 248,
+    "plaats_id": "266",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47968,
+    "markt_configuratie_id": 248,
+    "plaats_id": "268",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47969,
+    "markt_configuratie_id": 248,
+    "plaats_id": "270",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47970,
+    "markt_configuratie_id": 248,
+    "plaats_id": "271",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47971,
+    "markt_configuratie_id": 248,
+    "plaats_id": "272",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47972,
+    "markt_configuratie_id": 248,
+    "plaats_id": "205",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47973,
+    "markt_configuratie_id": 248,
+    "plaats_id": "207",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47974,
+    "markt_configuratie_id": 248,
+    "plaats_id": "209",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47975,
+    "markt_configuratie_id": 248,
+    "plaats_id": "211",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47976,
+    "markt_configuratie_id": 248,
+    "plaats_id": "213",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 47977,
+    "markt_configuratie_id": 248,
+    "plaats_id": "215",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47978,
+    "markt_configuratie_id": 248,
+    "plaats_id": "217",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47979,
+    "markt_configuratie_id": 248,
+    "plaats_id": "219",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47980,
+    "markt_configuratie_id": 248,
+    "plaats_id": "221",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47981,
+    "markt_configuratie_id": 248,
+    "plaats_id": "223",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47982,
+    "markt_configuratie_id": 248,
+    "plaats_id": "225",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47983,
+    "markt_configuratie_id": 248,
+    "plaats_id": "227",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47984,
+    "markt_configuratie_id": 248,
+    "plaats_id": "229",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47985,
+    "markt_configuratie_id": 248,
+    "plaats_id": "231",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47986,
+    "markt_configuratie_id": 248,
+    "plaats_id": "233",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47987,
+    "markt_configuratie_id": 248,
+    "plaats_id": "235",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47988,
+    "markt_configuratie_id": 248,
+    "plaats_id": "237",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47989,
+    "markt_configuratie_id": 248,
+    "plaats_id": "239",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47990,
+    "markt_configuratie_id": 248,
+    "plaats_id": "241",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47991,
+    "markt_configuratie_id": 248,
+    "plaats_id": "243",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47992,
+    "markt_configuratie_id": 248,
+    "plaats_id": "245",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47993,
+    "markt_configuratie_id": 248,
+    "plaats_id": "247",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "geen"
+  },
+  {
+    "id": 47994,
+    "markt_configuratie_id": 248,
+    "plaats_id": "249",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47995,
+    "markt_configuratie_id": 248,
+    "plaats_id": "251",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47996,
+    "markt_configuratie_id": 248,
+    "plaats_id": "253",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47997,
+    "markt_configuratie_id": 248,
+    "plaats_id": "255",
+    "verkoop_inrichting": null,
+    "bak_type": "bak"
+  },
+  {
+    "id": 47998,
+    "markt_configuratie_id": 248,
+    "plaats_id": "257",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 47999,
+    "markt_configuratie_id": 248,
+    "plaats_id": "259",
+    "verkoop_inrichting": null,
+    "bak_type": "geen"
+  },
+  {
+    "id": 48000,
+    "markt_configuratie_id": 248,
+    "plaats_id": "261",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  },
+  {
+    "id": 48001,
+    "markt_configuratie_id": 248,
+    "plaats_id": "263",
+    "verkoop_inrichting": "eigen-materieel",
+    "bak_type": "bak"
+  }
+]
