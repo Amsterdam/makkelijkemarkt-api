@@ -104,6 +104,14 @@ class MarktLocatie
     }
 
     /**
+     * @param ArrayCollection|Collection $branches
+     */
+    public function setBranches($branches): void
+    {
+        $this->branches = $branches;
+    }
+
+    /**
      * @return ArrayCollection|Collection
      */
     public function getPlaatseigenschappen()
