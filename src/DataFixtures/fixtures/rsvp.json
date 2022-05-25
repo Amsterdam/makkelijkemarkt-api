@@ -1,0 +1,17 @@
+[
+  {
+    "id": 7141,
+    "markt_id": 204,
+    "koopman_id": 12104,
+    "markt_date": "2022-03-16",
+    "attending": true
+  },
+  {
+    "id": 7141,
+    "markt_id": 204,
+    "koopman_id": 12104,
+    "markt_date": "2022-03-17",
+    "attending": false
+  }
+
+]

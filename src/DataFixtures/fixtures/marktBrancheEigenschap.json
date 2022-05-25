@@ -1,0 +1,632 @@
+[
+  {
+    "id": 12517,
+    "markt_configuratie_id": 248,
+    "branche_id": 1,
+    "verplicht": true,
+    "maximum_plaatsen": 1
+  },
+  {
+    "id": 12518,
+    "markt_configuratie_id": 248,
+    "branche_id": 11,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12519,
+    "markt_configuratie_id": 248,
+    "branche_id": 9,
+    "verplicht": true,
+    "maximum_plaatsen": 4
+  },
+  {
+    "id": 12520,
+    "markt_configuratie_id": 248,
+    "branche_id": 12,
+    "verplicht": true,
+    "maximum_plaatsen": 2
+  },
+  {
+    "id": 12521,
+    "markt_configuratie_id": 248,
+    "branche_id": 15,
+    "verplicht": true,
+    "maximum_plaatsen": 4
+  },
+  {
+    "id": 12522,
+    "markt_configuratie_id": 248,
+    "branche_id": 3,
+    "verplicht": false,
+    "maximum_plaatsen": 2
+  },
+  {
+    "id": 12523,
+    "markt_configuratie_id": 248,
+    "branche_id": 19,
+    "verplicht": false,
+    "maximum_plaatsen": 9
+  },
+  {
+    "id": 12524,
+    "markt_configuratie_id": 248,
+    "branche_id": 13,
+    "verplicht": false,
+    "maximum_plaatsen": 3
+  },
+  {
+    "id": 12525,
+    "markt_configuratie_id": 248,
+    "branche_id": 2,
+    "verplicht": true,
+    "maximum_plaatsen": 2
+  },
+  {
+    "id": 12526,
+    "markt_configuratie_id": 248,
+    "branche_id": 10,
+    "verplicht": true,
+    "maximum_plaatsen": 4
+  },
+  {
+    "id": 12527,
+    "markt_configuratie_id": 248,
+    "branche_id": 6,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12528,
+    "markt_configuratie_id": 248,
+    "branche_id": 5,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12529,
+    "markt_configuratie_id": 248,
+    "branche_id": 4,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12530,
+    "markt_configuratie_id": 248,
+    "branche_id": 7,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12531,
+    "markt_configuratie_id": 248,
+    "branche_id": 8,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12532,
+    "markt_configuratie_id": 248,
+    "branche_id": 24,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12533,
+    "markt_configuratie_id": 248,
+    "branche_id": 16,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12534,
+    "markt_configuratie_id": 248,
+    "branche_id": 20,
+    "verplicht": true,
+    "maximum_plaatsen": 2
+  },
+  {
+    "id": 12535,
+    "markt_configuratie_id": 248,
+    "branche_id": 25,
+    "verplicht": true,
+    "maximum_plaatsen": 8
+  },
+  {
+    "id": 12536,
+    "markt_configuratie_id": 248,
+    "branche_id": 17,
+    "verplicht": false,
+    "maximum_plaatsen": 2
+  },
+  {
+    "id": 12537,
+    "markt_configuratie_id": 248,
+    "branche_id": 21,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12538,
+    "markt_configuratie_id": 248,
+    "branche_id": 18,
+    "verplicht": true,
+    "maximum_plaatsen": 2
+  },
+  {
+    "id": 12539,
+    "markt_configuratie_id": 248,
+    "branche_id": 14,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12540,
+    "markt_configuratie_id": 248,
+    "branche_id": 22,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12541,
+    "markt_configuratie_id": 248,
+    "branche_id": 23,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12542,
+    "markt_configuratie_id": 248,
+    "branche_id": 30,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12543,
+    "markt_configuratie_id": 248,
+    "branche_id": 29,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12544,
+    "markt_configuratie_id": 248,
+    "branche_id": 27,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12545,
+    "markt_configuratie_id": 248,
+    "branche_id": 31,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12546,
+    "markt_configuratie_id": 248,
+    "branche_id": 26,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12547,
+    "markt_configuratie_id": 248,
+    "branche_id": 34,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12548,
+    "markt_configuratie_id": 248,
+    "branche_id": 35,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12549,
+    "markt_configuratie_id": 248,
+    "branche_id": 39,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12550,
+    "markt_configuratie_id": 248,
+    "branche_id": 32,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12551,
+    "markt_configuratie_id": 248,
+    "branche_id": 28,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12552,
+    "markt_configuratie_id": 248,
+    "branche_id": 37,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12553,
+    "markt_configuratie_id": 248,
+    "branche_id": 33,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12554,
+    "markt_configuratie_id": 248,
+    "branche_id": 41,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12555,
+    "markt_configuratie_id": 248,
+    "branche_id": 38,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12556,
+    "markt_configuratie_id": 248,
+    "branche_id": 42,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12557,
+    "markt_configuratie_id": 248,
+    "branche_id": 40,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12558,
+    "markt_configuratie_id": 248,
+    "branche_id": 46,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12559,
+    "markt_configuratie_id": 248,
+    "branche_id": 36,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12560,
+    "markt_configuratie_id": 248,
+    "branche_id": 44,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12561,
+    "markt_configuratie_id": 248,
+    "branche_id": 48,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12562,
+    "markt_configuratie_id": 248,
+    "branche_id": 45,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12563,
+    "markt_configuratie_id": 248,
+    "branche_id": 49,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12564,
+    "markt_configuratie_id": 248,
+    "branche_id": 43,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12565,
+    "markt_configuratie_id": 248,
+    "branche_id": 50,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12566,
+    "markt_configuratie_id": 248,
+    "branche_id": 47,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12567,
+    "markt_configuratie_id": 248,
+    "branche_id": 53,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12568,
+    "markt_configuratie_id": 248,
+    "branche_id": 51,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12569,
+    "markt_configuratie_id": 248,
+    "branche_id": 55,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12570,
+    "markt_configuratie_id": 248,
+    "branche_id": 52,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12571,
+    "markt_configuratie_id": 248,
+    "branche_id": 60,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12572,
+    "markt_configuratie_id": 248,
+    "branche_id": 57,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12573,
+    "markt_configuratie_id": 248,
+    "branche_id": 54,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12574,
+    "markt_configuratie_id": 248,
+    "branche_id": 65,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12575,
+    "markt_configuratie_id": 248,
+    "branche_id": 56,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12576,
+    "markt_configuratie_id": 248,
+    "branche_id": 58,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12577,
+    "markt_configuratie_id": 248,
+    "branche_id": 59,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12578,
+    "markt_configuratie_id": 248,
+    "branche_id": 66,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12579,
+    "markt_configuratie_id": 248,
+    "branche_id": 69,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12580,
+    "markt_configuratie_id": 248,
+    "branche_id": 63,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12581,
+    "markt_configuratie_id": 248,
+    "branche_id": 71,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12582,
+    "markt_configuratie_id": 248,
+    "branche_id": 89,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12583,
+    "markt_configuratie_id": 248,
+    "branche_id": 67,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12584,
+    "markt_configuratie_id": 248,
+    "branche_id": 73,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12585,
+    "markt_configuratie_id": 248,
+    "branche_id": 70,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12586,
+    "markt_configuratie_id": 248,
+    "branche_id": 72,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12587,
+    "markt_configuratie_id": 248,
+    "branche_id": 87,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12588,
+    "markt_configuratie_id": 248,
+    "branche_id": 85,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12589,
+    "markt_configuratie_id": 248,
+    "branche_id": 79,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12590,
+    "markt_configuratie_id": 248,
+    "branche_id": 88,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12591,
+    "markt_configuratie_id": 248,
+    "branche_id": 61,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12592,
+    "markt_configuratie_id": 248,
+    "branche_id": 74,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12593,
+    "markt_configuratie_id": 248,
+    "branche_id": 84,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12594,
+    "markt_configuratie_id": 248,
+    "branche_id": 80,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12595,
+    "markt_configuratie_id": 248,
+    "branche_id": 83,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12596,
+    "markt_configuratie_id": 248,
+    "branche_id": 82,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12597,
+    "markt_configuratie_id": 248,
+    "branche_id": 78,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12598,
+    "markt_configuratie_id": 248,
+    "branche_id": 81,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12599,
+    "markt_configuratie_id": 248,
+    "branche_id": 76,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12600,
+    "markt_configuratie_id": 248,
+    "branche_id": 90,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12601,
+    "markt_configuratie_id": 248,
+    "branche_id": 75,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12602,
+    "markt_configuratie_id": 248,
+    "branche_id": 77,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12603,
+    "markt_configuratie_id": 248,
+    "branche_id": 86,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12604,
+    "markt_configuratie_id": 248,
+    "branche_id": 92,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12605,
+    "markt_configuratie_id": 248,
+    "branche_id": 68,
+    "verplicht": false,
+    "maximum_plaatsen": null
+  },
+  {
+    "id": 12606,
+    "markt_configuratie_id": 248,
+    "branche_id": 91,
+    "verplicht": true,
+    "maximum_plaatsen": 33
+  }
+]
