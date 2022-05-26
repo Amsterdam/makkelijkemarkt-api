@@ -56,10 +56,12 @@ class PerfectViewSollicitatieImport
                 continue;
             }
 
+            $upperCaseAfkorting = strtoupper($pvRecord['Afkorting']);
+
             // get relation fields
-            $markt = $this->getMarktRecord($pvRecord['Afkorting']);
+            $markt = $this->getMarktRecord($upperCaseAfkorting);
             if (null === $markt) {
-                $this->logger->warning('Skip record, MARKT not found in database', ['Koppelveld' => $pvRecord['Koppelveld'], 'Markt afkorting' => $pvRecord['Afkorting']]);
+                $this->logger->warning('Skip record, MARKT not found in database', ['Koppelveld' => $pvRecord['Koppelveld'], 'Markt afkorting' => $upperCaseAfkorting]);
                 continue;
             }
             $koopman = $this->getKoopmanRecord($pvRecord['Erkenningsnummer']);
