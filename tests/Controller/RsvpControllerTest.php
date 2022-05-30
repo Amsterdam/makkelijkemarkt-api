@@ -32,7 +32,7 @@ class RsvpControllerTest extends ApiTestCase
         $this->koopmanErkenningsNummer = $koopman->getErkenningsnummer();
     }
 
-    protected function testRsvpGet($url)
+    public function testRsvpGet($url)
     {
         $response = $this->client->get($url, ['headers' => $this->headers]);
         $responseData = json_decode((string) $response->getBody(), true);
