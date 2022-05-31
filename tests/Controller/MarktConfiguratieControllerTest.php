@@ -10,55 +10,6 @@ use DateTime;
 
 class MarktConfiguratieControllerTest extends ApiTestCase
 {
-    public function testGetLatestEqualsOld(): void
-    {
-        /** @var MarktRepository $marktRepository */
-        $marktRepository = $this->entityManager
-            ->getRepository(Markt::class);
-
-        $markten = $marktRepository->findAll();
-
-        foreach ($markten as $markt) {
-            $id = $markt->getId();
-
-            $response = $this->client->get(
-                "/api/1.1.0/markt/$id/marktconfiguratie/latest",
-                ['headers' => $this->headers, 'http_errors' => false]
-            );
-
-            if (200 !== $response->getStatusCode()) {
-                continue;
-            }
-            $bodyOld = json_decode($response->getBody()->getContents(), true);
-
-            foreach ($bodyOld['locaties'] as $key => &$oldLocaties) {
-                foreach (['properties', 'branches', 'verkoopinrichting'] as $key) {
-                    if (!array_key_exists($key, $oldLocaties)) {
-                        $oldLocaties[$key] = [];
-                    }
-                }
-                sort($oldLocaties['branches']);
-                sort($oldLocaties['properties']);
-            }
-
-            foreach ($bodyOld['geografie']['obstakels'] as &$obstakel) {
-                sort($obstakel['obstakel']);
-            }
-
-            $response = $this->client->get(
-                "/api/1.1.0/markt/$id/marktconfiguratie/latestRelational",
-                ['headers' => $this->headers, 'http_errors' => false]
-            );
-
-            $bodyNew = json_decode($response->getBody()->getContents(), true);
-
-            $keys = ['marktId', 'id', 'aanmaakDatumtijd', 'geografie', 'marktOpstelling', 'branches', 'locaties', 'paginas'];
-
-            foreach ($keys as $key) {
-                $this->assertEquals($bodyOld[$key], $bodyNew[$key]);
-            }
-        }
-    }
 
     public function testGetLatest(): void
     {

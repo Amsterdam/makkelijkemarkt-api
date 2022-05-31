@@ -140,6 +140,7 @@ class MarktControllerTest extends ApiTestCase
             'aantalKramen' => 15,
             'aantalMeter' => 300,
             'auditMax' => 3,
+            'maxAantalKramenPerOndernemer' => 3,
             'kiesJeKraamActief' => true,
             'kiesJeKraamFase' => 'hase',
             'kiesJeKraamMededelingActief' => true,
