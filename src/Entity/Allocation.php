@@ -136,7 +136,7 @@ class Allocation
 
     public function getDate(): ?string
     {
-        return $this->date->format('c');
+        return $this->date->format('Y-m-d');
     }
 
     public function setDate(\DateTimeInterface $date): self
