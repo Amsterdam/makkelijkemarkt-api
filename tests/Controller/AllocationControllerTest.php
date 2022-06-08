@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Allocation;
 use App\Entity\Koopman;
+use App\Entity\Markt;
 use App\Test\ApiTestCase;
 
 class AllocationControllerTest extends ApiTestCase
@@ -18,6 +19,10 @@ class AllocationControllerTest extends ApiTestCase
         $em = $this->entityManager;
         $rep = $em->getRepository(Koopman::class);
 
+        $marktRepository = $em->getRepository(Markt::class);
+
+        $this->dapperMarkt = $marktRepository->getByAfkorting('DAPP');
+
         $indeling = ['afwijzingen' => [], 'toewijzingen' => []];
 
         // Find the first 3 Koopmannen
@@ -26,7 +31,7 @@ class AllocationControllerTest extends ApiTestCase
         $this->koopmannen = $entities;
         foreach ($entities as $id => $koopman) {
             $alloc = [];
-            $alloc['marktId'] = '1';
+            $alloc['marktId'] = $this->dapperMarkt->getId();
             $alloc['marktDate'] = '2021-12-31';
             $alloc['erkenningsNummer'] = $koopman->getErkenningsNummer();
             $alloc['ondernemer'] = [
@@ -53,18 +58,21 @@ class AllocationControllerTest extends ApiTestCase
 
     public function testGetAll(): void
     {
-        $response = $this->client->get('/api/1.1.0/allocation/DAPP/2021-12-31', ['headers' => $this->headers]);
+        $response = $this->client->get(
+            '/api/1.1.0/allocation/markt/' . $this->dapperMarkt->getId() . '/date/2021-12-31',
+            ['headers' => $this->headers]
+        );
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testPostAllocations(): void
     {
-        $this->client->post('/api/1.1.0/allocation/DAPP/2021-12-31', [
+        $this->client->post('/api/1.1.0/allocation/markt/' . $this->dapperMarkt->getId() . '/date/2021-12-31', [
             'headers' => $this->headers,
             'body' => $this->indeling,
         ]);
 
-        $response = $this->client->get('/api/1.1.0/allocation/DAPP/2021-12-31', ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/allocation/markt/' . $this->dapperMarkt->getId() . '/date/2021-12-31', ['headers' => $this->headers]);
         $this->assertEquals(200, $response->getStatusCode());
 
         $responseData = json_decode((string) $response->getBody(), true);

@@ -38,7 +38,7 @@ class ApiTestCase extends KernelTestCase
         self::bootKernel();
 
         self::$staticClient = new Client([
-            'base_uri' => 'http://127.0.0.1:8080',
+            'base_uri' => 'http://mm-api_nginx:80',
         ]);
 
         self::$staticFaker = Factory::create();
@@ -57,7 +57,7 @@ class ApiTestCase extends KernelTestCase
         $tokenRepository = $this->entityManager->getRepository(Token::class);
 
         $account = $accountRepository->findOneBy([
-            'naam' => 'Super Admin',
+            'naam' => 'Salmagundi',
         ]);
 
         /** @var Token $token */
