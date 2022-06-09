@@ -16,16 +16,14 @@ class SollicitatieControllerTest extends ApiTestCase
 {
     public function testGetAllByMarkt(): void
     {
-        $this->markTestIncomplete('there are no fixtures for this test yet.');
+        //$this->markTestIncomplete('there are no fixtures for this test yet.');
 
         /** @var MarktRepository $marktRepository */
         $marktRepository = $this->entityManager
             ->getRepository(Markt::class);
 
         /** @var Markt markt */
-        $markt = $marktRepository->findOneBy([
-            'soort' => Markt::SOORT_DAG,
-        ]);
+        $markt = $marktRepository->findOneBy(['afkorting' => 'AC-2022']);
 
         $response = $this->client->get('/api/1.1.0/sollicitaties/markt/'.$markt->getId(), ['headers' => $this->headers]);
 
@@ -60,7 +58,6 @@ class SollicitatieControllerTest extends ApiTestCase
             'sollicitatieNummer',
             'aantal3MeterKramen',
             'aantal4MeterKramen',
-            'aantalExtraMeters',
             'aantalElektra',
             'aantalAfvaleiland',
         ];
@@ -81,16 +78,12 @@ class SollicitatieControllerTest extends ApiTestCase
 
     public function testGetAllByMarktWithLimit(): void
     {
-        $this->markTestIncomplete('there are no fixtures for this test yet.');
-
         /** @var MarktRepository $marktRepository */
         $marktRepository = $this->entityManager
             ->getRepository(Markt::class);
 
         /** @var Markt $markt */
-        $markt = $marktRepository->findOneBy([
-            'soort' => Markt::SOORT_DAG,
-        ]);
+        $markt = $marktRepository->findOneBy(['afkorting' => 'AC-2022']);
 
         $response = $this->client->get('/api/1.1.0/sollicitaties/markt/'.$markt->getId().'?listLength=1', ['headers' => $this->headers]);
 

@@ -251,6 +251,8 @@ class DagvergunningControllerTest extends ApiTestCase
             'afvaleiland',
         ];
 
+        //dd($responseData);
+
         foreach ($expectedNames as $key => $name) {
             $product = $responseData['producten'][$key];
             // Should not be saved, so no ID

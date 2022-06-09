@@ -2,35 +2,20 @@
 
 namespace App\Tests\Controller;
 
+use App\DataFixtures\BaseFixture;
 use App\Entity\Markt;
-use App\Entity\MarktConfiguratie;
 use App\Repository\MarktRepository;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class MarktConfiguratieControllerTest extends ApiTestCase
 {
-
     public function testGetLatest(): void
     {
         /** @var MarktRepository $marktRepository */
         $marktRepository = $this->entityManager
             ->getRepository(Markt::class);
 
-        $markt = $marktRepository->findOneBy([], ['id' => 'ASC']);
-
-        $marktConfiguratie = new MarktConfiguratie();
-
-        $marktConfiguratie->setMarkt($markt)
-            ->setAanmaakDatumtijd(new DateTime())
-            ->setMarktOpstelling(['testKey' => 1])
-            ->setBranches(['testKey' => 2])
-            ->setGeografie(['testKey' => 3])
-            ->setLocaties(['testKey' => 4])
-            ->setPaginas(['testKey' => 5]);
-
-        $this->entityManager->persist($marktConfiguratie);
-        $this->entityManager->flush();
+        $markt = $marktRepository->findOneBy(['afkorting' => 'AC-2022']);
 
         $response = $this->client->get(
             "/api/1.1.0/markt/{$markt->getId()}/marktconfiguratie/latest",
@@ -40,16 +25,14 @@ class MarktConfiguratieControllerTest extends ApiTestCase
         $body = json_decode($response->getBody()->getContents(), true);
 
         $this->assertEquals($response->getStatusCode(), 200);
+
         $this->assertEquals($body['marktId'], $markt->getId());
-        // Should be a date string
         $this->assertEquals((bool) strtotime($body['aanmaakDatumtijd']), true);
-        // These are json blobs, so we can't test any validation on the json (could look like anything)
-        // So we just test if the json is processed correctly.
-        $this->assertEquals($body['marktOpstelling']['testKey'], 1);
-        $this->assertEquals($body['branches']['testKey'], 2);
-        $this->assertEquals($body['geografie']['testKey'], 3);
-        $this->assertEquals($body['locaties']['testKey'], 4);
-        $this->assertEquals($body['paginas']['testKey'], 5);
+        $this->assertEquals($body['marktOpstelling']['rows'][0][0], '8');
+        $this->assertEquals($body['branches'][0]['brancheId'], '101 - FM - AGF (v)');
+        $this->assertEquals($body['geografie']['obstakels'][0]['obstakel'][0], 'loopje');
+        $this->assertEquals($body['locaties'][0]['bakType'], 'geen');
+        $this->assertEquals($body['paginas'][0]['indelingslijstGroup'][0]['plaatsList'][0], '8');
     }
 
     public function testMarktHasNoMarktConfiguraties()
@@ -86,13 +69,9 @@ class MarktConfiguratieControllerTest extends ApiTestCase
 
         $markt = $marktRepository->findOneBy([], ['id' => 'ASC']);
 
-        $configuratieData = '{
-                            "geografie": {"1": 2},
-                            "locaties": {"3": 4},
-                            "branches": {"5": 6},
-                            "paginas": {"7": 8},
-                            "marktOpstelling": {"9": 10}
-                        }';
+        $configuratieData = file_get_contents(
+            BaseFixture::FILE_BASED_FIXTURES_DIR.'/marktConfiguratie_simple.json'
+        );
 
         $response = $this->client->post("/api/1.1.0/markt/{$markt->getId()}/marktconfiguratie", [
             'headers' => $this->headers,
@@ -104,15 +83,12 @@ class MarktConfiguratieControllerTest extends ApiTestCase
         $this->assertEquals($response->getStatusCode(), 200);
 
         $this->assertEquals($body['marktId'], $markt->getId());
-        // Should be a date string
         $this->assertEquals((bool) strtotime($body['aanmaakDatumtijd']), true);
-        // These are json blobs, so we can't test any validation on the json (could look like anything)
-        // So we just test if the json is processed correctly.
-        $this->assertEquals($body['marktOpstelling']['9'], 10);
-        $this->assertEquals($body['branches']['5'], 6);
-        $this->assertEquals($body['geografie']['1'], 2);
-        $this->assertEquals($body['locaties']['3'], 4);
-        $this->assertEquals($body['paginas']['7'], 8);
+        $this->assertEquals($body['marktOpstelling']['rows'][0][0], '1');
+        $this->assertEquals($body['branches'][0]['brancheId'], '101 - FM - AGF (v)');
+        $this->assertEquals($body['geografie']['obstakels'][0]['obstakel'][0], 'loopje');
+        $this->assertEquals($body['locaties'][0]['bakType'], 'geen');
+        $this->assertEquals($body['paginas'][0]['indelingslijstGroup'][0]['plaatsList'][0], '1');
     }
 
     public function testPostMarktDoesNotExist()

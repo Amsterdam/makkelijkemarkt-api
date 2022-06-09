@@ -110,7 +110,7 @@ class MarktConfiguratie
     public Collection $marktPaginas;
 
     /**
-     * @ORM\OneToMany(targetEntity="MarktBrancheEigenschap", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+ "    * @ORM\OneToMany(targetEntity="MarktBrancheEigenschap", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
      * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktBrancheEigenschaps;

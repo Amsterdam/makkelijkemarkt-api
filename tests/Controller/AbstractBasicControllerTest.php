@@ -31,8 +31,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
         $repository = $this->entityManager
             ->getRepository($this->entityClassname);
 
-        $name = $this->faker->text(10);
-        $data = ['naam' => $name];
+        $data = ['naam' => 'naam'];
 
         $response = $this->client->post($this->apiRoute, [
             'headers' => $this->headers,
@@ -48,7 +47,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
          */
         $entity = $repository->find($id);
 
-        $this->assertEquals($name, $entity->getNaam());
+        $this->assertEquals('naam', $entity->getNaam());
     }
 
     public function testCreateReturnsBadRequestWithoutName()
@@ -159,7 +158,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
             ->getRepository($this->entityClassname);
 
         $instance = $repository->findOneBy([
-            'naam' => 'Delete',
+            'naam' => 'naam',
         ]);
 
         $id = $instance->getId();
