@@ -12,6 +12,7 @@ class AllocationControllerTest extends ApiTestCase
     private $indeling;
     private Koopman $allocationKoopman;
     private $koopmannen;
+    private $dapperMarkt;
 
     protected function setUp(): void
     {
@@ -59,7 +60,7 @@ class AllocationControllerTest extends ApiTestCase
     public function testGetAll(): void
     {
         $response = $this->client->get(
-            '/api/1.1.0/allocation/markt/' . $this->dapperMarkt->getId() . '/date/2021-12-31',
+            '/api/1.1.0/allocation/markt/'.$this->dapperMarkt->getId().'/date/2021-12-31',
             ['headers' => $this->headers]
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -67,12 +68,12 @@ class AllocationControllerTest extends ApiTestCase
 
     public function testPostAllocations(): void
     {
-        $this->client->post('/api/1.1.0/allocation/markt/' . $this->dapperMarkt->getId() . '/date/2021-12-31', [
+        $this->client->post('/api/1.1.0/allocation/markt/'.$this->dapperMarkt->getId().'/date/2021-12-31', [
             'headers' => $this->headers,
             'body' => $this->indeling,
         ]);
 
-        $response = $this->client->get('/api/1.1.0/allocation/markt/' . $this->dapperMarkt->getId() . '/date/2021-12-31', ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/allocation/markt/'.$this->dapperMarkt->getId().'/date/2021-12-31', ['headers' => $this->headers]);
         $this->assertEquals(200, $response->getStatusCode());
 
         $responseData = json_decode((string) $response->getBody(), true);
