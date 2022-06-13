@@ -72,6 +72,107 @@ final class DagvergunningController extends AbstractController
         ];
     }
 
+    private function createDagvergunning($data, bool $concept)
+    {
+        // validate given data
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+        $response = $this->serializer->serialize($data, 'json', ['groups' => $this->groups]);
+
+        $expectedParameters = [
+            'marktId',
+            'dag',
+            'erkenningsnummer',
+            'aanwezig',
+        ];
+
+        foreach ($expectedParameters as $expectedParameter) {
+            if (!array_key_exists($expectedParameter, $data)) {
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        // set defaults
+        $defaultParameters = [
+            'erkenningsnummerInvoerMethode' => 'onbekend',
+            'aantal3MeterKramen' => 0,
+            'aantal4MeterKramen' => 0,
+            'extraMeters' => 0,
+            'aantalElektra' => 0,
+            'afvaleiland' => 0,
+            'grootPerMeter' => 0,
+            'kleinPerMeter' => 0,
+            'grootReiniging' => 0,
+            'kleinReiniging' => 0,
+            'afvalEilandAgf' => 0,
+            'krachtstroomPerStuk' => 0,
+            'registratieGeolocatie' => null,
+            'vervangerErkenningsnummer' => null,
+            'eenmaligElektra' => false,
+            'krachtstroom' => false,
+            'reiniging' => false,
+            'registratieDatumtijd' => date('Y-m-d H:i:s'),
+            'notitie' => '',
+        ];
+
+        foreach ($defaultParameters as $key => $val) {
+            if (false === isset($data[$key])) {
+                $data[$key] = $val;
+            }
+        }
+
+        /** @var ?Account $account */
+        $account = $this->getUser();
+
+        try {
+            /** @var Dagvergunning $dagvergunning */
+            $dagvergunning = $this->factuurService->createDagvergunning(
+                $data['marktId'],
+                $data['dag'],
+                $data['erkenningsnummer'],
+                $data['aanwezig'],
+                $data['erkenningsnummerInvoerMethode'],
+                $data['registratieDatumtijd'],
+                (int) $data['aantal3MeterKramen'],
+                (int) $data['aantal4MeterKramen'],
+                (int) $data['extraMeters'],
+                (int) $data['aantalElektra'],
+                (int) $data['afvaleiland'],
+                (int) $data['grootPerMeter'],
+                (int) $data['kleinPerMeter'],
+                (int) $data['grootReiniging'],
+                (int) $data['kleinReiniging'],
+                (int) $data['afvalEilandAgf'],
+                (int) $data['krachtstroomPerStuk'],
+                (bool) $data['eenmaligElektra'],
+                (bool) $data['krachtstroom'],
+                (bool) $data['reiniging'],
+                $data['notitie'],
+                $data['registratieGeolocatie'],
+                $account,
+                $data['vervangerErkenningsnummer']
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var Factuur $factuur */
+        $factuur = $this->factuurService->createFactuur($dagvergunning);
+
+        $response = $this->serializer->serialize($factuur, 'json', ['groups' => $this->groups]);
+
+        if (!$concept) {
+            $this->entityManager->persist($dagvergunning);
+            $this->factuurService->saveFactuur($factuur);
+            $this->entityManager->flush();
+
+            $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
+        }
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
     /**
      * @OA\Get(
      *     path="/api/1.1.0/dagvergunning/",
@@ -288,96 +389,7 @@ final class DagvergunningController extends AbstractController
     {
         $data = json_decode((string) $request->getContent(), true);
 
-        // validate given data
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'marktId',
-            'dag',
-            'erkenningsnummer',
-            'aanwezig',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        // set defaults
-        $defaultParameters = [
-            'erkenningsnummerInvoerMethode' => 'onbekend',
-            'aantal3MeterKramen' => 0,
-            'aantal4MeterKramen' => 0,
-            'extraMeters' => 0,
-            'aantalElektra' => 0,
-            'afvaleiland' => 0,
-            'grootPerMeter' => 0,
-            'kleinPerMeter' => 0,
-            'grootReiniging' => false,
-            'kleinReiniging' => false,
-            'afvalEilandAgf' => 0,
-            'krachtstroomPerStuk' => 0,
-            'registratieGeolocatie' => null,
-            'vervangerErkenningsnummer' => null,
-            'eenmaligElektra' => false,
-            'krachtstroom' => false,
-            'reiniging' => false,
-            'registratieDatumtijd' => date('Y-m-d H:i:s'),
-            'notitie' => '',
-        ];
-
-        foreach ($defaultParameters as $key => $val) {
-            if (false === isset($data[$key])) {
-                $data[$key] = $val;
-            }
-        }
-
-        /** @var ?Account $account */
-        $account = $this->getUser();
-
-        try {
-            /** @var Dagvergunning $dagvergunning */
-            $dagvergunning = $this->factuurService->createDagvergunning(
-                $data['marktId'],
-                $data['dag'],
-                $data['erkenningsnummer'],
-                $data['aanwezig'],
-                $data['erkenningsnummerInvoerMethode'],
-                $data['registratieDatumtijd'],
-                (int) $data['aantal3MeterKramen'],
-                (int) $data['aantal4MeterKramen'],
-                (int) $data['extraMeters'],
-                (int) $data['aantalElektra'],
-                (int) $data['afvaleiland'],
-                (int) $data['grootPerMeter'],
-                (int) $data['kleinPerMeter'],
-                (int) $data['grootReiniging'],
-                (int) $data['kleinReiniging'],
-                (int) $data['afvalEilandAgf'],
-                (int) $data['krachtstroomPerStuk'],
-                (bool) $data['eenmaligElektra'],
-                (bool) $data['krachtstroom'],
-                (bool) $data['reiniging'],
-                $data['notitie'],
-                $data['registratieGeolocatie'],
-                $account,
-                $data['vervangerErkenningsnummer']
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        }
-
-        // NO saving of dagvergunning or factuur!
-        // this is only a concept
-
-        $factuur = $this->factuurService->createFactuur($dagvergunning);
-
-        $response = $this->serializer->serialize($factuur, 'json', ['groups' => $this->groups]);
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return $this->createDagvergunning($data, true);
     }
 
     /**
@@ -436,98 +448,7 @@ final class DagvergunningController extends AbstractController
     {
         $data = json_decode((string) $request->getContent(), true);
 
-        // validate given data
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'marktId',
-            'dag',
-            'erkenningsnummer',
-            'aanwezig',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        // set defaults
-        $defaultParameters = [
-            'erkenningsnummerInvoerMethode' => 'onbekend',
-            'aantal3MeterKramen' => 0,
-            'aantal4MeterKramen' => 0,
-            'extraMeters' => 0,
-            'aantalElektra' => 0,
-            'afvaleiland' => 0,
-            'grootPerMeter' => 0,
-            'kleinPerMeter' => 0,
-            'grootReiniging' => 0,
-            'kleinReiniging' => 0,
-            'afvalEilandAgf' => 0,
-            'krachtstroomPerStuk' => 0,
-            'registratieGeolocatie' => null,
-            'vervangerErkenningsnummer' => null,
-            'eenmaligElektra' => false,
-            'krachtstroom' => false,
-            'reiniging' => false,
-            'registratieDatumtijd' => date('Y-m-d H:i:s'),
-            'notitie' => '',
-        ];
-
-        foreach ($defaultParameters as $key => $val) {
-            if (false === isset($data[$key])) {
-                $data[$key] = $val;
-            }
-        }
-
-        /** @var ?Account $account */
-        $account = $this->getUser();
-
-        try {
-            /** @var Dagvergunning $dagvergunning */
-            $dagvergunning = $this->factuurService->createDagvergunning(
-                $data['marktId'],
-                $data['dag'],
-                $data['erkenningsnummer'],
-                $data['aanwezig'],
-                $data['erkenningsnummerInvoerMethode'],
-                $data['registratieDatumtijd'],
-                (int) $data['aantal3MeterKramen'],
-                (int) $data['aantal4MeterKramen'],
-                (int) $data['extraMeters'],
-                (int) $data['aantalElektra'],
-                (int) $data['afvaleiland'],
-                (int) $data['grootPerMeter'],
-                (int) $data['kleinPerMeter'],
-                (int) $data['grootReiniging'],
-                (int) $data['kleinReiniging'],
-                (int) $data['afvalEilandAgf'],
-                (int) $data['krachtstroomPerStuk'],
-                (bool) $data['eenmaligElektra'],
-                (bool) $data['krachtstroom'],
-                (bool) $data['reiniging'],
-                $data['notitie'],
-                $data['registratieGeolocatie'],
-                $account,
-                $data['vervangerErkenningsnummer']
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $this->entityManager->persist($dagvergunning);
-        $this->entityManager->flush();
-
-        /** @var Factuur $factuur */
-        $factuur = $this->factuurService->createFactuur($dagvergunning);
-        $this->factuurService->saveFactuur($factuur);
-
-        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return $this->createDagvergunning($data, false);
     }
 
     /**
