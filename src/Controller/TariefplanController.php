@@ -188,59 +188,7 @@ final class TariefplanController extends AbstractController
      */
     public function postConcreetplan(Request $request, int $marktId): Response
     {
-        /** @var ?Markt $markt */
-        $markt = $this->marktRepository->find($marktId);
-
-        if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
-        }
-
-        $data = json_decode((string) $request->getContent(), true);
-
-        // validate given data
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'naam',
-            'geldigVanaf',
-            'geldigTot',
-            'een_meter',
-            'drie_meter',
-            'vier_meter',
-            'promotieGeldenPerMeter',
-            'promotieGeldenPerKraam',
-            'afvaleiland',
-            'elektra',
-            'eenmaligElektra',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        /** @var Tariefplan $tariefplan */
-        $tariefplan = new Tariefplan();
-        $markt->addTariefplannen($tariefplan);
-        $tariefplan->setMarkt($markt);
-
-        /** @var Concreetplan $concreetplan */
-        $concreetplan = new Concreetplan();
-        $concreetplan->setTariefplan($tariefplan);
-        $tariefplan->setConcreetplan($concreetplan);
-
-        $concreetplan = $this->processConcreetPlan($tariefplan, $concreetplan, $data);
-
-        $this->entityManager->persist($tariefplan);
-        $this->entityManager->persist($concreetplan);
-        $this->entityManager->flush();
-
-        $response = $this->serializer->serialize($tariefplan, 'json', ['groups' => $this->groups]);
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return $this->createOrUpdatePlan(json_decode((string) $request->getContent(), true), null, $marktId, true, false);
     }
 
     /**
@@ -305,65 +253,7 @@ final class TariefplanController extends AbstractController
      */
     public function postLineairplan(Request $request, int $marktId): Response
     {
-        /** @var ?Markt $markt */
-        $markt = $this->marktRepository->find($marktId);
-
-        if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
-        }
-
-        $data = json_decode((string) $request->getContent(), true);
-
-        // validate given data
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'naam',
-            'geldigVanaf',
-            'geldigTot',
-            'tariefPerMeterGroot',
-            'tariefPerMeter',
-            'tariefPerMeterKlein',
-            'reinigingPerMeterGroot',
-            'reinigingPerMeter',
-            'reinigingPerMeterKlein',
-            'toeslagBedrijfsafvalPerMeter',
-            'toeslagKrachtstroomPerAansluiting',
-            'promotieGeldenPerMeter',
-            'promotieGeldenPerKraam',
-            'afvaleiland',
-            'elektra',
-            'eenmaligElektra',
-            'agfPerMeter',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        /** @var Tariefplan $tariefplan */
-        $tariefplan = new Tariefplan();
-        $markt->addTariefplannen($tariefplan);
-        $tariefplan->setMarkt($markt);
-
-        /** @var Lineairplan $lineairplan */
-        $lineairplan = new Lineairplan();
-        $lineairplan->setTariefplan($tariefplan);
-        $tariefplan->setLineairplan($lineairplan);
-
-        $lineairplan = $this->processLineairPlan($tariefplan, $lineairplan, $data);
-
-        $this->entityManager->persist($tariefplan);
-        $this->entityManager->persist($lineairplan);
-        $this->entityManager->flush();
-
-        $response = $this->serializer->serialize($tariefplan, 'json', ['groups' => $this->groups]);
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return $this->createOrUpdatePlan(json_decode((string) $request->getContent(), true), null, $marktId, false, false);
     }
 
     /**
@@ -427,54 +317,7 @@ final class TariefplanController extends AbstractController
      */
     public function putConcreetplan(Request $request, int $id): Response
     {
-        /** @var ?Tariefplan $tariefplan */
-        $tariefplan = $this->tariefplanRepository->find($id);
-
-        if (null === $tariefplan) {
-            return new JsonResponse(['error' => 'Tariefplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
-        }
-
-        /** @var ?Concreetplan $concreetplan */
-        $concreetplan = $tariefplan->getConcreetplan();
-
-        if (null === $concreetplan) {
-            return new JsonResponse(['error' => 'Tariefplan is not from type Concreetplan '], Response::HTTP_NOT_FOUND);
-        }
-
-        $data = json_decode((string) $request->getContent(), true);
-
-        // validate given data
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'naam',
-            'geldigVanaf',
-            'geldigTot',
-            'een_meter',
-            'drie_meter',
-            'vier_meter',
-            'promotieGeldenPerMeter',
-            'promotieGeldenPerKraam',
-            'afvaleiland',
-            'elektra',
-            'eenmaligElektra',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        $this->processConcreetPlan($tariefplan, $concreetplan, $data);
-
-        $this->entityManager->flush();
-
-        $response = $this->serializer->serialize($tariefplan, 'json', ['groups' => $this->groups]);
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return $this->createOrUpdatePlan(json_decode((string) $request->getContent(), true), $id, null, true, true);
     }
 
     /**
@@ -539,23 +382,11 @@ final class TariefplanController extends AbstractController
      */
     public function putLineairplan(Request $request, int $id): Response
     {
-        /** @var ?Tariefplan $tariefplan */
-        $tariefplan = $this->tariefplanRepository->find($id);
+        return $this->createOrUpdatePlan(json_decode((string) $request->getContent(), true), $id, null, false, true);
+    }
 
-        if (null === $tariefplan) {
-            return new JsonResponse(['error' => 'Tariefplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
-        }
-
-        /** @var ?Lineairplan $lineairplan */
-        $lineairplan = $tariefplan->getLineairplan();
-
-        if (null === $lineairplan) {
-            return new JsonResponse(['error' => 'Tariefplan is not from type Lineairplan '], Response::HTTP_NOT_FOUND);
-        }
-
-        $data = json_decode((string) $request->getContent(), true);
-
-        // validate given data
+    private function checkExpectedParameters($data, $isConcreet)
+    {
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
@@ -580,14 +411,107 @@ final class TariefplanController extends AbstractController
             'agfPerMeter',
         ];
 
+        if ($isConcreet) {
+            $expectedParameters = [
+            'naam',
+            'geldigVanaf',
+            'geldigTot',
+            'een_meter',
+            'drie_meter',
+            'vier_meter',
+            'promotieGeldenPerMeter',
+            'promotieGeldenPerKraam',
+            'afvaleiland',
+            'elektra',
+            'eenmaligElektra',
+            ];
+        }
+
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
                 return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
-        $lineairplan = $this->processLineairPlan($tariefplan, $lineairplan, $data);
+        return $data;
+    }
 
+    private function findTariefplan($tariefplanId)
+    {
+        /** @var ?Tariefplan $tariefplan */
+        $tariefplan = $this->tariefplanRepository->find($tariefplanId);
+
+        if (null === $tariefplan) {
+            return new JsonResponse(['error' => 'Tariefplan not found, id = '.$tariefplanId], Response::HTTP_NOT_FOUND);
+        }
+
+        return $tariefplan;
+    }
+
+    private function retreiveConcreetOrLineair($tariefplan, $isConcreet)
+    {
+        if ($isConcreet) {
+            /** @var ?Concreetplan $concreetplan */
+            $plan = $tariefplan->getConcreetplan();
+
+            if (null === $plan) {
+                return new JsonResponse(['error' => 'Tariefplan is not from type Concreetplan '], Response::HTTP_NOT_FOUND);
+            }
+        } else {
+            /** @var ?Lineairplan $lineairplan */
+            $plan = $tariefplan->getLineairplan();
+
+            if (null === $plan) {
+                return new JsonResponse(['error' => 'Tariefplan is not from type Lineairplan '], Response::HTTP_NOT_FOUND);
+            }
+        }
+
+        return $plan;
+    }
+
+    private function findMarkt($marktId)
+    {
+        /** @var ?Markt $markt */
+        $markt = $this->marktRepository->find($marktId);
+
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
+        }
+
+        return $markt;
+    }
+
+    private function createOrUpdatePlan($data, $tariefplanId, $marktId, $isConcreet, $isUpdate)
+    {
+        $verifiedData = $this->checkExpectedParameters($data, $isConcreet);
+
+        $tariefplan = new Tariefplan();
+
+        if ($isUpdate) {
+            $tariefplan = $this->findTariefplan($tariefplanId);
+            $plan = $this->retreiveConcreetOrLineair($tariefplan, $isConcreet);
+        } else {
+            $markt = $this->findMarkt($marktId);
+            $markt->addTariefplannen($tariefplan);
+            $tariefplan->setMarkt($markt);
+
+            if ($isConcreet) {
+                /** @var Concreetplan $concreetplan */
+                $plan = new Concreetplan();
+                $plan->setTariefplan($tariefplan);
+                $tariefplan->setConcreetplan($plan);
+            } else {
+                /** @var Lineairplan $lineairplan */
+                $plan = new Lineairplan();
+                $plan->setTariefplan($tariefplan);
+                $tariefplan->setLineairplan($plan);
+            }
+        }
+
+        $plan = $this->processTariefPlan($tariefplan, $plan, $data, $isConcreet);
+
+        $this->entityManager->persist($tariefplan);
+        $this->entityManager->persist($plan);
         $this->entityManager->flush();
 
         $response = $this->serializer->serialize($tariefplan, 'json', ['groups' => $this->groups]);
@@ -653,10 +577,7 @@ final class TariefplanController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * @param array<mixed> $data
-     */
-    protected function processConcreetPlan(Tariefplan $tariefplan, Concreetplan $concreetplan, $data): Concreetplan
+    protected function processTariefPlan(Tariefplan $tariefplan, $plan, $data, bool $isConcreet)
     {
         $geldigVanaf = new DateTime($data['geldigVanaf']['date']);
         $geldigTot = new DateTime($data['geldigTot']['date']);
@@ -664,45 +585,27 @@ final class TariefplanController extends AbstractController
         $tariefplan->setNaam($data['naam']);
         $tariefplan->setGeldigVanaf($geldigVanaf);
         $tariefplan->setGeldigTot($geldigTot);
+        $plan->setElektra((float) $data['elektra']);
+        $plan->setPromotieGeldenPerMeter((float) $data['promotieGeldenPerMeter']);
+        $plan->setPromotieGeldenPerKraam((float) $data['promotieGeldenPerKraam']);
+        $plan->setAfvaleiland((float) $data['afvaleiland']);
+        $plan->setEenmaligElektra((float) $data['eenmaligElektra']);
+        if ($isConcreet) {
+            $plan->setEenMeter((float) $data['een_meter']);
+            $plan->setDrieMeter((float) $data['drie_meter']);
+            $plan->setVierMeter((float) $data['vier_meter']);
+        } else {
+            $plan->setTariefPerMeterGroot((float) $data['tariefPerMeterGroot']);
+            $plan->setTariefPerMeter((float) $data['tariefPerMeter']);
+            $plan->setTariefPerMeterKlein((float) $data['tariefPerMeterKlein']);
+            $plan->setReinigingPerMeterGroot((float) $data['reinigingPerMeterGroot']);
+            $plan->setReinigingPerMeter((float) $data['reinigingPerMeter']);
+            $plan->setReinigingPerMeterKlein((float) $data['reinigingPerMeterKlein']);
+            $plan->setToeslagBedrijfsafvalPerMeter((float) $data['toeslagBedrijfsafvalPerMeter']);
+            $plan->setToeslagKrachtstroomPerAansluiting((float) $data['toeslagKrachtstroomPerAansluiting']);
+            $plan->setAgfPerMeter((float) $data['agfPerMeter']);
+        }
 
-        $concreetplan->setEenMeter((float) $data['een_meter']);
-        $concreetplan->setDrieMeter((float) $data['drie_meter']);
-        $concreetplan->setVierMeter((float) $data['vier_meter']);
-        $concreetplan->setElektra((float) $data['elektra']);
-        $concreetplan->setPromotieGeldenPerMeter((float) $data['promotieGeldenPerMeter']);
-        $concreetplan->setPromotieGeldenPerKraam((float) $data['promotieGeldenPerKraam']);
-        $concreetplan->setAfvaleiland((float) $data['afvaleiland']);
-        $concreetplan->setEenmaligElektra((float) $data['eenmaligElektra']);
-
-        return $concreetplan;
-    }
-
-    /**
-     * @param array<mixed> $data
-     */
-    protected function processLineairPlan(Tariefplan $tariefplan, Lineairplan $lineairplan, array $data): Lineairplan
-    {
-        $geldigVanaf = new DateTime($data['geldigVanaf']['date']);
-        $geldigTot = new DateTime($data['geldigTot']['date']);
-
-        $tariefplan->setNaam($data['naam']);
-        $tariefplan->setGeldigVanaf($geldigVanaf);
-        $tariefplan->setGeldigTot($geldigTot);
-        $lineairplan->setTariefPerMeterGroot((float) $data['tariefPerMeterGroot']);
-        $lineairplan->setTariefPerMeter((float) $data['tariefPerMeter']);
-        $lineairplan->setTariefPerMeterKlein((float) $data['tariefPerMeterKlein']);
-        $lineairplan->setReinigingPerMeterGroot((float) $data['reinigingPerMeterGroot']);
-        $lineairplan->setReinigingPerMeter((float) $data['reinigingPerMeter']);
-        $lineairplan->setReinigingPerMeterKlein((float) $data['reinigingPerMeterKlein']);
-        $lineairplan->setToeslagBedrijfsafvalPerMeter((float) $data['toeslagBedrijfsafvalPerMeter']);
-        $lineairplan->setToeslagKrachtstroomPerAansluiting((float) $data['toeslagKrachtstroomPerAansluiting']);
-        $lineairplan->setPromotieGeldenPerMeter((float) $data['promotieGeldenPerMeter']);
-        $lineairplan->setPromotieGeldenPerKraam((float) $data['promotieGeldenPerKraam']);
-        $lineairplan->setAfvaleiland((float) $data['afvaleiland']);
-        $lineairplan->setEenmaligElektra((float) $data['eenmaligElektra']);
-        $lineairplan->setElektra((float) $data['elektra']);
-        $lineairplan->setAgfPerMeter((float) $data['agfPerMeter']);
-
-        return $lineairplan;
+        return $plan;
     }
 }
