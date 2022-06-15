@@ -85,6 +85,212 @@ final class VergunningControleController extends AbstractController
         ];
     }
 
+    private function createOrUpdateVergunningscontrole($data, $controleId = null)
+    {
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $expectedParameters = [
+            'aanwezig',
+            'registratieGeolocatie',
+            'erkenningsnummer',
+            'ronde',
+        ];
+
+        if (null === $controleId) {
+            $expectedParameters[] = 'dagvergunningId';
+        }
+
+        foreach ($expectedParameters as $expectedParameter) {
+            if (!array_key_exists($expectedParameter, $data)) {
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $defaultParameters = [
+            'erkenningsnummerInvoerMethode' => 'onbekend',
+            'aantal3MeterKramen' => 0,
+            'aantal4MeterKramen' => 0,
+            'extraMeters' => 0,
+            'aantalElektra' => 0,
+            'afvaleiland' => 0,
+            'grootPerMeter' => 0,
+            'kleinPerMeter' => 0,
+            'grootReiniging' => 0,
+            'kleinReiniging' => 0,
+            'afvalEilandAgf' => 0,
+            'krachtstroomPerStuk' => 0,
+            'registratieGeolocatie' => null,
+            'vervangerErkenningsnummer' => null,
+            'eenmaligElektra' => false,
+            'krachtstroom' => false,
+            'reiniging' => false,
+            'registratieDatumtijd' => date('Y-m-d H:i:s'),
+            'notitie' => '',
+        ];
+
+        foreach ($defaultParameters as $key => $val) {
+            if (false === isset($data[$key])) {
+                $data[$key] = $val;
+            }
+        }
+
+        /** @var ?Account $account */
+        $account = $this->getUser();
+
+        if (null === $controleId) {
+            // for CREATE we find the Dagvergunning and create a new VergunningsControle
+
+            $dagvergunning = $this->dagvergunningRepository->find($data['dagvergunningId']);
+
+            if (null === $dagvergunning) {
+                return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$data['dagvergunningId']], Response::HTTP_NOT_FOUND);
+            }
+
+            /** @var VergunningControle $controle */
+            $controle = new VergunningControle();
+            $controle->setRegistratieAccount($account);
+            $controle->setDagvergunning($dagvergunning);
+
+            $dagvergunning->addVergunningControle($controle);
+        } else {
+            // for UPDATE we just find the VergunningsControle and set the Dagvergunning on it
+
+            /** @var ?VergunningControle $controle */
+            $controle = $this->vergunningControleRepository->find($controleId);
+
+            if (null === $controle) {
+                return new JsonResponse(['error' => 'VergunningControle not found, id = '.$controleId], Response::HTTP_NOT_FOUND);
+            }
+
+            $dagvergunning = $controle->getDagvergunning();
+        }
+
+        $controle = $this->map(
+            $controle,
+            $account,
+            $data['aanwezig'],
+            $data['erkenningsnummer'],
+            $data['erkenningsnummerInvoerMethode'],
+            $data['vervangerErkenningsnummer'],
+            $data['registratieGeolocatie'],
+            $data['aantal3MeterKramen'],
+            $data['aantal4MeterKramen'],
+            $data['extraMeters'],
+            $data['aantalElektra'],
+            $data['eenmaligElektra'],
+            $data['afvaleiland'],
+            $data['grootPerMeter'],
+            $data['kleinPerMeter'],
+            $data['grootReiniging'],
+            $data['kleinReiniging'],
+            $data['afvalEilandAgf'],
+            $data['krachtstroomPerStuk'],
+            $data['krachtstroom'],
+            $data['reiniging'],
+            $data['notitie'],
+            $data['ronde']
+        );
+
+        $this->entityManager->persist($controle);
+        $this->entityManager->flush();
+
+        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    private function map(
+        VergunningControle $vergunningControle,
+        Account $account = null,
+        string $aanwezig,
+        string $erkenningsnummerInvoerWaarde,
+        string $erkenningsnummerInvoerMethode,
+        string $vervangerErkenningsnummer = null,
+        $registratieGeolocatie,
+        int $aantal3MeterKramen,
+        int $aantal4MeterKramen,
+        int $extraMeters,
+        int $aantalElektra,
+        bool $eenmaligElektra,
+        int $afvaleiland,
+        int $grootPerMeter,
+        int $kleinPerMeter,
+        int $grootReiniging,
+        int $kleinReiniging,
+        int $afvalEilandAgf,
+        int $krachtstroomPerStuk,
+        bool $krachtstroom,
+        bool $reiniging,
+        string $notitie,
+        int $ronde
+    ): VergunningControle {
+        $vergunningControle->setAanwezig($aanwezig);
+
+        $erkenningsnummerInvoerWaarde = str_replace('.', '', $erkenningsnummerInvoerWaarde);
+        $vergunningControle->setErkenningsnummerInvoerWaarde($erkenningsnummerInvoerWaarde);
+        $vergunningControle->setErkenningsnummerInvoerMethode($erkenningsnummerInvoerMethode);
+
+        if (null !== $vervangerErkenningsnummer) {
+            $vervangerErkenningsnummer = str_replace('.', '', $vervangerErkenningsnummer);
+            $vervanger = $this->koopmanRepository->findOneBy(['erkenningsnummer' => $vervangerErkenningsnummer]);
+
+            if (null !== $vervanger) {
+                $vergunningControle->setVervanger($vervanger);
+            }
+        } else {
+            $vergunningControle->setVervanger(null);
+        }
+
+        $point = $this->factuurService::parseGeolocation($registratieGeolocatie);
+        $vergunningControle->setRegistratieGeolocatie($point[0], $point[1]);
+
+        $now = new DateTime();
+        $vergunningControle->setRegistratieDatumtijd($now);
+        $vergunningControle->setRegistratieAccount($account);
+
+        $vergunningControle->setAantal3MeterKramen((int) $aantal3MeterKramen);
+        $vergunningControle->setAantal4MeterKramen((int) $aantal4MeterKramen);
+        $vergunningControle->setExtraMeters((int) $extraMeters);
+        $vergunningControle->setAantalElektra((int) $aantalElektra);
+        $vergunningControle->setEenmaligElektra((bool) $eenmaligElektra);
+        $vergunningControle->setAfvaleiland((int) $afvaleiland);
+        $vergunningControle->setGrootPerMeter($grootPerMeter);
+        $vergunningControle->setKleinPerMeter($kleinPerMeter);
+        $vergunningControle->setGrootReiniging($grootReiniging);
+        $vergunningControle->setKleinReiniging($kleinReiniging);
+        $vergunningControle->setAfvalEilandAgf($afvalEilandAgf);
+        $vergunningControle->setKrachtstroomPerStuk($krachtstroomPerStuk);
+        $vergunningControle->setKrachtstroom((bool) $krachtstroom);
+        $vergunningControle->setReiniging((bool) $reiniging);
+        $vergunningControle->setNotitie($notitie);
+        $vergunningControle->setRonde($ronde);
+
+        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer(
+            $vergunningControle->getDagvergunning()->getMarkt(),
+            $erkenningsnummerInvoerWaarde,
+            false
+        );
+
+        $sollicitatieStatus = 'lot';
+
+        if (null !== $sollicitatie) {
+            $vergunningControle->setAantal3meterKramenVast($sollicitatie->getAantal3MeterKramen());
+            $vergunningControle->setAantal4meterKramenVast($sollicitatie->getAantal4MeterKramen());
+            $vergunningControle->setAantalExtraMetersVast($sollicitatie->getAantalExtraMeters());
+            $vergunningControle->setAantalElektraVast($sollicitatie->getAantalElektra());
+            $vergunningControle->setKrachtstroomVast($sollicitatie->getKrachtstroom());
+            $vergunningControle->setAfvaleilandVast($sollicitatie->getAantalAfvaleilanden());
+            $vergunningControle->setSollicitatie($sollicitatie);
+            $sollicitatieStatus = $sollicitatie->getStatus();
+        }
+
+        $vergunningControle->setStatusSolliciatie($sollicitatieStatus);
+
+        return $vergunningControle;
+    }
+
     /**
      * @OA\Post(
      *     path="/api/1.1.0/controle/",
@@ -138,104 +344,7 @@ final class VergunningControleController extends AbstractController
      */
     public function post(Request $request): Response
     {
-        $data = json_decode((string) $request->getContent(), true);
-
-        // validate given data
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'dagvergunningId',
-            'aanwezig',
-            'registratieGeolocatie',
-            'erkenningsnummer',
-            'ronde',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        // set defaults
-        $defaultParameters = [
-            'erkenningsnummerInvoerMethode' => 'onbekend',
-            'aantal3MeterKramen' => 0,
-            'aantal4MeterKramen' => 0,
-            'extraMeters' => 0,
-            'aantalElektra' => 0,
-            'afvaleiland' => 0,
-            'grootPerMeter' => 0,
-            'kleinPerMeter' => 0,
-            'grootReiniging' => 0,
-            'kleinReiniging' => 0,
-            'afvalEilandAgf' => 0,
-            'krachtstroomPerStuk' => 0,
-            'registratieGeolocatie' => null,
-            'vervangerErkenningsnummer' => null,
-            'eenmaligElektra' => false,
-            'krachtstroom' => false,
-            'reiniging' => false,
-            'registratieDatumtijd' => date('Y-m-d H:i:s'),
-            'notitie' => '',
-        ];
-
-        foreach ($defaultParameters as $key => $val) {
-            if (false === isset($data[$key])) {
-                $data[$key] = $val;
-            }
-        }
-
-        $dagvergunning = $this->dagvergunningRepository->find($data['dagvergunningId']);
-
-        if (null === $dagvergunning) {
-            return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$data['dagvergunningId']], Response::HTTP_NOT_FOUND);
-        }
-
-        /** @var ?Account $account */
-        $account = $this->getUser();
-
-        /** @var VergunningControle $controle */
-        $controle = new VergunningControle();
-        $controle->setRegistratieAccount($account);
-        $controle->setDagvergunning($dagvergunning);
-
-        $dagvergunning->addVergunningControle($controle);
-
-        $controle = $this->map(
-            $controle,
-            $account,
-            $data['aanwezig'],
-            $data['erkenningsnummer'],
-            $data['erkenningsnummerInvoerMethode'],
-            $data['vervangerErkenningsnummer'],
-            $data['registratieGeolocatie'],
-            $data['aantal3MeterKramen'],
-            $data['aantal4MeterKramen'],
-            $data['extraMeters'],
-            $data['aantalElektra'],
-            $data['eenmaligElektra'],
-            $data['afvaleiland'],
-            $data['grootPerMeter'],
-            $data['kleinPerMeter'],
-            $data['grootReiniging'],
-            $data['kleinReiniging'],
-            $data['afvalEilandAgf'],
-            $data['krachtstroomPerStuk'],
-            $data['krachtstroom'],
-            $data['reiniging'],
-            $data['notitie'],
-            $data['ronde']
-        );
-
-        $this->entityManager->persist($controle);
-        $this->entityManager->flush();
-
-        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return $this->createOrUpdateVergunningscontrole(json_decode((string) $request->getContent(), true));
     }
 
     /**
@@ -292,192 +401,6 @@ final class VergunningControleController extends AbstractController
      */
     public function put(Request $request, int $controleId): Response
     {
-        $data = json_decode((string) $request->getContent(), true);
-
-        // validate given data
-        if (null === $data) {
-            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
-        }
-
-        $expectedParameters = [
-            'aanwezig',
-            'registratieGeolocatie',
-            'erkenningsnummer',
-            'ronde',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
-        // set defaults
-        $defaultParameters = [
-            'erkenningsnummerInvoerMethode' => 'onbekend',
-            'aantal3MeterKramen' => 0,
-            'aantal4MeterKramen' => 0,
-            'extraMeters' => 0,
-            'aantalElektra' => 0,
-            'afvaleiland' => 0,
-            'grootPerMeter' => 0,
-            'kleinPerMeter' => 0,
-            'grootReiniging' => 0,
-            'kleinReiniging' => 0,
-            'afvalEilandAgf' => 0,
-            'krachtstroomPerStuk' => 0,
-            'registratieGeolocatie' => null,
-            'vervangerErkenningsnummer' => null,
-            'eenmaligElektra' => false,
-            'krachtstroom' => false,
-            'reiniging' => false,
-            'registratieDatumtijd' => date('Y-m-d H:i:s'),
-            'notitie' => '',
-        ];
-
-        foreach ($defaultParameters as $key => $val) {
-            if (false === isset($data[$key])) {
-                $data[$key] = $val;
-            }
-        }
-
-        /** @var ?VergunningControle $controle */
-        $controle = $this->vergunningControleRepository->find($controleId);
-
-        if (null === $controle) {
-            return new JsonResponse(['error' => 'VergunningControle not found, id = '.$controleId], Response::HTTP_NOT_FOUND);
-        }
-
-        /** @var ?Account $account */
-        $account = $this->getUser();
-
-        $controle = $this->map(
-            $controle,
-            $account,
-            $data['aanwezig'],
-            $data['erkenningsnummer'],
-            $data['erkenningsnummerInvoerMethode'],
-            $data['vervangerErkenningsnummer'],
-            $data['registratieGeolocatie'],
-            $data['aantal3MeterKramen'],
-            $data['aantal4MeterKramen'],
-            $data['extraMeters'],
-            $data['aantalElektra'],
-            $data['eenmaligElektra'],
-            $data['afvaleiland'],
-            $data['grootPerMeter'],
-            $data['kleinPerMeter'],
-            $data['grootReiniging'],
-            $data['kleinReiniging'],
-            $data['afvalEilandAgf'],
-            $data['krachtstroomPerStuk'],
-            $data['krachtstroom'],
-            $data['reiniging'],
-            $data['notitie'],
-            $data['ronde']
-        );
-
-        $this->entityManager->persist($controle);
-        $this->entityManager->flush();
-
-        $dagvergunning = $controle->getDagvergunning();
-        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
-    }
-
-    private function map(
-        VergunningControle $vergunningControle,
-        Account $account = null,
-        string $aanwezig,
-        string $erkenningsnummerInvoerWaarde,
-        string $erkenningsnummerInvoerMethode,
-        string $vervangerErkenningsnummer = null,
-        $registratieGeolocatie,
-        int $aantal3MeterKramen,
-        int $aantal4MeterKramen,
-        int $extraMeters,
-        int $aantalElektra,
-        bool $eenmaligElektra,
-        int $afvaleiland,
-        int $grootPerMeter,
-        int $kleinPerMeter,
-        int $grootReiniging,
-        int $kleinReiniging,
-        int $afvalEilandAgf,
-        int $krachtstroomPerStuk,
-        bool $krachtstroom,
-        bool $reiniging,
-        string $notitie,
-        int $ronde
-    ): VergunningControle {
-        // set aanwezig
-        $vergunningControle->setAanwezig($aanwezig);
-
-        // set erkenningsnummer info
-        $erkenningsnummerInvoerWaarde = str_replace('.', '', $erkenningsnummerInvoerWaarde);
-        $vergunningControle->setErkenningsnummerInvoerWaarde($erkenningsnummerInvoerWaarde);
-        $vergunningControle->setErkenningsnummerInvoerMethode($erkenningsnummerInvoerMethode);
-
-        if (null !== $vervangerErkenningsnummer) {
-            $vervangerErkenningsnummer = str_replace('.', '', $vervangerErkenningsnummer);
-            $vervanger = $this->koopmanRepository->findOneBy(['erkenningsnummer' => $vervangerErkenningsnummer]);
-
-            if (null !== $vervanger) {
-                $vergunningControle->setVervanger($vervanger);
-            }
-        } else {
-            $vergunningControle->setVervanger(null);
-        }
-
-        // set geolocatie
-        $point = $this->factuurService::parseGeolocation($registratieGeolocatie);
-        $vergunningControle->setRegistratieGeolocatie($point[0], $point[1]);
-
-        $now = new DateTime();
-        $vergunningControle->setRegistratieDatumtijd($now);
-        $vergunningControle->setRegistratieAccount($account);
-
-        // extras
-        $vergunningControle->setAantal3MeterKramen((int) $aantal3MeterKramen);
-        $vergunningControle->setAantal4MeterKramen((int) $aantal4MeterKramen);
-        $vergunningControle->setExtraMeters((int) $extraMeters);
-        $vergunningControle->setAantalElektra((int) $aantalElektra);
-        $vergunningControle->setEenmaligElektra((bool) $eenmaligElektra);
-        $vergunningControle->setAfvaleiland((int) $afvaleiland);
-        $vergunningControle->setGrootPerMeter($grootPerMeter);
-        $vergunningControle->setKleinPerMeter($kleinPerMeter);
-        $vergunningControle->setGrootReiniging($grootReiniging);
-        $vergunningControle->setKleinReiniging($kleinReiniging);
-        $vergunningControle->setAfvalEilandAgf($afvalEilandAgf);
-        $vergunningControle->setKrachtstroomPerStuk($krachtstroomPerStuk);
-        $vergunningControle->setKrachtstroom((bool) $krachtstroom);
-        $vergunningControle->setReiniging((bool) $reiniging);
-        $vergunningControle->setNotitie($notitie);
-        $vergunningControle->setRonde($ronde);
-
-        // sollicitatie koppeling
-        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer(
-            $vergunningControle->getDagvergunning()->getMarkt(),
-            $erkenningsnummerInvoerWaarde,
-            false
-        );
-
-        $sollicitatieStatus = 'lot';
-
-        if (null !== $sollicitatie) {
-            $vergunningControle->setAantal3meterKramenVast($sollicitatie->getAantal3MeterKramen());
-            $vergunningControle->setAantal4meterKramenVast($sollicitatie->getAantal4MeterKramen());
-            $vergunningControle->setAantalExtraMetersVast($sollicitatie->getAantalExtraMeters());
-            $vergunningControle->setAantalElektraVast($sollicitatie->getAantalElektra());
-            $vergunningControle->setKrachtstroomVast($sollicitatie->getKrachtstroom());
-            $vergunningControle->setAfvaleilandVast($sollicitatie->getAantalAfvaleilanden());
-            $vergunningControle->setSollicitatie($sollicitatie);
-            $sollicitatieStatus = $sollicitatie->getStatus();
-        }
-
-        $vergunningControle->setStatusSolliciatie($sollicitatieStatus);
-
-        return $vergunningControle;
+        return $this->createOrUpdateVergunningscontrole(json_decode((string) $request->getContent(), true), $controleId);
     }
 }

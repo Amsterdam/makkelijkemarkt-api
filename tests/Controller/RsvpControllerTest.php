@@ -32,7 +32,7 @@ class RsvpControllerTest extends ApiTestCase
         $this->koopmanErkenningsNummer = $koopman->getErkenningsnummer();
     }
 
-    public function testRsvpGet($url)
+    private function rsvpGet($url)
     {
         $response = $this->client->get($url, ['headers' => $this->headers]);
         $responseData = json_decode((string) $response->getBody(), true);
@@ -62,16 +62,16 @@ class RsvpControllerTest extends ApiTestCase
 
     public function testGetRsvpByErkenningsnummer()
     {
-        $this->testRsvpGet('/api/1.1.0/rsvp/koopman/'.$this->koopmanErkenningsNummer);
+        $this->rsvpGet('/api/1.1.0/rsvp/koopman/'.$this->koopmanErkenningsNummer);
     }
 
     public function testGetRsvpByMarktIdAndMarktDate()
     {
-        $this->testRsvpGet('/api/1.1.0/rsvp/markt/'.$this->marktId.'/date/'.$this->marktDate);
+        $this->rsvpGet('/api/1.1.0/rsvp/markt/'.$this->marktId.'/date/'.$this->marktDate);
     }
 
     public function testGetRsvpByMarktIdAndErkenningsNummer()
     {
-        $this->testRsvpGet('/api/1.1.0/rsvp/markt/'.$this->marktId.'/koopman/'.$this->koopmanErkenningsNummer);
+        $this->rsvpGet('/api/1.1.0/rsvp/markt/'.$this->marktId.'/koopman/'.$this->koopmanErkenningsNummer);
     }
 }

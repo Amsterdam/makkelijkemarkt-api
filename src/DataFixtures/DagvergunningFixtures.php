@@ -60,6 +60,7 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
             $dagvergunning->setErkenningsnummerInvoerWaarde('1993081004');
             $dagvergunning->setAanwezig('Zelf');
             $dagvergunning->setDoorgehaald(false);
+            $dagvergunning->setAudit(true);
             $dagvergunning->setExtraMeters(0);
             $dagvergunning->setNotitie('----notitie fixtures----');
             $dagvergunning->setAanmaakDatumtijd($dt);

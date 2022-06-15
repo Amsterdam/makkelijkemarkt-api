@@ -25,7 +25,7 @@ final class TokenFixtures extends BaseFixture implements DependentFixtureInterfa
         $manager->persist($token);
         $manager->flush();
 
-        $this->createMany(100, 'token', function ($i) {
+        $this->createMany(5, 'token', function ($i) {
             /* @var int $accountReference */
             $accountReference = round($i / 10) + 1;
 

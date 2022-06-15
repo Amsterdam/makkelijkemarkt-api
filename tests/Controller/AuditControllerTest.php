@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Markt;
 use App\Test\ApiTestCase;
 
 class AuditControllerTest extends ApiTestCase
 {
     public function testGetByMarktIdAndDate(): void
     {
-        $this->markTestIncomplete('there are no fixtures for this test yet.');
+        $marktRepository = $this->entityManager->getRepository(Markt::class);
+        $markt = $marktRepository->findOneBy(['afkorting' => 'AC-2022']);
 
-        $response = $this->client->get('/api/1.1.0/audit/19/2016-04-11', ['headers' => $this->headers]);
+        $response = $this->client->get('/api/1.1.0/audit/'.$markt->getId().'/2022-01-01', ['headers' => $this->headers]);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -59,7 +61,8 @@ class AuditControllerTest extends ApiTestCase
             'factuur',
             'loten',
             'auditReason',
-            'controles',
+            //TODO: controles is still missing fixtures
+            //'controles',
         ];
 
         foreach ($expectedKeys as $expectedKey) {
@@ -71,10 +74,11 @@ class AuditControllerTest extends ApiTestCase
         $expectedArrays = [
             'markt',
             'koopman',
-            'sollicitatie',
-            'registratieGeolocatie',
-            'registratieAccount',
-            'factuur',
+            //TODO: the following data is still missing from the fixtures
+            //'sollicitatie',
+            //'registratieGeolocatie',
+            //'registratieAccount',
+            //'factuur',
         ];
 
         foreach ($expectedArrays as $expectedArray) {

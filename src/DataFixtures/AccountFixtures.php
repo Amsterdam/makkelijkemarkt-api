@@ -64,7 +64,7 @@ final class AccountFixtures extends BaseFixture
         $this->addReference(self::REFERENCE_USER_ADMIN, $account);
         $manager->flush();
 
-        $this->createMany(10, self::REFERENCE_USER_SENIOR, function ($i) {
+        $this->createMany(5, self::REFERENCE_USER_SENIOR, function ($i) {
             /** @var string $ut */
             $ut = '1461067200'; // = 2016-04-19T12:00:00+00:00 in ISO 8601
 
@@ -86,7 +86,7 @@ final class AccountFixtures extends BaseFixture
             return $account;
         });
 
-        $this->createMany(100, self::REFERENCE_USER_USER, function ($i) {
+        $this->createMany(5, self::REFERENCE_USER_USER, function ($i) {
             /** @var string $ut */
             $ut = '1461067200'; // = 2016-04-19T12:00:00+00:00 in ISO 8601
 
