@@ -508,7 +508,7 @@ final class TariefplanController extends AbstractController
             }
         }
 
-        $plan = $this->processTariefPlan($tariefplan, $plan, $data, $isConcreet);
+        $plan = $this->processTariefPlan($tariefplan, $plan, $verifiedData, $isConcreet);
 
         $this->entityManager->persist($tariefplan);
         $this->entityManager->persist($plan);

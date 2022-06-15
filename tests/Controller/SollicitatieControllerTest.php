@@ -16,8 +16,6 @@ class SollicitatieControllerTest extends ApiTestCase
 {
     public function testGetAllByMarkt(): void
     {
-        //$this->markTestIncomplete('there are no fixtures for this test yet.');
-
         /** @var MarktRepository $marktRepository */
         $marktRepository = $this->entityManager
             ->getRepository(Markt::class);

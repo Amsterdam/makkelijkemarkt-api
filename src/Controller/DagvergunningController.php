@@ -74,7 +74,6 @@ final class DagvergunningController extends AbstractController
 
     private function createDagvergunning($data, bool $concept)
     {
-        // validate given data
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
@@ -93,7 +92,6 @@ final class DagvergunningController extends AbstractController
             }
         }
 
-        // set defaults
         $defaultParameters = [
             'erkenningsnummerInvoerMethode' => 'onbekend',
             'aantal3MeterKramen' => 0,
@@ -387,9 +385,7 @@ final class DagvergunningController extends AbstractController
      */
     public function postConcept(Request $request): Response
     {
-        $data = json_decode((string) $request->getContent(), true);
-
-        return $this->createDagvergunning($data, true);
+        return $this->createDagvergunning(json_decode((string) $request->getContent(), true), true);
     }
 
     /**
@@ -446,9 +442,7 @@ final class DagvergunningController extends AbstractController
      */
     public function post(Request $request): Response
     {
-        $data = json_decode((string) $request->getContent(), true);
-
-        return $this->createDagvergunning($data, false);
+        return $this->createDagvergunning(json_decode((string) $request->getContent(), true), false);
     }
 
     /**

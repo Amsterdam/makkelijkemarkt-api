@@ -25,7 +25,6 @@ class MarktConfiguratieControllerTest extends ApiTestCase
         $body = json_decode($response->getBody()->getContents(), true);
 
         $this->assertEquals($response->getStatusCode(), 200);
-
         $this->assertEquals($body['marktId'], $markt->getId());
         $this->assertEquals((bool) strtotime($body['aanmaakDatumtijd']), true);
         $this->assertEquals($body['marktOpstelling']['rows'][0][0], '8');
