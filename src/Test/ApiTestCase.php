@@ -12,7 +12,6 @@ use Faker\Generator;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -86,7 +85,7 @@ class ApiTestCase extends WebTestCase
 
         $body = $options[RequestOptions::JSON] ?? null;
 
-        self::$browser->request('GET', '/api/1.1.0/account/', $query, [], $headers, $body);
+        self::$browser->request($method, $url, $query, [], $headers, $body);
 
         return json_decode(self::$browser->getResponse()->getContent(), true);
     }
