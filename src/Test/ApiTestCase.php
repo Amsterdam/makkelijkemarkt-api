@@ -10,10 +10,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Faker\Generator;
 use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class ApiTestCase extends KernelTestCase
+class ApiTestCase extends WebTestCase
 {
     /** @var Client */
     private static $staticClient;
@@ -33,9 +36,11 @@ class ApiTestCase extends KernelTestCase
     /** @var array<string> */
     protected $headers;
 
+    protected static KernelBrowser $browser;
+
     public static function setUpBeforeClass(): void
     {
-        self::bootKernel();
+        self::$browser = static::createClient();
 
         self::$staticClient = new Client([
             'base_uri' => 'http://mm-api_nginx:80',
@@ -66,10 +71,49 @@ class ApiTestCase extends KernelTestCase
         ]);
 
         $this->headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer '.$token->getUuid(),
-            'MmAppKey' => $_SERVER['MM_APP_KEY'],
+            'HTTP_Content-Type' => 'application/json',
+            'HTTP_AUTHORIZATION' => 'Bearer '.$token->getUuid(),
+            'HTTP_MmAppKey' => $_SERVER['MM_APP_KEY'],
         ];
+    }
+
+    private function request(string $method, string $url, array $options): array
+    {
+        $query = $options[RequestOptions::QUERY] ?? [];
+
+        $headers = $options[RequestOptions::HEADERS] ?? [];
+        $headers = array_merge($headers, $this->headers);
+
+        $body = $options[RequestOptions::JSON] ?? null;
+
+        self::$browser->request('GET', '/api/1.1.0/account/', $query, [], $headers, $body);
+
+        return json_decode(self::$browser->getResponse()->getContent(), true);
+    }
+
+    protected function getResponseHeader(string $name): ?string
+    {
+        return self::$browser->getResponse()->headers->get($name);
+    }
+
+    protected function get(string $url, array $options): array
+    {
+        return $this->request('GET', $url, $options);
+    }
+
+    protected function post(string $url, array $options): array
+    {
+        return $this->request('POST', $url, $options);
+    }
+
+    protected function put(string $url, array $options): array
+    {
+        return $this->request('PUT', $url, $options);
+    }
+
+    protected function delete(string $url, array $options): array
+    {
+        return $this->request('DELETE', $url, $options);
     }
 
     /**

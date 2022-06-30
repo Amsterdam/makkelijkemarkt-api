@@ -7,16 +7,23 @@ namespace App\Tests\Controller;
 use App\Controller\LoginController;
 use App\Entity\Account;
 use App\Test\ApiTestCase;
+use GuzzleHttp\RequestOptions;
 
 class AccountControllerTest extends ApiTestCase
 {
+    public function testGetAllNew()
+    {
+        self::$browser->request('GET', '/api/1.1.0/account/', [], [], $this->headers);
+
+        $this->assertResponseIsSuccessful();
+    }
+
     public function testGetAll(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/', ['headers' => $this->headers]);
+        $responseData = $this->get('/api/1.1.0/account/', [RequestOptions::HEADERS => $this->headers]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseIsSuccessful();
 
-        $responseData = json_decode((string) $response->getBody(), true);
         $accountData = reset($responseData);
 
         $expectedKeys = [
@@ -58,12 +65,18 @@ class AccountControllerTest extends ApiTestCase
 
     public function testGetAllWithLimit(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?listLength=1', ['headers' => $this->headers]);
+        $responseData = $this->get(
+            '/api/1.1.0/account/',
+            [
+                RequestOptions::HEADERS => $this->headers,
+                RequestOptions::QUERY => [
+                    'listLength' => 1
+                ]
+            ]
+        );
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertGreaterThan(1, $response->getHeader('x-api-listsize'));
-
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
+        $this->assertGreaterThan(1, $this->getResponseHeader('x-api-listsize'));
 
         $this->assertCount(1, $responseData);
     }
@@ -92,11 +105,9 @@ class AccountControllerTest extends ApiTestCase
         /** @var Account $account */
         $account = $this->createObject($dataAccount, new Account());
 
-        $response = $this->client->get('/api/1.1.0/account/'.$account->getId(), ['headers' => $this->headers]);
+        $responseData = $this->get('/api/1.1.0/account/'.$account->getId(), [RequestOptions::HEADERS => $this->headers]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
 
         $this->assertEquals($account->getId(), $responseData['id']);
         $this->assertEquals($dataAccount['username'], $responseData['username']);
@@ -115,12 +126,11 @@ class AccountControllerTest extends ApiTestCase
      */
     public function testGetAllWithFilterNaam(Account $account): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?naam='.$account->getNaam().'&listLength=10', [
-            'headers' => $this->headers,
+        $responseData = $this->get('/api/1.1.0/account/?naam='.$account->getNaam().'&listLength=10', [
+            RequestOptions::HEADERS => $this->headers,
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
 
         foreach ($responseData as $accountData) {
             $this->assertEquals($account->getNaam(), $accountData['naam']);
@@ -129,11 +139,18 @@ class AccountControllerTest extends ApiTestCase
 
     public function testGetAllWithFilterActiveTrue(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?active=1&listLength=10', ['headers' => $this->headers]);
+        $responseData = $this->get(
+            '/api/1.1.0/account/',
+            [
+                RequestOptions::HEADERS => $this->headers,
+                RequestOptions::QUERY => [
+                    'active' => 1,
+                    'listLength' => 10
+                ]
+            ]
+        );
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
 
         foreach ($responseData as $accountData) {
             $this->assertTrue($accountData['active']);
@@ -142,11 +159,18 @@ class AccountControllerTest extends ApiTestCase
 
     public function testGetAllWithFilterActiveFalse(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?active=0&listLength=10', ['headers' => $this->headers]);
+        $responseData = $this->get(
+            '/api/1.1.0/account/',
+            [
+                RequestOptions::HEADERS => $this->headers,
+                RequestOptions::QUERY => [
+                    'active' => 0,
+                    'listLength' => 10
+                ]
+            ]
+        );
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
 
         foreach ($responseData as $accountData) {
             $this->assertFalse($accountData['active']);
@@ -155,12 +179,19 @@ class AccountControllerTest extends ApiTestCase
 
     public function testGetAllWithFilterLockedTrue(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?locked=1&listLength=10', ['headers' => $this->headers]);
+        $responseData = $this->get(
+            '/api/1.1.0/account/',
+            [
+                RequestOptions::HEADERS => $this->headers,
+                RequestOptions::QUERY => [
+                    'locked' => 1,
+                    'listLength' => 10
+                ]
+            ]
+        );
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string) $response->getBody(), true);
-
+        $this->assertResponseIsSuccessful();
+        
         foreach ($responseData as $accountData) {
             $this->assertTrue($accountData['locked']);
         }
@@ -168,11 +199,18 @@ class AccountControllerTest extends ApiTestCase
 
     public function testGetAllWithFilterLockedFalse(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?locked=0&listLength=10', ['headers' => $this->headers]);
+        $responseData = $this->get(
+            '/api/1.1.0/account/',
+            [
+                RequestOptions::HEADERS => $this->headers,
+                RequestOptions::QUERY => [
+                    'locked' => 0,
+                    'listLength' => 10
+                ]
+            ]
+        );
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
 
         foreach ($responseData as $accountData) {
             $this->assertFalse($accountData['locked']);
@@ -181,11 +219,9 @@ class AccountControllerTest extends ApiTestCase
 
     public function testGetAllHasNoInvisibleUsers(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/', ['headers' => $this->headers]);
+        $responseData = $this->get('/api/1.1.0/account/', [RequestOptions::HEADERS => $this->headers]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode($response->getBody()->getContents(), true);
+        $this->assertResponseIsSuccessful();
 
         $invisibleAccounts = array_filter($responseData, function ($account) {
             return LoginController::READONLY_ACCOUNT_NAME === $account['naam'];
@@ -208,14 +244,12 @@ class AccountControllerTest extends ApiTestCase
             'active' => false,
         ];
 
-        $response = $this->client->put('/api/1.1.0/account/'.$account->getId(), [
-            'headers' => $this->headers,
+        $responseData = $this->put('/api/1.1.0/account/'.$account->getId(), [
+            RequestOptions::HEADERS => $this->headers,
             'body' => json_encode($dataAccount),
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
 
         foreach ($dataAccount as $key => $val) {
             if ('role' !== $key) {
@@ -241,14 +275,12 @@ class AccountControllerTest extends ApiTestCase
             'role' => 'ROLE_SENIOR',
         ];
 
-        $response = $this->client->post('/api/1.1.0/account/', [
-            'headers' => $this->headers,
+        $responseData = $this->post('/api/1.1.0/account/', [
+            RequestOptions::HEADERS => $this->headers,
             'body' => json_encode($dataAccount),
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $responseData = json_decode((string) $response->getBody(), true);
+        $this->assertResponseIsSuccessful();
 
         foreach ($dataAccount as $key => $val) {
             if ('role' !== $key && 'password' !== $key) {
@@ -274,25 +306,25 @@ class AccountControllerTest extends ApiTestCase
             'password' => 'plain',
         ];
 
-        $response = $this->client->put('/api/1.1.0/account_password/'.$accountId, [
-            'headers' => $this->headers,
+        $responseData = $this->put('/api/1.1.0/account_password/'.$accountId, [
+            RequestOptions::HEADERS => $this->headers,
             'body' => json_encode($data),
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseIsSuccessful();
     }
 
     public function testPostUnlock(): void
     {
-        $response = $this->client->get('/api/1.1.0/account/?locked=0&listLength=1', ['headers' => $this->headers]);
+        $response = $this->get('/api/1.1.0/account/?locked=0&listLength=1', [RequestOptions::HEADERS => $this->headers]);
         $responseData = json_decode((string) $response->getBody(), true);
         $accountData = reset($responseData);
 
-        $response = $this->client->post('/api/1.1.0/account/unlock/'.$accountData['id'], ['headers' => $this->headers]);
+        $responseData = $this->post('/api/1.1.0/account/unlock/'.$accountData['id'], [RequestOptions::HEADERS => $this->headers]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseIsSuccessful();
 
-        $response = $this->client->get('/api/1.1.0/account/'.$accountData['id'], ['headers' => $this->headers]);
+        $response = $this->get('/api/1.1.0/account/'.$accountData['id'], [RequestOptions::HEADERS => $this->headers]);
         $accountData = json_decode((string) $response->getBody(), true);
 
         $this->assertFalse($accountData['locked']);
