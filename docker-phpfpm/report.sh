@@ -3,7 +3,7 @@
 startYear=$(date +'%Y')
 startDate="$startYear-01-01"
 endDate=$(date +'%Y-%m-%d')
-targetDir="/app/public/download"
+targetDir="/var/www/public/download"
 csvFile="$targetDir/factuur-report-$startDate-$endDate.csv"
 
 mkdir -p "$targetDir"
