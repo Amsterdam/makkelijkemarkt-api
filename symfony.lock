@@ -23,9 +23,6 @@
     "amphp/sync": {
         "version": "v1.4.2"
     },
-    "composer/package-versions-deprecated": {
-        "version": "1.11.99.5"
-    },
     "composer/semver": {
         "version": "3.3.2"
     },
@@ -205,9 +202,6 @@
     },
     "ondram/ci-detector": {
         "version": "4.1.0"
-    },
-    "opis/closure": {
-        "version": "3.6.3"
     },
     "phar-io/manifest": {
         "version": "1.0.3"
