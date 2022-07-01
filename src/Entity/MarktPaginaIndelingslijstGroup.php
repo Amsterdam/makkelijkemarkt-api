@@ -20,7 +20,7 @@ class MarktPaginaIndelingslijstGroup
 
     /**
      * @Ignore()
-     * @ORM\ManyToOne(targetEntity="MarktPagina", inversedBy="marktPaginaIndelingslijstGroups", cascade="persist")
+     * @ORM\ManyToOne(targetEntity="MarktPagina", inversedBy="marktPaginaIndelingslijstGroups", cascade={"persist"})
      */
     private MarktPagina $marktPagina;
 
