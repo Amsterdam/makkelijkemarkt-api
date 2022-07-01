@@ -32,10 +32,13 @@ final class ProductRepository extends ServiceEntityRepository
         $sql = '
             SELECT
                 COUNT(p.id) AS voorkomens,
-                p.naam AS product_naam, p.bedrag,
+                p.naam AS product_naam,
+                p.bedrag,
                 p.aantal,
                 (p.bedrag * p.aantal) AS som,
-                ((p.bedrag * p.aantal) * count(p.id)) AS totaal,
+                ((p.bedrag * p.aantal) * count(p.id)) AS totaalexcl,
+                ((p.bedrag * p.aantal) * count(p.id) / 100 * p.btw_hoog) AS btw,
+                ((p.bedrag * p.aantal) * count(p.id) / 100 * (100+p.btw_hoog)) AS totaalincl,
                 m.naam AS markt_naam,
                 d.dag
             FROM product p
@@ -51,12 +54,13 @@ final class ProductRepository extends ServiceEntityRepository
                 p.naam,
                 p.bedrag,
                 p.aantal,
+                p.btw_hoog,
                 m.naam,
                 d.dag
             ORDER BY
                 m.naam ASC,
                 d.dag ASC,
-                totaal DESC
+                totaalexcl DESC
         ';
 
         $conn = $this
