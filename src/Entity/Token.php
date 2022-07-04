@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @OA\Schema(schema="Token", type="object")
@@ -23,7 +24,6 @@ class Token
      * @var string
      * @ORM\Id
      * @ORM\Column(type="string", length=36)
-     * @ORM\GeneratedValue(strategy="UUID")
      */
     private $uuid;
 
@@ -93,6 +93,7 @@ class Token
     public function __construct()
     {
         $this->creationDate = new \DateTime();
+        $this->uuid = Uuid::v4()->toRfc4122();
     }
 
     public function __toString()

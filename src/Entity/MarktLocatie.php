@@ -21,7 +21,7 @@ class MarktLocatie
 
     /**
      * @Ignore()
-     * @ORM\ManyToOne(targetEntity="MarktConfiguratie", inversedBy="marktLocaties", cascade="persist")
+     * @ORM\ManyToOne(targetEntity="MarktConfiguratie", inversedBy="marktLocaties", cascade={"persist"})
      */
     private MarktConfiguratie $marktConfiguratie;
 
