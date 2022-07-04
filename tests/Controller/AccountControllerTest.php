@@ -70,8 +70,8 @@ class AccountControllerTest extends ApiTestCase
             [
                 RequestOptions::HEADERS => $this->headers,
                 RequestOptions::QUERY => [
-                    'listLength' => 1
-                ]
+                    'listLength' => 1,
+                ],
             ]
         );
 
@@ -145,8 +145,8 @@ class AccountControllerTest extends ApiTestCase
                 RequestOptions::HEADERS => $this->headers,
                 RequestOptions::QUERY => [
                     'active' => 1,
-                    'listLength' => 10
-                ]
+                    'listLength' => 10,
+                ],
             ]
         );
 
@@ -165,8 +165,8 @@ class AccountControllerTest extends ApiTestCase
                 RequestOptions::HEADERS => $this->headers,
                 RequestOptions::QUERY => [
                     'active' => 0,
-                    'listLength' => 10
-                ]
+                    'listLength' => 10,
+                ],
             ]
         );
 
@@ -185,13 +185,13 @@ class AccountControllerTest extends ApiTestCase
                 RequestOptions::HEADERS => $this->headers,
                 RequestOptions::QUERY => [
                     'locked' => 1,
-                    'listLength' => 10
-                ]
+                    'listLength' => 10,
+                ],
             ]
         );
 
         $this->assertResponseIsSuccessful();
-        
+
         foreach ($responseData as $accountData) {
             $this->assertTrue($accountData['locked']);
         }
@@ -205,8 +205,8 @@ class AccountControllerTest extends ApiTestCase
                 RequestOptions::HEADERS => $this->headers,
                 RequestOptions::QUERY => [
                     'locked' => 0,
-                    'listLength' => 10
-                ]
+                    'listLength' => 10,
+                ],
             ]
         );
 
