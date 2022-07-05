@@ -208,7 +208,7 @@ final class RapportController extends AbstractController
      *     )
      * )
      * @Route("/rapport/detailfactuur", methods={"GET"})
-     * @Security("is_granted('ROLE_SENIOR')")
+     * @Security("is_granted('ROLE_SENIOR') or is_granted('ROLE_ACCOUNTANT')")
      *
      * @todo fixtures + unit test for output-data
      */
