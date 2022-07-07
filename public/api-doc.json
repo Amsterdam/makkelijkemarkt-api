@@ -5624,6 +5624,344 @@
                         "bearer": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "Rsvp"
+                ],
+                "summary": "Verwijder toekomstige Rsvp's van deze koopman op deze markt.",
+                "operationId": "RsvpDeleteByMarktIdAndErkenninsnummer",
+                "parameters": [
+                    {
+                        "name": "marktId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "erkenningsnummer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp_pattern": {
+            "post": {
+                "tags": [
+                    "RsvpPattern"
+                ],
+                "summary": "Maakt een nieuw Rsvp Patroon aan",
+                "operationId": "RsvpPatternCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "patternDate": {
+                                        "description": "Ingangdatum van Rsvp patroon (als YYYY-MM-DD)",
+                                        "type": "string"
+                                    },
+                                    "marktId": {
+                                        "description": "id van de markt",
+                                        "type": "string"
+                                    },
+                                    "erkenningsNummer": {
+                                        "description": "erkenningsnummer van de koopman",
+                                        "type": "string"
+                                    },
+                                    "monday": {
+                                        "description": "rsvp status van de koopman op maandag",
+                                        "type": "boolean"
+                                    },
+                                    "tuesday": {
+                                        "description": "rsvp status van de koopman op dinsdag",
+                                        "type": "boolean"
+                                    },
+                                    "wednesday": {
+                                        "description": "rsvp status van de koopman op woensdag",
+                                        "type": "boolean"
+                                    },
+                                    "thursday": {
+                                        "description": "rsvp status van de koopman op donderdag",
+                                        "type": "boolean"
+                                    },
+                                    "friday": {
+                                        "description": "rsvp status van de koopman op vrijdag",
+                                        "type": "boolean"
+                                    },
+                                    "saturday": {
+                                        "description": "rsvp status van de koopman op zaterdag",
+                                        "type": "boolean"
+                                    },
+                                    "sunday": {
+                                        "description": "rsvp status van de koopman op zondag",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RsvpPattern"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp_pattern/markt/{marktId}/koopman/{erkenningsnummer}": {
+            "post": {
+                "tags": [
+                    "RsvpPattern"
+                ],
+                "summary": "Vraag RSVP Patronen van een koopman op op basis van erkenningsnummer en marktid.",
+                "operationId": "RsvpPatternGetRsvpPatternByMarktIdAndErkenningsnummer",
+                "parameters": [
+                    {
+                        "name": "marktId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "erkenningsnummer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RsvpPattern"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp_pattern/koopman/{erkenningsnummer}": {
+            "post": {
+                "tags": [
+                    "RsvpPattern"
+                ],
+                "summary": "Vraag RSVP Patronen van een koopman op op basis van erkenningsnummer.",
+                "operationId": "RsvpPatternGetRsvpPatternByErkenningsnummer",
+                "parameters": [
+                    {
+                        "name": "erkenningsnummer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RsvpPattern"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/rsvp_pattern/markt/{marktId}/date/{marktDate}": {
+            "post": {
+                "tags": [
+                    "RsvpPattern"
+                ],
+                "summary": "Vraag RSVP Patronen van een markt op op basis van marktId en markt datum.",
+                "operationId": "RsvpPatternGetRsvpPatternMarktIdAndMarktDate",
+                "parameters": [
+                    {
+                        "name": "marktId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "marktDate",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RsvpPattern"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/1.1.0/sollicitaties/markt/{marktId}": {
@@ -7631,6 +7969,9 @@
                 "type": "object"
             },
             "Rsvp": {
+                "type": "object"
+            },
+            "RsvpPattern": {
                 "type": "object"
             },
             "Sollicitatie": {

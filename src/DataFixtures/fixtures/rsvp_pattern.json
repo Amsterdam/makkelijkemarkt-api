@@ -1,0 +1,29 @@
+[
+  {
+    "id": 7141,
+    "markt_id": 204,
+    "koopman_id": 10584,
+    "pattern_date": "2022-03-22",
+    "monday": true,
+    "tuesday": true,
+    "wednesday": true,
+    "thursday": true,
+    "friday": true,
+    "saturday": true,
+    "sunday": true
+  },
+  {
+    "id": 7142,
+    "markt_id": 204,
+    "koopman_id": 10584,
+    "pattern_date": "2022-06-24",
+    "monday": true,
+    "tuesday": true,
+    "wednesday": true,
+    "thursday": true,
+    "friday": true,
+    "saturday": true,
+    "sunday": true
+  }
+
+]
