@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Rsvp;
+use App\Entity\RsvpPattern;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
+use App\Repository\RsvpPatternRepository;
 use App\Repository\RsvpRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +25,8 @@ use Symfony\Component\Serializer\Serializer;
 
 class RsvpController extends AbstractController
 {
+    protected const DEFAULT_RSVP_VALUE = false;
+
     /** @var LoggerInterface */
     private $logger;
 
@@ -31,6 +35,9 @@ class RsvpController extends AbstractController
 
     /** @var RsvpRepository */
     private $rsvpRepository;
+
+    /** @var RsvpPatternRepository */
+    private $rsvpPatternRepository;
 
     /** @var MarktRepository */
     private $marktRepository;
@@ -46,12 +53,14 @@ class RsvpController extends AbstractController
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         RsvpRepository $rsvpRepository,
+        RsvpPatternRepository $rsvpPatternRepository,
         MarktRepository $marktRepository,
         KoopmanRepository $koopmanRepository
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->rsvpRepository = $rsvpRepository;
+        $this->rsvpPatternRepository = $rsvpPatternRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
@@ -190,9 +199,13 @@ class RsvpController extends AbstractController
         $monday = new DateTime('Monday this week');
         $later = (new DateTime('Monday this week'))->modify('+2 weeks');
 
-        $rsvp = $this->rsvpRepository->findByKoopmanAndBetweenDates($koopman, $monday, $later);
+        $rsvps = $this->rsvpRepository->findByKoopmanAndBetweenDates($koopman, $monday, $later);
 
-        $response = $this->serializer->serialize($rsvp, 'json');
+        $rsvpPatterns = $this->rsvpPatternRepository->findOneForEachMarktByKoopmanAndBeforeDate($koopman, $later);
+
+        $aggregatedRsvps = $this->combineRsvpWithPattern($rsvps, $rsvpPatterns, $monday, $later);
+
+        $response = $this->serializer->serialize($aggregatedRsvps, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -239,9 +252,11 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
         }
 
-        $rsvp = $this->rsvpRepository->findByMarktAndDate($markt, $date);
+        $rsvps = $this->rsvpRepository->findByMarktAndDate($markt, $date);
+        $rsvpPatterns = $this->rsvpPatternRepository->findOneForEachKoopmanByMarktAndBeforeDate($markt, $date);
 
-        $response = $this->serializer->serialize($rsvp, 'json');
+        $aggregatedRsvps = $this->combineRsvpWithPattern($rsvps, $rsvpPatterns, $date, $date);
+        $response = $this->serializer->serialize($aggregatedRsvps, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -291,10 +306,148 @@ class RsvpController extends AbstractController
         $monday = new DateTime('Monday this week');
         $later = (new DateTime('Monday this week'))->modify('+2 weeks');
 
-        $rsvp = $this->rsvpRepository->findByMarktAndKoopmanAndBetweenDates($markt, $koopman, $monday, $later);
+        $rsvps = $this->rsvpRepository->findByMarktAndKoopmanAndBetweenDates($markt, $koopman, $monday, $later);
+        $rsvpPattern = $this->rsvpPatternRepository->findOneByMarktAndKoopmanAndBeforeDate($markt, $koopman, $later);
 
-        $response = $this->serializer->serialize($rsvp, 'json');
+        $aggregatedRsvps = $this->combineRsvpWithPattern($rsvps, $rsvpPattern, $monday, $later);
+
+        $response = $this->serializer->serialize($aggregatedRsvps, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * Combine an array of Rsvps and an Rsvp pattern into a list of Rsvps.
+     *
+     * @param RsvpPattern[] $rsvpPatterns
+     * @param Rsvp[]        $rsvps
+     * @param DateTime      $start
+     * @param DateTime      $end
+     */
+    private function combineRsvpWithPattern($rsvps, $rsvpPatterns, $start, $end)
+    {
+        if (0 == count($rsvpPatterns)) {
+            return $rsvps;
+        }
+        /** @var string[] */
+        $marktIds = array_values(array_unique(array_map(function (RsvpPattern $elem) {
+            return $elem->getMarkt();
+        }, $rsvpPatterns)));
+
+        /** @var string[] */
+        $koopmannen = array_values(array_unique(array_map(function (RsvpPattern $elem) {
+            return $elem->getKoopman();
+        }, $rsvpPatterns)));
+
+        foreach ($marktIds as $marktId) {
+            $markt = $this->marktRepository->getById($marktId);
+
+            foreach ($koopmannen as $koopmanErkenningsnummer) {
+                $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsnummer);
+
+                // Get pattern for marktId
+                $pattern = current(array_filter($rsvpPatterns, function (RsvpPattern $elem) use ($marktId, $koopmanErkenningsnummer) {
+                    return $elem->getMarkt() == $marktId && $elem->getKoopman() == $koopmanErkenningsnummer;
+                }));
+
+                $rsvpsMarkt = array_filter($rsvps, function (Rsvp $elem) use ($marktId, $koopmanErkenningsnummer) {
+                    return $elem->getMarkt() == $marktId && $elem->getKoopman() == $koopmanErkenningsnummer;
+                });
+
+                // For each day in date range
+                $day = $start;
+                do {
+                    $hasRsvp = count(array_filter($rsvpsMarkt, function (Rsvp $elem) use ($day) {
+                        return $elem->getMarktDate() == $day;
+                    })) > 0;
+
+                    if ($hasRsvp) {
+                        $day->modify('+1 day');
+                        continue;
+                    }
+
+                    $date = clone $day;
+
+                    $temp_rsvp = (new Rsvp())
+                        ->setMarktDate($date)
+                        ->setMarkt($markt)
+                        ->setKoopman($koopman);
+
+                    if ($pattern) {
+                        $dayOfWeek = strtolower(date('l', $day->getTimestamp()));
+                        $patternDayAttendance = $pattern->getDay($dayOfWeek);
+                        $temp_rsvp->setAttending($patternDayAttendance);
+                    } else {
+                        $temp_rsvp->setAttending(self::DEFAULT_RSVP_VALUE);
+                    }
+
+                    $rsvps[] = $temp_rsvp;
+                    $day->modify('+1 day');
+                } while ($day < $end);
+            }
+        }
+
+        return $rsvps;
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/1.1.0/rsvp/markt/{marktId}/koopman/{erkenningsnummer}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="RsvpDeleteByMarktIdAndErkenninsnummer",
+     *     tags={"Rsvp"},
+     *     summary="Verwijder toekomstige Rsvp's van deze koopman op deze markt.",
+     *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *     @OA\Response(
+     *         response="204",
+     *         description="No Content"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/rsvp/markt/{marktId}/koopman/{erkenningsnummer}", methods={"DELETE"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function rsvpDeleteByMarktIdAndErkenninsnummerWithinRange(int $marktId, string $erkenningsnummer): Response
+    {
+        $markt = $this->marktRepository->getById($marktId);
+
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsnummer);
+
+        if (null === $koopman) {
+            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $startDate = new DateTime();
+
+        // TODO: this should not be a hard-coded time
+        // https://dev.azure.com/CloudCompetenceCenter/salmagundi/_sprints/backlog/Markten%20-%20Dev%20team/salmagundi/Sprint%2029?workitem=50146
+        // if it's after 15:00 the allocatIon already ran, so we no longer remove today
+        if ($startDate->format('H') >= 15) {
+            $startDate->modify('+ 1 day');
+        }
+
+        $rsvps = $this->rsvpRepository->findByMarktAndKoopmanAfterDate($markt, $koopman, $startDate);
+
+        foreach ($rsvps as $r) {
+            $this->entityManager->remove($r);
+        }
+
+        $this->entityManager->flush();
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

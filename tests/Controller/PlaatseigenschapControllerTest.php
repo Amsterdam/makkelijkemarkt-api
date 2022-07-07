@@ -13,6 +13,6 @@ class PlaatseigenschapControllerTest extends AbstractBasicControllerTest
 
     public function getFixtureName(): string
     {
-        return 'lantaarnpaal';
+        return 'Onder een boom';
     }
 }

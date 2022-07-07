@@ -31,8 +31,7 @@ final class KoopmanRepository extends ServiceEntityRepository
     {
         $qb = $this
             ->createQueryBuilder('koopman')
-            ->select('koopman')
-        ;
+            ->select('koopman');
 
         // search
         if (true === isset($q['freeSearch']) && null !== $q['freeSearch'] && '' !== $q['freeSearch']) {
@@ -88,8 +87,7 @@ final class KoopmanRepository extends ServiceEntityRepository
 
             // pagination
             ->setMaxResults($size)
-            ->setFirstResult($offset)
-        ;
+            ->setFirstResult($offset);
 
         // paginator
         $q = $qb->getQuery();
@@ -112,8 +110,7 @@ final class KoopmanRepository extends ServiceEntityRepository
             ->setParameter('marktId', $marktId)
             ->setParameter('sollicitatieNummer', $sollicitatieNummer)
 
-            ->setMaxResults(1)
-        ;
+            ->setMaxResults(1);
 
         $query = $qb->getQuery();
 
@@ -125,13 +122,9 @@ final class KoopmanRepository extends ServiceEntityRepository
         $qb = $this
             ->createQueryBuilder('koopman')
             ->addSelect('koopman')
-
             ->where('koopman.erkenningsnummer = :erkenningsnummer')
-
             ->setParameter('erkenningsnummer', $erkenningsnummer)
-
-            ->setMaxResults(1)
-        ;
+            ->setMaxResults(1);
 
         $query = $qb->getQuery();
 

@@ -35,6 +35,22 @@ class RsvpRepository extends ServiceEntityRepository
         return $this->findOneBy(['markt' => $markt, 'koopman' => $koopman, 'marktDate' => $marktDate]);
     }
 
+    public function findByMarktAndKoopmanAfterDate(Markt $markt, Koopman $koopman, DateTime $startDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->addSelect('r')
+            ->where('r.markt = :markt')
+            ->andWhere('r.koopman = :koopman')
+            ->andWhere('r.marktDate >= :startDate')
+            ->setParameter('markt', $markt)
+            ->setParameter('koopman', $koopman)
+            ->setParameter('startDate', $startDate)
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
     /**
      * @return Rsvp[] Returns an array of Rsvp objects
      */

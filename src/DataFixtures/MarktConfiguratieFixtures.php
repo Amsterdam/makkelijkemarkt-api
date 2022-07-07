@@ -13,10 +13,18 @@ use App\Entity\MarktPaginaIndelingslijstGroup;
 use App\Entity\Obstakel;
 use App\Entity\Plaatseigenschap;
 use DateTime;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class MarktConfiguratieFixtures extends BaseFixture
+class MarktConfiguratieFixtures extends BaseFixture implements DependentFixtureInterface
 {
+    public function getDependencies()
+    {
+        return [
+            MarktFixtures::class,
+        ];
+    }
+
     protected function loadData(ObjectManager $manager): void
     {
         $marktConfiguratieData = json_decode(file_get_contents(

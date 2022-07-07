@@ -19,12 +19,10 @@ class RsvpControllerTest extends ApiTestCase
         parent::setUp();
 
         $marktRepository = $this->entityManager->getRepository(Markt::class);
-        $markt = $marktRepository->findOneBy([
-        ]);
+        $markt = $marktRepository->findOneBy([]);
 
         $koopmanRepository = $this->entityManager->getRepository(Koopman::class);
-        $koopman = $koopmanRepository->findOneBy([
-        ]);
+        $koopman = $koopmanRepository->findOneBy([]);
 
         $this->marktDate = (new DateTime('now'))->format('Y-m-d');
         $this->attending = true;

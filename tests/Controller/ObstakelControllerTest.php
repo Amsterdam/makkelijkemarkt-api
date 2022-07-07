@@ -15,6 +15,6 @@ class ObstakelControllerTest extends AbstractBasicControllerTest
 
     public function getFixtureName(): string
     {
-        return 'bankje';
+        return 'Bankje';
     }
 }
