@@ -10,6 +10,7 @@ use App\Repository\MarktRepository;
 use App\Repository\RsvpPatternRepository;
 use App\Repository\RsvpRepository;
 use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
@@ -417,7 +418,7 @@ class RsvpController extends AbstractController
      * @Route("/rsvp/markt/{marktId}/koopman/{erkenningsnummer}", methods={"DELETE"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function rsvpDeleteByMarktIdAndErkenninsnummerWithinRange(int $marktId, string $erkenningsnummer): Response
+    public function rsvpDeleteFutureItemsByMarktIdAndErkenninsnummer(int $marktId, string $erkenningsnummer): Response
     {
         $markt = $this->marktRepository->getById($marktId);
 
@@ -431,7 +432,7 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $startDate = new DateTime();
+        $startDate = new DateTime('now', new DateTimeZone('Europe/Amsterdam'));
 
         // TODO: this should not be a hard-coded time
         // https://dev.azure.com/CloudCompetenceCenter/salmagundi/_sprints/backlog/Markten%20-%20Dev%20team/salmagundi/Sprint%2029?workitem=50146
