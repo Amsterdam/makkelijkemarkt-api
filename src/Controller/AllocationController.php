@@ -150,7 +150,7 @@ class AllocationController extends AbstractController
         // fill in missing data with defaults
         $data = $obj['ondernemer']['voorkeur'];
 
-        $plaatsvoorkeuren = (array_key_exists('plaatsen', $obj['ondernemer']) ? $obj['ondernemer']['plaatsen'] : []);
+        $plaatsvoorkeuren = (array_key_exists('plaatsvoorkeuren', $obj['ondernemer']) ? $obj['ondernemer']['plaatsvoorkeuren'] : []);
         $anywhere = (array_key_exists('anywhere', $data) ? $data['anywhere'] : true);
         $minimum = (array_key_exists('minimum', $data) ? (int) $data['minimum'] : 1);
         $maximum = (array_key_exists('maximum', $data) ? (int) $data['maximum'] : 1);
