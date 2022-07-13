@@ -356,7 +356,7 @@ class RsvpController extends AbstractController
                 });
 
                 // For each day in date range
-                $day = $start;
+                $day = clone $start;
                 do {
                     $hasRsvp = count(array_filter($rsvpsMarkt, function (Rsvp $elem) use ($day) {
                         return $elem->getMarktDate() == $day;
