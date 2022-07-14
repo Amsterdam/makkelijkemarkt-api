@@ -82,6 +82,7 @@ final class VergunningControleController extends AbstractController
             'factuur',
             'vergunningControle',
             'account',
+            'simpleSollicitatie',
         ];
     }
 
@@ -93,7 +94,6 @@ final class VergunningControleController extends AbstractController
 
         $expectedParameters = [
             'aanwezig',
-            'registratieGeolocatie',
             'erkenningsnummer',
             'ronde',
         ];
