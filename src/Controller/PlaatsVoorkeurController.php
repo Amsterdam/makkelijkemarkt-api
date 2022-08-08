@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\PlaatsVoorkeur;
+use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\EntityNormalizer;
+use App\Normalizer\PlaatsVoorkeurNormalizer;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\PlaatsVoorkeurRepository;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class PlaatsVoorkeurController extends AbstractController
 {
@@ -40,20 +43,29 @@ class PlaatsVoorkeurController extends AbstractController
     /** @var Serializer */
     private $serializer;
 
+    /** @var Serializer */
+    private $logSerializer;
+
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
     public function __construct(
         CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         PlaatsVoorkeurRepository $plaatsVoorkeurRepository,
         MarktRepository $marktRepository,
-        KoopmanRepository $koopmanRepository
+        KoopmanRepository $koopmanRepository,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->plaatsVoorkeurRepository = $plaatsVoorkeurRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->dispatcher = $dispatcher;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new PlaatsVoorkeurNormalizer($cacheManager)]);
     }
 
     /**
@@ -91,6 +103,8 @@ class PlaatsVoorkeurController extends AbstractController
     public function createOrUpdate(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
+        $user = $request->headers->get('user');
+        $user = $user ? $user : 'undefined';
 
         if (null === $data) {
             $this->logger->warning('No data');
@@ -146,6 +160,11 @@ class PlaatsVoorkeurController extends AbstractController
 
         $this->entityManager->persist($plaatsVoorkeur);
         $this->entityManager->flush();
+
+        $logItem = $this->logSerializer->normalize($plaatsVoorkeur);
+        $shortClassName = (new \ReflectionClass($plaatsVoorkeur))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($plaatsVoorkeur, 'json');
 
