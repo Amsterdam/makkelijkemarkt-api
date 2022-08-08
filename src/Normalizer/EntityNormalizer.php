@@ -102,6 +102,7 @@ final class EntityNormalizer extends ObjectNormalizer
             'absentUntil' => 'Y-m-d',
             'marktDate' => 'Y-m-d',
             'dag' => 'Y-m-d',
+            'datetime' => 'Y-m-d',
             'handhavingsVerzoek' => 'Y-m-d',
             'geldigVanaf' => 'array',
             'geldigTot' => 'array',

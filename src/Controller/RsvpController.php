@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Rsvp;
 use App\Entity\RsvpPattern;
+use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\EntityNormalizer;
+use App\Normalizer\RsvpLogNormalizer;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\RsvpPatternRepository;
@@ -23,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RsvpController extends AbstractController
 {
@@ -46,8 +49,14 @@ class RsvpController extends AbstractController
     /** @var KoopmanRepository */
     private $koopmanRepository;
 
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
     /** @var Serializer */
     private $serializer;
+
+    /** @var Serializer */
+    private $logSerializer;
 
     public function __construct(
         CacheManager $cacheManager,
@@ -56,7 +65,8 @@ class RsvpController extends AbstractController
         RsvpRepository $rsvpRepository,
         RsvpPatternRepository $rsvpPatternRepository,
         MarktRepository $marktRepository,
-        KoopmanRepository $koopmanRepository
+        KoopmanRepository $koopmanRepository,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
@@ -64,7 +74,9 @@ class RsvpController extends AbstractController
         $this->rsvpPatternRepository = $rsvpPatternRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->dispatcher = $dispatcher;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new RsvpLogNormalizer($cacheManager)]);
     }
 
     /**
@@ -103,6 +115,7 @@ class RsvpController extends AbstractController
     public function create(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
+        $user = $request->headers->get('user') ?: null;
 
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
@@ -156,6 +169,11 @@ class RsvpController extends AbstractController
 
         $this->entityManager->persist($rsvp);
         $this->entityManager->flush();
+
+        $logItem = $this->logSerializer->normalize($rsvp);
+        $shortClassName = (new \ReflectionClass($rsvp))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($rsvp, 'json');
 
@@ -418,9 +436,10 @@ class RsvpController extends AbstractController
      * @Route("/rsvp/markt/{marktId}/koopman/{erkenningsnummer}", methods={"DELETE"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function rsvpDeleteFutureItemsByMarktIdAndErkenninsnummer(int $marktId, string $erkenningsnummer): Response
+    public function rsvpDeleteFutureItemsByMarktIdAndErkenninsnummer(Request $request, int $marktId, string $erkenningsnummer): Response
     {
         $markt = $this->marktRepository->getById($marktId);
+        $user = $request->headers->get('user') ?: null;
 
         if (null === $markt) {
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
@@ -445,6 +464,11 @@ class RsvpController extends AbstractController
 
         foreach ($rsvps as $r) {
             $this->entityManager->remove($r);
+
+            $logItem = $this->logSerializer->normalize($r);
+            $shortClassName = (new \ReflectionClass($r))->getShortName();
+
+            $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'delete', $shortClassName, $logItem));
         }
 
         $this->entityManager->flush();

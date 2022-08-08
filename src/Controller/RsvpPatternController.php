@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\RsvpPattern;
+use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\EntityNormalizer;
+use App\Normalizer\RsvpPatternLogNormalizer;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\RsvpPatternRepository;
@@ -20,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RsvpPatternController extends AbstractController
 {
@@ -28,6 +31,9 @@ class RsvpPatternController extends AbstractController
 
     /** @var Serializer */
     private $serializer;
+
+    /** @var Serializer */
+    private $logSerializer;
 
     /** @var KoopmanRepository */
     private $koopmanRepository;
@@ -38,18 +44,24 @@ class RsvpPatternController extends AbstractController
     /** @var RsvpPatternRepository */
     private $rsvpPatternRepository;
 
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         CacheManager $cacheManager,
         KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
-        RsvpPatternRepository $rsvpPatternRepository
+        RsvpPatternRepository $rsvpPatternRepository,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->entityManager = $entityManager;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new RsvpPatternLogNormalizer($cacheManager)]);
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->rsvpPatternRepository = $rsvpPatternRepository;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -95,6 +107,7 @@ class RsvpPatternController extends AbstractController
     public function create(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
+        $user = $request->headers->get('user') ?: null;
 
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
@@ -143,6 +156,11 @@ class RsvpPatternController extends AbstractController
 
         $this->entityManager->persist($rsvpPattern);
         $this->entityManager->flush();
+
+        $logItem = $this->logSerializer->normalize($rsvpPattern);
+        $shortClassName = (new \ReflectionClass($rsvpPattern))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($rsvpPattern, 'json');
 
