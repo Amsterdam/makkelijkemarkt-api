@@ -22,6 +22,9 @@ class RsvpPatternLogNormalizer implements NormalizerInterface, NormalizerAwareIn
 
     public function normalize($object, ?string $format = null, array $context = [])
     {
+        // Human readable string:
+        // {actor} changed RsvpPattern for {koopmanName} on the {marktName} to {monday}, ... , {sunday}
+
         /* @var RsvpPattern $object */
         return [
             'id' => $object->getId(),

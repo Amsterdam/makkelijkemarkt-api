@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\PlaatsVoorkeur;
 use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\EntityNormalizer;
-use App\Normalizer\PlaatsVoorkeurNormalizer;
+use App\Normalizer\PlaatsVoorkeurLogNormalizer;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\PlaatsVoorkeurRepository;
@@ -52,11 +52,11 @@ class PlaatsVoorkeurController extends AbstractController
     public function __construct(
         CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
-        LoggerInterface $logger,
-        PlaatsVoorkeurRepository $plaatsVoorkeurRepository,
-        MarktRepository $marktRepository,
+        EventDispatcherInterface $dispatcher,
         KoopmanRepository $koopmanRepository,
-        EventDispatcherInterface $dispatcher
+        LoggerInterface $logger,
+        MarktRepository $marktRepository,
+        PlaatsVoorkeurRepository $plaatsVoorkeurRepository
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
@@ -65,7 +65,7 @@ class PlaatsVoorkeurController extends AbstractController
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->logSerializer = new Serializer([new PlaatsVoorkeurNormalizer($cacheManager)]);
+        $this->logSerializer = new Serializer([new PlaatsVoorkeurLogNormalizer($cacheManager)]);
     }
 
     /**
@@ -103,8 +103,7 @@ class PlaatsVoorkeurController extends AbstractController
     public function createOrUpdate(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
-        $user = $request->headers->get('user');
-        $user = $user ? $user : 'undefined';
+        $user = $request->headers->get('user') ?: null;
 
         if (null === $data) {
             $this->logger->warning('No data');

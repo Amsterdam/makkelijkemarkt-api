@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class PlaatsVoorkeurNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class PlaatsVoorkeurLogNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -22,6 +22,9 @@ class PlaatsVoorkeurNormalizer implements NormalizerInterface, NormalizerAwareIn
 
     public function normalize($object, ?string $format = null, array $context = [])
     {
+        // Human readable string:
+        // {actor} changed PlaatsVoorkeur for {koopmanName} on the {marktName} to {plaatsen}
+
         /* @var PlaatsVoorkeur $object */
         return [
             'id' => $object->getId(),

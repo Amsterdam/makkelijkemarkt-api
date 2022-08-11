@@ -2,12 +2,12 @@
 
 namespace App\Normalizer;
 
-use App\Entity\Rsvp;
+use App\Entity\MarktVoorkeur;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class RsvpLogNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class MarktVoorkeurLogNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -17,7 +17,7 @@ class RsvpLogNormalizer implements NormalizerInterface, NormalizerAwareInterface
 
     public function supportsNormalization($data, ?string $format = null)
     {
-        return $data instanceof Rsvp;
+        return $data instanceof MarktVoorkeur;
     }
 
     public function normalize($object, ?string $format = null, array $context = [])
@@ -25,13 +25,19 @@ class RsvpLogNormalizer implements NormalizerInterface, NormalizerAwareInterface
         // Human readable string:
         // {actor} changed Rsvp for {koopmanName} on the {marktName} on {date} to {attending}
 
-        /* @var Rsvp $object */
+        /* @var MarktVoorkeur $object */
         return [
             'id' => $object->getId(),
             'koopman' => $object->getKoopman(),
+            'anywhere' => $object->getAnywhere(),
+            'minimum' => $object->getMinimum(),
+            'maximum' => $object->getMaximum(),
+            'inrichting' => $object->getHasInrichting(),
+            'bakType' => $object->getBakType(),
+            'branche' => $object->getBranche(),
+            'absentFrom' => $object->getAbsentFrom() ? $object->getAbsentFrom()->format('Y-m-d') : '',
+            'absentUntil' => $object->getAbsentUntil() ? $object->getAbsentUntil()->format('Y-m-d') : '',
             'markt' => $object->getMarkt(),
-            'marktDate' => $object->getMarktDate()->format('Y-m-d'),
-            'attending' => $object->getAttending(),
         ];
     }
 }
