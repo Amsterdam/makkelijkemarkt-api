@@ -227,7 +227,10 @@ class MarktVoorkeurController extends AbstractController
         $this->entityManager->persist($marktvoorkeur);
         $this->entityManager->flush();
 
-        $this->dispatchEvent($marktvoorkeur, $user, 'create');
+        $logItem = $this->logSerializer->normalize($marktvoorkeur);
+        $shortClassName = (new \ReflectionClass($marktvoorkeur))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($marktvoorkeur, 'json');
 
@@ -350,13 +353,5 @@ class MarktVoorkeurController extends AbstractController
         $response = $this->serializer->serialize($marktVoorkeur, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
-    }
-
-    private function dispatchEvent($marktvoorkeur, $user, $action)
-    {
-        $logItem = $this->logSerializer->normalize($marktvoorkeur);
-        $shortClassName = (new \ReflectionClass($marktvoorkeur))->getShortName();
-
-        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, $action, $shortClassName, $logItem));
     }
 }

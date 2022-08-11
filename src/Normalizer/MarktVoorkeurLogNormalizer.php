@@ -35,8 +35,8 @@ class MarktVoorkeurLogNormalizer implements NormalizerInterface, NormalizerAware
             'inrichting' => $object->getHasInrichting(),
             'bakType' => $object->getBakType(),
             'branche' => $object->getBranche(),
-            'absentFrom' => $object->getAbsentFrom(),
-            'absentUntil' => $object->getAbsentUntil(),
+            'absentFrom' => $object->getAbsentFrom()->format('Y-m-d'),
+            'absentUntil' => $object->getAbsentUntil()->format('Y-m-d'),
             'markt' => $object->getMarkt(),
         ];
     }
