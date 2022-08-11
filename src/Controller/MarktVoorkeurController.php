@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\MarktVoorkeur;
+use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\EntityNormalizer;
+use App\Normalizer\MarktVoorkeurLogNormalizer;
 use App\Repository\BrancheRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
@@ -21,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MarktVoorkeurController extends AbstractController
 {
@@ -42,25 +45,34 @@ class MarktVoorkeurController extends AbstractController
     /** @var Serializer */
     private $serializer;
 
+    /** @var Serializer */
+    private $logSerializer;
+
     /** @var EntityManagerInterface */
     private $entityManager;
 
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
     public function __construct(
+        BrancheRepository $brancheRepository,
         CacheManager $cacheManager,
-        MarktVoorkeurRepository $marktVoorkeurRepository,
+        EntityManagerInterface $entityManager,
+        EventDispatcherInterface $dispatcher,
+        KoopmanRepository $koopmanRepository,
         LoggerInterface $logger,
         MarktRepository $marktRepository,
-        BrancheRepository $brancheRepository,
-        KoopmanRepository $koopmanRepository,
-        EntityManagerInterface $entityManager
+        MarktVoorkeurRepository $marktVoorkeurRepository
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->brancheRepository = $brancheRepository;
         $this->logger = $logger;
+        $this->dispatcher = $dispatcher;
         $this->entityManager = $entityManager;
         $this->marktVoorkeurRepository = $marktVoorkeurRepository;
         $this->marktRepository = $marktRepository;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new MarktVoorkeurLogNormalizer($cacheManager)]);
     }
 
     /**
@@ -105,6 +117,7 @@ class MarktVoorkeurController extends AbstractController
     public function createOrUpdate(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
+        $user = $request->headers->get('user') ?: null;
 
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
@@ -213,6 +226,8 @@ class MarktVoorkeurController extends AbstractController
 
         $this->entityManager->persist($marktvoorkeur);
         $this->entityManager->flush();
+
+        $this->dispatchEvent($marktvoorkeur, $user, 'create');
 
         $response = $this->serializer->serialize($marktvoorkeur, 'json');
 
@@ -335,5 +350,13 @@ class MarktVoorkeurController extends AbstractController
         $response = $this->serializer->serialize($marktVoorkeur, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    private function dispatchEvent($marktvoorkeur, $user, $action)
+    {
+        $logItem = $this->logSerializer->normalize($marktvoorkeur);
+        $shortClassName = (new \ReflectionClass($marktvoorkeur))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, $action, $shortClassName, $logItem));
     }
 }
