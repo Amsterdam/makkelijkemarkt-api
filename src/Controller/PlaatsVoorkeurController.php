@@ -103,7 +103,7 @@ class PlaatsVoorkeurController extends AbstractController
     public function createOrUpdate(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
-        $user = $request->headers->get('user') ?: null;
+        $user = $request->headers->get('user') ?: 'undefined user';
 
         if (null === $data) {
             $this->logger->warning('No data');

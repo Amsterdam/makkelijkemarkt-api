@@ -117,7 +117,7 @@ class MarktVoorkeurController extends AbstractController
     public function createOrUpdate(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
-        $user = $request->headers->get('user') ?: null;
+        $user = $request->headers->get('user') ?: 'undefined user';
 
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
@@ -230,7 +230,9 @@ class MarktVoorkeurController extends AbstractController
         $logItem = $this->logSerializer->normalize($marktvoorkeur);
         $shortClassName = (new \ReflectionClass($marktvoorkeur))->getShortName();
 
-        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
+        $event = new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem);
+        $this->dispatcher->dispatch($event);
+        // $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($marktvoorkeur, 'json');
 
