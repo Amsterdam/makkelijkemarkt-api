@@ -107,7 +107,7 @@ class RsvpPatternController extends AbstractController
     public function create(Request $request): Response
     {
         $data = json_decode((string) $request->getContent(), true);
-        $user = $request->headers->get('user') ?: null;
+        $user = $request->headers->get('user') ?: 'undefined user';
 
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
