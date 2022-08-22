@@ -20,7 +20,7 @@ class KiesJeKraamAuditLog
     private $id;
 
     /**
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $actor;
 
