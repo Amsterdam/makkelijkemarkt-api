@@ -44,6 +44,6 @@ RUN composer install --prefer-dist --no-progress --no-suggest --no-scripts
 
 RUN chown -R www-data: /var/www
 
-RUN vendor/bin/grumphp run
+RUN vendor/bin/grumphp run -n
 
 CMD ["php-fpm"]
