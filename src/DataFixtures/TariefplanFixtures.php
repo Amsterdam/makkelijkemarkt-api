@@ -687,7 +687,7 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $lineairplan = $this->getReference('lineairplan_31');
 
         /** @var Markt $markt */
-        $markt = $this->getReference('markt_31');
+        $markt = $this->getReference('markt_AC-2022');
 
         $tariefplan = new Tariefplan();
         $tariefplan->setLineairplan($lineairplan);
