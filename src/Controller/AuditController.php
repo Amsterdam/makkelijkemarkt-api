@@ -66,6 +66,7 @@ final class AuditController extends AbstractController
             'vergunningControle',
             'factuur',
             'simpleProduct',
+            'sollicitatie',
         ];
     }
 
