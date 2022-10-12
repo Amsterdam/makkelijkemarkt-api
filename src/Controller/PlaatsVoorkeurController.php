@@ -125,6 +125,10 @@ class PlaatsVoorkeurController extends AbstractController
             }
         }
 
+        if (count($data['plaatsen']) > 6) {
+            return new JsonResponse(['error' => 'Request can\'t contain more than 6 plaatsvoorkeuren.'], Response::HTTP_BAD_REQUEST);
+        }
+
         $markt = $this->marktRepository->getById($data['markt']);
 
         if (null === $markt) {
