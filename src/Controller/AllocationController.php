@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Allocation;
 use App\Entity\Markt;
+use App\Event\KiesJeKraamAuditLogEvent;
+use App\Normalizer\AllocationLogNormalizer;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\AllocationRepository;
 use App\Repository\BrancheRepository;
@@ -23,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class AllocationController extends AbstractController
 {
@@ -47,6 +50,12 @@ class AllocationController extends AbstractController
     /** @var Serializer */
     private $serializer;
 
+    /** @var Serializer */
+    private $logSerializer;
+
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
     private $rejectReasons;
     private $allocations;
     private $marktDate;
@@ -59,7 +68,8 @@ class AllocationController extends AbstractController
         AllocationRepository $allocationRepository,
         KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
-        BrancheRepository $brancheRepository
+        BrancheRepository $brancheRepository,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
@@ -68,6 +78,8 @@ class AllocationController extends AbstractController
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new AllocationLogNormalizer($cacheManager)]);
+        $this->dispatcher = $dispatcher;
         $this->rejectReasons = [
             1 => 'BRANCHE_FULL',
             2 => 'ADJACENT_UNAVAILABLE',
@@ -264,11 +276,16 @@ class AllocationController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
+        $logItems = [];
         foreach ($this->allocations as $allocation) {
             $this->entityManager->persist($allocation);
+            $logItems[] = $this->logSerializer->normalize($this->allocations);
         }
 
         $this->entityManager->flush();
+
+        $shortClassName = (new \ReflectionClass($allocation))->getShortName();
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName.'[]', $logItems));
 
         $response = $this->serializer->serialize($this->allocations, 'json');
 
