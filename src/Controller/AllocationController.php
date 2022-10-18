@@ -276,16 +276,17 @@ class AllocationController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $logItems = [];
         foreach ($this->allocations as $allocation) {
             $this->entityManager->persist($allocation);
-            $logItems[] = $this->logSerializer->normalize($this->allocations);
         }
 
         $this->entityManager->flush();
 
+        /** @var Markt $markt */
+        $logItem = 'Allocation was created or updated for '.$markt->getNaam().' on '.$marktDate->format('Y-m-d H:i:s').' by '.$user;
+
         $shortClassName = (new \ReflectionClass($allocation))->getShortName();
-        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName.'[]', $logItems));
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, [$logItem]));
 
         $response = $this->serializer->serialize($this->allocations, 'json');
 
