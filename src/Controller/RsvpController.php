@@ -94,7 +94,7 @@ class RsvpController extends AbstractController
      *                 @OA\Property(property="marktDate", type="string", description="datum van de markt (als YYYY-MM-DD)"),
      *                 @OA\Property(property="attending", type="boolean", description="rsvp status van de koopman"),
      *                 @OA\Property(property="marktId", type="string", description="id van de markt"),
-     *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
+     *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman"),
      *                 @OA\Property(property="rsvps", type="object", description="meerdere rsvps tegelijk")
      *             )
      *         )
@@ -122,18 +122,9 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-        $expectedParameters = [
-            'marktDate',
-            'attending',
-        ];
-
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
-            }
-        }
-
         $expectedRsvpParameters = [
+            'marktId',
+            'attending',
             'marktDate',
             'attending',
         ];
@@ -142,12 +133,12 @@ class RsvpController extends AbstractController
             $rsvps[] = [
                 'marktDate' => $data['marktDate'],
                 'attending' => $data['attending'],
+                'marktId' => $data['marktId'],
+                'koopmanErkenningsNummer' => $data['koopmanErkenningsNummer'],
             ];
 
             $data = [
                 'rsvps' => $rsvps,
-                'marktId' => $data['marktId'],
-                'koopmanErkenningsNummer' => $data['koopmanErkenningsNummer'],
             ];
         }
 
@@ -159,19 +150,19 @@ class RsvpController extends AbstractController
             }
         }
 
-        $markt = $this->marktRepository->getById($data['marktId']);
-
-        if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopmanErkenningsNummer']);
-
-        if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
-        }
-
         foreach ($data['rsvps'] as $rsvpData) {
+            $markt = $this->marktRepository->getById($rsvpData['marktId']);
+
+            if (null === $markt) {
+                return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $koopman = $this->koopmanRepository->findOneByErkenningsnummer($rsvpData['koopmanErkenningsNummer']);
+
+            if (null === $koopman) {
+                return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
+            }
+
             if (strtotime($rsvpData['marktDate'])) {
                 $marktDate = new DateTime($rsvpData['marktDate']);
             } else {
