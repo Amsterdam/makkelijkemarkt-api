@@ -225,6 +225,7 @@ class AllocationController extends AbstractController
     public function create(Request $request, string $marktId, string $date): Response
     {
         $data = json_decode((string) $request->getContent(), true);
+        $user = $request->headers->get('user') ?: 'undefined user';
 
         if (null === $data) {
             $this->logger->error(json_last_error_msg());
