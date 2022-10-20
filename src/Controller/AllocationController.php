@@ -81,6 +81,7 @@ class AllocationController extends AbstractController
         $this->logSerializer = new Serializer([new AllocationLogNormalizer($cacheManager)]);
         $this->dispatcher = $dispatcher;
         $this->rejectReasons = [
+            0 => 'UNKNOWN',
             1 => 'BRANCHE_FULL',
             2 => 'ADJACENT_UNAVAILABLE',
             3 => 'MINIMUM_UNAVAILABLE',
