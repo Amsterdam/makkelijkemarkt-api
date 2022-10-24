@@ -11,9 +11,11 @@ use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\RsvpPatternRepository;
 use App\Repository\RsvpRepository;
+use App\Utils\Constants;
 use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
@@ -126,7 +128,7 @@ class RsvpController extends AbstractController
             'marktId',
             'attending',
             'marktDate',
-            'attending',
+            'koopmanErkenningsNummer',
         ];
 
         if (!array_key_exists('rsvps', $data)) {
@@ -145,28 +147,46 @@ class RsvpController extends AbstractController
         foreach ($data['rsvps'] as $rsvpData) {
             foreach ($expectedRsvpParameters as $expectedRsvpParameter) {
                 if (!array_key_exists($expectedRsvpParameter, $rsvpData)) {
-                    return new JsonResponse(['error' => "parameter '".$expectedRsvpParameter."' missing"], Response::HTTP_BAD_REQUEST);
+                    return new JsonResponse(['error' => "parameter '$expectedRsvpParameter' missing"], Response::HTTP_BAD_REQUEST);
                 }
             }
         }
+
+        try {
+            $rsvps = $this->handleCreateRsvps($data['rsvps'], $user);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $response = $this->serializer->serialize($rsvps, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    private function handleCreateRsvps($rsvpInput, $user)
+    {
+        foreach ($rsvpInput as $rsvpData) {
+            if (strtotime($rsvpData['marktDate'])) {
+                $marktDate = new DateTime($rsvpData['marktDate']);
+            } else {
+                throw new Exception('marktDate is not a date');
+            }
+
+            if (!is_bool($rsvpData['attending'])) {
+                throw new Exception('attending is not a boolean');
+            }
 
         foreach ($data['rsvps'] as $rsvpData) {
             $markt = $this->marktRepository->getById($rsvpData['marktId']);
 
             if (null === $markt) {
-                return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
+                throw new Exception('Markt not found');
             }
 
             $koopman = $this->koopmanRepository->findOneByErkenningsnummer($rsvpData['koopmanErkenningsNummer']);
 
             if (null === $koopman) {
-                return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
-            }
-
-            if (strtotime($rsvpData['marktDate'])) {
-                $marktDate = new DateTime($rsvpData['marktDate']);
-            } else {
-                return new JsonResponse(['error' => 'marktDate is not a date'], Response::HTTP_BAD_REQUEST);
+                throw new Exception('Koopman not found');
             }
 
             if (null !== $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate)) {
@@ -178,14 +198,9 @@ class RsvpController extends AbstractController
             $rsvp->setMarktDate($marktDate);
             $rsvp->setMarkt($markt);
             $rsvp->setKoopman($koopman);
-            if (is_bool($rsvpData['attending'])) {
-                $rsvp->setAttending((bool) $rsvpData['attending']);
-            } else {
-                return new JsonResponse(['error' => 'attending is not a boolean'], Response::HTTP_BAD_REQUEST);
-            }
+            $rsvp->setAttending((bool) $rsvpData['attending']);
 
             $this->entityManager->persist($rsvp);
-            $this->entityManager->flush();
 
             $rsvps[] = $rsvp;
 
@@ -194,10 +209,9 @@ class RsvpController extends AbstractController
 
             $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
         }
+        $this->entityManager->flush();
 
-        $response = $this->serializer->serialize($rsvps, 'json');
-
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+        return $rsvps;
     }
 
     /**
