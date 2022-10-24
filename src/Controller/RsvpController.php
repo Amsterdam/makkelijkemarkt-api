@@ -176,7 +176,15 @@ class RsvpController extends AbstractController
                 throw new Exception('attending is not a boolean');
             }
 
-        foreach ($data['rsvps'] as $rsvpData) {
+            $now = new DateTime('now');
+            $allocTime = Constants::getAllocationTime();
+            $today = new DateTime('today');
+            $tomorrow = new DateTime('tomorrow');
+
+            if ($marktDate <= $today || ($now > $allocTime && $marktDate <= $tomorrow)) {
+                continue;
+            }
+
             $markt = $this->marktRepository->getById($rsvpData['marktId']);
 
             if (null === $markt) {
