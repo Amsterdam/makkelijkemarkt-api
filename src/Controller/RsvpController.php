@@ -228,14 +228,14 @@ class RsvpController extends AbstractController
 
             $this->entityManager->persist($rsvp);
 
+            $logItems[] = $this->logSerializer->normalize($rsvp);
             $rsvps[] = $rsvp;
-
-            $logItem = $this->logSerializer->normalize($rsvp);
-            $shortClassName = (new \ReflectionClass($rsvp))->getShortName();
-
-            $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
         }
         $this->entityManager->flush();
+
+        $shortClassName = (new \ReflectionClass($rsvp))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItems));
 
         return $rsvps;
     }
