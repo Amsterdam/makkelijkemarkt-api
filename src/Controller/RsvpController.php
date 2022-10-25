@@ -192,8 +192,6 @@ class RsvpController extends AbstractController
 
             $koopman = $this->koopmanRepository->findOneByErkenningsnummer($rsvpData['koopmanErkenningsNummer']);
 
-            $sollicitatie = $this->sollicitatieRepository->findOneBy(['markt' => $markt, 'koopman' => $koopman]);
-
             $oldRsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
 
             if (null === $koopman) {
@@ -209,6 +207,7 @@ class RsvpController extends AbstractController
             // Or default to true or false for vpl or soll respectively.
             if ($marktDate <= $today || ($now > $allocTime && $marktDate <= $tomorrow)) {
                 if (null == $oldRsvp) {
+                    $sollicitatie = $this->sollicitatieRepository->findOneBy(['markt' => $markt, 'koopman' => $koopman]);
                     $attending = $sollicitatie->isVast();
                 } else {
                     $attending = $oldRsvp->getAttending();
