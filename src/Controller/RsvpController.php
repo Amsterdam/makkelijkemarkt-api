@@ -11,6 +11,7 @@ use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\RsvpPatternRepository;
 use App\Repository\RsvpRepository;
+use App\Repository\SollicitatieRepository;
 use App\Utils\Constants;
 use DateTime;
 use DateTimeZone;
@@ -51,6 +52,9 @@ class RsvpController extends AbstractController
     /** @var KoopmanRepository */
     private $koopmanRepository;
 
+    /** @var SollicitatieRepository */
+    private $sollicitatieRepository;
+
     /** @var EventDispatcherInterface */
     private $dispatcher;
 
@@ -68,12 +72,14 @@ class RsvpController extends AbstractController
         RsvpPatternRepository $rsvpPatternRepository,
         MarktRepository $marktRepository,
         KoopmanRepository $koopmanRepository,
+        SollicitatieRepository $sollicitatieRepository,
         EventDispatcherInterface $dispatcher
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->rsvpRepository = $rsvpRepository;
         $this->rsvpPatternRepository = $rsvpPatternRepository;
+        $this->sollicitatieRepository = $sollicitatieRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
@@ -174,15 +180,8 @@ class RsvpController extends AbstractController
 
             if (!is_bool($rsvpData['attending'])) {
                 throw new Exception('attending is not a boolean');
-            }
-
-            $now = new DateTime('now');
-            $allocTime = Constants::getAllocationTime();
-            $today = new DateTime('today');
-            $tomorrow = new DateTime('tomorrow');
-
-            if ($marktDate <= $today || ($now > $allocTime && $marktDate <= $tomorrow)) {
-                continue;
+            } else {
+                $attending = (bool) $rsvpData['attending'];
             }
 
             $markt = $this->marktRepository->getById($rsvpData['marktId']);
@@ -193,12 +192,30 @@ class RsvpController extends AbstractController
 
             $koopman = $this->koopmanRepository->findOneByErkenningsnummer($rsvpData['koopmanErkenningsNummer']);
 
+            $oldRsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
+
             if (null === $koopman) {
                 throw new Exception('Koopman not found');
             }
 
-            if (null !== $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate)) {
-                $rsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
+            $now = new DateTime('now');
+            $allocTime = Constants::getAllocationTime();
+            $today = new DateTime('today');
+            $tomorrow = new DateTime('tomorrow');
+
+            // If rsvp is in the past, use either original RSVP attendance,
+            // Or default to true or false for vpl or soll respectively.
+            if ($marktDate <= $today || ($now > $allocTime && $marktDate <= $tomorrow)) {
+                if (null == $oldRsvp) {
+                    $sollicitatie = $this->sollicitatieRepository->findOneBy(['markt' => $markt, 'koopman' => $koopman]);
+                    $attending = $sollicitatie->isVast();
+                } else {
+                    $attending = $oldRsvp->getAttending();
+                }
+            }
+
+            if (null !== $oldRsvp) {
+                $rsvp = $oldRsvp;
             } else {
                 $rsvp = new Rsvp();
             }
@@ -206,18 +223,18 @@ class RsvpController extends AbstractController
             $rsvp->setMarktDate($marktDate);
             $rsvp->setMarkt($markt);
             $rsvp->setKoopman($koopman);
-            $rsvp->setAttending((bool) $rsvpData['attending']);
+            $rsvp->setAttending($attending);
 
             $this->entityManager->persist($rsvp);
 
+            $logItems[] = $this->logSerializer->normalize($rsvp);
             $rsvps[] = $rsvp;
-
-            $logItem = $this->logSerializer->normalize($rsvp);
-            $shortClassName = (new \ReflectionClass($rsvp))->getShortName();
-
-            $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
         }
         $this->entityManager->flush();
+
+        $shortClassName = (new \ReflectionClass($rsvp))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItems));
 
         return $rsvps;
     }
