@@ -11,9 +11,12 @@ use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\RsvpPatternRepository;
 use App\Repository\RsvpRepository;
+use App\Repository\SollicitatieRepository;
+use App\Utils\Constants;
 use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
@@ -49,6 +52,9 @@ class RsvpController extends AbstractController
     /** @var KoopmanRepository */
     private $koopmanRepository;
 
+    /** @var SollicitatieRepository */
+    private $sollicitatieRepository;
+
     /** @var EventDispatcherInterface */
     private $dispatcher;
 
@@ -66,12 +72,14 @@ class RsvpController extends AbstractController
         RsvpPatternRepository $rsvpPatternRepository,
         MarktRepository $marktRepository,
         KoopmanRepository $koopmanRepository,
+        SollicitatieRepository $sollicitatieRepository,
         EventDispatcherInterface $dispatcher
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->rsvpRepository = $rsvpRepository;
         $this->rsvpPatternRepository = $rsvpPatternRepository;
+        $this->sollicitatieRepository = $sollicitatieRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
@@ -94,7 +102,8 @@ class RsvpController extends AbstractController
      *                 @OA\Property(property="marktDate", type="string", description="datum van de markt (als YYYY-MM-DD)"),
      *                 @OA\Property(property="attending", type="boolean", description="rsvp status van de koopman"),
      *                 @OA\Property(property="marktId", type="string", description="id van de markt"),
-     *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
+     *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman"),
+     *                 @OA\Property(property="rsvps", type="object", description="meerdere rsvps tegelijk")
      *             )
      *         )
      *     ),
@@ -121,63 +130,113 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-        $expectedParameters = [
-            'marktDate',
-            'attending',
+        $expectedRsvpParameters = [
             'marktId',
+            'attending',
+            'marktDate',
             'koopmanErkenningsNummer',
         ];
 
-        foreach ($expectedParameters as $expectedParameter) {
-            if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
+        if (!array_key_exists('rsvps', $data)) {
+            $rsvps[] = [
+                'marktDate' => $data['marktDate'],
+                'attending' => $data['attending'],
+                'marktId' => $data['marktId'],
+                'koopmanErkenningsNummer' => $data['koopmanErkenningsNummer'],
+            ];
+
+            $data = [
+                'rsvps' => $rsvps,
+            ];
+        }
+
+        foreach ($data['rsvps'] as $rsvpData) {
+            foreach ($expectedRsvpParameters as $expectedRsvpParameter) {
+                if (!array_key_exists($expectedRsvpParameter, $rsvpData)) {
+                    return new JsonResponse(['error' => "parameter '$expectedRsvpParameter' missing"], Response::HTTP_BAD_REQUEST);
+                }
             }
         }
 
-        $markt = $this->marktRepository->getById($data['marktId']);
-
-        if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
+        try {
+            $rsvps = $this->handleCreateRsvps($data['rsvps'], $user);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['koopmanErkenningsNummer']);
-
-        if (null === $koopman) {
-            return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (strtotime($data['marktDate'])) {
-            $marktDate = new DateTime($data['marktDate']);
-        } else {
-            return new JsonResponse(['error' => 'marktDate is not a date'], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (null !== $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate)) {
-            $rsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
-        } else {
-            $rsvp = new Rsvp();
-        }
-
-        $rsvp->setMarktDate($marktDate);
-        $rsvp->setMarkt($markt);
-        $rsvp->setKoopman($koopman);
-        if (is_bool($data['attending'])) {
-            $rsvp->setAttending((bool) $data['attending']);
-        } else {
-            return new JsonResponse(['error' => 'attending is not a boolean'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $this->entityManager->persist($rsvp);
-        $this->entityManager->flush();
-
-        $logItem = $this->logSerializer->normalize($rsvp);
-        $shortClassName = (new \ReflectionClass($rsvp))->getShortName();
-
-        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
-
-        $response = $this->serializer->serialize($rsvp, 'json');
+        $response = $this->serializer->serialize($rsvps, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    private function handleCreateRsvps($rsvpInput, $user)
+    {
+        foreach ($rsvpInput as $rsvpData) {
+            if (strtotime($rsvpData['marktDate'])) {
+                $marktDate = new DateTime($rsvpData['marktDate']);
+            } else {
+                throw new Exception('marktDate is not a date');
+            }
+
+            if (!is_bool($rsvpData['attending'])) {
+                throw new Exception('attending is not a boolean');
+            } else {
+                $attending = (bool) $rsvpData['attending'];
+            }
+
+            $markt = $this->marktRepository->getById($rsvpData['marktId']);
+
+            if (null === $markt) {
+                throw new Exception('Markt not found');
+            }
+
+            $koopman = $this->koopmanRepository->findOneByErkenningsnummer($rsvpData['koopmanErkenningsNummer']);
+
+            $oldRsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
+
+            if (null === $koopman) {
+                throw new Exception('Koopman not found');
+            }
+
+            $now = new DateTime('now');
+            $allocTime = Constants::getAllocationTime();
+            $today = new DateTime('today');
+            $tomorrow = new DateTime('tomorrow');
+
+            // If rsvp is in the past, use either original RSVP attendance,
+            // Or default to true or false for vpl or soll respectively.
+            if ($marktDate <= $today || ($now > $allocTime && $marktDate <= $tomorrow)) {
+                if (null == $oldRsvp) {
+                    $sollicitatie = $this->sollicitatieRepository->findOneBy(['markt' => $markt, 'koopman' => $koopman]);
+                    $attending = $sollicitatie->isVast();
+                } else {
+                    $attending = $oldRsvp->getAttending();
+                }
+            }
+
+            if (null !== $oldRsvp) {
+                $rsvp = $oldRsvp;
+            } else {
+                $rsvp = new Rsvp();
+            }
+
+            $rsvp->setMarktDate($marktDate);
+            $rsvp->setMarkt($markt);
+            $rsvp->setKoopman($koopman);
+            $rsvp->setAttending($attending);
+
+            $this->entityManager->persist($rsvp);
+
+            $logItems[] = $this->logSerializer->normalize($rsvp);
+            $rsvps[] = $rsvp;
+        }
+        $this->entityManager->flush();
+
+        $shortClassName = (new \ReflectionClass($rsvp))->getShortName();
+
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItems));
+
+        return $rsvps;
     }
 
     /**

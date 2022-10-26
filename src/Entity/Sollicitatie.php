@@ -529,4 +529,9 @@ class Sollicitatie
     {
         $this->afvalEilandAgf = $afvalEilandAgf;
     }
+
+    public function isVast(): bool
+    {
+        return in_array($this->getStatus(), [self::STATUS_VPL, self::STATUS_EB, self::STATUS_VKK]);
+    }
 }
