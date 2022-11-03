@@ -10,6 +10,10 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="TariefSoort", type="object")
  *
  * @ORM\Entity(repositoryClass=TariefSoortRepository::class)
+ * @ORM\Table(
+ *     uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="tarief_soort_unique", columns={"label", "tarief_type"})
+ *     }
  * )
  */
 class TariefSoort

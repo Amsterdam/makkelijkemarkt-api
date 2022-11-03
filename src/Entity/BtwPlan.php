@@ -9,6 +9,11 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="BtwPlan", type="object")
  *
  * @ORM\Entity(repositoryClass=BtwPlanRepository::class)
+ * @ORM\Table(
+ *     uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="btw_plan_unique", columns={"tarief_soort_id", "date_from"})
+ *     }
+ * )
  */
 class BtwPlan
 {
