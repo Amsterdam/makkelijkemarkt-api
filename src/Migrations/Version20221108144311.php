@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20221103151646 extends AbstractMigration
+final class Version20221108144311 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -34,7 +34,7 @@ final class Version20221103151646 extends AbstractMigration
         $this->addSql('CREATE TABLE btw_waarde (id INT NOT NULL, btw_type_id INT NOT NULL, tarief INT NOT NULL, date_from TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_B20C5B9DDC79A76C ON btw_waarde (btw_type_id)');
         $this->addSql('CREATE UNIQUE INDEX btw_waarde_unique ON btw_waarde (btw_type_id, date_from)');
-        $this->addSql('CREATE TABLE tarief_soort (id INT NOT NULL, label TEXT NOT NULL, tarief_type TEXT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE tarief_soort (id INT NOT NULL, label TEXT NOT NULL, tarief_type TEXT NOT NULL, deleted BOOLEAN DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX tarief_soort_unique ON tarief_soort (label, tarief_type)');
         $this->addSql('ALTER TABLE btw_plan ADD CONSTRAINT FK_BFB16D952D2F027D FOREIGN KEY (tarief_soort_id) REFERENCES tarief_soort (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE btw_plan ADD CONSTRAINT FK_BFB16D95DC79A76C FOREIGN KEY (btw_type_id) REFERENCES btw_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE');

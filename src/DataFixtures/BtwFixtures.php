@@ -49,7 +49,8 @@ class BtwFixtures extends BaseFixture implements DependentFixtureInterface
         foreach ($tarief_soorten as $data) {
             $tariefSoort = (new TariefSoort())
                 ->setLabel($data['label'])
-                ->setTariefType($data['type']);
+                ->setTariefType($data['type'])
+                ->setDeleted(false);
             $manager->persist($tariefSoort);
             $this->addReference('tarief_soort_'.$data['label'], $tariefSoort);
         }
