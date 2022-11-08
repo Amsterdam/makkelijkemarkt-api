@@ -37,6 +37,11 @@ class TariefSoort
     private $tariefType;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted;
+
+    /**
      * Get the value of id.
      */
     public function getId(): int
@@ -79,6 +84,24 @@ class TariefSoort
             throw new InvalidArgumentException('Invalid tarief type');
         }
         $this->tariefType = $tariefType;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of deleted.
+     */
+    public function getDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * Set the value of deleted.
+     */
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
