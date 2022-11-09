@@ -110,3 +110,7 @@ services:
         lazy: true
         arguments:
             - '@flysystem_openstack_adapter_thumbs'
+    
+    # Custom formatter for Monolog    
+    log.custom.formatter:
+        class: App\Logging\LogFormatter

@@ -40,6 +40,18 @@ class Sollicitatie
     /** @var string */
     public const STATUS_EB = 'eb';
 
+    /** @var string */
+    public const STATUS_TVPL = 'tvpl';
+
+    /** @var string */
+    public const STATUS_TVPLZ = 'tvplz';
+
+    /** @var string */
+    public const STATUS_EXP = 'exp';
+
+    /** @var string */
+    public const STATUS_EXPF = 'expf';
+
     /**
      * @OA\Property(example="14")
      * @Groups({"sollicitatie", "simpleSollicitatie"})
@@ -283,7 +295,7 @@ class Sollicitatie
 
     public function setStatus(string $status): self
     {
-        if (false === in_array($status, [self::STATUS_SOLL, self::STATUS_VKK, self::STATUS_VPL, self::STATUS_EB], true)) {
+        if (false === in_array($status, [self::STATUS_SOLL, self::STATUS_VKK, self::STATUS_VPL, self::STATUS_EB, self::STATUS_TVPL, self::STATUS_TVPLZ, self::STATUS_EXP, self::STATUS_EXPF], true)) {
             throw new \InvalidArgumentException();
         }
 
@@ -532,6 +544,6 @@ class Sollicitatie
 
     public function isVast(): bool
     {
-        return in_array($this->getStatus(), [self::STATUS_VPL, self::STATUS_EB, self::STATUS_VKK]);
+        return in_array($this->getStatus(), [self::STATUS_VPL, self::STATUS_EB, self::STATUS_VKK, self::STATUS_TVPL, self::STATUS_TVPLZ, self::STATUS_EXP, self::STATUS_EXPF]);
     }
 }

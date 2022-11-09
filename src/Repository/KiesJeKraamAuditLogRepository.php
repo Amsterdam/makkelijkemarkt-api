@@ -10,7 +10,6 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @method KiesJeKraamAuditLog|null find($id, $lockMode = null, $lockVersion = null)
  * @method KiesJeKraamAuditLog|null findOneBy(array $criteria, array $orderBy = null)
- * @method KiesJeKraamAuditLog[]    findAll()
  * @method KiesJeKraamAuditLog[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class KiesJeKraamAuditLogRepository extends ServiceEntityRepository
@@ -18,6 +17,11 @@ class KiesJeKraamAuditLogRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, KiesJeKraamAuditLog::class);
+    }
+
+    public function findAll()
+    {
+        return $this->findBy([], ['datetime' => 'DESC']);
     }
 
     /**

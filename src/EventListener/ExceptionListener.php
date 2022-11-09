@@ -23,8 +23,20 @@ final class ExceptionListener
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        $this->logger->info('KernelException exception trace: '.$event->getThrowable()->getTraceAsString());
-        $this->logger->error('KernelException thrown ['.get_class($event->getThrowable()).'] '.$event->getThrowable()->getMessage());
+        $throwable = $event->GetThrowable();
+        $this->logger->error(
+            'KernelException thrown ['.get_class($throwable).'] '.$throwable->getMessage().
+            ' in: '.$throwable->getFile().'('.$throwable->getLine().')'
+        );
+
+        $stacktrace = $throwable->getTrace();
+        if (null !== $stacktrace) {
+            $this->logger->error('KernelException Stacktrace:');
+
+            foreach ($stacktrace as $key => $trace) {
+                $this->logger->error('#'.$key.' '.$trace['file'].'('.$trace['line'].')');
+            }
+        }
 
         // You get the exception object from the received event
         $exception = $event->getThrowable();
