@@ -206,7 +206,7 @@ class AllocationController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/allocation/{marktId}/{date}",
+     *     path="/api/1.1.0/allocation/{marktId}/date/{date}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="AllocationCreate",
      *     tags={"Allocation"},
@@ -239,6 +239,8 @@ class AllocationController extends AbstractController
     {
         $data = json_decode((string) $request->getContent(), true);
         $user = $request->headers->get('user') ?: 'undefined user';
+
+        $allocationDelta = $data['delta'] ?? false;
 
         if (null === $data) {
             $this->logger->error(json_last_error_msg());
@@ -284,10 +286,13 @@ class AllocationController extends AbstractController
         $this->entityManager->flush();
 
         /** @var Markt $markt */
-        $logItem = 'Allocation was created or updated for '.$markt->getNaam().' on '.$marktDate->format('Y-m-d H:i:s').' by '.$user;
-
         $shortClassName = (new \ReflectionClass($allocation))->getShortName();
-        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, [$logItem]));
+        if ($allocationDelta) {
+            $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'update', $shortClassName, $allocationDelta));
+        } else {
+            $logItem = 'Allocation was created for '.$markt->getNaam().' on '.$marktDate->format('Y-m-d H:i:s').' by '.$user;
+            $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, [$logItem]));
+        }
 
         $response = $this->serializer->serialize($this->allocations, 'json');
 
