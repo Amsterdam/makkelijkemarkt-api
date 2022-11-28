@@ -8,10 +8,10 @@ use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
 
 /**
- * @method Rsvp|null find($id, $lockMode = null, $lockVersion = null)
- * @method Rsvp|null findOneBy(array $criteria, array $orderBy = null)
- * @method Rsvp[]    findAll()
- * @method Rsvp[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TariefSoort|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TariefSoort|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TariefSoort[]    findAll()
+ * @method TariefSoort[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class TariefSoortRepository extends ServiceEntityRepository
 {
