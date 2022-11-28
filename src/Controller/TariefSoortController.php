@@ -8,6 +8,7 @@ use App\Normalizer\EntityNormalizer;
 use App\Normalizer\TariefSoortLogNormalizer;
 use App\Repository\TariefSoortRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
@@ -50,7 +51,7 @@ class TariefSoortController extends AbstractController
      *              mediaType="application/json",
      *              @OA\Schema(
      *                  @OA\Property(property="label", type="string", description="Label of the TariefSoort"),
-     *                  @OA\Property(property="tarief_type", type="string", description="Tarief type [lineair, concreet]"),
+     *                  @OA\Property(property="tarief_type", type="string", description="Tarief type lineair, concreet"),
      *              )
      *          )
      *      ),
@@ -71,7 +72,7 @@ class TariefSoortController extends AbstractController
      */
     public function create(
         Request $request,
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $dispatcher
     ): Response {
         $data = json_decode((string) $request->getContent(), true);
@@ -95,7 +96,8 @@ class TariefSoortController extends AbstractController
         try {
             $tariefSoort = (new TariefSoort())
                 ->setLabel($data['label'])
-                ->setTariefType($data['tarief_type']);
+                ->setTariefType($data['tarief_type'])
+                ->setDeleted(false);
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
@@ -245,6 +247,38 @@ class TariefSoortController extends AbstractController
         $logItem = $this->logSerializer->normalize($tariefSoort);
         $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'delete', $shortClassName, $logItem));
+
+        $response = $this->serializer->serialize($tariefSoort, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/tariefsoort",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="TariefSoortGetAll",
+     *      tags={"Tarief", "Tariefplan", "BTW"},
+     *      summary="Get All TariefSoort",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     *
+     * )
+     * @Route("/tariefsoort", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getAll(
+        TariefSoortRepository $tariefSoortRepository
+    ): Response {
+        $tariefSoort = $tariefSoortRepository->findAll();
 
         $response = $this->serializer->serialize($tariefSoort, 'json');
 
