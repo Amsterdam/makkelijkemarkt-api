@@ -180,7 +180,7 @@ class TariefSoortController extends AbstractController
             }
 
             if (isset($data['tarief_type'])) {
-                $tariefSoort->setLabel($data['tarief_type']);
+                $tariefSoort->setTariefType($data['tarief_type']);
             }
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
