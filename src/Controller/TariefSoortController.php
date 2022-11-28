@@ -197,4 +197,57 @@ class TariefSoortController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
+
+    /**
+     * @OA\Delete(
+     *      path="/api/1.1.0/tariefsoort",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="TariefSoortDelete",
+     *      tags={"Tarief", "Tariefplan", "BTW"},
+     *      summary="Update TariefSoort",
+     *      @OA\Parameter(name="tariefSoortId", @OA\Schema(type="integer"), in="path", required=true),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     *
+     * )
+     * @Route("/tariefsoort/{tariefSoortId}", methods={"DELETE"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function delete(
+        int $tariefSoortId,
+        Request $request,
+        EntityManager $entityManager,
+        EventDispatcherInterface $dispatcher,
+        TariefSoortRepository $tariefSoortRepository
+    ): Response {
+        $user = $request->headers->get('user') ?: 'undefined user';
+
+        $tariefSoort = $tariefSoortRepository->find($tariefSoortId);
+
+        // Maybe also delete all referencing entities (btw & tarief) ?
+        try {
+            $tariefSoort->setDeleted(true);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $entityManager->persist($tariefSoort);
+        $entityManager->flush();
+
+        $logItem = $this->logSerializer->normalize($tariefSoort);
+        $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();
+        $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'delete', $shortClassName, $logItem));
+
+        $response = $this->serializer->serialize($tariefSoort, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
 }
