@@ -9,7 +9,7 @@ use App\Normalizer\EntityNormalizer;
 use App\Repository\BtwTypeRepository;
 use App\Repository\BtwWaardeRepository;
 use DateTime;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
@@ -74,7 +74,7 @@ class BtwWaardeController extends AbstractController
      */
     public function create(
         Request $request,
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $dispatcher,
         BtwTypeRepository $btwTypeRepository
     ): Response {
@@ -158,7 +158,7 @@ class BtwWaardeController extends AbstractController
     public function update(
         int $btwWaardeId,
         Request $request,
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $dispatcher,
         BtwWaardeRepository $btwWaardeRepository,
         BtwTypeRepository $btwTypeRepository

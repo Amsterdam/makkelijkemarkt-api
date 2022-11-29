@@ -11,7 +11,7 @@ use App\Repository\BtwTypeRepository;
 use App\Repository\MarktRepository;
 use App\Repository\TariefSoortRepository;
 use DateTime;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
@@ -77,7 +77,7 @@ class BtwPlanController extends AbstractController
      */
     public function create(
         Request $request,
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $dispatcher,
         TariefSoortRepository $tariefSoortRepository,
         BtwTypeRepository $btwTypeRepository,
@@ -176,7 +176,7 @@ class BtwPlanController extends AbstractController
     public function update(
         int $btwPlanId,
         Request $request,
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $dispatcher,
         BtwPlanRepository $btwPlanRepository,
         TariefSoortRepository $tariefSoortRepository,
