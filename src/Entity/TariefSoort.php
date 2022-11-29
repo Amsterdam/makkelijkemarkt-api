@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\TariefSoortRepository;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use OpenApi\Annotations as OA;
