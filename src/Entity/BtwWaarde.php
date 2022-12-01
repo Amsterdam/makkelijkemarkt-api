@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\BtwWaardeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 

@@ -43,7 +43,7 @@ class BtwPlanController extends AbstractController
 
     /**
      * @OA\Post(
-     *      path="/api/1.1.0/btw_waarde",
+     *      path="/api/1.1.0/btw_plan",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="BtwPlanCreate",
      *      tags={"BtwPlan", "BTW"},
@@ -72,7 +72,7 @@ class BtwPlanController extends AbstractController
      *      )
      *
      * )
-     * @Route("/btw_waarde", methods={"POST"})
+     * @Route("/btw_plan", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(
@@ -140,7 +140,7 @@ class BtwPlanController extends AbstractController
 
     /**
      * @OA\Put(
-     *      path="/api/1.1.0/btw_waarde",
+     *      path="/api/1.1.0/btw_plan",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="BtwPlanUpdate",
      *      tags={"Tarief", "Tariefplan", "BTW"},
@@ -170,7 +170,7 @@ class BtwPlanController extends AbstractController
      *      )
      *
      * )
-     * @Route("/btw_waarde/{btwPlanId}", methods={"PUT", "PATCH"})
+     * @Route("/btw_plan/{btwPlanId}", methods={"PUT", "PATCH"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function update(

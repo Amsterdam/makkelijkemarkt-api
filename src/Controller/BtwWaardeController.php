@@ -51,8 +51,8 @@ class BtwWaardeController extends AbstractController
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(property="btw_type_id", type="integer", description="="),
-     *                  @OA\Property(property="datum_from", type="string", description="="),
+     *                  @OA\Property(property="btwTypeId", type="integer", description="="),
+     *                  @OA\Property(property="dateFrom", type="string", description="="),
      *                  @OA\Property(property="tarief", type="integer", description="="),
      *              )
      *          )
@@ -86,8 +86,8 @@ class BtwWaardeController extends AbstractController
         }
 
         $expectedParameters = [
-            'btw_type_id',
-            'datum_from',
+            'btwTypeId',
+            'dateFrom',
             'tarief',
         ];
 
@@ -97,12 +97,12 @@ class BtwWaardeController extends AbstractController
             }
         }
 
-        $btwType = $btwTypeRepository->find($data['btw_type_id']);
+        $btwType = $btwTypeRepository->find($data['btwTypeId']);
         if (null === $btwType) {
-            return new JsonResponse(['error' => 'Btw Type '.$data['btw_type_id'].' not found']);
+            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found']);
         }
 
-        $dateFrom = new DateTime($data['date_from']);
+        $dateFrom = new DateTime($data['dateFrom']['date']);
 
         $btwWaarde = (new BtwWaarde())
             ->setBtwType($btwType)
@@ -126,7 +126,7 @@ class BtwWaardeController extends AbstractController
      *      path="/api/1.1.0/btw_waarde",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="BtwWaardeUpdate",
-     *      tags={"Tarief", "Tariefplan", "BTW"},
+     *      tags={"BtwWaarde", "BTW"},
      *      summary="Update BtwWaarde",
      *      @OA\Parameter(name="btwWaardeId", @OA\Schema(type="integer"), in="path", required=true),
      *      @OA\RequestBody(
@@ -134,8 +134,8 @@ class BtwWaardeController extends AbstractController
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(property="btw_type_id", type="integer", description="="),
-     *                  @OA\Property(property="datum_from", type="string", description="="),
+     *                  @OA\Property(property="btwTypeId", type="integer", description="="),
+     *                  @OA\Property(property="dateFrom", type="string", description="="),
      *                  @OA\Property(property="tarief", type="integer", description="="),
      *              )
      *          )
@@ -171,8 +171,8 @@ class BtwWaardeController extends AbstractController
         }
 
         $expectedParameters = [
-            'btw_type_id',
-            'datum_from',
+            'btwTypeId',
+            'dateFrom',
             'tarief',
         ];
 
@@ -187,13 +187,13 @@ class BtwWaardeController extends AbstractController
         $btwWaarde = $btwWaardeRepository->find($btwWaardeId);
 
         try {
-            if (isset($data['btw_type_id'])) {
-                $btwType = $btwTypeRepository->find($data['btw_type_id']);
+            if (isset($data['btwTypeId'])) {
+                $btwType = $btwTypeRepository->find($data['btwTypeId']);
                 $btwWaarde->setBtwType($btwType);
             }
 
-            if (isset($data['date_from'])) {
-                $dateFrom = new DateTime($data['date_from']);
+            if (isset($data['dateFrom'])) {
+                $dateFrom = new DateTime($data['dateFrom']['date']);
                 $btwWaarde->setDateFrom($dateFrom);
             }
 
