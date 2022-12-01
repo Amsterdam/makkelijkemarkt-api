@@ -8,6 +8,7 @@ use App\Normalizer\BtwWaardeLogNormalizer;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\BtwTypeRepository;
 use App\Repository\BtwWaardeRepository;
+use App\Repository\TariefSoortRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -212,6 +213,48 @@ class BtwWaardeController extends AbstractController
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'update', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($btwWaarde, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/btw_waarde/tarief_soort_id/{tariefSoortId}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="BtwBtwWaardeByTariefSoort",
+     *      tags={"BtwWaarde", "BTW"},
+     *      summary="Get BtwWaarde op basis van TariefSoort ID",
+     *      @OA\Parameter(name="tariefSoortId", @OA\Schema(type="integer"), in="path", required=true),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/BtwWaarde")
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     *
+     * )
+     * @Route("/btw_waarde/tarief_soort_id/{tariefSoortId}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getBtwWaardeByTariefSoortId(
+        int $tariefSoortId,
+        TariefSoortRepository $tariefSoortRepository,
+        BtwWaardeRepository $btwWaardeRepository
+    ): Response {
+        $tariefSoort = $tariefSoortRepository->find($tariefSoortId);
+        if (null === $tariefSoort) {
+            return new JsonResponse(['error' => 'Tarief not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $btwWaarde = $btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
+        if (!count($btwWaarde)) {
+            return new JsonResponse(['error' => 'No btw waarde found for tarief'], Response::HTTP_NO_CONTENT);
+        }
+        $response = $this->serializer->serialize($btwWaarde[0], 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
