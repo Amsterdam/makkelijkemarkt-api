@@ -53,10 +53,10 @@ class BtwPlanController extends AbstractController
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(property="tarief_soort_id", type="integer", description="="),
-     *                  @OA\Property(property="btw_type_id", type="integer", description="="),
-     *                  @OA\Property(property="datum_from", type="string", description="="),
-     *                  @OA\Property(property="markt_id", type="integer", description="="),
+     *                  @OA\Property(property="tariefSoortId", type="integer", description="="),
+     *                  @OA\Property(property="btwTypeId", type="integer", description="="),
+     *                  @OA\Property(property="dateFrom", type="string", description="="),
+     *                  @OA\Property(property="marktId", type="integer", description="="),
      *              )
      *          )
      *      ),
@@ -91,9 +91,9 @@ class BtwPlanController extends AbstractController
         }
 
         $expectedParameters = [
-            'tarief_soort_id',
-            'btw_type_id',
-            'datum_from',
+            'tariefSoortId',
+            'btwTypeId',
+            'dateFrom',
         ];
 
         foreach ($expectedParameters as $parameter) {
@@ -102,27 +102,27 @@ class BtwPlanController extends AbstractController
             }
         }
 
-        $tariefSoort = $tariefSoortRepository->find($data['tarief_soort_id']);
+        $tariefSoort = $tariefSoortRepository->find($data['tariefSoortId']);
         if (null === $tariefSoort) {
-            return new JsonResponse(['error' => 'Tarief '.$data['btw_type_id'].' not found']);
+            return new JsonResponse(['error' => 'Tarief '.$data['btwTypeId'].' not found']);
         }
 
-        $btwType = $btwTypeRepository->find($data['btw_type_id']);
+        $btwType = $btwTypeRepository->find($data['btwTypeId']);
         if (null === $btwType) {
-            return new JsonResponse(['error' => 'Btw Type '.$data['btw_type_id'].' not found']);
+            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found']);
         }
 
-        $dateFrom = new DateTime($data['date_from']);
+        $dateFrom = new DateTime($data['dateFrom']['date']);
 
         $btwPlan = (new BtwPlan())
             ->setTariefSoort($tariefSoort)
             ->setBtwType($btwType)
             ->setDateFrom($dateFrom);
 
-        if (isset($data['markt_id'])) {
-            $markt = $marktRepository->find($data['markt_id']);
+        if (isset($data['marktId'])) {
+            $markt = $marktRepository->find($data['marktId']);
             if (null === $markt) {
-                return new JsonResponse(['error' => 'Markt '.$data['btw_type_id'].' not found']);
+                return new JsonResponse(['error' => 'Markt '.$data['btwTypeId'].' not found']);
             }
         }
 
@@ -151,10 +151,10 @@ class BtwPlanController extends AbstractController
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(property="tarief_soort_id", type="integer", description="="),
-     *                  @OA\Property(property="btw_type_id", type="integer", description="="),
-     *                  @OA\Property(property="datum_from", type="string", description="="),
-     *                  @OA\Property(property="markt_id", type="integer", description="="),
+     *                  @OA\Property(property="tariefSoortId", type="integer", description="="),
+     *                  @OA\Property(property="btwTypeId", type="integer", description="="),
+     *                  @OA\Property(property="dateFrom", type="string", description="="),
+     *                  @OA\Property(property="marktId", type="integer", description="="),
      *              )
      *          )
      *      ),
@@ -191,9 +191,9 @@ class BtwPlanController extends AbstractController
         }
 
         $expectedParameters = [
-            'btw_type_id',
-            'datum_from',
-            'tarief',
+            'tariefSoortId',
+            'btwTypeId',
+            'dateFrom',
         ];
 
         if ('PUT' === $request->getMethod()) {
@@ -207,22 +207,22 @@ class BtwPlanController extends AbstractController
         $btwPlan = $btwPlanRepository->find($btwPlanId);
 
         try {
-            if (isset($data['tarief_soort_id'])) {
-                $tariefSoort = $tariefSoortRepository->find($data['tarief_soort_id']);
+            if (isset($data['tariefSoortId'])) {
+                $tariefSoort = $tariefSoortRepository->find($data['tariefSoortId']);
                 $btwPlan->setTariefSoort($tariefSoort);
             }
-            if (isset($data['btw_type_id'])) {
-                $btwType = $btwTypeRepository->find($data['btw_type_id']);
+            if (isset($data['btwTypeId'])) {
+                $btwType = $btwTypeRepository->find($data['btwTypeId']);
                 $btwPlan->setBtwType($btwType);
             }
 
-            if (isset($data['date_from'])) {
-                $dateFrom = new DateTime($data['date_from']);
+            if (isset($data['dateFrom'])) {
+                $dateFrom = new DateTime($data['dateFrom']['date']);
                 $btwPlan->setDateFrom($dateFrom);
             }
 
-            if (isset($data['markt_id'])) {
-                $markt = $marktRepository->find($data['markt_id']);
+            if (isset($data['marktId'])) {
+                $markt = $marktRepository->find($data['marktId']);
                 $btwPlan->setMarkt($markt);
             }
         } catch (Exception $e) {

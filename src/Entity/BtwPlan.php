@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\BtwPlanRepository;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 
@@ -96,7 +97,7 @@ class BtwPlan
     /**
      * Get the value of markt.
      */
-    public function getMarkt(): string
+    public function getMarkt(): ?string
     {
         return $this->markt;
     }
