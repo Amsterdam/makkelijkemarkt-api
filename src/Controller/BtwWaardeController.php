@@ -100,7 +100,7 @@ class BtwWaardeController extends AbstractController
 
         $btwType = $btwTypeRepository->find($data['btwTypeId']);
         if (null === $btwType) {
-            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found']);
+            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found', Response::HTTP_NOT_FOUND]);
         }
 
         $dateFrom = new DateTime($data['dateFrom']['date']);
