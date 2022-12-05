@@ -101,9 +101,12 @@ class TariefSoortController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        // TODO: voeg error handling voor uniqueness toe
-        $entityManager->persist($tariefSoort);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($tariefSoort);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($tariefSoort);
         $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();
@@ -188,8 +191,12 @@ class TariefSoortController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->persist($tariefSoort);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($tariefSoort);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($tariefSoort);
         $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();
@@ -241,8 +248,12 @@ class TariefSoortController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->persist($tariefSoort);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($tariefSoort);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($tariefSoort);
         $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();

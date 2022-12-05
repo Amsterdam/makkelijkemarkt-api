@@ -104,12 +104,12 @@ class BtwPlanController extends AbstractController
 
         $tariefSoort = $tariefSoortRepository->find($data['tariefSoortId']);
         if (null === $tariefSoort) {
-            return new JsonResponse(['error' => 'Tarief '.$data['btwTypeId'].' not found', Response::HTTP_NOT_FOUND]);
+            return new JsonResponse(['error' => 'Tarief '.$data['btwTypeId'].' not found', Response::HTTP_BAD_REQUEST]);
         }
 
         $btwType = $btwTypeRepository->find($data['btwTypeId']);
         if (null === $btwType) {
-            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found', Response::HTTP_NOT_FOUND]);
+            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found', Response::HTTP_BAD_REQUEST]);
         }
 
         $dateFrom = new DateTime($data['dateFrom']['date']);
@@ -122,12 +122,16 @@ class BtwPlanController extends AbstractController
         if (isset($data['marktId'])) {
             $markt = $marktRepository->find($data['marktId']);
             if (null === $markt) {
-                return new JsonResponse(['error' => 'Markt '.$data['btwTypeId'].' not found', Response::HTTP_NOT_FOUND]);
+                return new JsonResponse(['error' => 'Markt '.$data['btwTypeId'].' not found', Response::HTTP_BAD_REQUEST]);
             }
         }
 
-        $entityManager->persist($btwPlan);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($btwPlan);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($btwPlan);
         $shortClassName = (new ReflectionClass($btwPlan))->getShortName();
@@ -229,8 +233,12 @@ class BtwPlanController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->persist($btwPlan);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($btwPlan);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($btwPlan);
         $shortClassName = (new ReflectionClass($btwPlan))->getShortName();

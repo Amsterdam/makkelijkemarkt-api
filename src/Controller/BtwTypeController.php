@@ -8,6 +8,7 @@ use App\Normalizer\BtwTypeLogNormalizer;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\BtwTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use ReflectionClass;
@@ -92,8 +93,12 @@ class BtwTypeController extends AbstractController
         $btwType = (new BtwType())
             ->setLabel($data['label']);
 
-        $entityManager->persist($btwType);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($btwType);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($btwType);
         $shortClassName = (new ReflectionClass($btwType))->getShortName();
@@ -168,8 +173,12 @@ class BtwTypeController extends AbstractController
             $btwType->setLabel($data['label']);
         }
 
-        $entityManager->persist($btwType);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($btwType);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($btwType);
         $shortClassName = (new ReflectionClass($btwType))->getShortName();

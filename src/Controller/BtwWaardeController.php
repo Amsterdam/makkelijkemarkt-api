@@ -100,7 +100,7 @@ class BtwWaardeController extends AbstractController
 
         $btwType = $btwTypeRepository->find($data['btwTypeId']);
         if (null === $btwType) {
-            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found', Response::HTTP_NOT_FOUND]);
+            return new JsonResponse(['error' => 'Btw Type '.$data['btwTypeId'].' not found', Response::HTTP_BAD_REQUEST]);
         }
 
         $dateFrom = new DateTime($data['dateFrom']['date']);
@@ -110,8 +110,12 @@ class BtwWaardeController extends AbstractController
             ->setDateFrom($dateFrom)
             ->setTarief($data['tarief']);
 
-        $entityManager->persist($btwWaarde);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($btwWaarde);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($btwWaarde);
         $shortClassName = (new ReflectionClass($btwWaarde))->getShortName();
@@ -205,8 +209,12 @@ class BtwWaardeController extends AbstractController
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->persist($btwWaarde);
-        $entityManager->flush();
+        try {
+            $entityManager->persist($btwWaarde);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
+        }
 
         $logItem = $this->logSerializer->normalize($btwWaarde);
         $shortClassName = (new ReflectionClass($btwWaarde))->getShortName();
