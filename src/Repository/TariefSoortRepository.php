@@ -31,4 +31,13 @@ class TariefSoortRepository extends ServiceEntityRepository
 
         return $this->findBy(['tariefType', $tariefType]);
     }
+
+    public function findByLabelAndType(string $label, string $tariefType)
+    {
+        if (!in_array($tariefType, TariefSoort::TARIEF_TYPES)) {
+            throw new InvalidArgumentException('Invalid tarief type');
+        }
+
+        return $this->findOneBy(['tariefType' => $tariefType, 'label' => $label]);
+    }
 }

@@ -23,7 +23,7 @@ class BtwWaardeRepository extends ServiceEntityRepository
         parent::__construct($registry, BtwWaarde::class);
     }
 
-    public function findCurrentBtwWaardeByTariefSoort(TariefSoort $tariefSoort)
+    public function findCurrentBtwWaardeByTariefSoort(TariefSoort $tariefSoort): int
     {
         $now = new DateTime();
         $em = $this->getEntityManager();
@@ -33,7 +33,7 @@ class BtwWaardeRepository extends ServiceEntityRepository
         $btwPlan = $btwPlanRepository->findCurrentByTariefSoort($tariefSoort);
         /* @var BtwType */
         if (!count($btwPlan)) {
-            return [];
+            return 10;
         }
         $btwType = $btwPlan[0]->getBtwType();
 
@@ -49,6 +49,6 @@ class BtwWaardeRepository extends ServiceEntityRepository
         /** @var BtwWaarde[] */
         $btwPlan = $qb->getQuery()->execute();
 
-        return $btwPlan;
+        return $btwPlan[0]->getTarief();
     }
 }
