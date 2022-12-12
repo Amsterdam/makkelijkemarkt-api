@@ -295,4 +295,55 @@ class TariefSoortController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/parse_tarief_columns",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="TariefSoortParseTariefColumns",
+     *      tags={"Tarief", "Tariefplan", "BTW"},
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     * )
+     *
+     * @Route("/parse_tarief_columns", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function parseColumns(
+        EntityManagerInterface $entityManager
+    ): Response {
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $jsonString = file_get_contents($projectDir.'/src/DataFixtures/fixtures/tariefSoorten.json');
+        $allTariefSoorten = json_decode($jsonString, true);
+
+        try {
+            $dataInDb = [];
+            foreach ($allTariefSoorten as $tariefPlanType => $tariefSoorten) {
+                foreach ($tariefSoorten as $tariefSoort) {
+                    $tarief = (new TariefSoort())
+                        ->setLabel($tariefSoort['label'])
+                        ->setDeleted(false)
+                        ->setTariefType($tariefPlanType);
+
+                    $entityManager->persist($tarief);
+                    $dataInDb[] = $tarief;
+                }
+            }
+            $entityManager->flush();
+        } catch (\Error $err) {
+            return new JsonResponse(['error' => json_last_error()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $response = $this->serializer->serialize($dataInDb, 'json');
+
+        return new Response($response, Response::HTTP_OK);
+    }
 }
