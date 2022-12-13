@@ -93,4 +93,35 @@ class KiesJeKraamAuditLogController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/kjklogs/from/{date}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="GetAuditLogFromDate",
+     *      tags={"KiesJeKraamAuditLog"},
+     *      summary="Vraagt alle logs op vanaf een bepaalde datum",
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent()
+     *      ),
+     *      @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/kjklogs/from/{date}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getLogsFromDate(string $date): Response
+    {
+        /** @var KiesJeKraamAuditLog[] */
+        $logs = $this->logRepository->findAllFrom($date);
+
+        $response = $this->serializer->serialize($logs, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
 }
