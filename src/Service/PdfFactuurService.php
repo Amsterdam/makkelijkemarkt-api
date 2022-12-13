@@ -35,8 +35,8 @@ class PdfFactuurService
         $this->tcpdfController = $tcpdfController;
         $this->projectDir = $projectDir;
 
-        $this->fontname = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/Avenir-Roman.ttf', 'TrueTypeUnicode', '', 96);
-        $this->fontnameBold = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/Avenir-Heavy.ttf', 'TrueTypeUnicode', '', 96);
+        $this->fontname = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/AmsterdamSans-Regular.ttf', 'TrueTypeUnicode', '', 96);
+        $this->fontnameBold = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/AmsterdamSans-Bold.ttf', 'TrueTypeUnicode', '', 96);
     }
 
     public function generate($koopman, $dagvergunningen)

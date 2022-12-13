@@ -62,4 +62,18 @@ class KiesJeKraamAuditLogRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->execute();
     }
+
+    /**
+     * @return KiesJeKraamAuditLog[] Returns array of KiesJeKraamAuditLog objects
+     */
+    public function findAllFrom(string $fromDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->select('a')
+            ->where('a.datetime >= :fromDate')
+            ->setParameter('fromDate', $fromDate);
+
+        return $qb->getQuery()->execute();
+    }
 }
