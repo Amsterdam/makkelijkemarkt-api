@@ -33,7 +33,7 @@ class BtwWaardeRepository extends ServiceEntityRepository
         $btwPlan = $btwPlanRepository->findCurrentByTariefSoort($tariefSoort);
         /* @var BtwType */
         if (!count($btwPlan)) {
-            return 10;
+            return 0;
         }
         $btwType = $btwPlan[0]->getBtwType();
 

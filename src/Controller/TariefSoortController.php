@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\BtwPlan;
 use App\Entity\TariefSoort;
 use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\EntityNormalizer;
 use App\Normalizer\TariefSoortLogNormalizer;
+use App\Repository\BtwTypeRepository;
 use App\Repository\TariefSoortRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
@@ -318,28 +321,46 @@ class TariefSoortController extends AbstractController
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function parseColumns(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        BtwTypeRepository $btwTypeRepository
     ): Response {
         $projectDir = $this->getParameter('kernel.project_dir');
         $jsonString = file_get_contents($projectDir.'/src/DataFixtures/fixtures/tariefSoorten.json');
         $allTariefSoorten = json_decode($jsonString, true);
 
-        try {
-            $dataInDb = [];
-            foreach ($allTariefSoorten as $tariefPlanType => $tariefSoorten) {
-                foreach ($tariefSoorten as $tariefSoort) {
-                    $tarief = (new TariefSoort())
-                        ->setLabel($tariefSoort['label'])
-                        ->setDeleted(false)
-                        ->setTariefType($tariefPlanType);
+        $btwHoog = $btwTypeRepository->find(1);
+        $dataInDb = [
+            'plan' => [],
+            'tarief' => [],
+        ];
+        foreach ($allTariefSoorten as $tariefPlanType => $tariefSoorten) {
+            foreach ($tariefSoorten as $tariefSoort) {
+                $tarief = (new TariefSoort())
+                    ->setLabel($tariefSoort['label'])
+                    ->setDeleted(false)
+                    ->setTariefType($tariefPlanType);
 
+                try {
                     $entityManager->persist($tarief);
-                    $dataInDb[] = $tarief;
+                    $entityManager->flush();
+                    $dataInDb['tarief'][] = $tarief;
+                } catch (Exception $e) {
+                    // return new JsonResponse(['error' => json_last_error()], Response::HTTP_BAD_REQUEST);
+                }
+
+                $plan = (new BtwPlan())
+                    ->setBtwType($btwHoog)
+                    ->setTariefSoort($tarief)
+                    ->setDateFrom(new DateTime());
+
+                try {
+                    $entityManager->persist($plan);
+                    $entityManager->flush();
+                    $dataInDb['plan'][] = $plan;
+                } catch (Exception $e) {
+                    // return new JsonResponse(['error' => json_last_error()], Response::HTTP_BAD_REQUEST);
                 }
             }
-            $entityManager->flush();
-        } catch (\Error $err) {
-            return new JsonResponse(['error' => json_last_error()], Response::HTTP_BAD_REQUEST);
         }
 
         $response = $this->serializer->serialize($dataInDb, 'json');
