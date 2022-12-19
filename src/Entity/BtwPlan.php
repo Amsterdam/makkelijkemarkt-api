@@ -12,7 +12,7 @@ use OpenApi\Annotations as OA;
  * @ORM\Entity(repositoryClass=BtwPlanRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={
- *        @ORM\UniqueConstraint(name="btw_plan_unique", columns={"tarief_soort_id", "date_from"})
+ *        @ORM\UniqueConstraint(name="btw_plan_unique", columns={"tarief_soort_id", "date_from", "markt_id"})
  *     }
  * )
  */
