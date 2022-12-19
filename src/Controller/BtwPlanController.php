@@ -318,7 +318,7 @@ class BtwPlanController extends AbstractController
                 $colLab = $tariefSoortMap[$tariefPlanType][$col];
                 $btwType = $btwTypeRepository->findOneBy(['label' => strtolower($btwPlanInput[$colI])]);
 
-                $tariefSoort = $tariefSoortRepository->findOneBy(['label' => $colLab]);
+                $tariefSoort = $tariefSoortRepository->findOneBy(['label' => $colLab, 'tariefType' => $tariefPlanType]);
 
                 if (null == $tariefSoort) {
                     $tariefSoort = (new TariefSoort())
