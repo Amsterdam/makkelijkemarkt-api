@@ -23,6 +23,7 @@
         "promotie_gelden_per_meter":"Promotie gelden per meter",
         "promotie_gelden_per_kraam":"Promotie gelden per kraam",
         "afvaleiland":"Afvaleiland",
-        "eenmalig_elektra":"Eenmalig elektra"
+        "eenmalig_elektra":"Eenmalig elektra",
+        "agf_per_meter":"Agf per meter"
     }
 }
