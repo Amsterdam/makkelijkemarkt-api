@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\BtwPlan;
+use App\Entity\TariefSoort;
 use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\BtwPlanLogNormalizer;
 use App\Normalizer\EntityNormalizer;
@@ -247,5 +248,105 @@ class BtwPlanController extends AbstractController
         $response = $this->serializer->serialize($btwPlan, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/1.1.0/parse_btw_plan",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="ImportBtwPlan",
+     *      tags={"BtwPlan", "BTW"},
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Property(property="planType", type="string", description="Tarief type lineair, concreet")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     * )
+     *
+     * @Route("/parse_btw_plan", methods={"POST"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function parseBtw(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        BtwTypeRepository $btwTypeRepository,
+        TariefSoortRepository $tariefSoortRepository,
+        BtwPlanRepository $btwPlanRepository,
+        MarktRepository $marktRepository
+    ): Response {
+        $types = ['lineair', 'concreet'];
+        $tariefPlanType = $request->get('planType');
+        if (!in_array($tariefPlanType, $types)) {
+            return new JsonResponse(['error', 'Tarief plan type has to be either "lineair" or "concreet"'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $btwPostFile = $request->files->get('file');
+        $btwPlanCsv = fopen($btwPostFile, 'r');
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $jsonString = file_get_contents($projectDir.'/src/DataFixtures/fixtures/tariefSoorten.json');
+        $tariefSoortMap = json_decode($jsonString, $associative = true);
+
+        $dataInDb = [];
+
+        $columns = fgetcsv($btwPlanCsv);
+        $colN = count($columns);
+        while (($btwPlanInput = fgetcsv($btwPlanCsv)) !== false) {
+            $marktId = '' === $btwPlanInput[0] ? null : $btwPlanInput[0];
+            if (null !== $marktId) {
+                $markt = $marktRepository->getById((int) $marktId);
+            } else {
+                $markt = null;
+            }
+            $label = $btwPlanInput[1];
+            $dateFrom = new DateTime($btwPlanInput[2]);
+            $dateTo = new DateTime($btwPlanInput[3]);
+            for ($colI = 4; $colI < $colN; ++$colI) {
+                $col = $columns[$colI];
+                $colLab = $tariefSoortMap[$tariefPlanType][$col];
+                $btwType = $btwTypeRepository->findOneBy(['label' => strtolower($btwPlanInput[$colI])]);
+
+                $tariefSoort = $tariefSoortRepository->findOneBy(['label' => $colLab]);
+
+                if (null == $tariefSoort) {
+                    $tariefSoort = (new TariefSoort())
+                        ->setLabel($colLab)
+                        ->setTariefType($tariefPlanType)
+                        ->setDeleted(false);
+
+                    $entityManager->persist($tariefSoort);
+                }
+
+                $btwPlan = $btwPlanRepository->findOneBy(['tariefSoort' => $tariefSoort, 'dateFrom' => $dateFrom, 'markt' => $markt]);
+                if (null == $btwPlan) {
+                    $btwPlan = (new BtwPlan())
+                        ->setDateFrom($dateFrom)
+                        ->setTariefSoort($tariefSoort)
+                        ->setMarkt($markt);
+                }
+                $btwPlan
+                    ->setBtwType($btwType);
+
+                $entityManager->persist($btwPlan);
+                $dataInDb[] = $btwPlan;
+            }
+            $entityManager->flush();
+        }
+
+        $response = $this->serializer->serialize($dataInDb, 'json');
+
+        return new Response($response, Response::HTTP_OK);
     }
 }

@@ -1,94 +1,28 @@
 {
-    "lineair": [
-        {
-            "column":"tarief_per_meter", 
-            "label":"Tarief per meter"
-        },
-        {
-            "column":"reiniging_per_meter", 
-            "label":"Reiniging per meter"
-        },
-        {
-            "column":"toeslag_bedrijfsafval_per_meter", 
-            "label":"Toeslag bedrijfsafval per meter"
-        },
-        {
-            "column":"toeslag_krachtstroom_per_aansluiting", 
-            "label":"Toeslag krachtstroom per aansluiting"
-        },
-        {
-            "column":"promotie_gelden_per_meter", 
-            "label":"Promotie gelden per meter"
-        },
-        {
-            "column":"promotie_gelden_per_kraam", 
-            "label":"Promotie gelden per kraam"
-        },
-        {
-            "column":"afvaleiland", 
-            "label":"Afvaleiland"
-        },
-        {
-            "column":"eenmalig_elektra", 
-            "label":"Eenmalig elektra"
-        },
-        {
-            "column":"elektra", 
-            "label":"Elektra"
-        },
-        {
-            "column":"tarief_per_meter_groot", 
-            "label":"Tarief per meter groot"
-        },
-        {
-            "column":"tarief_per_meter_klein", 
-            "label":"Tarief per meter klein"
-        },
-        {
-            "column":"reiniging_per_meter_groot", 
-            "label":"Reiniging per meter groot"
-        },
-        {
-            "column":"reiniging_per_meter_klein", 
-            "label":"Reiniging per meter klein"
-        },
-        {
-            "column":"agf_per_meter", 
-            "label":"Agf per meter"
-        }
-    ],
-    "concreet": [
-        {
-            "column": "een_meter",
-            "label": "Een meter"
-        },
-        {
-            "column": "drie_meter",
-            "label": "Drie meter"
-        },
-        {
-            "column": "vier_meter",
-            "label": "Vier meter"
-        },
-        {
-            "column": "elektra",
-            "label": "Elektra"
-        },
-        {
-            "column": "promotie_gelden_per_meter",
-            "label": "Promotie gelden per meter"
-        },
-        {
-            "column": "promotie_gelden_per_kraam",
-            "label": "Promotie gelden per kraam"
-        },
-        {
-            "column": "afvaleiland",
-            "label": "Afvaleiland"
-        },
-        {
-            "column": "eenmalig_elektra",
-            "label": "Eenmalig elektra"
-        }
-    ]
+    "lineair": {
+        "tarief_per_meter":"Tarief per meter",
+        "reiniging_per_meter":"Reiniging per meter",
+        "toeslag_bedrijfsafval_per_meter":"Toeslag bedrijfsafval per meter",
+        "toeslag_krachtstroom_per_aansluiting":"Toeslag krachtstroom per aansluiting",
+        "promotie_gelden_per_meter":"Promotie gelden per meter",
+        "promotie_gelden_per_kraam":"Promotie gelden per kraam",
+        "afvaleiland":"Afvaleiland",
+        "eenmalig_elektra":"Eenmalig elektra",
+        "elektra":"Elektra",
+        "tarief_per_meter_groot":"Tarief per meter groot",
+        "tarief_per_meter_klein":"Tarief per meter klein",
+        "reiniging_per_meter_groot":"Reiniging per meter groot",
+        "reiniging_per_meter_klein":"Reiniging per meter klein",
+        "agf_per_meter":"Agf per meter"
+    },
+    "concreet": {
+        "een_meter":"Een meter",
+        "drie_meter":"Drie meter",
+        "vier_meter":"Vier meter",
+        "elektra":"Elektra",
+        "promotie_gelden_per_meter":"Promotie gelden per meter",
+        "promotie_gelden_per_kraam":"Promotie gelden per kraam",
+        "afvaleiland":"Afvaleiland",
+        "eenmalig_elektra":"Eenmalig elektra"
+    }
 }
