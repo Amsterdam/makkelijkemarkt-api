@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Branche;
 use App\Entity\Koopman;
-use App\Entity\MarktVoorkeur;
-use App\Entity\PlaatsVoorkeur;
 use App\Entity\Sollicitatie;
 use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -37,8 +34,8 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
             $koopman->setErkenningsnummer($data['erkenningsnummer']);
             $koopman->setPerfectViewNummer($data['perfect_view_nummer']);
             $koopman->setStatus($data['status']);
-            $manager->persist($koopman);
             $this->addReference(Koopman::class.$data['id'], $koopman);
+            $manager->persist($koopman);
         }
 
         $markt = $this->getReference('markt_AC-2022');
@@ -63,36 +60,6 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
             $sollicitatie->setAantalElektra($data['aantal_elektra']);
             $sollicitatie->setKrachtstroom($data['krachtstroom']);
             $manager->persist($sollicitatie);
-        }
-
-        $plaatsVoorkeurData = json_decode(file_get_contents(
-            BaseFixture::FILE_BASED_FIXTURES_DIR.'/plaatsVoorkeur.json'
-        ), true);
-        foreach ($plaatsVoorkeurData as $data) {
-            $koopman = $this->getReference(Koopman::class.$data['koopman_id']);
-            $plaatsVoorkeur = new PlaatsVoorkeur();
-            $plaatsVoorkeur->setMarkt($markt);
-            $plaatsVoorkeur->setKoopman($koopman);
-            $plaatsVoorkeur->setPlaatsen(explode(',', $data['plaatsen']));
-            $manager->persist($plaatsVoorkeur);
-        }
-
-        $marktVoorkeurData = json_decode(file_get_contents(
-            BaseFixture::FILE_BASED_FIXTURES_DIR.'/marktVoorkeur.json'
-        ), true);
-        foreach ($marktVoorkeurData as $data) {
-            $koopman = $this->getReference(Koopman::class.$data['koopman_id']);
-            $branche = $this->getReference(Branche::class.$data['branche_id']);
-            $marktVoorkeur = new MarktVoorkeur();
-            $marktVoorkeur->setMarkt($markt);
-            $marktVoorkeur->setKoopman($koopman);
-            $marktVoorkeur->setBranche($branche);
-            $marktVoorkeur->setAnywhere($data['anywhere']);
-            $marktVoorkeur->setMinimum($data['minimum']);
-            $marktVoorkeur->setMaximum($data['maximum']);
-            $marktVoorkeur->setHasInrichting($data['has_inrichting']);
-            $marktVoorkeur->setBakType($data['bak_type']);
-            $manager->persist($marktVoorkeur);
         }
 
         $manager->flush();

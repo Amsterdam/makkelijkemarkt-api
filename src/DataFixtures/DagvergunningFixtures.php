@@ -15,40 +15,42 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
 {
     protected function loadData(ObjectManager $manager): void
     {
-        $this->createMany(4, 'dagvergunning', function ($i) {
-            /** @var Markt $markt */
-            $markt = $this->getReference('markt_AC-2022');
+        /** @var Markt $markt */
+        $markt = $this->getReference('markt_AC-2022');
 
-            /** @var Koopman $koopman */
-            $koopman = $this->getReference(Koopman::class. 746);
+        /** @var array<string> $enims */
+        $enims = [
+            'handmatig',
+            'onbekend',
+            'scan-barcode',
+            'scan-nfc',
+        ];
 
-            /** @var array<string> $enims */
-            $enims = [
-                'handmatig',
-                'onbekend',
-                'scan-barcode',
-                'scan-nfc',
-            ];
+        /** @var array<string> $status */
+        $status = [
+            'lot',
+            'soll',
+            'vkk',
+            'vpl',
+        ];
 
-            /** @var array<string> $status */
-            $status = [
-                'lot',
-                'soll',
-                'vkk',
-                'vpl',
-            ];
+        /** @var string $ds */
+        $ds = date('Y-m-d');
+
+        /** @var DateTime $dt */
+        $dt = new DateTime($ds);
+
+        $koopmanData = json_decode(file_get_contents(
+            BaseFixture::FILE_BASED_FIXTURES_DIR.'/koopman.json'
+        ), true);
+        foreach ($koopmanData as $data) {
+            $koopman = $this->getReference(Koopman::class.$data['id']);
 
             /** @var string $enim */
-            $enim = $enims[$i];
+            $enim = $enims[array_rand($enims)];
 
             /** @var string $statusSollicitatie */
-            $statusSollicitatie = $status[$i];
-
-            /** @var string $ds */
-            $ds = date('Y').'-01-01';
-
-            /** @var DateTime $dt */
-            $dt = new DateTime($ds);
+            $statusSollicitatie = $status[array_rand($status)];
 
             /** @var Dagvergunning $dagvergunning */
             $dagvergunning = new Dagvergunning();
@@ -72,9 +74,11 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
             $dagvergunning->setAantal4MeterKramen(0);
             $dagvergunning->setAfvaleiland(0);
             $dagvergunning->setEenmaligElektra(true);
+            $manager->persist($dagvergunning);
+            $this->addReference(Dagvergunning::class.$data['id'], $dagvergunning);
+        }
 
-            return $dagvergunning;
-        });
+        $manager->flush();
     }
 
     /**
