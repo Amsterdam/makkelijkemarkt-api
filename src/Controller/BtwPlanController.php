@@ -252,15 +252,16 @@ class BtwPlanController extends AbstractController
 
     /**
      * @OA\Post(
-     *      path="/api/1.1.0/parse_btw_plan",
+     *      path="/api/1.1.0/parse_btw_csv",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="ImportBtwPlan",
      *      tags={"BtwPlan", "BTW"},
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\MediaType(
-     *              mediaType="application/json",
-     *              @OA\Property(property="planType", type="string", description="Tarief type lineair, concreet")
+     *              mediaType="multipart/form-data",
+     *              @OA\Property(property="planType", type="string", description="Tarief type: lineair, concreet")
+     *              @OA\Property(property="file", type="file", description="Csv file met BTW plan")
      *          )
      *      ),
      *      @OA\Response(
@@ -275,10 +276,10 @@ class BtwPlanController extends AbstractController
      *      )
      * )
      *
-     * @Route("/parse_btw_plan", methods={"POST"})
+     * @Route("/parse_btw_csv", methods={"POST"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function parseBtw(
+    public function parseBtwCsv(
         Request $request,
         EntityManagerInterface $entityManager,
         BtwTypeRepository $btwTypeRepository,
