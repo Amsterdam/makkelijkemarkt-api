@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\BtwPlan;
+use App\Entity\BtwType;
 use App\Entity\TariefSoort;
 use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\BtwPlanLogNormalizer;
@@ -305,22 +306,29 @@ class BtwPlanController extends AbstractController
         $columns = fgetcsv($btwPlanCsv);
         $colN = count($columns);
         while (($btwPlanInput = fgetcsv($btwPlanCsv)) !== false) {
-            $marktId = '' === $btwPlanInput[0] ? null : $btwPlanInput[0];
-            if (null !== $marktId) {
-                $markt = $marktRepository->getById((int) $marktId);
-            } else {
-                $markt = null;
-            }
+            $marktId = $btwPlanInput[0] ?: null;
+            $markt = $marktId ? $marktRepository->getById((int) $marktId) : null;
+
             $label = $btwPlanInput[1];
             $dateFrom = new DateTime($btwPlanInput[2]);
             $dateTo = new DateTime($btwPlanInput[3]);
             for ($colI = 4; $colI < $colN; ++$colI) {
                 $col = $columns[$colI];
                 $colLab = $tariefSoortMap[$tariefPlanType][$col];
-                $btwType = $btwTypeRepository->findOneBy(['label' => strtolower($btwPlanInput[$colI])]);
+                $btwTypeLab = strtolower($btwPlanInput[$colI]);
+                $btwType = $btwTypeRepository->findOneBy(['label' => $btwTypeLab]);
+
+                // Init btw types for first import to init DB.
+                // DECOM after 1-1-2023 and replace with error message if not found
+                if (null == $btwType) {
+                    $btwType = (new BtwType())
+                        ->setLabel($btwTypeLab);
+                }
 
                 $tariefSoort = $tariefSoortRepository->findOneBy(['label' => $colLab, 'tariefType' => $tariefPlanType]);
 
+                // Init tariefsoort for first import to init DB.
+                // DECOM after 1-1-2023 and replace with error message if not found
                 if (null == $tariefSoort) {
                     $tariefSoort = (new TariefSoort())
                         ->setLabel($colLab)
@@ -330,7 +338,8 @@ class BtwPlanController extends AbstractController
                     $entityManager->persist($tariefSoort);
                 }
 
-                $btwPlan = $btwPlanRepository->findOneBy(['tariefSoort' => $tariefSoort, 'dateFrom' => $dateFrom, 'markt' => $markt]);
+                $uniqueConstraint = ['tariefSoort' => $tariefSoort, 'dateFrom' => $dateFrom, 'markt' => $markt];
+                $btwPlan = $btwPlanRepository->findOneBy($uniqueConstraint);
                 if (null == $btwPlan) {
                     $btwPlan = (new BtwPlan())
                         ->setDateFrom($dateFrom)
