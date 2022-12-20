@@ -261,7 +261,7 @@ class BtwPlanController extends AbstractController
      *          required=true,
      *          @OA\MediaType(
      *              mediaType="multipart/form-data",
-     *              @OA\Property(property="planType", type="string", description="Tarief type: lineair, concreet")
+     *              @OA\Property(property="planType", type="string", description="Tarief type: lineair, concreet"),
      *              @OA\Property(property="file", type="file", description="Csv file met BTW plan")
      *          )
      *      ),
