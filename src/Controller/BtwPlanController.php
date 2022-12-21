@@ -323,6 +323,8 @@ class BtwPlanController extends AbstractController
                 if (null == $btwType) {
                     $btwType = (new BtwType())
                         ->setLabel($btwTypeLab);
+
+                    $entityManager->persist($btwType);
                 }
 
                 $tariefSoort = $tariefSoortRepository->findOneBy(['label' => $colLab, 'tariefType' => $tariefPlanType]);
