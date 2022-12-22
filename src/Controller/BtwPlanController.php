@@ -22,6 +22,7 @@ use OpenApi\Annotations as OA;
 use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -270,7 +271,7 @@ class BtwPlanController extends AbstractController
      *      @OA\Response(
      *          response="200",
      *          description="Success",
-     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *          @OA\JsonContent(ref="#/components/schemas/BtwPlan")
      *      ),
      *      @OA\Response(
      *          response="400",
@@ -319,12 +320,15 @@ class BtwPlanController extends AbstractController
             $entityManager->flush();
         }
 
+        /**
+         * @var UploadedFile $btwPostFile
+         */
         $btwPostFile = $request->files->get('file');
-        $btwPlanCsv = fopen($btwPostFile, 'r');
+        $btwPlanCsv = fopen($btwPostFile->getPath(), 'r');
 
         $projectDir = $this->getParameter('kernel.project_dir');
         $jsonString = file_get_contents($projectDir.'/src/DataFixtures/fixtures/tariefSoorten.json');
-        $tariefSoortMap = json_decode($jsonString, $associative = true);
+        $tariefSoortMap = json_decode($jsonString, true);
 
         $dataInDb = [];
 

@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -580,6 +581,110 @@ final class TariefplanController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * @OA\Post(
+     *      path="/api/1.1.0/parse_tarief_csv",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="ImportTariefPlan",
+     *      tags={"TariefPlan", "Tarief"},
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Property(property="planType", type="string", description="Tarief type: lineair, concreet"),
+     *              @OA\Property(property="file", type="file", description="Csv file met tariefplan")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/Tariefplan")
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     * )
+     *
+     * @Route("/parse_tarief_csv", methods={"POST"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function parseTariefCsv(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        MarktRepository $marktRepository
+    ): Response {
+        $types = ['lineair', 'concreet'];
+        $tariefPlanType = $request->get('planType');
+        if (!in_array($tariefPlanType, $types)) {
+            return new JsonResponse(['error', 'Tarief plan type has to be either "lineair" or "concreet"'], Response::HTTP_BAD_REQUEST);
+        }
+        $isConreet = ('concreet' == $tariefPlanType);
+
+        $environment = $request->get('env', null);
+
+        /**
+         * @var UploadedFile $tariefPostFile
+         */
+        $tariefPostFile = $request->files->get('file');
+        $tariefPlanCsv = fopen($tariefPostFile->getRealPath(), 'r');
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $jsonString = file_get_contents($projectDir.'/src/DataFixtures/fixtures/marktMapper.json');
+        $marktMap = json_decode($jsonString, true);
+
+        $dataInDb = [];
+
+        $columns = fgetcsv($tariefPlanCsv);
+        $columns = array_map('self::underscoresToCamelCase', $columns);
+        $colN = count($columns);
+        while (($tariefPlanInput = fgetcsv($tariefPlanCsv)) !== false) {
+            $planInput = array_combine($columns, $tariefPlanInput);
+
+            $marktId = $planInput['marktId'] ?: null;
+            if ($environment) {
+                $marktId = $marktMap[$marktId][$environment] ?? null;
+            }
+            $markt = $marktId ? $marktRepository->getById((int) $marktId) : null;
+            if (null == $markt) {
+                continue;
+            }
+            unset($planInput['marktId']);
+
+            $planInput['geldigVanaf'] = ['date' => $planInput['geldigVanaf']];
+            $planInput['geldigTot'] = ['date' => $planInput['geldigTot']];
+
+            $verifiedData = $this->checkExpectedParameters($planInput, $isConreet);
+
+            $tariefplan = new Tariefplan();
+            $tariefplan->setMarkt($markt);
+
+            if ($isConreet) {
+                /** @var Concreetplan $concreetplan */
+                $plan = new Concreetplan();
+                $plan->setTariefplan($tariefplan);
+                $tariefplan->setConcreetplan($plan);
+            } else {
+                /** @var Lineairplan $lineairplan */
+                $plan = new Lineairplan();
+                $plan->setTariefplan($tariefplan);
+                $tariefplan->setLineairplan($plan);
+            }
+
+            $plan = $this->processTariefPlan($tariefplan, $plan, $verifiedData, $isConreet);
+
+            $entityManager->persist($tariefplan);
+            $entityManager->persist($plan);
+            $dataInDb[] = $plan;
+        }
+        $entityManager->flush();
+
+        $response = $this->serializer->serialize($dataInDb, 'json');
+
+        return new Response($response, Response::HTTP_OK);
+    }
+
     protected function processTariefPlan(Tariefplan $tariefplan, $plan, $data, bool $isConcreet)
     {
         $geldigVanaf = new DateTime($data['geldigVanaf']['date']);
@@ -610,5 +715,16 @@ final class TariefplanController extends AbstractController
         }
 
         return $plan;
+    }
+
+    public static function underscoresToCamelCase($string, $capitalizeFirstCharacter = false)
+    {
+        $str = str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
+
+        if (!$capitalizeFirstCharacter) {
+            $str[0] = strtolower($str[0]);
+        }
+
+        return $str;
     }
 }
