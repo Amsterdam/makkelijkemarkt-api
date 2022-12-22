@@ -8,7 +8,6 @@ use App\Test\ApiTestCase;
 
 class RsvpPatternControllerTest extends ApiTestCase
 {
-    private $attending;
     private $marktId;
     private $erkenningsNummer;
     private $monday;
@@ -63,7 +62,7 @@ class RsvpPatternControllerTest extends ApiTestCase
     public function testCreateRsvpPattern()
     {
         $data = [
-            'marktId' => $this->marktId,
+            'markt' => $this->marktId,
             'erkenningsNummer' => $this->erkenningsNummer,
             'monday' => $this->monday,
             'tuesday' => $this->tuesday,
