@@ -259,10 +259,10 @@ class BtwWaardeController extends AbstractController
         }
 
         $btwWaarde = $btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
-        if (!count($btwWaarde)) {
-            return new JsonResponse(['error' => 'No btw waarde found for tarief'], Response::HTTP_NO_CONTENT);
+        if (null == $btwWaarde) {
+            return new JsonResponse(['error' => 'No btw waarde found'], Response::HTTP_NO_CONTENT);
         }
-        $response = $this->serializer->serialize($btwWaarde[0], 'json');
+        $response = $this->serializer->serialize($btwWaarde, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }

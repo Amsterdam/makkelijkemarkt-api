@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\BtwPlan;
 use App\Entity\BtwType;
+use App\Entity\BtwWaarde;
 use App\Entity\TariefSoort;
 use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\BtwPlanLogNormalizer;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\BtwPlanRepository;
 use App\Repository\BtwTypeRepository;
+use App\Repository\BtwWaardeRepository;
 use App\Repository\MarktRepository;
 use App\Repository\TariefSoortRepository;
 use DateTime;
@@ -286,6 +288,7 @@ class BtwPlanController extends AbstractController
         BtwTypeRepository $btwTypeRepository,
         TariefSoortRepository $tariefSoortRepository,
         BtwPlanRepository $btwPlanRepository,
+        BtwWaardeRepository $btwWaardeRepository,
         MarktRepository $marktRepository
     ): Response {
         $types = ['lineair', 'concreet'];
@@ -294,15 +297,24 @@ class BtwPlanController extends AbstractController
             return new JsonResponse(['error', 'Tarief plan type has to be either "lineair" or "concreet"'], Response::HTTP_BAD_REQUEST);
         }
 
-        $btwTypeLabels = ['laag', 'hoog', 'nul'];
+        $btwTypeLabels = ['laag' => 9, 'hoog' => 21, 'nul' => 0];
+        $today = new DateTime('today');
 
-        foreach ($btwTypeLabels as $btwTypeLabel) {
+        foreach ($btwTypeLabels as $btwTypeLabel => $btwWaardeValue) {
             $btwType = $btwTypeRepository->findOneBy(['label' => $btwTypeLabel]);
             if (null == $btwType) {
                 $btwType = (new BtwType())->setLabel($btwTypeLabel);
                 $entityManager->persist($btwType);
-                $entityManager->flush();
             }
+            $btwWaarde = $btwWaardeRepository->findCurrentBtwWaardeByBtwType($btwType);
+            if (null == $btwWaarde) {
+                $btwWaarde = (new BtwWaarde())
+                    ->setBtwType($btwType)
+                    ->setDateFrom($today)
+                    ->setTarief($btwWaardeValue);
+                $entityManager->persist($btwWaarde);
+            }
+            $entityManager->flush();
         }
 
         $btwPostFile = $request->files->get('file');

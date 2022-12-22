@@ -31,7 +31,6 @@ class BtwWaardeRepositoryTest extends ApiTestCase
     {
         $result = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($this->tariefSoort);
 
-        $this->assertIsArray($result);
-        $this->assertCount(1, $result);
+        $this->assertNotNull($result);
     }
 }

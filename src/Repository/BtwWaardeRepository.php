@@ -23,19 +23,9 @@ class BtwWaardeRepository extends ServiceEntityRepository
         parent::__construct($registry, BtwWaarde::class);
     }
 
-    public function findCurrentBtwWaardeByTariefSoort(TariefSoort $tariefSoort): int
+    public function findCurrentBtwWaardeByBtwType(BtwType $btwType): ?BtwWaarde
     {
         $now = new DateTime();
-        $em = $this->getEntityManager();
-        /** @var BtwPlanRepository */
-        $btwPlanRepository = $em->getRepository(BtwPlan::class);
-        /** @var BtwPlan[] */
-        $btwPlan = $btwPlanRepository->findCurrentByTariefSoort($tariefSoort);
-        /* @var BtwType */
-        if (!count($btwPlan)) {
-            return 0;
-        }
-        $btwType = $btwPlan[0]->getBtwType();
 
         $qb = $this
             ->createQueryBuilder('row')
@@ -47,8 +37,42 @@ class BtwWaardeRepository extends ServiceEntityRepository
             ->setMaxResults(1);
 
         /** @var BtwWaarde[] */
-        $btwPlan = $qb->getQuery()->execute();
+        $btwWaardes = $qb->getQuery()->execute();
+        if (0 == count($btwWaardes)) {
+            return null;
+        }
 
-        return $btwPlan[0]->getTarief();
+        return $btwWaardes[0];
+    }
+
+    public function findCurrentBtwWaardeByTariefSoort(TariefSoort $tariefSoort): ?BtwWaarde
+    {
+        $now = new DateTime();
+        $em = $this->getEntityManager();
+        /** @var BtwPlanRepository */
+        $btwPlanRepository = $em->getRepository(BtwPlan::class);
+        /** @var BtwPlan[] */
+        $btwPlannen = $btwPlanRepository->findCurrentByTariefSoort($tariefSoort);
+        if (0 == count($btwPlannen)) {
+            return null;
+        }
+        $btwType = $btwPlannen[0]->getBtwType();
+
+        $qb = $this
+            ->createQueryBuilder('row')
+            ->where('row.btwType = :btwType')
+            ->andWhere('row.dateFrom <= :now')
+            ->setParameter('btwType', $btwType)
+            ->setParameter('now', $now)
+            ->orderBy('row.dateFrom', 'DESC')
+            ->setMaxResults(1);
+
+        /** @var BtwWaarde[] */
+        $btwWaardes = $qb->getQuery()->execute();
+        if (0 == count($btwWaardes)) {
+            return null;
+        }
+
+        return $btwWaardes[0];
     }
 }

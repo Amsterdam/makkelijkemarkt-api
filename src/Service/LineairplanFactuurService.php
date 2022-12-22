@@ -14,6 +14,7 @@ use App\Entity\Tariefplan;
 use App\Repository\BtwTariefRepository;
 use App\Repository\BtwWaardeRepository;
 use App\Repository\TariefSoortRepository;
+use Doctrine\DBAL\Exception;
 
 final class LineairplanFactuurService
 {
@@ -476,6 +477,10 @@ final class LineairplanFactuurService
         $tariefSoort = $this->tariefSoortRepository->findByLabelAndType($label, self::TARIEF_TYPE);
         $btwWaarde = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
 
-        return (float) $btwWaarde;
+        if (null == $btwWaarde) {
+            throw new Exception('No Btw waarde found');
+        }
+
+        return (float) $btwWaarde->getTarief();
     }
 }
