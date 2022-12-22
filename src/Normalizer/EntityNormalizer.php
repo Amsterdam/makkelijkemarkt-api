@@ -107,6 +107,7 @@ final class EntityNormalizer extends ObjectNormalizer
             'geldigVanaf' => 'array',
             'geldigTot' => 'array',
             'patternDate' => 'Y-m-d H:i:s',
+            'dateFrom' => 'Y-m-d',
         ];
 
         foreach ($properties as $prop => $dtFormat) {
@@ -140,9 +141,7 @@ final class EntityNormalizer extends ObjectNormalizer
      */
     private function handleFotoPathes($object, array $data): array
     {
-        if (Koopman::class === get_class($object) ||
-            Vervanger::class === get_class($object)
-        ) {
+        if (Koopman::class === get_class($object) || Vervanger::class === get_class($object)) {
             $fotoUrl = null;
             $fotoMediumUrl = null;
 
@@ -166,11 +165,7 @@ final class EntityNormalizer extends ObjectNormalizer
      */
     private function handleShyProperties($object, array $data): array
     {
-        if (Dagvergunning::class === get_class($object) &&
-            array_key_exists('controles', $data) &&
-            is_array($data['controles']) &&
-            count($data['controles']) < 1
-        ) {
+        if (Dagvergunning::class === get_class($object) && array_key_exists('controles', $data) && is_array($data['controles']) && count($data['controles']) < 1) {
             unset($data['controles']);
         }
 
@@ -193,8 +188,7 @@ final class EntityNormalizer extends ObjectNormalizer
      */
     private function handleMarktIndelingslijst($object, array $data): array
     {
-        if (Markt::class === get_class($object)
-        ) {
+        if (Markt::class === get_class($object)) {
             $data['isABlijstIndeling'] = ('A/B-lijst' === $object->getIndelingstype());
         }
 
