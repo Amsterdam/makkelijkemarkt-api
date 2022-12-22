@@ -294,6 +294,17 @@ class BtwPlanController extends AbstractController
             return new JsonResponse(['error', 'Tarief plan type has to be either "lineair" or "concreet"'], Response::HTTP_BAD_REQUEST);
         }
 
+        $btwTypeLabels = ['laag', 'hoog', 'nul'];
+
+        foreach ($btwTypeLabels as $btwTypeLabel) {
+            $btwType = $btwTypeRepository->findOneBy(['label' => $btwTypeLabel]);
+            if (null == $btwType) {
+                $btwType = (new BtwType())->setLabel($btwTypeLabel);
+                $entityManager->persist($btwType);
+                $entityManager->flush();
+            }
+        }
+
         $btwPostFile = $request->files->get('file');
         $btwPlanCsv = fopen($btwPostFile, 'r');
 
@@ -317,14 +328,8 @@ class BtwPlanController extends AbstractController
                 $colLab = $tariefSoortMap[$tariefPlanType][$col];
                 $btwTypeLab = strtolower($btwPlanInput[$colI]);
                 $btwType = $btwTypeRepository->findOneBy(['label' => $btwTypeLab]);
-
-                // Init btw types for first import to init DB.
-                // DECOM after 1-1-2023 and replace with error message if not found
                 if (null == $btwType) {
-                    $btwType = (new BtwType())
-                        ->setLabel($btwTypeLab);
-
-                    $entityManager->persist($btwType);
+                    return new JsonResponse(['error', 'Btw type does not exist'], Response::HTTP_BAD_REQUEST);
                 }
 
                 $tariefSoort = $tariefSoortRepository->findOneBy(['label' => $colLab, 'tariefType' => $tariefPlanType]);
