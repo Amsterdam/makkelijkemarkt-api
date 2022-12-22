@@ -300,6 +300,8 @@ class BtwPlanController extends AbstractController
         $btwTypeLabels = ['laag' => 9, 'hoog' => 21, 'nul' => 0];
         $today = new DateTime('today');
 
+        // Init btw type and btw waarde for first import to init DB.
+        // DECOM after 1-1-2023 and replace with error message if not found
         foreach ($btwTypeLabels as $btwTypeLabel => $btwWaardeValue) {
             $btwType = $btwTypeRepository->findOneBy(['label' => $btwTypeLabel]);
             if (null == $btwType) {

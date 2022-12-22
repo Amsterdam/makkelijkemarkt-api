@@ -152,6 +152,8 @@ final class LineairplanFactuurService
         $afname = $dagvergunning->getAfvalEilandAgf();
         $kosten = $lineairplan->getAgfPerMeter();
 
+        $tariefLabel = 'Agf per meter';
+
         if (null !== $kosten
             && $kosten > 0
             && $afname >= 1
@@ -162,7 +164,7 @@ final class LineairplanFactuurService
             $product->setBedrag($kosten);
             $product->setFactuur($this->factuur);
             $product->setAantal($afname);
-            $product->setBtwHoog($btw);
+            $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
             $this->factuur->addProducten($product);
         }
     }

@@ -12,9 +12,14 @@ use App\Entity\Product;
 use App\Entity\Sollicitatie;
 use App\Entity\Tariefplan;
 use App\Repository\BtwTariefRepository;
+use App\Repository\BtwWaardeRepository;
+use App\Repository\TariefSoortRepository;
+use Doctrine\DBAL\Exception;
 
 final class ConcreetplanFactuurService
 {
+    private const TARIEF_TYPE = 'concreet';
+
     /** @var Factuur */
     private $factuur;
 
@@ -23,10 +28,20 @@ final class ConcreetplanFactuurService
 
     /** @var BtwTariefRepository */
     private $btwTariefRepository;
+    /** @var TariefSoortRepository */
+    private $tariefSoortRepository;
 
-    public function __construct(BtwTariefRepository $btwTariefRepository)
-    {
+    /** @var BtwWaardeRepository */
+    private $btwWaardeRepository;
+
+    public function __construct(
+        BtwTariefRepository $btwTariefRepository,
+        TariefSoortRepository $tariefSoortRepository,
+        BtwWaardeRepository $btwWaardeRepository
+    ) {
         $this->btwTariefRepository = $btwTariefRepository;
+        $this->tariefSoortRepository = $tariefSoortRepository;
+        $this->btwWaardeRepository = $btwWaardeRepository;
     }
 
     public function createFactuur(Dagvergunning $dagvergunning, Tariefplan $tariefplan): Factuur
@@ -114,7 +129,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($vierMeter);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($nietFacturabeleMeters);
-                $product->setBtwHoog(0);
+                $tariefLabel = 'Vier meter';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -156,7 +172,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($drieMeter);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($nietFacturabeleMeters);
-                $product->setBtwHoog(0);
+                $tariefLabel = 'Drie meter';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -197,7 +214,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($eenMeter);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($nietFacturabeleMeters);
-                $product->setBtwHoog(0);
+                $tariefLabel = 'Een meter';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -234,7 +252,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($kosten);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($afname);
-                $product->setBtwHoog(0);
+                $tariefLabel = 'Elektra';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -264,7 +283,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($kosten);
                 $product->setFactuur($this->factuur);
                 $product->setAantal(1);
-                $product->setBtwHoog(0);
+                $tariefLabel = 'Eenmalig elektra';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -299,7 +319,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($perKraam);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($kramen);
-                $product->setBtwHoog(0);
+                $tariefLabel = 'Promotie gelden per koopman';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -327,7 +348,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($perMeter);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($meters);
-                $product->setBtwHoog(0);
+                $tariefLabel = 'Promotie gelden per meter';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -363,7 +385,8 @@ final class ConcreetplanFactuurService
                 $product->setBedrag($kosten);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($afname);
-                $product->setBtwHoog($btw);
+                $tariefLabel = 'Afvaleiland';
+                $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
                 $this->factuur->addProducten($product);
             }
         }
@@ -387,8 +410,21 @@ final class ConcreetplanFactuurService
             $product->setBedrag($kosten);
             $product->setFactuur($this->factuur);
             $product->setAantal($afname);
-            $product->setBtwHoog($btw);
+            $tariefLabel = 'Agf per meter';
+            $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
             $this->factuur->addProducten($product);
         }
+    }
+
+    private function getBtwByLabel(string $label): float
+    {
+        $tariefSoort = $this->tariefSoortRepository->findByLabelAndType($label, self::TARIEF_TYPE);
+        $btwWaarde = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
+
+        if (null == $btwWaarde) {
+            throw new Exception('No Btw waarde found');
+        }
+
+        return (float) $btwWaarde->getTarief();
     }
 }
