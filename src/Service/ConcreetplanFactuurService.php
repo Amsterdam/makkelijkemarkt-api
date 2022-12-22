@@ -55,6 +55,7 @@ final class ConcreetplanFactuurService
         }
 
         $this->berekenAfvaleilanden($dagvergunning, $btw);
+        $this->berekenAfvaleilandenAgf($dagvergunning, $btw);
 
         return $this->factuur;
     }
@@ -334,12 +335,12 @@ final class ConcreetplanFactuurService
 
     private function berekenAfvaleilanden(Dagvergunning $dagvergunning, float $btw): void
     {
-        /** @var Concreetplan $lineairplan */
-        $lineairplan = $this->tariefplan->getConcreetplan();
+        /** @var Concreetplan $concreetplan */
+        $concreetplan = $this->tariefplan->getConcreetplan();
 
         $vast = $dagvergunning->getAfvaleilandVast();
         $afname = $dagvergunning->getAfvaleiland();
-        $kosten = $lineairplan->getAfvaleiland();
+        $kosten = $concreetplan->getAfvaleiland();
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1) {
             if ($vast >= 1) {
@@ -365,6 +366,29 @@ final class ConcreetplanFactuurService
                 $product->setBtwHoog($btw);
                 $this->factuur->addProducten($product);
             }
+        }
+    }
+
+    private function berekenAfvaleilandenAgf(Dagvergunning $dagvergunning, float $btw): void
+    {
+        /** @var Concreetplan $concreetplan */
+        $concreetplan = $this->tariefplan->getConcreetplan();
+
+        $afname = $dagvergunning->getAfvalEilandAgf();
+        $kosten = $concreetplan->getAgfPerMeter();
+
+        if (null !== $kosten
+            && $kosten > 0
+            && $afname >= 1
+        ) {
+            /** @var Product $product */
+            $product = new Product();
+            $product->setNaam('AGF per meter');
+            $product->setBedrag($kosten);
+            $product->setFactuur($this->factuur);
+            $product->setAantal($afname);
+            $product->setBtwHoog($btw);
+            $this->factuur->addProducten($product);
         }
     }
 }

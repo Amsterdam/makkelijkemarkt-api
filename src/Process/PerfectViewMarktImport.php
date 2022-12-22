@@ -112,9 +112,11 @@ class PerfectViewMarktImport
             if ('WAT-2022' === $upperCaseAfkorting) {
                 $opties[] = 'grootPerMeter';
                 $opties[] = 'kleinPerMeter';
-                $opties[] = 'afvalEilandAgf';
                 $opties[] = 'krachtstroomPerStuk';
             }
+
+            $opties[] = 'afvalEilandAgf';
+
             /* End fix */
             $markt->setAanwezigeOpties($opties);
         }
