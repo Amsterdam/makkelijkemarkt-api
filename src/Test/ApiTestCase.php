@@ -35,12 +35,12 @@ class ApiTestCase extends WebTestCase
     /** @var array<string> */
     protected $headers;
 
-    protected static ?KernelBrowser $browser = null;
+    protected static KernelBrowser $browser;
 
     public static function setUpBeforeClass(): void
     {
-        self::ensureKernelShutdown();
         self::$browser = static::createClient();
+
         self::$staticClient = new Client([
             'base_uri' => 'http://mm-api_nginx:80',
         ]);
