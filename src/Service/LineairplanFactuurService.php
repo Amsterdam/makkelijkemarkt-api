@@ -151,13 +151,10 @@ final class LineairplanFactuurService
         $afname = $dagvergunning->getAfvalEilandAgf();
         $kosten = $lineairplan->getAgfPerMeter();
 
-        if (null !== $kosten
-            && $kosten > 0
-            && $afname >= 1
-        ) {
+        if (null !== $kosten && $kosten > 0 && $afname >= 1) {
             /** @var Product $product */
             $product = new Product();
-            $product->setNaam('AGF per meter');
+            $product->setNaam('Afvaleiland AGF');
             $product->setBedrag($kosten);
             $product->setFactuur($this->factuur);
             $product->setAantal($afname);

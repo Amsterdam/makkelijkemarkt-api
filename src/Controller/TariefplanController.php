@@ -280,7 +280,6 @@ final class TariefplanController extends AbstractController
      *                 @OA\Property(property="afvaleiland", type="number", format="float"),
      *                 @OA\Property(property="eenmaligElektra", type="number", format="float"),
      *                 @OA\Property(property="elektra", type="number", format="float"),
-     *                 @OA\Property(property="agfPerMeter", type="number", format="float"),
      *                 required={
      *                      "naam",
      *                      "geldigVanaf",
@@ -292,8 +291,7 @@ final class TariefplanController extends AbstractController
      *                      "promotieGeldenPerKraam",
      *                      "afvaleiland",
      *                      "eenmaligElektra",
-     *                      "elektra",
-     *                      "agfPerMeter"
+     *                      "elektra"
      *                 }
      *             )
      *         )
@@ -415,18 +413,17 @@ final class TariefplanController extends AbstractController
 
         if ($isConcreet) {
             $expectedParameters = [
-                'naam',
-                'geldigVanaf',
-                'geldigTot',
-                'een_meter',
-                'drie_meter',
-                'vier_meter',
-                'promotieGeldenPerMeter',
-                'promotieGeldenPerKraam',
-                'afvaleiland',
-                'elektra',
-                'eenmaligElektra',
-                'agfPerMeter',
+            'naam',
+            'geldigVanaf',
+            'geldigTot',
+            'een_meter',
+            'drie_meter',
+            'vier_meter',
+            'promotieGeldenPerMeter',
+            'promotieGeldenPerKraam',
+            'afvaleiland',
+            'elektra',
+            'eenmaligElektra',
             ];
         }
 
@@ -593,7 +590,6 @@ final class TariefplanController extends AbstractController
         $plan->setPromotieGeldenPerKraam((float) $data['promotieGeldenPerKraam']);
         $plan->setAfvaleiland((float) $data['afvaleiland']);
         $plan->setEenmaligElektra((float) $data['eenmaligElektra']);
-        $plan->setAgfPerMeter((float) $data['agfPerMeter']);
         if ($isConcreet) {
             $plan->setEenMeter((float) $data['een_meter']);
             $plan->setDrieMeter((float) $data['drie_meter']);
@@ -607,6 +603,7 @@ final class TariefplanController extends AbstractController
             $plan->setReinigingPerMeterKlein((float) $data['reinigingPerMeterKlein']);
             $plan->setToeslagBedrijfsafvalPerMeter((float) $data['toeslagBedrijfsafvalPerMeter']);
             $plan->setToeslagKrachtstroomPerAansluiting((float) $data['toeslagKrachtstroomPerAansluiting']);
+            $plan->setAgfPerMeter((float) $data['agfPerMeter']);
         }
 
         return $plan;
