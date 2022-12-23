@@ -613,7 +613,8 @@ final class TariefplanController extends AbstractController
     public function parseTariefCsv(
         Request $request,
         EntityManagerInterface $entityManager,
-        MarktRepository $marktRepository
+        MarktRepository $marktRepository,
+        TariefplanRepository $tariefplanRepository
     ): Response {
         $types = ['lineair', 'concreet'];
         $tariefPlanType = $request->get('planType');
@@ -657,6 +658,12 @@ final class TariefplanController extends AbstractController
 
             $verifiedData = $this->checkExpectedParameters($planInput, $isConreet);
 
+            // Skip if tariefplan with same label is found
+            $tariefplan = $tariefplanRepository->findOneBy(['naam' => $planInput['naam']]);
+            if ($tariefplan) {
+                continue;
+            }
+
             $tariefplan = new Tariefplan();
             $tariefplan->setMarkt($markt);
 
@@ -680,7 +687,7 @@ final class TariefplanController extends AbstractController
         }
         $entityManager->flush();
 
-        $response = $this->serializer->serialize($dataInDb, 'json');
+        $response = $this->serializer->serialize($dataInDb, 'json', ['groups' => $this->groups]);
 
         return new Response($response, Response::HTTP_OK);
     }
