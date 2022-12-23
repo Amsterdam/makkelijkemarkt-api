@@ -105,15 +105,6 @@ class Concreetplan
      */
     private $tariefplan;
 
-    /**
-     * @OA\Property()
-     * @Groups("concreetplan")
-     *
-     * @var float
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     */
-    private $agfPerMeter;
-
     public function __toString()
     {
         return (string) $this->getId();
@@ -230,15 +221,5 @@ class Concreetplan
         $this->tariefplan = $tariefplan;
 
         return $this;
-    }
-
-    public function getAgfPerMeter(): ?float
-    {
-        return (float) $this->agfPerMeter;
-    }
-
-    public function setAgfPerMeter(?float $agfPerMeter): void
-    {
-        $this->agfPerMeter = $agfPerMeter;
     }
 }
