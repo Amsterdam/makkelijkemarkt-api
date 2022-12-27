@@ -12,12 +12,17 @@ use App\Entity\Product;
 use App\Entity\Sollicitatie;
 use App\Entity\Tariefplan;
 use App\Repository\BtwTariefRepository;
+use App\Repository\BtwWaardeRepository;
+use App\Repository\TariefSoortRepository;
+use Doctrine\DBAL\Exception;
 
 final class LineairplanFactuurService
 {
     private const GROOTTE_GROOT = 'groot';
     private const GROOTTE_NORMAAL = 'normaal';
     private const GROOTTE_KLEIN = 'klein';
+
+    private const TARIEF_TYPE = 'lineair';
 
     private const ALLE_GROOTTES = [self::GROOTTE_GROOT, self::GROOTTE_KLEIN, self::GROOTTE_NORMAAL];
 
@@ -29,10 +34,20 @@ final class LineairplanFactuurService
 
     /** @var BtwTariefRepository */
     private $btwTariefRepository;
+    /** @var TariefSoortRepository */
+    private $tariefSoortRepository;
 
-    public function __construct(BtwTariefRepository $btwTariefRepository)
-    {
+    /** @var BtwWaardeRepository */
+    private $btwWaardeRepository;
+
+    public function __construct(
+        BtwTariefRepository $btwTariefRepository,
+        TariefSoortRepository $tariefSoortRepository,
+        BtwWaardeRepository $btwWaardeRepository
+    ) {
         $this->btwTariefRepository = $btwTariefRepository;
+        $this->tariefSoortRepository = $tariefSoortRepository;
+        $this->btwWaardeRepository = $btwWaardeRepository;
     }
 
     public function createFactuur(Dagvergunning $dagvergunning, Tariefplan $tariefplan): Factuur
@@ -137,14 +152,19 @@ final class LineairplanFactuurService
         $afname = $dagvergunning->getAfvalEilandAgf();
         $kosten = $lineairplan->getAgfPerMeter();
 
-        if (null !== $kosten && $kosten > 0 && $afname >= 1) {
+        $tariefLabel = 'Agf per meter';
+
+        if (null !== $kosten
+            && $kosten > 0
+            && $afname >= 1
+        ) {
             /** @var Product $product */
             $product = new Product();
-            $product->setNaam('Afvaleiland AGF');
+            $product->setNaam('AGF per meter');
             $product->setBedrag($kosten);
             $product->setFactuur($this->factuur);
             $product->setAantal($afname);
-            $product->setBtwHoog($btw);
+            $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
             $this->factuur->addProducten($product);
         }
     }
@@ -157,6 +177,8 @@ final class LineairplanFactuurService
         $afname = $dagvergunning->getKrachtstroomPerStuk();
         $kosten = $lineairplan->getToeslagKrachtstroomPerAansluiting();
 
+        $tariefLabel = 'Toeslag krachtstroom per aansluiting';
+
         if (null !== $kosten && $kosten > 0 && $afname >= 1) {
             /** @var Product $product */
             $product = new Product();
@@ -164,7 +186,7 @@ final class LineairplanFactuurService
             $product->setBedrag($kosten);
             $product->setFactuur($this->factuur);
             $product->setAantal($afname);
-            $product->setBtwHoog($btw);
+            $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
             $this->factuur->addProducten($product);
         }
     }
@@ -183,19 +205,26 @@ final class LineairplanFactuurService
         $nameReiniging = "reiniging ($grootte tarief)";
 
         $cost = $this->tariefplan->getLineairplan()->getTariefPerMeter();
+        $tariefLabel = 'Tarief per meter';
+
         if (self::GROOTTE_KLEIN === $grootte) {
             $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterKlein();
+            $tariefLabel = 'Tarief per meter klein';
         }
         if (self::GROOTTE_GROOT === $grootte) {
             $cost = $this->tariefplan->getLineairplan()->getTariefPerMeterGroot();
+            $tariefLabel = 'Tarief per meter groot';
         }
 
         $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeter();
+        $reinigingLabel = 'Reiniging per meter';
         if (self::GROOTTE_KLEIN === $grootte) {
             $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterKlein();
+            $reinigingLabel = 'Reiniging per meter klein';
         }
         if (self::GROOTTE_GROOT === $grootte) {
             $costReiniging = $this->tariefplan->getLineairplan()->getReinigingPerMeterGroot();
+            $reinigingLabel = 'Reiniging per meter groot';
         }
 
         /** @var Product $product */
@@ -204,7 +233,7 @@ final class LineairplanFactuurService
         $product->setBedrag($cost);
         $product->setFactuur($this->factuur);
         $product->setAantal($amount);
-        $product->setBtwHoog(0);
+        $product->setBtwHoog($this->getBtwByLabel($tariefLabel));
         $this->factuur->addProducten($product);
 
         /** @var Product $product */
@@ -213,7 +242,7 @@ final class LineairplanFactuurService
         $product->setBedrag($costReiniging);
         $product->setFactuur($this->factuur);
         $product->setAantal($amount);
-        $product->setBtwHoog($btw);
+        $product->setBtwHoog($this->getBtwByLabel($reinigingLabel));
         $this->factuur->addProducten($product);
     }
 
@@ -223,6 +252,8 @@ final class LineairplanFactuurService
             return;
         }
 
+        $label = 'Toeslag bedrijfsafval per meter';
+
         $plan = $this->tariefplan->getLineairplan();
 
         /** @var Product $product */
@@ -231,7 +262,7 @@ final class LineairplanFactuurService
         $product->setBedrag($plan->getToeslagBedrijfsafvalPerMeter());
         $product->setFactuur($this->factuur);
         $product->setAantal($meters);
-        $product->setBtwHoog($btw);
+        $product->setBtwHoog($this->getBtwByLabel($label));
         $this->factuur->addProducten($product);
     }
 
@@ -243,6 +274,8 @@ final class LineairplanFactuurService
         $vast = $dagvergunning->getAantalElektraVast();
         $afname = $dagvergunning->getAantalElektra();
         $kosten = $lineairplan->getToeslagKrachtstroomPerAansluiting();
+
+        $label = 'Toeslag krachtstroom per aansluiting';
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1 && true === $dagvergunning->getKrachtstroom()) {
             if ($vast >= 1) {
@@ -265,7 +298,7 @@ final class LineairplanFactuurService
                 $product->setBedrag($kosten);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($afname);
-                $product->setBtwHoog($btw);
+                $product->setBtwHoog($this->getBtwByLabel($label));
                 $this->factuur->addProducten($product);
             }
         }
@@ -279,6 +312,8 @@ final class LineairplanFactuurService
         $vast = $dagvergunning->getAantalElektraVast();
         $afname = $dagvergunning->getAantalElektra();
         $kosten = $lineairplan->getElektra();
+
+        $label = 'Elektra';
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1 && false === $dagvergunning->getKrachtstroom()) {
             if ($vast >= 1) {
@@ -301,7 +336,7 @@ final class LineairplanFactuurService
                 $product->setBedrag($kosten);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($afname);
-                $product->setBtwHoog($btw);
+                $product->setBtwHoog($this->getBtwByLabel($label));
                 $this->factuur->addProducten($product);
             }
         }
@@ -315,6 +350,8 @@ final class LineairplanFactuurService
         $vast = $dagvergunning->getAfvaleilandVast();
         $afname = $dagvergunning->getAfvaleiland();
         $kosten = $lineairplan->getAfvaleiland();
+
+        $label = 'Afvaleiland';
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1) {
             if ($vast >= 1) {
@@ -337,7 +374,7 @@ final class LineairplanFactuurService
                 $product->setBedrag($kosten);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($afname);
-                $product->setBtwHoog($btw);
+                $product->setBtwHoog($this->getBtwByLabel($label));
                 $this->factuur->addProducten($product);
             }
         }
@@ -350,6 +387,8 @@ final class LineairplanFactuurService
 
         $eenmaligElektra = $dagvergunning->getEenmaligElektra();
         $kosten = $lineairplan->getEenmaligElektra();
+
+        $label = 'Eenmalig elektra';
 
         if (null !== $kosten && $kosten > 0 && true === $eenmaligElektra) {
             if (in_array($dagvergunning->getStatusSolliciatie(), [Sollicitatie::STATUS_VKK, Sollicitatie::STATUS_VPL])) {
@@ -368,7 +407,7 @@ final class LineairplanFactuurService
                 $product->setBedrag($kosten);
                 $product->setFactuur($this->factuur);
                 $product->setAantal(1);
-                $product->setBtwHoog($btw);
+                $product->setBtwHoog($this->getBtwByLabel($label));
                 $this->factuur->addProducten($product);
             }
         }
@@ -403,7 +442,7 @@ final class LineairplanFactuurService
                 $product->setBedrag($perKraam);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($kramen);
-                $product->setBtwHoog(0);
+                $product->setBtwHoog($this->getBtwByLabel('Promotie gelden per kraam'));
                 $this->factuur->addProducten($product);
             }
         }
@@ -429,9 +468,21 @@ final class LineairplanFactuurService
                 $product->setBedrag($perMeter);
                 $product->setFactuur($this->factuur);
                 $product->setAantal($meters);
-                $product->setBtwHoog(0);
+                $product->setBtwHoog($this->getBtwByLabel('Promotie gelden per meter'));
                 $this->factuur->addProducten($product);
             }
         }
+    }
+
+    private function getBtwByLabel(string $label): float
+    {
+        $tariefSoort = $this->tariefSoortRepository->findByLabelAndType($label, self::TARIEF_TYPE);
+        $btwWaarde = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
+
+        if (null == $btwWaarde) {
+            throw new Exception('No Btw waarde found');
+        }
+
+        return (float) $btwWaarde->getTarief();
     }
 }
