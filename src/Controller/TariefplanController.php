@@ -658,6 +658,10 @@ final class TariefplanController extends AbstractController
 
             $verifiedData = $this->checkExpectedParameters($planInput, $isConreet);
 
+            if ($verifiedData !== $planInput) {
+                return $verifiedData;
+            }
+
             // Skip if tariefplan with same label is found
             $tariefplan = $tariefplanRepository->findOneBy(['naam' => $planInput['naam']]);
             if ($tariefplan) {
@@ -726,6 +730,11 @@ final class TariefplanController extends AbstractController
 
     public static function underscoresToCamelCase($string, $capitalizeFirstCharacter = false)
     {
+        // een, drie, vier meter only parameters that are not camelcased in the parameters.
+        // When tarief controllers are rewritten, consistent parameter naming should be used.
+        if (in_array($string, ['een_meter', 'drie_meter', 'vier_meter'])) {
+            return $string;
+        }
         $str = str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
 
         if (!$capitalizeFirstCharacter) {
