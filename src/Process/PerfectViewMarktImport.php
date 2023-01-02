@@ -98,7 +98,16 @@ class PerfectViewMarktImport
             if ('True' === $pvRecord['A1_METER'] || 'Waar' === $pvRecord['A1_METER']) {
                 $opties[] = 'extraMeters';
             }
-            if ('True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']) {
+
+            // Only show the afvaleiland option in the app for markets with a Concreet Plan
+            if ((
+                    'True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']
+                ) && (
+                    'BKSL' === $upperCaseAfkorting
+                    || 'BBKSL' === $upperCaseAfkorting
+                    || 'TK' === $upperCaseAfkorting
+                )
+            ) {
                 $opties[] = 'afvaleiland';
             }
             if ('True' === $pvRecord['KRACHTROOM'] || 'Waar' === $pvRecord['KRACHTROOM']) {
@@ -115,6 +124,7 @@ class PerfectViewMarktImport
                 $opties[] = 'krachtstroomPerStuk';
             }
 
+            // Add this option manually, because it's currently not set in Mercato
             $opties[] = 'afvalEilandAgf';
 
             /* End fix */

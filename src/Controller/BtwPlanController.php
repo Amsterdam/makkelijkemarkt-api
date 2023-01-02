@@ -22,7 +22,6 @@ use OpenApi\Annotations as OA;
 use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -271,7 +270,7 @@ class BtwPlanController extends AbstractController
      *      @OA\Response(
      *          response="200",
      *          description="Success",
-     *          @OA\JsonContent(ref="#/components/schemas/BtwPlan")
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
      *      ),
      *      @OA\Response(
      *          response="400",
@@ -320,15 +319,12 @@ class BtwPlanController extends AbstractController
             $entityManager->flush();
         }
 
-        /**
-         * @var UploadedFile $btwPostFile
-         */
         $btwPostFile = $request->files->get('file');
-        $btwPlanCsv = fopen($btwPostFile->getPath(), 'r');
+        $btwPlanCsv = fopen($btwPostFile, 'r');
 
         $projectDir = $this->getParameter('kernel.project_dir');
         $jsonString = file_get_contents($projectDir.'/src/DataFixtures/fixtures/tariefSoorten.json');
-        $tariefSoortMap = json_decode($jsonString, true);
+        $tariefSoortMap = json_decode($jsonString, $associative = true);
 
         $dataInDb = [];
 
@@ -381,6 +377,31 @@ class BtwPlanController extends AbstractController
         }
 
         $response = $this->serializer->serialize($dataInDb, 'json');
+
+        return new Response($response, Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/btw_plans",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="getBtwPlansIndex",
+     *      tags={"BtwPlan", "BTW"},
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     * )
+     *
+     * @Route("/btw_plans", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getBtwPlannen(BtwPlanRepository $btwPlanRepository): Response
+    {
+        $btwPlannen = $btwPlanRepository->findAllWithTariefSoort();
+
+        $response = $this->serializer->serialize($btwPlannen, 'json');
 
         return new Response($response, Response::HTTP_OK);
     }

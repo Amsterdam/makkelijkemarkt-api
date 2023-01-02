@@ -38,4 +38,20 @@ class BtwPlanRepository extends ServiceEntityRepository
 
         return $btwPlan;
     }
+
+    /**
+     * @return BtwPlan[] Returns an array of all BTW plannen and related tariefsoorten
+     */
+    public function findAllWithTariefSoort(): array
+    {
+        $qb = $this
+            ->createQueryBuilder('plan')
+            ->join('plan.tariefSoort', 'ts')
+            ->orderBy('plan.dateFrom', 'DESC');
+
+        /** @var BtwPlan[] */
+        $btwPlannen = $qb->getQuery()->execute();
+
+        return $btwPlannen;
+    }
 }
