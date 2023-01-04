@@ -48,8 +48,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
             ->join('dvg.markt', 'mkt')
             ->leftJoin('dvg.koopman', 'koopman')
             ->leftJoin('koopman.dagvergunningen', 'vergunningen', Join::WITH, sprintf('vergunningen.dag >= \'%s\'', $maandGeleden->format('Y-m-d')))
-            ->leftJoin('vergunningen.vergunningControles', 'controles')
-        ;
+            ->leftJoin('vergunningen.vergunningControles', 'controles');
 
         // search
         if (true === isset($q['marktId']) && null !== $q['marktId'] && '' !== $q['marktId']) {
@@ -100,8 +99,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
 
             // pagination
             ->setMaxResults($size)
-            ->setFirstResult($offset)
-        ;
+            ->setFirstResult($offset);
 
         // paginator
         $q = $qb->getQuery();
@@ -127,14 +125,12 @@ final class DagvergunningRepository extends ServiceEntityRepository
             ->andWhere('d.dag = :dag')
 
             ->setParameter('markt', $markt)
-            ->setParameter('dag', $datum)
-        ;
+            ->setParameter('dag', $datum);
 
         if (false === $includeDoorgehaald) {
             $qb
                 ->andWhere('d.doorgehaald = :doorgehaald')
-                ->setParameter('doorgehaald', false)
-            ;
+                ->setParameter('doorgehaald', false);
         }
 
         return $qb->getQuery()->execute();
@@ -160,8 +156,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
             ->setParameter('doorgehaald', false)
             ->setParameter('koopman', $koopman)
             ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate)
-        ;
+            ->setParameter('endDate', $endDate);
 
         return $qb->getQuery()->getResult();
     }
@@ -182,8 +177,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
             ->setParameter('dag', $dag)
 
             ->addGroupBy('d.erkenningsnummerInvoerWaarde')
-            ->andHaving('COUNT(d.erkenningsnummerInvoerWaarde) > 1')
-        ;
+            ->andHaving('COUNT(d.erkenningsnummerInvoerWaarde) > 1');
 
         return $qb->getQuery()->execute([], Query::HYDRATE_ARRAY);
     }
@@ -236,8 +230,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
             ->setParameter('dagStart', new DateTime($dagStart))
             ->setParameter('dagEind', new DateTime($dagEind))
             ->setParameter('sdoorgehaald', false)
-            ->setParameter('ddoorgehaald', false)
-        ;
+            ->setParameter('ddoorgehaald', false);
 
         return $qb->getQuery()->execute();
     }
@@ -247,6 +240,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
      */
     public function findAllFrequentieDagByMarktInPeriod(int $marktId, string $dagStart, string $dagEind): array
     {
+        // Select koopman where status is not SOLL so we get all VPH.
         $sql = "
                 SELECT
                     date_part('week',d.dag) AS week_nummer,
@@ -268,7 +262,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
                 WHERE
                     s.doorgehaald = false
                     AND s.markt_id = :marktId
-                    AND (s.status = 'vkk' OR s.status = 'vpl')
+                    AND (s.status != 'soll')
                 GROUP BY
                     k.id,
                     week_nummer
