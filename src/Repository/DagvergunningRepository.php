@@ -246,6 +246,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
                     date_part('week',d.dag) AS week_nummer,
                     string_agg(to_char(d.dag, 'YYYY-MM-DD'), '|') AS dagen,
                     count(d.id) AS aantal,
+                    s.status,
                     k.id,
                     k.erkenningsnummer,
                     k.achternaam,
@@ -265,7 +266,8 @@ final class DagvergunningRepository extends ServiceEntityRepository
                     AND (s.status != 'soll')
                 GROUP BY
                     k.id,
-                    week_nummer
+                    week_nummer,
+                    s.status
                 ORDER BY k.id, week_nummer ASC
                 ";
 
