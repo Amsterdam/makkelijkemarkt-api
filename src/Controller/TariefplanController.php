@@ -663,7 +663,7 @@ final class TariefplanController extends AbstractController
             }
 
             // Skip if tariefplan with same label is found
-            $tariefplan = $tariefplanRepository->findOneBy(['naam' => $planInput['naam']]);
+            $tariefplan = $tariefplanRepository->findOneBy(['naam' => $planInput['naam'], 'markt' => (int) $marktId]);
             if ($tariefplan) {
                 continue;
             }
