@@ -623,35 +623,26 @@ final class TariefplanController extends AbstractController
         }
         $isConreet = ('concreet' == $tariefPlanType);
 
-        $environment = $request->get('env', null);
-
         /**
          * @var UploadedFile $tariefPostFile
          */
         $tariefPostFile = $request->files->get('file');
         $tariefPlanCsv = fopen($tariefPostFile->getRealPath(), 'r');
 
-        $projectDir = $this->getParameter('kernel.project_dir');
-        $jsonString = file_get_contents($projectDir.'/src/DataFixtures/fixtures/marktMapper.json');
-        $marktMap = json_decode($jsonString, true);
-
         $dataInDb = [];
 
         $columns = fgetcsv($tariefPlanCsv);
         $columns = array_map('self::underscoresToCamelCase', $columns);
-        $colN = count($columns);
+
         while (($tariefPlanInput = fgetcsv($tariefPlanCsv)) !== false) {
             $planInput = array_combine($columns, $tariefPlanInput);
 
-            $marktId = $planInput['marktId'] ?: null;
-            if ($environment) {
-                $marktId = $marktMap[$marktId][$environment] ?? null;
-            }
-            $markt = $marktId ? $marktRepository->getById((int) $marktId) : null;
+            $markt = $marktRepository->getByAfkorting($planInput['afkorting']);
             if (null == $markt) {
                 continue;
             }
-            unset($planInput['marktId']);
+            // Remove afkorting from data to have valid data for checkExpectedParameters
+            unset($planInput['afkorting']);
 
             $planInput['geldigVanaf'] = ['date' => $planInput['geldigVanaf']];
             $planInput['geldigTot'] = ['date' => $planInput['geldigTot']];
@@ -663,7 +654,7 @@ final class TariefplanController extends AbstractController
             }
 
             // Skip if tariefplan with same label is found
-            $tariefplan = $tariefplanRepository->findOneBy(['naam' => $planInput['naam'], 'markt' => (int) $marktId]);
+            $tariefplan = $tariefplanRepository->findOneBy(['naam' => $planInput['naam'], 'markt' => $markt->getId()]);
             if ($tariefplan) {
                 continue;
             }
