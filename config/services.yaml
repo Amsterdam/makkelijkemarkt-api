@@ -73,7 +73,7 @@ services:
                     project:
                         id: '%env(SWIFT_PROJECT_ID)%'
                 requestOptions:
-                    timeout: 1
+                    timeout: 0.2
     openstack_objectstore:
         class: OpenStack\ObjectStore\v1\Service
         lazy: true
