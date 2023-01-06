@@ -55,10 +55,14 @@ final class ExceptionListener
         // An image loading from the Dashboard or KJK should not give a 500 page when Openstack hits a timeout.
         // Therefore we add the statuscode 307 (Temporary Redirect) that Symfony sees as a redirect and not an error.
         $requestClass = get_class($event->getThrowable());
+
+        // Examples:
+        // GuzzleHttp\Exception\ConnectException (when timeout)
+        // OpenStack\Common\Error\BadResponseError (when unauthorized)
         $hasMatch = preg_match('/(Openstack)|(GuzzleHttp)/i', $requestClass);
         if ($hasMatch) {
             $this->logger->warning('Got an Openstack error, redirecting to prevent triggering error pages.');
-            $response->setStatusCode(307);
+            $response->setStatusCode(204);
             $response->setContent($message);
         }
 
