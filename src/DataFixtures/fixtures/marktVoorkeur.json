@@ -1288,9 +1288,9 @@
   },
   {
     "id": 76,
-    "branche_id": 19,
-    "markt_id": 204,
-    "koopman_id": 466,
+    "branche_id": 20,
+    "markt_id": 39,
+    "koopman_id": 12059,
     "anywhere": false,
     "minimum": 1,
     "maximum": 1,
@@ -1302,7 +1302,7 @@
   {
     "id": 77,
     "branche_id": 19,
-    "markt_id": 204,
+    "markt_id": 39,
     "koopman_id": 3750,
     "anywhere": false,
     "minimum": 1,
