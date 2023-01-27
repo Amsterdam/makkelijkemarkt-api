@@ -64,6 +64,9 @@ final class ExceptionListener
             $this->logger->warning('Got an Openstack error, redirecting to prevent triggering error pages.');
             $response->setStatusCode(204);
             $response->setContent($message);
+            $event->setResponse($response);
+
+            return;
         }
 
         // HttpExceptionInterface is a special type of exception that
