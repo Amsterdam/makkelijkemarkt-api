@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -67,7 +66,7 @@ final class ExceptionListener
 
             $response->setStatusCode(200);
             $response->setContent($message);
-            $event->setResponse(new JsonResponse(['error' => $message], 204));
+            $event->setResponse($response);
 
             return;
         }
