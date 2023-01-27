@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class ExceptionListener
 {
@@ -62,9 +63,11 @@ final class ExceptionListener
         $hasMatch = preg_match('/(Openstack)|(GuzzleHttp)/i', $requestClass);
         if ($hasMatch) {
             $this->logger->warning('Got an Openstack error, redirecting to prevent triggering error pages.');
-            $response->setStatusCode(204);
+            $event->allowCustomResponseCode();
+
+            $response->setStatusCode(200);
             $response->setContent($message);
-            $event->setResponse($response);
+            $event->setResponse(new JsonResponse(['error' => $message], 204));
 
             return;
         }
