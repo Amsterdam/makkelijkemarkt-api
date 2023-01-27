@@ -62,11 +62,11 @@ final class ExceptionListener
         $hasMatch = preg_match('/(Openstack)|(GuzzleHttp)/i', $requestClass);
         if ($hasMatch) {
             $this->logger->warning('Got an Openstack error, redirecting to prevent triggering error pages.');
-            $event->allowCustomResponseCode();
+            // $event->allowCustomResponseCode();
 
-            $response->setStatusCode(200);
-            $response->setContent($message);
-            $event->setResponse($response);
+            // $response->setStatusCode(200);
+            // $response->setContent($message);
+            // $event->setResponse($response);
 
             return;
         }
