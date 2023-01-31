@@ -473,7 +473,7 @@
                 ]
             }
         },
-        "/api/1.1.0/allocation/{marktId}/{date}": {
+        "/api/1.1.0/allocation/{marktId}/date/{date}": {
             "post": {
                 "tags": [
                     "Allocation"
@@ -1205,6 +1205,316 @@
                 ]
             }
         },
+        "/api/1.1.0/btw_plan": {
+            "post": {
+                "tags": [
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "summary": "Maakt nieuwe BtwPlan aan",
+                "operationId": "BtwPlanCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "tariefSoortId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    },
+                                    "btwTypeId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    },
+                                    "dateFrom": {
+                                        "description": "=",
+                                        "type": "string"
+                                    },
+                                    "marktId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BtwPlan"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw_plan/update/{btwPlanId}": {
+            "get": {
+                "tags": [
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "operationId": "Get a BTW plan and relevant info for an update.",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw_plan/{btwPlanId}": {
+            "put": {
+                "tags": [
+                    "Tarief",
+                    "Tariefplan",
+                    "BTW"
+                ],
+                "summary": "Update BtwPlan",
+                "operationId": "BtwPlanUpdate",
+                "parameters": [
+                    {
+                        "name": "btwPlanId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "tariefSoortId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    },
+                                    "btwTypeId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    },
+                                    "dateFrom": {
+                                        "description": "=",
+                                        "type": "string"
+                                    },
+                                    "marktId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BtwPlan"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/parse_btw_csv": {
+            "post": {
+                "tags": [
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "operationId": "ImportBtwPlan",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw/plans/{planType}": {
+            "get": {
+                "tags": [
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "operationId": "getBtwPlansIndex",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw_plan/create/{planType}": {
+            "get": {
+                "tags": [
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "summary": "Gets data needed to create new BTW plan",
+                "operationId": "getBtwCreate",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw_plan/archive/{id}": {
+            "patch": {
+                "tags": [
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "summary": "Archive a BTW plan with an id",
+                "operationId": "archiveBtwPlan",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Invalid request (cant find plan)"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/1.1.0/btw/": {
             "get": {
                 "tags": [
@@ -1271,6 +1581,334 @@
                                     "items": {
                                         "$ref": "#/components/schemas/BtwTarief"
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw_type": {
+            "put": {
+                "tags": [
+                    "BtwType",
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "summary": "Update BtwType",
+                "operationId": "BtwTypeUpdate",
+                "parameters": [
+                    {
+                        "name": "btwTypeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "label": {
+                                        "description": "Label of the BtwType",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BtwType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "BtwType",
+                    "BtwPlan",
+                    "BTW"
+                ],
+                "summary": "Maakt nieuwe BtwType aan",
+                "operationId": "BtwTypeCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "label": {
+                                        "description": "Label of the BtwType",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BtwType"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw_waarde": {
+            "put": {
+                "tags": [
+                    "BtwWaarde",
+                    "BTW"
+                ],
+                "summary": "Update BtwWaarde",
+                "operationId": "BtwWaardeUpdate",
+                "parameters": [
+                    {
+                        "name": "btwWaardeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "btwTypeId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    },
+                                    "dateFrom": {
+                                        "description": "=",
+                                        "type": "string"
+                                    },
+                                    "tarief": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BtwWaarde"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "BtwWaarde",
+                    "BTW"
+                ],
+                "summary": "Maakt nieuwe BtwWaarde aan",
+                "operationId": "BtwWaardeCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "btwTypeId": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    },
+                                    "dateFrom": {
+                                        "description": "=",
+                                        "type": "string"
+                                    },
+                                    "tarief": {
+                                        "description": "=",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BtwWaarde"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/btw_waarde/tarief_soort_id/{tariefSoortId}": {
+            "get": {
+                "tags": [
+                    "BtwWaarde",
+                    "BTW"
+                ],
+                "summary": "Get BtwWaarde op basis van TariefSoort ID",
+                "operationId": "BtwBtwWaardeByTariefSoort",
+                "parameters": [
+                    {
+                        "name": "tariefSoortId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BtwWaarde"
                                 }
                             }
                         }
@@ -2232,6 +2870,147 @@
                 "responses": {
                     "200": {
                         "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/kjklog/entityType/{entityType}/datetime/{datetime}": {
+            "get": {
+                "tags": [
+                    "KiesJeKraamAuditLog"
+                ],
+                "summary": "Vraag logs op voor een bepaalde entity type op een bepaalde datum",
+                "operationId": "KiesJeKraamAuditLogGetByEntityTypeAndDate",
+                "parameters": [
+                    {
+                        "name": "entityType",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "datetime",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/kjklogs/ALL": {
+            "get": {
+                "tags": [
+                    "KiesJeKraamAuditLog"
+                ],
+                "summary": "Vraag alle logs op",
+                "operationId": "KiesJeKraamAuditLogGetAll",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/kjklogs/from/{date}": {
+            "get": {
+                "tags": [
+                    "KiesJeKraamAuditLog"
+                ],
+                "summary": "Vraagt alle logs op vanaf een bepaalde datum",
+                "operationId": "GetAuditLogFromDate",
+                "responses": {
+                    "200": {
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -5360,6 +6139,10 @@
                                     "koopmanErkenningsNummer": {
                                         "description": "erkenningsnummer van de koopman",
                                         "type": "string"
+                                    },
+                                    "rsvps": {
+                                        "description": "meerdere rsvps tegelijk",
+                                        "type": "object"
                                     }
                                 },
                                 "type": "object"
@@ -5711,7 +6494,7 @@
                                         "description": "Ingangdatum van Rsvp patroon (als YYYY-MM-DD)",
                                         "type": "string"
                                     },
-                                    "marktId": {
+                                    "markt": {
                                         "description": "id van de markt",
                                         "type": "string"
                                     },
@@ -6315,6 +7098,240 @@
                 ]
             }
         },
+        "/api/1.1.0/tariefsoort": {
+            "get": {
+                "tags": [
+                    "Tarief",
+                    "Tariefplan",
+                    "BTW"
+                ],
+                "summary": "Get All TariefSoort",
+                "operationId": "TariefSoortGetAll",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tarief",
+                    "Tariefplan",
+                    "BTW"
+                ],
+                "summary": "Update TariefSoort",
+                "operationId": "TariefSoortUpdate",
+                "parameters": [
+                    {
+                        "name": "tariefSoortId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "label": {
+                                        "description": "Label of the TariefSoort",
+                                        "type": "string"
+                                    },
+                                    "tariefType": {
+                                        "description": "Tarief type [lineair, concreet]",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tarief",
+                    "Tariefplan",
+                    "BTW"
+                ],
+                "summary": "Maakt nieuwe TariefSoort aan",
+                "operationId": "TariefSoortCreate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "label": {
+                                        "description": "Label of the TariefSoort",
+                                        "type": "string"
+                                    },
+                                    "tariefType": {
+                                        "description": "Tarief type lineair, concreet",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tarief",
+                    "Tariefplan",
+                    "BTW"
+                ],
+                "summary": "Update TariefSoort",
+                "operationId": "TariefSoortDelete",
+                "parameters": [
+                    {
+                        "name": "tariefSoortId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TariefSoort"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/1.1.0/tariefplannen/list/{marktId}": {
             "get": {
                 "tags": [
@@ -6723,7 +7740,8 @@
                                     "promotieGeldenPerKraam",
                                     "afvaleiland",
                                     "eenmaligElektra",
-                                    "elektra"
+                                    "elektra",
+                                    "agfPerMeter"
                                 ],
                                 "properties": {
                                     "naam": {
@@ -6768,6 +7786,10 @@
                                         "format": "float"
                                     },
                                     "elektra": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "agfPerMeter": {
                                         "type": "number",
                                         "format": "float"
                                     }
@@ -6996,6 +8018,55 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": [],
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/1.1.0/parse_tarief_csv": {
+            "post": {
+                "tags": [
+                    "TariefPlan",
+                    "Tarief"
+                ],
+                "operationId": "ImportTariefPlan",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tariefplan"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -7442,6 +8513,9 @@
             "Branche": {
                 "type": "object"
             },
+            "BtwPlan": {
+                "type": "object"
+            },
             "BtwTarief": {
                 "properties": {
                     "id": {
@@ -7456,6 +8530,12 @@
                         "type": "integer"
                     }
                 },
+                "type": "object"
+            },
+            "BtwType": {
+                "type": "object"
+            },
+            "BtwWaarde": {
                 "type": "object"
             },
             "Concreetplan": {
@@ -7493,6 +8573,10 @@
                         "format": "float"
                     },
                     "eenmaligElektra": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "agfPerMeter": {
                         "type": "number",
                         "format": "float"
                     }
@@ -8025,6 +9109,9 @@
                         "$ref": "#/components/schemas/Koopman"
                     }
                 },
+                "type": "object"
+            },
+            "TariefSoort": {
                 "type": "object"
             },
             "Tariefplan": {

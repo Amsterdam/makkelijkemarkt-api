@@ -49,6 +49,11 @@ class BtwPlan
     private $dateFrom;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $archivedOn;
+
+    /**
      * Get the value of id.
      */
     public function getId(): int
@@ -97,7 +102,7 @@ class BtwPlan
     /**
      * Get the value of markt.
      */
-    public function getMarkt(): ?string
+    public function getMarkt(): ?Markt
     {
         return $this->markt;
     }
@@ -130,6 +135,18 @@ class BtwPlan
     public function setDateFrom(\DateTimeInterface $dateFrom)
     {
         $this->dateFrom = $dateFrom;
+
+        return $this;
+    }
+
+    public function getArchivedOn(): ?\DateTimeInterface
+    {
+        return $this->archivedOn;
+    }
+
+    public function setArchivedOn(?\DateTimeInterface $archivedOn): self
+    {
+        $this->archivedOn = $archivedOn;
 
         return $this;
     }

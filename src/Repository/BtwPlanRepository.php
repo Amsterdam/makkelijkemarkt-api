@@ -28,6 +28,7 @@ class BtwPlanRepository extends ServiceEntityRepository
             ->createQueryBuilder('row')
             ->where('row.tariefSoort = :tariefSoort')
             ->andWhere('row.dateFrom <= :now')
+            ->andWhere('row.archivedOn IS NULL')
             ->setParameter('tariefSoort', $tariefSoort)
             ->setParameter('now', $now)
             ->orderBy('row.dateFrom', 'DESC')
@@ -42,16 +43,36 @@ class BtwPlanRepository extends ServiceEntityRepository
     /**
      * @return BtwPlan[] Returns an array of all BTW plannen and related tariefsoorten
      */
-    public function findAllWithTariefSoort(): array
+    public function findAllWithTariefSoort(string $planType): array
     {
         $qb = $this
             ->createQueryBuilder('plan')
             ->join('plan.tariefSoort', 'ts')
-            ->orderBy('plan.dateFrom', 'DESC');
+            ->where('ts.tariefType = :planType')
+            ->andWhere('plan.archivedOn is NULL')
+            ->setParameter('planType', $planType)
+            ->orderBy('plan.dateFrom DESC, ts.label');
 
         /** @var BtwPlan[] */
         $btwPlannen = $qb->getQuery()->execute();
 
         return $btwPlannen;
+    }
+
+    public function getForUpdate(int $btwPlanId): ?object
+    {
+        $qb = $this
+            ->createQueryBuilder('plan')
+            ->join('plan.tariefSoort', 'ts')
+            ->where('plan.id = :btwPlanId')
+            ->setParameter('btwPlanId', $btwPlanId);
+
+        $results = $qb->getQuery()->execute();
+
+        if (0 === count($results)) {
+            return null;
+        }
+
+        return $results[0];
     }
 }

@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class BtwPlanLogNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class BtwPlanNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -26,10 +26,14 @@ class BtwPlanLogNormalizer implements NormalizerInterface, NormalizerAwareInterf
         /* @var BtwPlan $object */
         return [
             'id' => $object->getId(),
-            'tarief_soort_id' => $object->getTariefSoort()->getId(),
-            'btw_type_id' => $object->getBtwType()->getId(),
-            'date_from' => $object->getDateFrom()->format('Y-m-d'),
-            'markt_id' => $markt ? $markt->getId() : null,
+            'tariefSoortId' => $object->getTariefSoort()->getId(),
+            'tariefLabel' => $object->getTariefSoort()->getLabel(),
+            'tariefType' => $object->getTariefSoort()->getTariefType(),
+            'btwTypeId' => $object->getBtwType()->getId(),
+            'btwType' => $object->getBtwType()->getLabel(),
+            'dateFrom' => $object->getDateFrom()->format('Y-m-d'),
+            'marktId' => $markt ? $markt->getId() : null,
+            'marktName' => $markt ? $markt->getNaam() : null,
         ];
     }
 }
