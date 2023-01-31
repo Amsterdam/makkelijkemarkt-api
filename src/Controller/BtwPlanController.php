@@ -3,12 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\BtwPlan;
-use App\Entity\BtwType;
-use App\Entity\BtwWaarde;
 use App\Entity\TariefSoort;
 use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\BtwPlanLogNormalizer;
+use App\Normalizer\BtwPlanNormalizer;
+use App\Normalizer\BtwTypeNormalizer;
 use App\Normalizer\EntityNormalizer;
+use App\Normalizer\TariefSoortNormalizer;
 use App\Repository\BtwPlanRepository;
 use App\Repository\BtwTypeRepository;
 use App\Repository\BtwWaardeRepository;
@@ -38,11 +39,19 @@ class BtwPlanController extends AbstractController
     /** @var Serializer */
     private $logSerializer;
 
+    /** @var Serializer */
+    private $btwPlanSerializer;
+
     public function __construct(
         CacheManager $cacheManager
     ) {
         $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
         $this->logSerializer = new Serializer([new BtwPlanLogNormalizer()]);
+        $this->btwPlanSerializer = new Serializer([
+            new BtwPlanNormalizer(),
+            new BtwTypeNormalizer(),
+            new TariefSoortNormalizer(),
+        ]);
     }
 
     /**
@@ -128,6 +137,7 @@ class BtwPlanController extends AbstractController
             if (null === $markt) {
                 return new JsonResponse(['error' => 'Markt '.$data['btwTypeId'].' not found', Response::HTTP_BAD_REQUEST]);
             }
+            $btwPlan->setMarkt($markt);
         }
 
         try {
@@ -141,14 +151,57 @@ class BtwPlanController extends AbstractController
         $shortClassName = (new ReflectionClass($btwPlan))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
-        $response = $this->serializer->serialize($btwPlan, 'json');
+        $normalized = $this->btwPlanSerializer->normalize($btwPlan);
+        $response = $this->serializer->serialize($normalized, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/btw_plan/update/{btwPlanId}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="Get a BTW plan and relevant info for an update.",
+     *      tags={"BtwPlan", "BTW"},
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     * )
+     *
+     * @Route("/btw_plan/update/{btwPlanId}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getForUpdate(
+        $btwPlanId,
+        BtwTypeRepository $btwTypeRepository,
+        BtwPlanRepository $btwPlanRepository
+    ): Response {
+        if (!$btwPlanId) {
+            return new JsonResponse(['error' => 'No BTW plan id given.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $btwPlan = $btwPlanRepository->getForUpdate($btwPlanId);
+
+        if (!$btwPlan) {
+            return new JsonResponse(['error' => "Cant find BTW plan for id $btwPlanId"], Response::HTTP_NOT_FOUND);
+        }
+
+        $response = $this->serializer->serialize(
+            [
+                'btwPlan' => $this->btwPlanSerializer->normalize($btwPlan),
+                'btwTypes' => $this->btwPlanSerializer->normalize($btwTypeRepository->findAll()),
+            ],
+            'json'
+        );
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
     /**
      * @OA\Put(
-     *      path="/api/1.1.0/btw_plan",
+     *      path="/api/1.1.0/btw_plan/{btwPlanId}",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="BtwPlanUpdate",
      *      tags={"Tarief", "Tariefplan", "BTW"},
@@ -229,10 +282,12 @@ class BtwPlanController extends AbstractController
                 $btwPlan->setDateFrom($dateFrom);
             }
 
+            $markt = null;
             if (isset($data['marktId'])) {
                 $markt = $marktRepository->find($data['marktId']);
-                $btwPlan->setMarkt($markt);
             }
+
+            $btwPlan->setMarkt($markt);
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
@@ -248,7 +303,8 @@ class BtwPlanController extends AbstractController
         $shortClassName = (new ReflectionClass($btwPlan))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'update', $shortClassName, $logItem));
 
-        $response = $this->serializer->serialize($btwPlan, 'json');
+        $normalized = $this->btwPlanSerializer->normalize($btwPlan);
+        $response = $this->serializer->serialize($normalized, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -297,28 +353,6 @@ class BtwPlanController extends AbstractController
             return new JsonResponse(['error', 'Tarief plan type has to be either "lineair" or "concreet"'], Response::HTTP_BAD_REQUEST);
         }
 
-        $btwTypeLabels = ['laag' => 9, 'hoog' => 21, 'nul' => 0];
-        $today = new DateTime('today');
-
-        // Init btw type and btw waarde for first import to init DB.
-        // DECOM after 1-1-2023 and replace with error message if not found
-        foreach ($btwTypeLabels as $btwTypeLabel => $btwWaardeValue) {
-            $btwType = $btwTypeRepository->findOneBy(['label' => $btwTypeLabel]);
-            if (null == $btwType) {
-                $btwType = (new BtwType())->setLabel($btwTypeLabel);
-                $entityManager->persist($btwType);
-            }
-            $btwWaarde = $btwWaardeRepository->findCurrentBtwWaardeByBtwType($btwType);
-            if (null == $btwWaarde) {
-                $btwWaarde = (new BtwWaarde())
-                    ->setBtwType($btwType)
-                    ->setDateFrom($today)
-                    ->setTarief($btwWaardeValue);
-                $entityManager->persist($btwWaarde);
-            }
-            $entityManager->flush();
-        }
-
         $btwPostFile = $request->files->get('file');
         $btwPlanCsv = fopen($btwPostFile, 'r');
 
@@ -331,8 +365,8 @@ class BtwPlanController extends AbstractController
         $columns = fgetcsv($btwPlanCsv);
         $colN = count($columns);
         while (($btwPlanInput = fgetcsv($btwPlanCsv)) !== false) {
-            $marktId = $btwPlanInput[0] ?: null;
-            $markt = $marktId ? $marktRepository->getById((int) $marktId) : null;
+            $afkorting = $btwPlanInput[0] ?: null;
+            $markt = $afkorting ? $marktRepository->getByAfkorting($afkorting) : null;
 
             $label = $btwPlanInput[1];
             $dateFrom = new DateTime($btwPlanInput[2]);
@@ -348,15 +382,8 @@ class BtwPlanController extends AbstractController
 
                 $tariefSoort = $tariefSoortRepository->findOneBy(['label' => $colLab, 'tariefType' => $tariefPlanType]);
 
-                // Init tariefsoort for first import to init DB.
-                // DECOM after 1-1-2023 and replace with error message if not found
                 if (null == $tariefSoort) {
-                    $tariefSoort = (new TariefSoort())
-                        ->setLabel($colLab)
-                        ->setTariefType($tariefPlanType)
-                        ->setDeleted(false);
-
-                    $entityManager->persist($tariefSoort);
+                    return new JsonResponse(['error', 'Tariefsoort not found'], Response::HTTP_BAD_REQUEST);
                 }
 
                 $uniqueConstraint = ['tariefSoort' => $tariefSoort, 'dateFrom' => $dateFrom, 'markt' => $markt];
@@ -376,14 +403,15 @@ class BtwPlanController extends AbstractController
             $entityManager->flush();
         }
 
-        $response = $this->serializer->serialize($dataInDb, 'json');
+        $normalized = $this->btwPlanSerializer->normalize($dataInDb);
+        $response = $this->serializer->serialize($normalized, 'json');
 
         return new Response($response, Response::HTTP_OK);
     }
 
     /**
      * @OA\Get(
-     *      path="/api/1.1.0/btw_plans",
+     *      path="/api/1.1.0/btw/plans/{planType}",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="getBtwPlansIndex",
      *      tags={"BtwPlan", "BTW"},
@@ -394,15 +422,98 @@ class BtwPlanController extends AbstractController
      *      ),
      * )
      *
-     * @Route("/btw_plans", methods={"GET"})
+     * @Route("/btw/plans/{planType}", methods={"GET"})
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getBtwPlannen(BtwPlanRepository $btwPlanRepository): Response
-    {
-        $btwPlannen = $btwPlanRepository->findAllWithTariefSoort();
+    public function getBtwPlannen(
+        string $planType,
+        BtwPlanRepository $btwPlanRepository
+    ): Response {
+        $btwPlannen = $btwPlanRepository->findAllWithTariefSoort($planType);
+        $normalized = $this->btwPlanSerializer->normalize($btwPlannen);
 
-        $response = $this->serializer->serialize($btwPlannen, 'json');
+        $response = $this->serializer->serialize($normalized, 'json');
 
         return new Response($response, Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/btw_plan/create/{planType}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="getBtwCreate",
+     *      summary="Gets data needed to create new BTW plan",
+     *      tags={"BtwPlan", "BTW"},
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     * )
+     *
+     * @Route("/btw_plan/create/{planType}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getBtwCreate(
+        string $planType,
+        BtwTypeRepository $btwTypeRepository,
+        TariefSoortRepository $tariefSoortRepository
+    ): Response {
+        $btwTypes = $btwTypeRepository->findAll();
+        $tariefSoorten = $tariefSoortRepository->findBy(['tariefType' => $planType, 'deleted' => false]);
+
+        $normalized = $this->btwPlanSerializer->normalize([
+            'btwTypes' => $btwTypes,
+            'tariefSoorten' => $tariefSoorten,
+        ]);
+
+        $response = $this->serializer->serialize($normalized, 'json');
+
+        return new Response($response, Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Patch(
+     *      path="/api/1.1.0/btw_plan/archive/{id}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="archiveBtwPlan",
+     *      summary="Archive a BTW plan with an id",
+     *      tags={"BtwPlan", "BTW"},
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Invalid request (cant find plan)",
+     *      ),
+     * )
+     *
+     * @Route("/btw_plan/archive/{id}", methods={"PATCH"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function archive(
+        int $id,
+        Request $request,
+        BtwPlanRepository $btwPlanRepository,
+        EntityManagerInterface $entityManager,
+        EventDispatcherInterface $dispatcher
+    ) {
+        $user = $request->headers->get('user', 'undefined user');
+        $btwPlan = $btwPlanRepository->find($id);
+
+        if (!$btwPlan) {
+            return new JsonResponse(['error' => 'Cant find BTW plan with this id'], Response::HTTP_NOT_FOUND);
+        }
+
+        $btwPlan->setArchivedOn(new DateTime());
+        $entityManager->persist($btwPlan);
+        $entityManager->flush();
+
+        $logItem = $this->logSerializer->normalize($btwPlan);
+        $shortClassName = (new ReflectionClass($btwPlan))->getShortName();
+        $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'archived', $shortClassName, $logItem));
+
+        return new Response("Successfully archived BTW Plan $id", Response::HTTP_OK);
     }
 }
