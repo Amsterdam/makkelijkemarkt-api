@@ -7,6 +7,7 @@ namespace App\Imagine;
 use League\Flysystem\Filesystem;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 use Liip\ImagineBundle\Model\Binary;
+use Monolog\Logger;
 
 class SwiftFlysystemLoader implements LoaderInterface
 {
@@ -15,13 +16,22 @@ class SwiftFlysystemLoader implements LoaderInterface
      */
     private $storage;
 
-    public function __construct(Filesystem $storage)
+    private $logger;
+
+    public function __construct(Filesystem $storage, Logger $logger)
     {
         $this->storage = $storage;
+        $this->logger = $logger;
     }
 
     public function find($path)
     {
-        return new Binary($this->storage->read($path), $this->storage->getMimetype($path));
+        try {
+            return new Binary($this->storage->read($path), $this->storage->getMimetype($path));
+        } catch (\Error $error) {
+            $this->logger->warning('got error with flysystem loader');
+
+            return '';
+        }
     }
 }
