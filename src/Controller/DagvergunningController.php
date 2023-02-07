@@ -14,7 +14,7 @@ use App\Repository\KoopmanRepository;
 use App\Service\FactuurService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+// use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +40,7 @@ final class DagvergunningController extends AbstractController
     private $entityManager;
 
     /** @var CacheManager */
-    public $cacheManager;
+    // public $cacheManager;
 
     /** @var Serializer */
     private $serializer;
@@ -51,14 +51,14 @@ final class DagvergunningController extends AbstractController
     public function __construct(
         DagvergunningRepository $dagvergunningRepository,
         FactuurService $factuurService,
-        EntityManagerInterface $entityManager,
-        CacheManager $cacheManager
+        EntityManagerInterface $entityManager
+        // CacheManager $cacheManager
     ) {
         $this->dagvergunningRepository = $dagvergunningRepository;
         $this->factuurService = $factuurService;
         $this->entityManager = $entityManager;
 
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = [
             'account',
             'dagvergunning',
