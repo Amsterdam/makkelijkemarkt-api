@@ -7,6 +7,7 @@ namespace App\Imagine;
 use League\Flysystem\Filesystem;
 use Liip\ImagineBundle\Binary\BinaryInterface;
 use Liip\ImagineBundle\Imagine\Cache\Resolver\ResolverInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -15,10 +16,10 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 class SwiftFlysystemResolver implements ResolverInterface
 {
-    /**
-     * @var Filesystem
-     */
-    private $storage;
+    // /**
+    //  * @var Filesystem
+    //  */
+    // private $storage;
 
     /**
      * @var string Swift Project ID
@@ -45,9 +46,17 @@ class SwiftFlysystemResolver implements ResolverInterface
      */
     private $imagineCache;
 
-    public function __construct(Filesystem $storage, string $projectId, string $domain, string $cacheContainer, string $swiftSecret, CacheInterface $imagineCache)
+    private $fileSystem;
+
+    /**
+     * @var Container
+     */
+    private $container;
+
+    public function __construct(string $projectId, string $domain, string $cacheContainer, string $swiftSecret, CacheInterface $imagineCache, Container $container)
     {
-        $this->storage = $storage;
+        // $this->storage = $storage;
+        $this->container = $container;
         $this->projectId = $projectId;
         $this->domain = $domain;
         $this->cacheContainer = $cacheContainer;
@@ -55,10 +64,17 @@ class SwiftFlysystemResolver implements ResolverInterface
         $this->imagineCache = $imagineCache;
     }
 
+    public function getFileSystem(): Filesystem
+    {
+        return $this->container->get('flysystem_thumbs');
+    }
+
     public function isStored($path, $filter)
     {
-        return $this->imagineCache->get($this->getHashForImagineCache($path, $filter), function (ItemInterface $item) use ($path, $filter) {
-            return $this->storage->has($this->getPath($path, $filter));
+        $fileSystem = $this->getFileSystem();
+
+        return $this->imagineCache->get($this->getHashForImagineCache($path, $filter), function (ItemInterface $item) use ($path, $filter, $fileSystem) {
+            return $fileSystem->has($this->getPath($path, $filter));
         });
     }
 
@@ -85,8 +101,9 @@ class SwiftFlysystemResolver implements ResolverInterface
     public function store(BinaryInterface $binary, $path, $filter)
     {
         $this->imagineCache->delete($this->getHashForImagineCache($path, $filter));
+        $fileSystem = $this->getFileSystem();
 
-        $result = $this->storage->put(
+        $result = $fileSystem->put(
             $this->getPath($path, $filter),
             $binary->getContent(),
             ['mimetype' => $binary->getMimeType()]
@@ -102,10 +119,12 @@ class SwiftFlysystemResolver implements ResolverInterface
             return;
         }
 
+        $fileSystem = $this->getFileSystem();
+
         if (empty($paths)) {
             $filtersCacheDir = [];
             foreach ($filters as $filter) {
-                $this->storage->deleteDir($filter);
+                $fileSystem->deleteDir($filter);
             }
 
             return;
@@ -113,7 +132,7 @@ class SwiftFlysystemResolver implements ResolverInterface
 
         foreach ($paths as $path) {
             foreach ($filters as $filter) {
-                $this->storage->delete($this->getPath($path, $filter));
+                $fileSystem->delete($this->getPath($path, $filter));
             }
         }
     }

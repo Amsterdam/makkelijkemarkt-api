@@ -30,7 +30,7 @@ final class OpenStackFactory
             $openStack = new OpenStack($this->authOptions);
 
             return $openStack;
-        } catch (\Error $error) {
+        } catch (\Exception $error) {
             throw $error;
         }
     }
