@@ -29,11 +29,11 @@ services:
     imagine.cache.resolver.flysystem:
         class: App\Imagine\SwiftFlysystemResolver
         arguments:
-            - "@flysystem_thumbs"
             - '%env(SWIFT_PROJECT_ID)%'
             - '%env(SWIFT_EXTERNAL_DOMAIN)%'
             - '%swift_flysystem_container_thumbs%'
             - '%env(SWIFT_TEMP_URL_KEY)%'
             - "@imagine_cache"
+            - "@service_container"
         tags:
             - { name: "liip_imagine.cache.resolver", resolver: app_flysystem_resolver }

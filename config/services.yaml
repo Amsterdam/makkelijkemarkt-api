@@ -46,9 +46,9 @@ services:
         arguments:
             $mmApiKey: '%app_mm_key%'
 
-    App\Process\PerfectViewKoopmanFotoImport:
-        bind:
-            $storage: '@flysystem_fotos'
+    # App\Process\PerfectViewKoopmanFotoImport:
+    #     bind:
+    #         $storage: '@flysystem_fotos'
 
     # for unit test
     app.service.factuur:
@@ -58,8 +58,10 @@ services:
     Qipsius\TCPDFBundle\Controller\TCPDFController: '@qipsius.tcpdf'
 
     # Open Stack
+
+    # TODO experiment als je ipv een service hiervan een controller maakt.
     openstack:
-        class: OpenStack\OpenStack
+        class: App\OpenStack\OpenStackFactory
         lazy: true
         arguments:
             -   authUrl: '%env(SWIFT_AUTH_URL)%'
@@ -72,12 +74,17 @@ services:
                 scope:
                     project:
                         id: '%env(SWIFT_PROJECT_ID)%'
-                requestOptions:
-                    timeout: 0.2
+                # requestOptions:
+                #     timeout: 0.2
+
+    # TODO Alleen de factory houden. De rest moet op basis van controller worden gedaan.
+    openstack_client:
+        class: OpenStack\OpenStack
+        factory: '@openstack'
     openstack_objectstore:
         class: OpenStack\ObjectStore\v1\Service
         lazy: true
-        factory: ['@openstack', 'objectStoreV1']
+        factory: ['@openstack_client', 'objectStoreV1']
     openstack_objectstore_container_fotos:
         class: OpenStack\ObjectStore\v1\Models\Container
         lazy: true
@@ -90,7 +97,7 @@ services:
         factory: ['@openstack_objectstore', 'getContainer']
         arguments:
             - '%swift_flysystem_container_thumbs%'
-            
+
     # Flysystem
     flysystem_openstack_adapter_fotos:
         class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
@@ -110,9 +117,26 @@ services:
     flysystem_thumbs:
         class: League\Flysystem\Filesystem
         lazy: true
+        public: true
         arguments:
             - '@flysystem_openstack_adapter_thumbs'
-    
-    # Custom formatter for Monolog    
+
+    # App\Controller\MediaFilesController:
+    #     arguments:
+    #         # $filterService: '@liip_imagine.service.filter'
+    #         $container: '@openstack_objectstore_container_thumbs'
+    #     tags: [ 'controller.service_arguments' ]
+
+    # App\Imagine\SwiftFlysystemResolver:
+    #     arguments:
+    #         $storage: '@flysystem_thumbs'
+    #         $projectId: '%env(SWIFT_PROJECT_ID)%'
+    #         $domain: '%env(SWIFT_EXTERNAL_DOMAIN)%'
+    #         $cacheContainer: '%swift_flysystem_container_thumbs%'
+    #         $swiftSecret: '%env(SWIFT_TEMP_URL_KEY)%'
+    #         $imagineCache: "@imagine_cache"
+    #     tags: [ 'controller.service_arguments' ]
+
+    # Custom formatter for Monolog
     log.custom.formatter:
         class: App\Logging\LogFormatter
