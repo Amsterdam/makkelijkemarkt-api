@@ -7,7 +7,8 @@ namespace App\Process;
 use App\Utils\CsvIterator;
 use App\Utils\Logger;
 use Doctrine\DBAL\Query\QueryBuilder;
-use League\Flysystem\Filesystem;
+
+// use League\Flysystem\Filesystem;
 
 class PerfectViewKoopmanFotoImport
 {
@@ -19,17 +20,16 @@ class PerfectViewKoopmanFotoImport
     /**
      * @var Filesystem
      */
-    protected $storage;
+    // protected $storage;
 
     /**
      * @var Logger
      */
     protected $logger;
 
-    public function __construct(\Doctrine\DBAL\Connection $conn, Filesystem $storage)
+    public function __construct(\Doctrine\DBAL\Connection $conn)
     {
         $this->conn = $conn;
-        $this->storage = $storage;
     }
 
     public function setLogger(Logger $logger)
@@ -87,9 +87,9 @@ class PerfectViewKoopmanFotoImport
             $filename = $checksum.'-'.$koopman['erkenningsnummer'].'.jpg';
 
             // calculate checksum
-            if (true === $this->storage->has($filename) && $koopman['foto_hash'] === $checksum) {
-                continue;
-            }
+            // if (true === $this->storage->has($filename) && $koopman['foto_hash'] === $checksum) {
+            //     continue;
+            // }
 
             // prepare query builder
             $qb = $this->conn->createQueryBuilder();
@@ -97,7 +97,7 @@ class PerfectViewKoopmanFotoImport
             $qb->where('e.id = :id')->setParameter('id', $koopman['id']);
 
             // copy the file to the new location
-            $result = $this->storage->put($filename, file_get_contents($fullPath));
+            // $result = $this->storage->put($filename, file_get_contents($fullPath));
             if (false === $result) {
                 $this->logger->error('Can not copy photo to data directory');
                 continue;
