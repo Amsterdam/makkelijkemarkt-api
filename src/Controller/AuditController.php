@@ -13,7 +13,6 @@ use App\Repository\MarktRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,9 +36,6 @@ final class AuditController extends AbstractController
     /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var CacheManager */
-    public $cacheManager;
-
     /** @var Serializer */
     private $serializer;
 
@@ -49,14 +45,13 @@ final class AuditController extends AbstractController
     public function __construct(
         DagvergunningRepository $dagvergunningRepository,
         MarktRepository $marktRepository,
-        EntityManagerInterface $entityManager,
-        CacheManager $cacheManager
+        EntityManagerInterface $entityManager
     ) {
         $this->dagvergunningRepository = $dagvergunningRepository;
         $this->marktRepository = $marktRepository;
         $this->entityManager = $entityManager;
 
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = [
             'dagvergunning',
             'simpleKoopman',

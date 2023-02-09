@@ -18,7 +18,6 @@ use App\Repository\TariefSoortRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -42,10 +41,9 @@ class BtwPlanController extends AbstractController
     /** @var Serializer */
     private $btwPlanSerializer;
 
-    public function __construct(
-        CacheManager $cacheManager
-    ) {
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+    public function __construct()
+    {
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->logSerializer = new Serializer([new BtwPlanLogNormalizer()]);
         $this->btwPlanSerializer = new Serializer([
             new BtwPlanNormalizer(),
