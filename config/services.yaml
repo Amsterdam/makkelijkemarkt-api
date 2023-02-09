@@ -46,9 +46,9 @@ services:
         arguments:
             $mmApiKey: '%app_mm_key%'
 
-    # App\Process\PerfectViewKoopmanFotoImport:
-    #     bind:
-    #         $storage: '@flysystem_fotos'
+    App\Process\PerfectViewKoopmanFotoImport:
+        bind:
+            $container: '@service_container'
 
     # for unit test
     app.service.factuur:
@@ -74,10 +74,9 @@ services:
                 scope:
                     project:
                         id: '%env(SWIFT_PROJECT_ID)%'
-                # requestOptions:
-                #     timeout: 0.2
+                requestOptions:
+                    timeout: 5
 
-    # TODO Alleen de factory houden. De rest moet op basis van controller worden gedaan.
     openstack_client:
         class: OpenStack\OpenStack
         factory: '@openstack'
@@ -120,22 +119,6 @@ services:
         public: true
         arguments:
             - '@flysystem_openstack_adapter_thumbs'
-
-    # App\Controller\MediaFilesController:
-    #     arguments:
-    #         # $filterService: '@liip_imagine.service.filter'
-    #         $container: '@openstack_objectstore_container_thumbs'
-    #     tags: [ 'controller.service_arguments' ]
-
-    # App\Imagine\SwiftFlysystemResolver:
-    #     arguments:
-    #         $storage: '@flysystem_thumbs'
-    #         $projectId: '%env(SWIFT_PROJECT_ID)%'
-    #         $domain: '%env(SWIFT_EXTERNAL_DOMAIN)%'
-    #         $cacheContainer: '%swift_flysystem_container_thumbs%'
-    #         $swiftSecret: '%env(SWIFT_TEMP_URL_KEY)%'
-    #         $imagineCache: "@imagine_cache"
-    #     tags: [ 'controller.service_arguments' ]
 
     # Custom formatter for Monolog
     log.custom.formatter:

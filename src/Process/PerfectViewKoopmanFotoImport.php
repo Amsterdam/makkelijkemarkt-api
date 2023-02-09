@@ -7,8 +7,7 @@ namespace App\Process;
 use App\Utils\CsvIterator;
 use App\Utils\Logger;
 use Doctrine\DBAL\Query\QueryBuilder;
-
-// use League\Flysystem\Filesystem;
+use Symfony\Component\DependencyInjection\Container;
 
 class PerfectViewKoopmanFotoImport
 {
@@ -18,17 +17,18 @@ class PerfectViewKoopmanFotoImport
     protected $conn;
 
     /**
-     * @var Filesystem
+     * @var Container
      */
-    // protected $storage;
+    protected $container;
 
     /**
      * @var Logger
      */
     protected $logger;
 
-    public function __construct(\Doctrine\DBAL\Connection $conn)
+    public function __construct(Container $container, \Doctrine\DBAL\Connection $conn)
     {
+        $this->container = $container;
         $this->conn = $conn;
     }
 
@@ -43,6 +43,11 @@ class PerfectViewKoopmanFotoImport
      */
     public function execute(CsvIterator $content, $imageSourceDirectory)
     {
+        /**
+         * @var Filesystem
+         */
+        $storage = $this->container->get('flysystem_fotos');
+
         $headings = $content->getHeadings();
         $requiredHeadings = ['Erkenningsnummer', 'FotoKop'];
         foreach ($requiredHeadings as $requiredHeading) {
@@ -87,9 +92,9 @@ class PerfectViewKoopmanFotoImport
             $filename = $checksum.'-'.$koopman['erkenningsnummer'].'.jpg';
 
             // calculate checksum
-            // if (true === $this->storage->has($filename) && $koopman['foto_hash'] === $checksum) {
-            //     continue;
-            // }
+            if (true === $storage->has($filename) && $koopman['foto_hash'] === $checksum) {
+                continue;
+            }
 
             // prepare query builder
             $qb = $this->conn->createQueryBuilder();
@@ -97,7 +102,7 @@ class PerfectViewKoopmanFotoImport
             $qb->where('e.id = :id')->setParameter('id', $koopman['id']);
 
             // copy the file to the new location
-            // $result = $this->storage->put($filename, file_get_contents($fullPath));
+            $result = $storage->put($filename, file_get_contents($fullPath));
             if (false === $result) {
                 $this->logger->error('Can not copy photo to data directory');
                 continue;
@@ -109,7 +114,7 @@ class PerfectViewKoopmanFotoImport
             $this->setValue($qb, 'foto_hash', \PDO::PARAM_STR, $checksum);
 
             // execute insert/update query
-            $result = $this->conn->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
+            $result = $this->conn->executeStatement($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
         }
     }
 

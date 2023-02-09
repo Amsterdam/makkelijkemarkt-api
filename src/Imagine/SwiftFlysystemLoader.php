@@ -7,31 +7,36 @@ namespace App\Imagine;
 use League\Flysystem\Filesystem;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 use Liip\ImagineBundle\Model\Binary;
-
-// use Monolog\Logger;
+use Monolog\Logger;
+use Symfony\Component\DependencyInjection\Container;
 
 class SwiftFlysystemLoader implements LoaderInterface
 {
-    /**
-     * @var Filesystem
-     */
-    private $storage;
-
     private $logger;
 
-    public function __construct(Filesystem $storage)
+    /**
+     * @var Container
+     */
+    private $container;
+
+    public function __construct(Container $container, Logger $logger)
     {
-        $this->storage = $storage;
-        // $this->logger = $logger;
+        $this->container = $container;
+        $this->logger = $logger;
     }
 
     public function find($path)
     {
-        // $this->logger->warning('resolving path');
+        /**
+         * @var Filesystem
+         */
+        $storage = $this->container->get('flysystem_fotos');
+
+        $this->logger->warning('resolving path in flysystem loader');
         try {
-            return new Binary($this->storage->read($path), $this->storage->getMimetype($path));
+            return new Binary($storage->read($path), $storage->getMimetype($path));
         } catch (\Exception $error) {
-            // $this->logger->warning('got error with flysystem loader');
+            $this->logger->warning('got error with flysystem loader '.$error->getMessage());
 
             return '';
         }
