@@ -24,6 +24,7 @@ services:
         class: App\Imagine\SwiftFlysystemLoader
         arguments:
             - "@service_container"
+            - "monolog.logger"
         tags:
             - { name: "liip_imagine.binary.loader", loader: app_flysystem_loader }
     imagine.cache.resolver.flysystem:
