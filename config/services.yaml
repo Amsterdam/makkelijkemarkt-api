@@ -61,7 +61,7 @@ services:
 
     # TODO experiment als je ipv een service hiervan een controller maakt.
     openstack:
-        class: App\OpenStack\OpenStackFactory
+        class: OpenStack\OpenStack
         lazy: true
         arguments:
             -   authUrl: '%env(SWIFT_AUTH_URL)%'
@@ -83,7 +83,7 @@ services:
     openstack_objectstore:
         class: OpenStack\ObjectStore\v1\Service
         lazy: true
-        factory: ['@openstack_client', 'objectStoreV1']
+        factory: ['@openstack', 'objectStoreV1']
     openstack_objectstore_container_fotos:
         class: OpenStack\ObjectStore\v1\Models\Container
         lazy: true

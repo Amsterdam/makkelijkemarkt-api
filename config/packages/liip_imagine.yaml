@@ -23,7 +23,7 @@ services:
     imagine.data.loader.flysystem:
         class: App\Imagine\SwiftFlysystemLoader
         arguments:
-            - "@flysystem_fotos"
+            - "@service_container"
         tags:
             - { name: "liip_imagine.binary.loader", loader: app_flysystem_loader }
     imagine.cache.resolver.flysystem:
