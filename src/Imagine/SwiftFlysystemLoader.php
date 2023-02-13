@@ -36,6 +36,7 @@ class SwiftFlysystemLoader implements LoaderInterface
             return new Binary($storage->read($path), $storage->getMimetype($path));
         } catch (\Exception $error) {
             $this->logger->warning('got error with flysystem loader '.$error->getMessage());
+
             return '';
         }
     }
