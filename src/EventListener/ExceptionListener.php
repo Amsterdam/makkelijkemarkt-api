@@ -50,27 +50,6 @@ final class ExceptionListener
         $response = new Response();
         $response->setContent($message);
 
-        // If an error occured because of a problem between the API and Openstack, we want to
-        // prevent the original request to give a 500 error page.
-        // An image loading from the Dashboard or KJK should not give a 500 page when Openstack hits a timeout.
-        // Therefore we add the statuscode 307 (Temporary Redirect) that Symfony sees as a redirect and not an error.
-        $requestClass = get_class($event->getThrowable());
-
-        // Examples:
-        // GuzzleHttp\Exception\ConnectException (when timeout)
-        // OpenStack\Common\Error\BadResponseError (when unauthorized)
-        $hasMatch = preg_match('/(Openstack)|(GuzzleHttp)/i', $requestClass);
-        if ($hasMatch) {
-            $this->logger->warning('Got an Openstack error, redirecting to prevent triggering error pages.');
-            // $event->allowCustomResponseCode();
-
-            // $response->setStatusCode(200);
-            // $response->setContent($message);
-            // $event->setResponse($response);
-
-            return;
-        }
-
         // HttpExceptionInterface is a special type of exception that
         // holds status code and header details
         if ($exception instanceof HttpExceptionInterface) {

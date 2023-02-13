@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Imagine;
 
+use Imagine\Image\ImagineInterface;
 use League\Flysystem\Filesystem;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 use Liip\ImagineBundle\Model\Binary;
@@ -19,10 +20,13 @@ class SwiftFlysystemLoader implements LoaderInterface
      */
     private $container;
 
-    public function __construct(Container $container, Logger $logger)
+    private $imagine;
+
+    public function __construct(Container $container, Logger $logger, ImagineInterface $imagine)
     {
         $this->container = $container;
         $this->logger = $logger;
+        $this->imagine = $imagine;
     }
 
     public function find($path)
@@ -38,7 +42,7 @@ class SwiftFlysystemLoader implements LoaderInterface
         } catch (\Exception $error) {
             $this->logger->warning('got error with flysystem loader '.$error->getMessage());
 
-            return '';
+            return $this->imagine->load('images/avatar.png');
         }
     }
 }
