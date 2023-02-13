@@ -42,7 +42,7 @@ class SwiftFlysystemLoader implements LoaderInterface
         } catch (\Exception $error) {
             $this->logger->warning('got error with flysystem loader '.$error->getMessage());
 
-            return $this->imagine->load('images/avatar.png');
+            return $this->imagine->open('images/avatar.png');
         }
     }
 }
