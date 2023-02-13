@@ -58,8 +58,6 @@ services:
     Qipsius\TCPDFBundle\Controller\TCPDFController: '@qipsius.tcpdf'
 
     # Open Stack
-
-    # TODO experiment als je ipv een service hiervan een controller maakt.
     openstack:
         class: OpenStack\OpenStack
         lazy: true
@@ -75,7 +73,7 @@ services:
                     project:
                         id: '%env(SWIFT_PROJECT_ID)%'
                 requestOptions:
-                    timeout: 0.2
+                    timeout: 5
 
     openstack_client:
         class: OpenStack\OpenStack

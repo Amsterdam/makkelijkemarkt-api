@@ -11,13 +11,11 @@ liip_imagine:
         koopman_rect_small:
             quality: 75
             format: jpg
-            default_image: 'images/avatar.svg'
             filters:
                 thumbnail: { size: [120, 160], mode: outbound }
         koopman_rect_medium:
             quality: 75
             format: jpg
-            default_image: 'images/avatar.svg'
             filters:
                 thumbnail: { size: [426, 568], mode: outbound }
 
@@ -27,7 +25,6 @@ services:
         arguments:
             - "@service_container"
             - "@monolog.logger"
-            - "@liip_imagine"
         tags:
             - { name: "liip_imagine.binary.loader", loader: app_flysystem_loader }
     imagine.cache.resolver.flysystem:
