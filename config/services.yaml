@@ -106,6 +106,7 @@ services:
     flysystem_fotos:
         class: League\Flysystem\Filesystem
         lazy: true
+        public: true
         arguments:
             - '@flysystem_openstack_adapter_fotos'
     flysystem_openstack_adapter_thumbs:
