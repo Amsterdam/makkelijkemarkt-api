@@ -75,7 +75,7 @@ services:
                     project:
                         id: '%env(SWIFT_PROJECT_ID)%'
                 requestOptions:
-                    timeout: 0.2 # TODO change to 5
+                    timeout: 5
 
     openstack_client:
         class: OpenStack\OpenStack
