@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Imagine;
 
+use App\Utils\Logger;
 use League\Flysystem\Filesystem;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 use Liip\ImagineBundle\Model\Binary;
-use Monolog\Logger;
 use Symfony\Component\DependencyInjection\Container;
 
 class SwiftFlysystemLoader implements LoaderInterface
