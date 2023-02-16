@@ -14,7 +14,6 @@ use App\Repository\VergunningControleRepository;
 use App\Service\FactuurService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,9 +47,6 @@ final class VergunningControleController extends AbstractController
     /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var CacheManager */
-    public $cacheManager;
-
     /** @var Serializer */
     private $serializer;
 
@@ -63,8 +59,7 @@ final class VergunningControleController extends AbstractController
         SollicitatieRepository $sollicitatieRepository,
         VergunningControleRepository $vergunningControleRepository,
         FactuurService $factuurService,
-        EntityManagerInterface $entityManager,
-        CacheManager $cacheManager
+        EntityManagerInterface $entityManager
     ) {
         $this->dagvergunningRepository = $dagvergunningRepository;
         $this->koopmanRepository = $koopmanRepository;
@@ -73,7 +68,7 @@ final class VergunningControleController extends AbstractController
         $this->factuurService = $factuurService;
         $this->entityManager = $entityManager;
 
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = [
             'dagvergunning',
             'simpleKoopman',

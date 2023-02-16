@@ -12,7 +12,6 @@ use App\Repository\RsvpPatternRepository;
 use App\Utils\Constants;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,15 +48,14 @@ class RsvpPatternController extends AbstractController
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        CacheManager $cacheManager,
         KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
         RsvpPatternRepository $rsvpPatternRepository,
         EventDispatcherInterface $dispatcher
     ) {
         $this->entityManager = $entityManager;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->logSerializer = new Serializer([new RsvpPatternLogNormalizer($cacheManager)]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new RsvpPatternLogNormalizer()]);
         $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->rsvpPatternRepository = $rsvpPatternRepository;

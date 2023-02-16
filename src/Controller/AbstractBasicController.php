@@ -11,7 +11,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use http\Exception\InvalidArgumentException;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,14 +31,13 @@ abstract class AbstractBasicController extends AbstractController
     private string $entityClassName;
 
     public function __construct(
-        CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         ManagerRegistry $managerRegistry
     ) {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
 
         $this->entityClassName = $this->getEntityClassname();
 

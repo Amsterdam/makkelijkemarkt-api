@@ -9,7 +9,6 @@ use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Entity\Vervanger;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
@@ -19,14 +18,8 @@ define('IMAGE_RESOLVE_PATH', 'media/cache/resolve/');
 
 final class EntityNormalizer extends ObjectNormalizer
 {
-    /** @var CacheManager */
-    public $cacheManager;
-
-    public function __construct(
-        ?CacheManager $cacheManager = null
-    ) {
-        $this->cacheManager = $cacheManager;
-
+    public function __construct()
+    {
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
 

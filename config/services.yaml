@@ -48,12 +48,15 @@ services:
 
     App\Process\PerfectViewKoopmanFotoImport:
         bind:
-            $storage: '@flysystem_fotos'
+            $container: '@service_container'
 
     # for unit test
     app.service.factuur:
         class: App\Service\FactuurService
         public: true
+
+    app_util_logger:
+        class: App\Utils\Logger
 
     Qipsius\TCPDFBundle\Controller\TCPDFController: '@qipsius.tcpdf'
 
@@ -67,11 +70,17 @@ services:
                 user:
                     name: '%env(SWIFT_USER_NAME)%'
                     domain:
-                        id: '%env(SWIFT_USER_DOMAIN_ID)%' 
-                    password: '%env(SWIFT_USER_PASSWORD)%' 
+                        id: '%env(SWIFT_USER_DOMAIN_ID)%'
+                    password: '%env(SWIFT_USER_PASSWORD)%'
                 scope:
                     project:
-                        id: '%env(SWIFT_PROJECT_ID)%' 
+                        id: '%env(SWIFT_PROJECT_ID)%'
+                requestOptions:
+                    timeout: 5
+
+    openstack_client:
+        class: OpenStack\OpenStack
+        factory: '@openstack'
     openstack_objectstore:
         class: OpenStack\ObjectStore\v1\Service
         lazy: true
@@ -88,7 +97,7 @@ services:
         factory: ['@openstack_objectstore', 'getContainer']
         arguments:
             - '%swift_flysystem_container_thumbs%'
-            
+
     # Flysystem
     flysystem_openstack_adapter_fotos:
         class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
@@ -98,6 +107,7 @@ services:
     flysystem_fotos:
         class: League\Flysystem\Filesystem
         lazy: true
+        public: true
         arguments:
             - '@flysystem_openstack_adapter_fotos'
     flysystem_openstack_adapter_thumbs:
@@ -108,9 +118,10 @@ services:
     flysystem_thumbs:
         class: League\Flysystem\Filesystem
         lazy: true
+        public: true
         arguments:
             - '@flysystem_openstack_adapter_thumbs'
-    
-    # Custom formatter for Monolog    
+
+    # Custom formatter for Monolog
     log.custom.formatter:
         class: App\Logging\LogFormatter
