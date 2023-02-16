@@ -11,7 +11,6 @@ use App\Repository\KoopmanRepository;
 use App\Repository\VervangerRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,9 +32,6 @@ final class KoopmanController extends AbstractController
     /** @var EntityManagerInterface */
     private $entityManager;
 
-    /** @var CacheManager */
-    public $cacheManager;
-
     /** @var Serializer */
     private $serializer;
 
@@ -44,13 +40,12 @@ final class KoopmanController extends AbstractController
 
     public function __construct(
         KoopmanRepository $koopmanRepository,
-        EntityManagerInterface $entityManager,
-        CacheManager $cacheManager
+        EntityManagerInterface $entityManager
     ) {
         $this->koopmanRepository = $koopmanRepository;
         $this->entityManager = $entityManager;
 
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = ['koopman', 'vervanger', 'simpleSollicitatie', 'simpleMarkt'];
     }
 

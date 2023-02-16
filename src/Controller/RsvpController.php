@@ -17,7 +17,6 @@ use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -65,7 +64,6 @@ class RsvpController extends AbstractController
     private $logSerializer;
 
     public function __construct(
-        CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         RsvpRepository $rsvpRepository,
@@ -83,8 +81,8 @@ class RsvpController extends AbstractController
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->logSerializer = new Serializer([new RsvpLogNormalizer($cacheManager)]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new RsvpLogNormalizer()]);
     }
 
     /**

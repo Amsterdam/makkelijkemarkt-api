@@ -6,7 +6,6 @@ use App\Entity\KiesJeKraamAuditLog;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\KiesJeKraamAuditLogRepository;
 use DateTimeInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,11 +23,10 @@ class KiesJeKraamAuditLogController extends AbstractController
     private $serializer;
 
     public function __construct(
-        KiesJeKraamAuditLogRepository $logRepository,
-        CacheManager $cacheManager
+        KiesJeKraamAuditLogRepository $logRepository
     ) {
         $this->logRepository = $logRepository;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
     }
 
     /**

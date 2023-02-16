@@ -14,7 +14,6 @@ use App\Repository\ProductRepository;
 use App\Repository\SollicitatieRepository;
 use App\Repository\VergunningControleRepository;
 use DateTime;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,9 +35,6 @@ final class RapportController extends AbstractController
     /** @var KoopmanRepository */
     private $koopmanRepository;
 
-    /** @var CacheManager */
-    public $cacheManager;
-
     /** @var Serializer */
     private $serializer;
 
@@ -47,13 +43,12 @@ final class RapportController extends AbstractController
 
     public function __construct(
         DagvergunningRepository $dagvergunningRepository,
-        KoopmanRepository $koopmanRepository,
-        CacheManager $cacheManager
+        KoopmanRepository $koopmanRepository
     ) {
         $this->dagvergunningRepository = $dagvergunningRepository;
         $this->koopmanRepository = $koopmanRepository;
 
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = ['account', 'dagvergunning', 'simpleKoopman', 'simpleMarkt', 'vervanger', 'sollicitatie', 'factuur', 'product'];
     }
 

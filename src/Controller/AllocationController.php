@@ -14,7 +14,6 @@ use App\Repository\MarktRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -62,7 +61,6 @@ class AllocationController extends AbstractController
     private $markt;
 
     public function __construct(
-        CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         AllocationRepository $allocationRepository,
@@ -77,8 +75,8 @@ class AllocationController extends AbstractController
         $this->allocationRepository = $allocationRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->logSerializer = new Serializer([new AllocationLogNormalizer($cacheManager)]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new AllocationLogNormalizer()]);
         $this->dispatcher = $dispatcher;
         $this->rejectReasons = [
             0 => 'UNKNOWN',
