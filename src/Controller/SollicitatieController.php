@@ -10,7 +10,6 @@ use App\Normalizer\EntityNormalizer;
 use App\Repository\MarktRepository;
 use App\Repository\SollicitatieRepository;
 use DateTime;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,9 +32,6 @@ final class SollicitatieController extends AbstractController
     /** @var SollicitatieRepository */
     private $sollicitatieRepository;
 
-    /** @var CacheManager */
-    public $cacheManager;
-
     /** @var Serializer */
     private $serializer;
 
@@ -44,13 +40,12 @@ final class SollicitatieController extends AbstractController
 
     public function __construct(
         MarktRepository $marktRepository,
-        SollicitatieRepository $sollicitatieRepository,
-        CacheManager $cacheManager
+        SollicitatieRepository $sollicitatieRepository
     ) {
         $this->marktRepository = $marktRepository;
         $this->sollicitatieRepository = $sollicitatieRepository;
 
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = ['sollicitatie', 'simpleKoopman', 'simpleMarkt', 'vervanger'];
     }
 

@@ -12,7 +12,6 @@ use App\Repository\MarktRepository;
 use App\Repository\ObstakelRepository;
 use App\Repository\PlaatseigenschapRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,14 +42,13 @@ class MarktConfiguratieController extends AbstractController
         BrancheRepository $brancheRepository,
         ObstakelRepository $obstakelRepository,
         PlaatseigenschapRepository $plaatseigenschapRepository,
-        MarktConfiguratieRepository $marktConfiguratieRepository,
-        CacheManager $cacheManager
+        MarktConfiguratieRepository $marktConfiguratieRepository
     ) {
         $this->entityManager = $entityManager;
         $this->marktRepository = $marktRepository;
         $this->marktConfiguratieRepository = $marktConfiguratieRepository;
 
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->brancheRepository = $brancheRepository;
         $this->obstakelRepository = $obstakelRepository;
         $this->plaatseigenschapRepository = $plaatseigenschapRepository;

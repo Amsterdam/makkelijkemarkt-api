@@ -7,7 +7,6 @@ use App\Normalizer\EntityNormalizer;
 use App\Repository\BrancheRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -34,7 +33,6 @@ class BrancheController extends AbstractController
     private $serializer;
 
     public function __construct(
-        CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         BrancheRepository $brancheRepository
@@ -42,7 +40,7 @@ class BrancheController extends AbstractController
         $this->brancheRepository = $brancheRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
     }
 
     /**

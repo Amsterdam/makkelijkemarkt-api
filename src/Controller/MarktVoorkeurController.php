@@ -12,7 +12,6 @@ use App\Repository\MarktRepository;
 use App\Repository\MarktVoorkeurRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -56,7 +55,6 @@ class MarktVoorkeurController extends AbstractController
 
     public function __construct(
         BrancheRepository $brancheRepository,
-        CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $dispatcher,
         KoopmanRepository $koopmanRepository,
@@ -71,8 +69,8 @@ class MarktVoorkeurController extends AbstractController
         $this->entityManager = $entityManager;
         $this->marktVoorkeurRepository = $marktVoorkeurRepository;
         $this->marktRepository = $marktRepository;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
-        $this->logSerializer = new Serializer([new MarktVoorkeurLogNormalizer($cacheManager)]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
+        $this->logSerializer = new Serializer([new MarktVoorkeurLogNormalizer()]);
     }
 
     /**

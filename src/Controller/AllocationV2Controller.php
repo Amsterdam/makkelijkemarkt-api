@@ -10,7 +10,6 @@ use App\Repository\AllocationV2Repository;
 use App\Repository\MarktRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,12 +35,11 @@ class AllocationV2Controller extends AbstractController
     private $allocationStatus;
 
     public function __construct(
-        CacheManager $cacheManager,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $dispatcher
     ) {
         $this->entityManager = $entityManager;
-        $this->serializer = new Serializer([new EntityNormalizer($cacheManager)], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->dispatcher = $dispatcher;
         $this->allocationStatus = [
             0 => 'UNSUCCESSFUL',
