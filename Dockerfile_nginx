@@ -5,6 +5,8 @@ RUN update-ca-certificates --fresh
 
 RUN apk update && apk upgrade
 
+COPY docker-nginx/nginx.conf /etc/nginx/nginx.conf
+
 COPY docker-nginx/default.template /tmp/default.template
 COPY --chown=nginx ./public /var/www/public
 
