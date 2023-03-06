@@ -86,6 +86,8 @@ class AllocationController extends AbstractController
             4 => 'MARKET_FULL',
             5 => 'VPL_POSITION_NOT_AVAILABLE',
             6 => 'PREF_NOT_AVAILABLE',
+            7 => 'PREF_NOT_AVAILABLE_ANYWHERE',
+            8 => 'KRAAM_DOES_NOT_EXIST',
         ];
     }
 
