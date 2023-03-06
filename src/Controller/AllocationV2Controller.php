@@ -142,7 +142,7 @@ class AllocationV2Controller extends AbstractController
         $logItem = 'Allocation v2 was created for '.$markt->getNaam().' on '.$marktDate->format('Y-m-d H:i:s').' by '.$user;
         $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, [$logItem]));
 
-        $response = $this->serializer->serialize($allocation, 'json', ['groups' => ['allocation_v2_detailed']]);
+        $response = $this->serializer->serialize($allocation, 'json', ['groups' => ['allocation_v2_detailed', 'simpleMarkt']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -187,7 +187,7 @@ class AllocationV2Controller extends AbstractController
 
         $allocations = $allocationV2Repository->findByMarkt($markt);
 
-        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple']]);
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple', 'simpleMarkt']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -235,7 +235,7 @@ class AllocationV2Controller extends AbstractController
 
         $allocations = $allocationV2Repository->findByMarktAndDate($markt, $marktDate);
 
-        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple']]);
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple', 'simpleMarkt']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -283,7 +283,7 @@ class AllocationV2Controller extends AbstractController
 
         $allocations = $allocationV2Repository->findOneByMarktAndDate($markt, $marktDate);
 
-        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple']]);
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple', 'simpleMarkt']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -321,7 +321,7 @@ class AllocationV2Controller extends AbstractController
     ): Response {
         $allocations = $allocationV2Repository->find($allocationId);
 
-        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_detailed']]);
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_detailed', 'simpleMarkt']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
