@@ -23,68 +23,68 @@ class AllocationV2
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\Column(type="date")
      */
     private $marktDate;
 
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class)
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $markt;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\Column(type="string")
      */
     private $email;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\Column(type="datetime")
      */
     private $creationDate;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\Column(type="integer", nullable=false)
      */
     private $allocationStatus;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\Column(type="integer", nullable=false)
      */
     private $allocationType;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
      * @ORM\Column(type="string", nullable=false)
      */
     private $allocationVersion;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups("allocation_v2_detailed")
      * @ORM\Column(type="json", options={"jsonb": true})
      */
     private $input;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups("allocation_v2_detailed")
      * @ORM\Column(type="json", options={"jsonb": true})
      */
     private $allocation;
 
     /**
-     * @Groups("allocation_v2")
+     * @Groups("allocation_v2_detailed")
      * @ORM\Column(type="json", options={"jsonb": true}, nullable=true)
      */
     private $log;

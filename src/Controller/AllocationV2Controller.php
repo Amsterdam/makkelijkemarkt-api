@@ -139,7 +139,7 @@ class AllocationV2Controller extends AbstractController
         $logItem = 'Allocation v2 was created for '.$markt->getNaam().' on '.$marktDate->format('Y-m-d H:i:s').' by '.$user;
         $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, [$logItem]));
 
-        $response = $this->serializer->serialize($allocation, 'json', ['groups' => ['allocation_v2']]);
+        $response = $this->serializer->serialize($allocation, 'json', ['groups' => ['allocation_v2_simple']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -184,7 +184,7 @@ class AllocationV2Controller extends AbstractController
 
         $allocations = $allocationV2Repository->findByMarkt($markt);
 
-        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2']]);
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -232,7 +232,7 @@ class AllocationV2Controller extends AbstractController
 
         $allocations = $allocationV2Repository->findByMarktAndDate($markt, $marktDate);
 
-        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2']]);
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -280,7 +280,45 @@ class AllocationV2Controller extends AbstractController
 
         $allocations = $allocationV2Repository->findOneByMarktAndDate($markt, $marktDate);
 
-        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2']]);
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_simple']]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/allocation_v2/{allocationId}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="AllocationV2GetByMarkt",
+     *     tags={"AllocationV2"},
+     *     summary="Vraag alle allocaties van een markt.",
+     *     @OA\Property(property="allocationID", type="integer", description="Id van allocation"),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/Allocation")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/allocation_v2/{allocationId}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getById(
+        int $allocationId,
+        AllocationV2Repository $allocationV2Repository
+    ): Response {
+        $allocations = $allocationV2Repository->find($allocationId);
+
+        $response = $this->serializer->serialize($allocations, 'json', ['groups' => ['allocation_v2_detailed']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
