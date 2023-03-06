@@ -67,6 +67,18 @@ class AllocationV2
 
     /**
      * @Groups("allocation_v2")
+     * @ORM\Column(type="string", nullable=false)
+     */
+    private $allocationVersion;
+
+    /**
+     * @Groups("allocation_v2")
+     * @ORM\Column(type="json", options={"jsonb": true})
+     */
+    private $input;
+
+    /**
+     * @Groups("allocation_v2")
      * @ORM\Column(type="json", options={"jsonb": true})
      */
     private $allocation;
@@ -173,6 +185,42 @@ class AllocationV2
     public function setAllocationType(int $allocationType): self
     {
         $this->allocationType = $allocationType;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of allocationVersion.
+     */
+    public function getAllocationVersion(): string
+    {
+        return $this->allocationVersion;
+    }
+
+    /**
+     * Set the value of allocationVersion.
+     */
+    public function setAllocationVersion(string $allocationVersion): self
+    {
+        $this->allocationVersion = $allocationVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of input.
+     */
+    public function getInput(): array
+    {
+        return $this->input;
+    }
+
+    /**
+     * Set the value of input.
+     */
+    public function setInput(array $input): self
+    {
+        $this->input = $input;
 
         return $this;
     }
