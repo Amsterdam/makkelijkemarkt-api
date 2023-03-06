@@ -62,6 +62,7 @@ class AllocationV2Controller extends AbstractController
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(property="allocationStatus", type="integer", description="Status van allocation"),
+     *                 @OA\Property(property="allocationVersion", type="string", description="Versie van allocationscript"),
      *                 @OA\Property(property="allocationType", type="integer", description="Type van allocation [concept, voorlopig, definitief]"),
      *                 @OA\Property(property="email", type="string", description="Email van user die allocatie triggerd"),
      *                 @OA\Property(property="allocation", type="json", description="Allocation data"),
@@ -122,8 +123,10 @@ class AllocationV2Controller extends AbstractController
             ->setMarkt($markt)
             ->setMarktDate($marktDate)
             ->setAllocation($allocData)
+            ->setInput($data['input'])
             ->setAllocationStatus($data['allocationStatus'])
             ->setAllocationType($data['allocationType'])
+            ->setAllocationVersion($data['allocationVersion'])
             ->setEmail($data['email']);
 
         if (isset($data['log'])) {
@@ -136,7 +139,7 @@ class AllocationV2Controller extends AbstractController
 
         $shortClassName = (new \ReflectionClass($allocation))->getShortName();
         /** @var Markt $markt */
-        $logItem = 'Allocation v2 was created for '.$markt->getNaam().' on '.$marktDate->format('Y-m-d H:i:s').' by '.$user;
+        $logItem = 'Allocation v2 was created for ' . $markt->getNaam() . ' on ' . $marktDate->format('Y-m-d H:i:s') . ' by ' . $user;
         $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, [$logItem]));
 
         $response = $this->serializer->serialize($allocation, 'json', ['groups' => ['allocation_v2_simple']]);
