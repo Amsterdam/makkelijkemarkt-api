@@ -45,14 +45,14 @@ class BtwWaardeRepository extends ServiceEntityRepository
         return $btwWaardes[0];
     }
 
-    public function findCurrentBtwWaardeByTariefSoort(TariefSoort $tariefSoort): ?BtwWaarde
+    public function findCurrentBtwWaardeByTariefSoort(TariefSoort $tariefSoort, $marktId = null): ?BtwWaarde
     {
         $now = new DateTime();
         $em = $this->getEntityManager();
         /** @var BtwPlanRepository */
         $btwPlanRepository = $em->getRepository(BtwPlan::class);
         /** @var BtwPlan[] */
-        $btwPlannen = $btwPlanRepository->findCurrentByTariefSoort($tariefSoort);
+        $btwPlannen = $btwPlanRepository->findCurrentByTariefSoort($tariefSoort, $marktId);
         if (0 == count($btwPlannen)) {
             return null;
         }

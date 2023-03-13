@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\BtwTarief;
 use App\Entity\Dagvergunning;
 use App\Entity\Factuur;
 use App\Entity\Lineairplan;
 use App\Entity\Product;
 use App\Entity\Sollicitatie;
 use App\Entity\Tariefplan;
-use App\Repository\BtwTariefRepository;
 use App\Repository\BtwWaardeRepository;
 use App\Repository\TariefSoortRepository;
 use Doctrine\DBAL\Exception;
@@ -32,8 +30,6 @@ final class LineairplanFactuurService
     /** @var Tariefplan */
     private $tariefplan;
 
-    /** @var BtwTariefRepository */
-    private $btwTariefRepository;
     /** @var TariefSoortRepository */
     private $tariefSoortRepository;
 
@@ -41,11 +37,9 @@ final class LineairplanFactuurService
     private $btwWaardeRepository;
 
     public function __construct(
-        BtwTariefRepository $btwTariefRepository,
         TariefSoortRepository $tariefSoortRepository,
         BtwWaardeRepository $btwWaardeRepository
     ) {
-        $this->btwTariefRepository = $btwTariefRepository;
         $this->tariefSoortRepository = $tariefSoortRepository;
         $this->btwWaardeRepository = $btwWaardeRepository;
     }
@@ -60,30 +54,20 @@ final class LineairplanFactuurService
         $this->factuur->setDagvergunning($dagvergunning);
         $dagvergunning->setFactuur($this->factuur);
 
-        $btw = 0;
-        $dag = $dagvergunning->getDag();
-
-        /** @var BtwTarief $btwTarief */
-        $btwTarief = $this->btwTariefRepository->findOneBy(['jaar' => $dag->format('Y')]);
-
-        if (null !== $btwTarief) {
-            $btw = $btwTarief->getHoog();
-        }
-
-        $totaalMetersGroot = $this->berekenMetersGrootTarief($dagvergunning, $btw) ?: 0;
-        $totaalMetersNormaal = $this->berekenMetersNormaalTarief($dagvergunning, $btw) ?: 0;
-        $totaalMetersKlein = $this->berekenMetersKleinTarief($dagvergunning, $btw) ?: 0;
+        $totaalMetersGroot = $this->berekenMetersGrootTarief($dagvergunning) ?: 0;
+        $totaalMetersNormaal = $this->berekenMetersNormaalTarief($dagvergunning) ?: 0;
+        $totaalMetersKlein = $this->berekenMetersKleinTarief($dagvergunning) ?: 0;
 
         $totaalMeters = $totaalMetersGroot + $totaalMetersNormaal + $totaalMetersKlein;
         $totaalKramen = $totaalMeters > 1 ? 1 : 0;
 
-        $this->berekenElektra($dagvergunning, $btw);
-        $this->berekenKrachtstroom($dagvergunning, $btw);
-        $this->berekenEenmaligElektra($dagvergunning, $btw);
-        $this->berekenAfvaleilanden($dagvergunning, $btw);
-        $this->berekenAfvaleilandenAgf($dagvergunning, $btw);
-        $this->berekenKrachtstroomPerStuk($dagvergunning, $btw);
-        $this->berekenBedrijfsAfval($dagvergunning, $totaalMeters, $btw);
+        $this->berekenElektra($dagvergunning);
+        $this->berekenKrachtstroom($dagvergunning);
+        $this->berekenEenmaligElektra($dagvergunning);
+        $this->berekenAfvaleilanden($dagvergunning);
+        $this->berekenAfvaleilandenAgf($dagvergunning);
+        $this->berekenKrachtstroomPerStuk($dagvergunning);
+        $this->berekenBedrijfsAfval($dagvergunning, $totaalMeters);
 
         $this->berekenPromotiegelden($totaalMeters, $totaalKramen, $dagvergunning);
 
@@ -93,10 +77,8 @@ final class LineairplanFactuurService
     /**
      * @return array<int>
      */
-    private function berekenMetersNormaalTarief(Dagvergunning $dagvergunning, float $btw): int
+    private function berekenMetersNormaalTarief(Dagvergunning $dagvergunning): int
     {
-        /* @var Lineairplan $lineairplan */
-
         $meters[4] = $dagvergunning->getAantal4MeterKramen();
         $meters[3] = $dagvergunning->getAantal3MeterKramen();
         $meters[1] = $dagvergunning->getExtraMeters();
@@ -110,6 +92,8 @@ final class LineairplanFactuurService
 
         $teBetalenMeters = $totaalMeters;
 
+        // This is the amount already paid through a vaste plaats in Mercato.
+        // Therefore bedrag and BTW are 0.
         if ($totaalMetersVast >= 1) {
             $teBetalenMeters = $teBetalenMeters - $totaalMetersVast;
 
@@ -123,28 +107,28 @@ final class LineairplanFactuurService
             $this->factuur->addProducten($product);
         }
 
-        $this->addMetersToFactuur(self::GROOTTE_NORMAAL, $teBetalenMeters, $btw);
+        $this->addMetersToFactuur(self::GROOTTE_NORMAAL, $teBetalenMeters);
 
         return $teBetalenMeters;
     }
 
-    private function berekenMetersGrootTarief(Dagvergunning $dagvergunning, float $btw): int
+    private function berekenMetersGrootTarief(Dagvergunning $dagvergunning): int
     {
         $aantal = $dagvergunning->getGrootPerMeter();
-        $this->addMetersToFactuur(self::GROOTTE_GROOT, $aantal, $btw);
+        $this->addMetersToFactuur(self::GROOTTE_GROOT, $aantal);
 
         return $aantal;
     }
 
-    private function berekenMetersKleinTarief(Dagvergunning $dagvergunning, float $btw): int
+    private function berekenMetersKleinTarief(Dagvergunning $dagvergunning): int
     {
         $aantal = $dagvergunning->getKleinPerMeter();
-        $this->addMetersToFactuur(self::GROOTTE_KLEIN, $aantal, $btw);
+        $this->addMetersToFactuur(self::GROOTTE_KLEIN, $aantal);
 
         return $aantal;
     }
 
-    private function berekenAfvaleilandenAgf(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenAfvaleilandenAgf(Dagvergunning $dagvergunning): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -169,7 +153,7 @@ final class LineairplanFactuurService
         }
     }
 
-    private function berekenKrachtstroomPerStuk(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenKrachtstroomPerStuk(Dagvergunning $dagvergunning): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -191,7 +175,7 @@ final class LineairplanFactuurService
         }
     }
 
-    private function addMetersToFactuur(string $grootte, ?int $amount, float $btw): void
+    private function addMetersToFactuur(string $grootte, ?int $amount): void
     {
         if ($amount < 1 || null === $amount) {
             return;
@@ -246,7 +230,7 @@ final class LineairplanFactuurService
         $this->factuur->addProducten($product);
     }
 
-    private function berekenBedrijfsAfval(Dagvergunning $dagvergunning, ?int $meters, float $btw): void
+    private function berekenBedrijfsAfval(Dagvergunning $dagvergunning, ?int $meters): void
     {
         if (!$meters || $meters < 1) {
             return;
@@ -266,7 +250,7 @@ final class LineairplanFactuurService
         $this->factuur->addProducten($product);
     }
 
-    private function berekenKrachtstroom(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenKrachtstroom(Dagvergunning $dagvergunning): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -278,6 +262,8 @@ final class LineairplanFactuurService
         $label = 'Toeslag krachtstroom per aansluiting';
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1 && true === $dagvergunning->getKrachtstroom()) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vast >= 1) {
                 $afname = $afname - $vast;
 
@@ -304,7 +290,7 @@ final class LineairplanFactuurService
         }
     }
 
-    private function berekenElektra(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenElektra(Dagvergunning $dagvergunning): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -316,6 +302,8 @@ final class LineairplanFactuurService
         $label = 'Elektra';
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1 && false === $dagvergunning->getKrachtstroom()) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vast >= 1) {
                 $afname = $afname - $vast;
 
@@ -342,7 +330,7 @@ final class LineairplanFactuurService
         }
     }
 
-    private function berekenAfvaleilanden(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenAfvaleilanden(Dagvergunning $dagvergunning): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -354,6 +342,8 @@ final class LineairplanFactuurService
         $label = 'Afvaleiland';
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vast >= 1) {
                 $afname = $afname - $vast;
 
@@ -380,7 +370,7 @@ final class LineairplanFactuurService
         }
     }
 
-    private function berekenEenmaligElektra(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenEenmaligElektra(Dagvergunning $dagvergunning): void
     {
         /** @var Lineairplan $lineairplan */
         $lineairplan = $this->tariefplan->getLineairplan();
@@ -391,6 +381,8 @@ final class LineairplanFactuurService
         $label = 'Eenmalig elektra';
 
         if (null !== $kosten && $kosten > 0 && true === $eenmaligElektra) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if (in_array($dagvergunning->getStatusSolliciatie(), [Sollicitatie::STATUS_VKK, Sollicitatie::STATUS_VPL])) {
                 /** @var Product $product */
                 $product = new Product();
@@ -426,6 +418,8 @@ final class LineairplanFactuurService
         $perKraam = $lineairplan->getPromotieGeldenPerKraam();
 
         if (null !== $perKraam && $perKraam > 0 && $kramen > 0) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vasteMeters >= 1) {
                 /** @var Product $product */
                 $product = new Product();
@@ -450,6 +444,8 @@ final class LineairplanFactuurService
         $perMeter = $lineairplan->getPromotieGeldenPerMeter();
 
         if (null !== $perMeter && $perMeter > 0 && $meters > 0) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vasteMeters >= 1) {
                 /** @var Product $product */
                 $product = new Product();
@@ -477,7 +473,7 @@ final class LineairplanFactuurService
     private function getBtwByLabel(string $label): float
     {
         $tariefSoort = $this->tariefSoortRepository->findByLabelAndType($label, self::TARIEF_TYPE);
-        $btwWaarde = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
+        $btwWaarde = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort, $this->tariefplan->getMarkt()->getId());
 
         if (null == $btwWaarde) {
             throw new Exception('No Btw waarde found');

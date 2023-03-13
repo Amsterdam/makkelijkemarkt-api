@@ -256,7 +256,7 @@ class BtwWaardeController extends AbstractController
             return new JsonResponse(['error' => 'Tarief not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $btwWaarde = $btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
+        $btwWaarde = $btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort, null);
         if (null == $btwWaarde) {
             return new JsonResponse(['error' => 'No btw waarde found'], Response::HTTP_NO_CONTENT);
         }
