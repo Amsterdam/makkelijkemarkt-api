@@ -1,0 +1,209 @@
+[
+  {
+    "tarief_soort_id": 1,
+    "label": "Tarief per meter",
+    "tarief_type": "lineair",
+    "btw_plan_id": 284,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 2,
+    "label": "Reiniging per meter",
+    "tarief_type": "lineair",
+    "btw_plan_id": 245,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 3,
+    "label": "Toeslag bedrijfsafval per meter",
+    "tarief_type": "lineair",
+    "btw_plan_id": 289,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 4,
+    "label": "Toeslag krachtstroom per aansluiting",
+    "tarief_type": "lineair",
+    "btw_plan_id": 290,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 5,
+    "label": "Promotie gelden per meter",
+    "tarief_type": "lineair",
+    "btw_plan_id": 291,
+    "btw_type_id": 37,
+    "markt_id": 20,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 6,
+    "label": "Promotie gelden per kraam",
+    "tarief_type": "lineair",
+    "btw_plan_id": 292,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 7,
+    "label": "Afvaleiland",
+    "tarief_type": "lineair",
+    "btw_plan_id": 261,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 8,
+    "label": "Eenmalig elektra",
+    "tarief_type": "lineair",
+    "btw_plan_id": 294,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 9,
+    "label": "Elektra",
+    "tarief_type": "lineair",
+    "btw_plan_id": 253,
+    "btw_type_id": 35,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 10,
+    "label": "Tarief per meter groot",
+    "tarief_type": "lineair",
+    "btw_plan_id": 283,
+    "btw_type_id": 37,
+    "markt_id": 20,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 11,
+    "label": "Tarief per meter klein",
+    "tarief_type": "lineair",
+    "btw_plan_id": 243,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 12,
+    "label": "Reiniging per meter groot",
+    "tarief_type": "lineair",
+    "btw_plan_id": 244,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 13,
+    "label": "Reiniging per meter klein",
+    "tarief_type": "lineair",
+    "btw_plan_id": 246,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 14,
+    "label": "Agf per meter",
+    "tarief_type": "lineair",
+    "btw_plan_id": 254,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 15,
+    "label": "Een meter",
+    "tarief_type": "concreet",
+    "btw_plan_id": 218,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 16,
+    "label": "Drie meter",
+    "tarief_type": "concreet",
+    "btw_plan_id": 219,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 17,
+    "label": "Vier meter",
+    "tarief_type": "concreet",
+    "btw_plan_id": 220,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 18,
+    "label": "Elektra",
+    "tarief_type": "concreet",
+    "btw_plan_id": 221,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 19,
+    "label": "Promotie gelden per meter",
+    "tarief_type": "concreet",
+    "btw_plan_id": 222,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 20,
+    "label": "Promotie gelden per kraam",
+    "tarief_type": "concreet",
+    "btw_plan_id": 223,
+    "btw_type_id": 37,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 21,
+    "label": "Afvaleiland",
+    "tarief_type": "concreet",
+    "btw_plan_id": 224,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 22,
+    "label": "Eenmalig elektra",
+    "tarief_type": "concreet",
+    "btw_plan_id": 225,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  },
+  {
+    "tarief_soort_id": 23,
+    "label": "Agf per meter",
+    "tarief_type": "concreet",
+    "btw_plan_id": 226,
+    "btw_type_id": 36,
+    "markt_id": null,
+    "date_from": "2023-01-01 00:00:00"
+  }
+]

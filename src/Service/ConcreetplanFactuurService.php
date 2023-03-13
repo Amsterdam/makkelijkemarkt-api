@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\BtwTarief;
 use App\Entity\Concreetplan;
 use App\Entity\Dagvergunning;
 use App\Entity\Factuur;
 use App\Entity\Product;
 use App\Entity\Sollicitatie;
 use App\Entity\Tariefplan;
-use App\Repository\BtwTariefRepository;
 use App\Repository\BtwWaardeRepository;
 use App\Repository\TariefSoortRepository;
 use Doctrine\DBAL\Exception;
@@ -26,8 +24,6 @@ final class ConcreetplanFactuurService
     /** @var Tariefplan */
     private $tariefplan;
 
-    /** @var BtwTariefRepository */
-    private $btwTariefRepository;
     /** @var TariefSoortRepository */
     private $tariefSoortRepository;
 
@@ -35,11 +31,9 @@ final class ConcreetplanFactuurService
     private $btwWaardeRepository;
 
     public function __construct(
-        BtwTariefRepository $btwTariefRepository,
         TariefSoortRepository $tariefSoortRepository,
         BtwWaardeRepository $btwWaardeRepository
     ) {
-        $this->btwTariefRepository = $btwTariefRepository;
         $this->tariefSoortRepository = $tariefSoortRepository;
         $this->btwWaardeRepository = $btwWaardeRepository;
     }
@@ -59,18 +53,8 @@ final class ConcreetplanFactuurService
         $this->berekenEenmaligElektra($dagvergunning);
         $this->berekenPromotiegelden($totaalMeters, $totaalKramen, $dagvergunning);
 
-        $btw = 0;
-        $dag = $dagvergunning->getDag();
-
-        /** @var BtwTarief $btwTarief */
-        $btwTarief = $this->btwTariefRepository->findOneBy(['jaar' => $dag->format('Y')]);
-
-        if (null !== $btwTarief) {
-            $btw = $btwTarief->getHoog();
-        }
-
-        $this->berekenAfvaleilanden($dagvergunning, $btw);
-        $this->berekenAfvaleilandenAgf($dagvergunning, $btw);
+        $this->berekenAfvaleilanden($dagvergunning);
+        $this->berekenAfvaleilandenAgf($dagvergunning);
 
         return $this->factuur;
     }
@@ -111,6 +95,8 @@ final class ConcreetplanFactuurService
                 $totaalKramen = 1;
             }
 
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($facturabeleMeters >= 1) {
                 /** @var Product $product */
                 $product = new Product();
@@ -154,6 +140,8 @@ final class ConcreetplanFactuurService
                 $totaalKramen = 1;
             }
 
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($facturabeleMeters >= 1) {
                 /** @var Product $product */
                 $product = new Product();
@@ -196,6 +184,8 @@ final class ConcreetplanFactuurService
                 ++$totaalMeters;
             }
 
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($facturabeleMeters >= 1) {
                 /** @var Product $product */
                 $product = new Product();
@@ -232,6 +222,8 @@ final class ConcreetplanFactuurService
         $kosten = $concreetplan->getElektra();
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vast >= 1) {
                 $afname = $afname - $vast;
 
@@ -267,6 +259,8 @@ final class ConcreetplanFactuurService
         $kosten = $concreetplan->getEenmaligElektra();
 
         if (null !== $kosten && $kosten > 0 && true === $eenmaligElektra) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if (in_array($dagvergunning->getStatusSolliciatie(), [Sollicitatie::STATUS_VKK, Sollicitatie::STATUS_VPL])) {
                 /** @var Product $product */
                 $product = new Product();
@@ -303,6 +297,8 @@ final class ConcreetplanFactuurService
         $perKraam = $concreetplan->getPromotieGeldenPerKraam();
 
         if (null !== $perKraam && $perKraam > 0 && $kramen > 0) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vasteMeters >= 1) {
                 /** @var Product $product */
                 $product = new Product();
@@ -328,6 +324,8 @@ final class ConcreetplanFactuurService
         $perMeter = $concreetplan->getPromotieGeldenPerMeter();
 
         if (null !== $perMeter && $perMeter > 0 && $meters > 0) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vasteMeters >= 1) {
                 $meters = $meters - $vasteMeters;
 
@@ -355,7 +353,7 @@ final class ConcreetplanFactuurService
         }
     }
 
-    private function berekenAfvaleilanden(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenAfvaleilanden(Dagvergunning $dagvergunning): void
     {
         /** @var Concreetplan $concreetplan */
         $concreetplan = $this->tariefplan->getConcreetplan();
@@ -365,6 +363,8 @@ final class ConcreetplanFactuurService
         $kosten = $concreetplan->getAfvaleiland();
 
         if (null !== $kosten && $kosten > 0 && $afname >= 1) {
+            // This is the amount already paid through a vaste plaats in Mercato.
+            // Therefore bedrag and BTW are 0.
             if ($vast >= 1) {
                 $afname = $afname - $vast;
 
@@ -392,7 +392,7 @@ final class ConcreetplanFactuurService
         }
     }
 
-    private function berekenAfvaleilandenAgf(Dagvergunning $dagvergunning, float $btw): void
+    private function berekenAfvaleilandenAgf(Dagvergunning $dagvergunning): void
     {
         /** @var Concreetplan $concreetplan */
         $concreetplan = $this->tariefplan->getConcreetplan();
@@ -419,7 +419,7 @@ final class ConcreetplanFactuurService
     private function getBtwByLabel(string $label): float
     {
         $tariefSoort = $this->tariefSoortRepository->findByLabelAndType($label, self::TARIEF_TYPE);
-        $btwWaarde = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort);
+        $btwWaarde = $this->btwWaardeRepository->findCurrentBtwWaardeByTariefSoort($tariefSoort, $this->tariefplan->getMarkt()->getId());
 
         if (null == $btwWaarde) {
             throw new Exception('No Btw waarde found');
