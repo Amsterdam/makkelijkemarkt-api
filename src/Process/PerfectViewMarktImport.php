@@ -121,7 +121,6 @@ class PerfectViewMarktImport
             if ('WAT-2022' === $upperCaseAfkorting) {
                 $opties[] = 'grootPerMeter';
                 $opties[] = 'kleinPerMeter';
-                $opties[] = 'krachtstroomPerStuk';
             }
 
             // Add this option manually, because it's currently not set in Mercato
