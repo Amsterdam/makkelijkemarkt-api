@@ -7,10 +7,9 @@ use DateTimeZone;
 
 class LocalTime extends DateTime
 {
-    private DateTime $dateTime;
-
     public function __construct()
     {
-        $this->dateTime = (new DateTime())->setTimezone(new DateTimeZone('Europe/Amsterdam'));
+        $timezone = new DateTimeZone('Europe/Amsterdam');
+        parent::__construct('now', $timezone);
     }
 }
