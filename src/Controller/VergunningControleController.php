@@ -12,7 +12,7 @@ use App\Repository\KoopmanRepository;
 use App\Repository\SollicitatieRepository;
 use App\Repository\VergunningControleRepository;
 use App\Service\FactuurService;
-use DateTime;
+use App\Utils\LocalTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -241,7 +241,7 @@ final class VergunningControleController extends AbstractController
         $point = $this->factuurService::parseGeolocation($registratieGeolocatie);
         $vergunningControle->setRegistratieGeolocatie($point[0], $point[1]);
 
-        $now = new DateTime();
+        $now = new LocalTime();
         $vergunningControle->setRegistratieDatumtijd($now);
         $vergunningControle->setRegistratieAccount($account);
 
