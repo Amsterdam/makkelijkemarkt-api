@@ -1,0 +1,29 @@
+{
+    "lineair": {
+        "Tarief per meter": "getTariefPerMeter",
+        "Reiniging per meter": "getReinigingPerMeter",
+        "Toeslag bedrijfsafval per meter": "getToeslagBedrijfsAfvalPerMeter",
+        "Toeslag krachtstroom per aansluiting": "getToeslagKrachtstroomPerAansluiting",
+        "Promotie gelden per meter": "getPromotieGeldenPerMeter",
+        "Promotie gelden per kraam": "getPromotieGeldenPerKraam",
+        "Afvaleiland": "getAfvaleiland",
+        "Eenmalig elektra": "getEenmaligElektra",
+        "Elektra": "getElektra",
+        "Tarief per meter groot": "getTariefPerMeterGroot",
+        "Tarief per meter klein": "getTariefPerMeterKlein",
+        "Reiniging per meter groot": "getReinigingPerMeterGroot",
+        "Reiniging per meter klein": "getReinigingPerMeterKlein",
+        "Agf per meter": "getAgfPerMeter"
+    },
+    "concreet": {
+        "Een meter": "getEenMeter",
+        "Drie meter": "getDrieMeter",
+        "Vier meter": "getVierMeter",
+        "Elektra": "getElektra",
+        "Promotie gelden per meter": "getPromotieGeldenPerMeter",
+        "Promotie gelden per kraam": "getPromotieGeldenPerKraam",
+        "Afvaleiland": "getAfvaleiland",
+        "Eenmalig elektra": "getEenmaligElektra",
+        "Agf per meter": "getAgfPerMeter"
+    }
+}

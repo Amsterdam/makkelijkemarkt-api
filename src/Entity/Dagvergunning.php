@@ -434,6 +434,11 @@ class Dagvergunning
      */
     private $vergunningControles;
 
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $infoJson = [];
+
     public function __construct()
     {
         $this->audit = false;
@@ -998,6 +1003,18 @@ class Dagvergunning
     public function addVergunningControle(VergunningControle $vergunningControle): self
     {
         $this->vergunningControles[] = $vergunningControle;
+
+        return $this;
+    }
+
+    public function getInfoJson(): ?array
+    {
+        return $this->infoJson;
+    }
+
+    public function setInfoJson(?array $infoJson): self
+    {
+        $this->infoJson = $infoJson;
 
         return $this;
     }

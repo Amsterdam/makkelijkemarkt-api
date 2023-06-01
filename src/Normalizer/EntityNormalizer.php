@@ -101,6 +101,7 @@ final class EntityNormalizer extends ObjectNormalizer
             'geldigTot' => 'array',
             'patternDate' => 'Y-m-d H:i:s',
             'dateFrom' => 'Y-m-d',
+            'archivedOn' => 'Y-m-d',
         ];
 
         foreach ($properties as $prop => $dtFormat) {

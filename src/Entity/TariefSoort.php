@@ -6,6 +6,7 @@ use App\Repository\TariefSoortRepository;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @OA\Schema(schema="TariefSoort", type="object")
@@ -24,23 +25,39 @@ class TariefSoort
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("tarievenplan")
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups("tarievenplan")
      */
     private $label;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups("tarievenplan")
      */
     private $tariefType;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups("tarievenplan")
      */
     private $deleted;
+
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     * @Groups("tarievenplan")
+     */
+    private $unit;
+
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     * @Groups("tarievenplan")
+     */
+    private $factuurLabel;
 
     /**
      * Get the value of id.
@@ -103,6 +120,30 @@ class TariefSoort
     public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?string $unit): self
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getFactuurLabel(): ?string
+    {
+        return $this->factuurLabel;
+    }
+
+    public function setFactuurLabel(?string $factuurLabel): self
+    {
+        $this->factuurLabel = $factuurLabel;
 
         return $this;
     }
