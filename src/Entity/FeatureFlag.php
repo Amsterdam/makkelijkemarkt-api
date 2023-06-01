@@ -7,6 +7,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=FeatureFlagRepository::class)
+ * @ORM\Table(
+ *     uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="feature_unique", columns={"feature"})
+ *     }
+ * )
  */
 class FeatureFlag
 {
