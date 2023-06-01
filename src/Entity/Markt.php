@@ -309,6 +309,11 @@ class Markt
      */
     private $tariefplannen;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Tarievenplan::class, mappedBy="markt", orphanRemoval=true)
+     */
+    private $tarievenplannen;
+
     public function __construct()
     {
         $this->auditMax = 10;
@@ -318,6 +323,7 @@ class Markt
         $this->kiesJeKraamMededelingActief = false;
         $this->indelingstype = 'a/b-lijst';
         $this->maxAantalKramenPerOndernemer = null;
+        $this->tarievenplannen = new ArrayCollection();
     }
 
     public function __toString()

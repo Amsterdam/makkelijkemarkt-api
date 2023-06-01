@@ -10,6 +10,7 @@ use App\Entity\Factuur;
 use App\Entity\Koopman;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\DagvergunningRepository;
+use App\Repository\FeatureFlagRepository;
 use App\Repository\KoopmanRepository;
 use App\Service\FactuurService;
 use DateTime;
@@ -29,27 +30,27 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class DagvergunningController extends AbstractController
 {
-    /** @var DagvergunningRepository */
-    private $dagvergunningRepository;
+    private DagvergunningRepository $dagvergunningRepository;
 
-    /** @var FactuurService */
-    private $factuurService;
+    private FeatureFlagRepository $featureFlagRepository;
 
-    /** @var EntityManagerInterface */
-    private $entityManager;
+    private FactuurService $factuurService;
 
-    /** @var Serializer */
-    private $serializer;
+    private EntityManagerInterface $entityManager;
+
+    private Serializer $serializer;
 
     /** @var array<string> */
-    private $groups;
+    private array $groups;
 
     public function __construct(
         DagvergunningRepository $dagvergunningRepository,
+        FeatureFlagRepository $featureFlagRepository,
         FactuurService $factuurService,
         EntityManagerInterface $entityManager
     ) {
         $this->dagvergunningRepository = $dagvergunningRepository;
+        $this->featureFlagRepository = $featureFlagRepository;
         $this->factuurService = $factuurService;
         $this->entityManager = $entityManager;
 
@@ -147,11 +148,18 @@ final class DagvergunningController extends AbstractController
                 $data['vervangerErkenningsnummer']
             );
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            throw new \Exception('Got error during createDagvergunning '.$e->getMessage());
         }
 
-        /** @var Factuur $factuur */
-        $factuur = $this->factuurService->createFactuur($dagvergunning);
+        $flexibeleTarievenEnabled = $this->featureFlagRepository->isEnabled('flexibele-tarieven');
+
+        if ($flexibeleTarievenEnabled) {
+            /** @var Factuur $factuur */
+            $factuur = $this->factuurService->createFactuur($dagvergunning);
+        } else {
+            /** @var Factuur $factuur */
+            $factuur = $this->factuurService->createFactuur($dagvergunning);
+        }
 
         $response = $this->serializer->serialize($factuur, 'json', ['groups' => $this->groups]);
 
@@ -173,6 +181,7 @@ final class DagvergunningController extends AbstractController
      *     operationId="DagvergunningGetAll",
      *     tags={"Dagvergunning"},
      *     summary="Geeft dagvergunningen",
+     *
      *     @OA\Parameter(name="naam", @OA\Schema(type="string"), in="query", required=false, in="query", required=false, description="Deel van een naam"),
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="query", required=false, description="ID van de markt"),
      *     @OA\Parameter(name="dag", @OA\Schema(type="string"), in="query", required=false, description="Als yyyy-mm-dd"),
@@ -184,13 +193,17 @@ final class DagvergunningController extends AbstractController
      *     @OA\Parameter(name="accountId", @OA\Schema(type="integer"), in="query", required=false, description="Filter op de persoon die de dagvergunning uitgegeven heeft"),
      *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
      *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=1000000"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Dagvergunning"))
      *     )
      * )
+     *
      * @Route("/dagvergunning/", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getAll(Request $request): Response
@@ -253,19 +266,26 @@ final class DagvergunningController extends AbstractController
      *     operationId="DagvergunningGetById",
      *     tags={"Dagvergunning"},
      *     summary="Geeft informatie over specifiek dagvergunning",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Dagvergunning")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/dagvergunning/{id}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getById(int $id): Response
@@ -289,21 +309,28 @@ final class DagvergunningController extends AbstractController
      *     operationId="DagvergunningGetByKoopmanAndDate",
      *     tags={"Dagvergunning"},
      *     summary="Geeft dagvergunningen terug per koopman en datum",
+     *
      *     @OA\Parameter(name="koopmanId", @OA\Schema(type="integer"), in="path", required=true, description="Id van de koopman"),
      *     @OA\Parameter(name="startDate", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd, alleen i.c.m. dagEind"),
      *     @OA\Parameter(name="endDate", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd, alleen i.c.m. dagStart"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Dagvergunning"))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/dagvergunning_by_date/{koopmanId}/{startDate}/{endDate}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function getByKoopmanAndDate(
@@ -338,11 +365,15 @@ final class DagvergunningController extends AbstractController
      *     operationId="DagvergunningPostConcept",
      *     tags={"Dagvergunning"},
      *     summary="Stellt dagvergunning op zonder opslaag",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="marktId", type="integer", description="ID van de markt"),
      *                 @OA\Property(property="dag", type="string", example="yyyy-mm-dd", description="Als yyyy-mm-dd"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
@@ -364,18 +395,24 @@ final class DagvergunningController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Factuur"))
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/dagvergunning_concept/", methods={"POST"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function postConcept(Request $request): Response
@@ -390,11 +427,15 @@ final class DagvergunningController extends AbstractController
      *     operationId="DagvergunningPost",
      *     tags={"Dagvergunning"},
      *     summary="Geeft een nieuwe dagvergunnning uit",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="marktId", type="integer", description="ID van de markt"),
      *                 @OA\Property(property="dag", type="string", example="yyyy-mm-dd", description="Als yyyy-mm-dd"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
@@ -416,23 +457,31 @@ final class DagvergunningController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Dagvergunning")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/dagvergunning/", methods={"POST"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function post(Request $request): Response
@@ -447,12 +496,17 @@ final class DagvergunningController extends AbstractController
      *     operationId="DagvergunningPut",
      *     tags={"Dagvergunning"},
      *     summary="Werk een dagvergunnning bij",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true, description="ID van de dagvergunning"),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="marktId", type="integer", description="ID van de markt"),
      *                 @OA\Property(property="dag", type="string", example="yyyy-mm-dd", description="Als yyyy-mm-dd"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
@@ -474,23 +528,31 @@ final class DagvergunningController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Dagvergunning")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/dagvergunning/{id}", methods={"PUT"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function put(Request $request, int $id): Response
@@ -617,17 +679,23 @@ final class DagvergunningController extends AbstractController
      *     operationId="DagvergunningDelete",
      *     tags={"Dagvergunning"},
      *     summary="Voert een doorhaling van de dagvergunning uit",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=false, description="ID van de dagvergunning"),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="doorgehaaldDatumtijd", type="string", example="yyyy-mm-dd hh:ii:ss", description="Datum/tijd als yyyy-mm-dd hh:ii:ss waar de doorhaling is uitgevoerd, indien niet opgegeven wordt het moment van de request gebruikt"),
      *                 @OA\Property(property="doorgehaaldGeolocatie", type="string", example="lat,long", description="Geolocatie waar de doorhaling is uitgevoerd, als lat,long"),
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -635,10 +703,13 @@ final class DagvergunningController extends AbstractController
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/dagvergunning/{id}", methods={"DELETE"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function delete(Request $request, int $id): JsonResponse

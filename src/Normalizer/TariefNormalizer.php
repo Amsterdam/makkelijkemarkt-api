@@ -2,12 +2,12 @@
 
 namespace App\Normalizer;
 
-use App\Entity\TariefSoort;
+use App\Entity\Tarief;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class TariefSoortNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class TariefNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -17,19 +17,17 @@ class TariefSoortNormalizer implements NormalizerInterface, NormalizerAwareInter
 
     public function supportsNormalization($data, ?string $format = null)
     {
-        return $data instanceof TariefSoort;
+        return $data instanceof Tarief;
     }
 
     public function normalize($object, ?string $format = null, array $context = [])
     {
-        /* @var BtwType $object */
+        /* @var Tarief $object */
         return [
             'id' => $object->getId(),
-            'label' => $object->getLabel(),
-            'tariefType' => $object->getTariefType(),
-            'deleted' => $object->getDeleted(),
-            'unit' => $object->getUnit(),
-            'factuurLabel' => $object->getFactuurLabel(),
+            'tarievenplanId' => $object->getTarievenplan()->getId(),
+            'tariefSoortId' => $object->getTariefSoort()->getId(),
+            'tarief' => $object->getTarief(),
         ];
     }
 }

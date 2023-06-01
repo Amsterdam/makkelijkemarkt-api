@@ -8,9 +8,7 @@ use App\Normalizer\EntityNormalizer;
 use App\Normalizer\TariefSoortLogNormalizer;
 use App\Repository\TariefSoortRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OpenApi\Annotations as OA;
-use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,11 +21,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class TariefSoortController extends AbstractController
 {
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
-    /** @var Serializer */
-    private $logSerializer;
+    private Serializer $logSerializer;
 
     public function __construct()
     {
@@ -42,29 +38,39 @@ class TariefSoortController extends AbstractController
      *      operationId="TariefSoortCreate",
      *      tags={"Tarief", "Tariefplan", "BTW"},
      *      summary="Maakt nieuwe TariefSoort aan",
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *
      *              @OA\Schema(
+     *
      *                  @OA\Property(property="label", type="string", description="Label of the TariefSoort"),
      *                  @OA\Property(property="tariefType", type="string", description="Tarief type lineair, concreet"),
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      *
      * )
+     *
      * @Route("/tariefsoort", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(
@@ -95,19 +101,19 @@ class TariefSoortController extends AbstractController
                 ->setLabel($data['label'])
                 ->setTariefType($data['tariefType'])
                 ->setDeleted(false);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         try {
             $entityManager->persist($tariefSoort);
             $entityManager->flush();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
         }
 
         $logItem = $this->logSerializer->normalize($tariefSoort);
-        $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();
+        $shortClassName = (new \ReflectionClass($tariefSoort))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($tariefSoort, 'json');
@@ -122,30 +128,41 @@ class TariefSoortController extends AbstractController
      *      operationId="TariefSoortUpdate",
      *      tags={"Tarief", "Tariefplan", "BTW"},
      *      summary="Update TariefSoort",
+     *
      *      @OA\Parameter(name="tariefSoortId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *
      *              @OA\Schema(
+     *
      *                  @OA\Property(property="label", type="string", description="Label of the TariefSoort"),
      *                  @OA\Property(property="tariefType", type="string", description="Tarief type [lineair, concreet]"),
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      *
      * )
+     *
      * @Route("/tariefsoort/{tariefSoortId}", methods={"PUT", "PATCH"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function update(
@@ -185,19 +202,19 @@ class TariefSoortController extends AbstractController
             if (isset($data['tariefType'])) {
                 $tariefSoort->setTariefType($data['tariefType']);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         try {
             $entityManager->persist($tariefSoort);
             $entityManager->flush();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
         }
 
         $logItem = $this->logSerializer->normalize($tariefSoort);
-        $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();
+        $shortClassName = (new \ReflectionClass($tariefSoort))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'update', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($tariefSoort, 'json');
@@ -212,20 +229,27 @@ class TariefSoortController extends AbstractController
      *      operationId="TariefSoortDelete",
      *      tags={"Tarief", "Tariefplan", "BTW"},
      *      summary="Update TariefSoort",
+     *
      *      @OA\Parameter(name="tariefSoortId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      *
      * )
+     *
      * @Route("/tariefsoort/{tariefSoortId}", methods={"DELETE"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function delete(
@@ -242,19 +266,19 @@ class TariefSoortController extends AbstractController
         // Maybe also delete all referencing entities (btw & tarief) ?
         try {
             $tariefSoort->setDeleted(true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         try {
             $entityManager->persist($tariefSoort);
             $entityManager->flush();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
         }
 
         $logItem = $this->logSerializer->normalize($tariefSoort);
-        $shortClassName = (new ReflectionClass($tariefSoort))->getShortName();
+        $shortClassName = (new \ReflectionClass($tariefSoort))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'delete', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($tariefSoort, 'json');
@@ -269,26 +293,70 @@ class TariefSoortController extends AbstractController
      *      operationId="TariefSoortGetAll",
      *      tags={"Tarief", "Tariefplan", "BTW"},
      *      summary="Get All TariefSoort",
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      *
      * )
+     *
      * @Route("/tariefsoort", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAll(
         TariefSoortRepository $tariefSoortRepository
     ): Response {
-        $tariefSoort = $tariefSoortRepository->findBy(['deleted' => false]);
+        $tariefSoort = $tariefSoortRepository->findBy([], ['tariefType' => 'DESC', 'label' => 'ASC']);
+        $response = $this->serializer->serialize($tariefSoort, 'json');
 
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/tariefsoorten_active/{type?}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="TariefSoortGetNonArchived",
+     *      tags={"Tarief", "Tariefplan", "BTW"},
+     *      summary="Get All TariefSoorten that are active",
+     *
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     *
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     *
+     * )
+     *
+     * @Route("/tariefsoorten_active/{type?}", methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getActive(
+        TariefSoortRepository $tariefSoortRepository,
+        string $type = ''
+    ): Response {
+        $queryParams = $type ? ['deleted' => false, 'tariefType' => $type] : ['deleted' => false];
+        $tariefSoort = $tariefSoortRepository->findBy($queryParams, ['tariefType' => 'DESC', 'label' => 'ASC']);
         $response = $this->serializer->serialize($tariefSoort, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
