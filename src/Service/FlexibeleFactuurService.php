@@ -12,10 +12,17 @@ use App\Entity\Tarievenplan;
 use App\Repository\BtwWaardeRepository;
 use App\Repository\DagvergunningMappingRepository;
 use App\Repository\TariefRepository;
+use App\Repository\TariefSoortRepository;
 use App\Utils\Filters;
 
 final class FlexibeleFactuurService
 {
+    public const METER_UNITS = [
+        'meters',
+        'meters-groot',
+        'meters-klein',
+    ];
+
     private Factuur $factuur;
 
     private Tarievenplan $tarievenplan;
@@ -31,18 +38,24 @@ final class FlexibeleFactuurService
 
     private BtwWaardeRepository $btwWaardeRepository;
 
-    private array $paid;
+    /** @var TariefSoortRepository */
+    private $tariefSoortRepository;
+
+    /** @var array */
+    private $paid;
 
     private array $total;
 
     public function __construct(
         DagvergunningMappingRepository $dagvergunningMappingRepository,
         TariefRepository $tariefRepository,
-        BtwWaardeRepository $btwWaardeRepository
+        BtwWaardeRepository $btwWaardeRepository,
+        TariefSoortRepository $tariefSoortRepository
     ) {
         $this->dagvergunningMappingRepository = $dagvergunningMappingRepository;
         $this->tariefRepository = $tariefRepository;
         $this->btwWaardeRepository = $btwWaardeRepository;
+        $this->tariefSoortRepository = $tariefSoortRepository;
 
         $this->factuur = new Factuur();
     }
@@ -67,21 +80,32 @@ final class FlexibeleFactuurService
         // Filter out any values that we don't have to calculate for the factuur
         $this->total = Filters::filterOutValuesFromArray($dagvergunning->getInfoJson()['total'], [0, false]);
 
-        $this->addProductsForMeters();
+        foreach (self::METER_UNITS as $unit) {
+            $this->addProductsForMeters($unit);
+        }
 
         $this->addProductsForUnits();
 
         $this->addProductsForOneOffCosts();
+
+        // TEMPORARY FIX for Ten Kate Markt
+        if ('TK' === $this->tarievenplan->getMarkt()->getAfkorting() && 'concreet' === $this->tarievenplan->getType()) {
+            $this->legacyBerekenPromotiegeldenPerMeter();
+        }
 
         $this->factuur->sortProductenAlphabetically();
 
         return $this->factuur;
     }
 
-    private function addProductsForMeters(): void
+    // Add products that are related to meters to the factuur.
+    // There are different items in a dagvergunning that
+    // can translate to a meter variant. And there also different products in a
+    // dagvergunning that are calculated based on meters. (MANY_TO_MANY relationship)
+    private function addProductsForMeters(string $unit): void
     {
-        $paidMeters = $this->calculateMeters($this->paid);
-        $totalMeters = $this->calculateMeters($this->total);
+        $paidMeters = $this->calculateMeters($this->paid, $unit);
+        $totalMeters = $this->calculateMeters($this->total, $unit);
         $unpaidMeters = $totalMeters - $paidMeters;
 
         $tarieven = $this->tarievenplan->getTarieven();
@@ -89,7 +113,7 @@ final class FlexibeleFactuurService
         foreach ($tarieven as $tarief) {
             $tariefSoort = $tarief->getTariefSoort();
 
-            if ('meters' !== $tariefSoort->getUnit()) {
+            if ($unit !== $tariefSoort->getUnit()) {
                 continue;
             }
 
@@ -109,12 +133,12 @@ final class FlexibeleFactuurService
 
     // Sums up all the different elements in a dagvergunning
     // that count as meters (f.e. 4meter kraam, extra meters)
-    private function calculateMeters(array $products): int
+    private function calculateMeters(array $products, $unit): int
     {
         $meters = 0;
 
         foreach ($products as $key => $amount) {
-            $mapping = $this->findMappingByDagvergunningKey($key, 'meters');
+            $mapping = $this->findMappingByDagvergunningKey($key, $unit);
 
             if (null === $mapping) {
                 continue;
@@ -294,7 +318,35 @@ final class FlexibeleFactuurService
         $this->factuur->addProducten($product);
     }
 
-    // TODO add function voor grote meters
+    // TEMPORARY
+    // We need to support this function for de Ten Katestraat markt until
+    // TODO: remove when Economische Zaken has changed the tarievenplan for this market into a lineair one
+    // The problem is that this is a lineair tariefsoort in a concreet plan
+    // Therefore our meters calculation is not dynamic.
+    private function legacyBerekenPromotiegeldenPerMeter(): void
+    {
+        $paidMeters = array_sum([
+            (isset($this->paid['3MeterKramen'])) ? $this->paid['3MeterKramen'] * 3 : 0,
+            (isset($this->paid['4MeterKramen'])) ? $this->paid['4MeterKramen'] * 4 : 0,
+            (isset($this->paid['extraMeters'])) ? $this->paid['extraMeters'] : 0,
+        ]);
 
-    // TODO add function voor kleine meters
+        $totalMeters = array_sum([
+            (isset($this->total['3MeterKramen'])) ? $this->total['3MeterKramen'] * 3 : 0,
+            (isset($this->total['4MeterKramen'])) ? $this->total['4MeterKramen'] * 4 : 0,
+            (isset($this->total['extraMeters'])) ? $this->total['extraMeters'] : 0,
+        ]);
+
+        $tariefSoort = $this->tariefSoortRepository->findOneBy(['label' => 'Promotie gelden per meter', 'tariefType' => 'concreet']);
+        $tarief = $this->getTariefByTariefSoort($tariefSoort);
+
+        if ($paidMeters > 0) {
+            $this->addPaidToFactuur($tariefSoort, $tarief, $paidMeters);
+        }
+
+        if ($totalMeters > 0 && $paidMeters < $totalMeters) {
+            $unpaidMeters = $totalMeters - $paidMeters;
+            $this->addUnpaidToFactuur($tariefSoort, $tarief, $unpaidMeters);
+        }
+    }
 }
