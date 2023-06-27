@@ -546,4 +546,22 @@ class Sollicitatie
     {
         return in_array($this->getStatus(), [self::STATUS_VPL, self::STATUS_EB, self::STATUS_VKK, self::STATUS_TVPL, self::STATUS_TVPLZ, self::STATUS_EXP, self::STATUS_EXPF]);
     }
+
+    // Gets all paid products from a vaste plaats
+    // The keys in this array have to match the keys of dagvergunning_mappings
+    public function getVastePlaatsProducten(array $productKeys): array
+    {
+        return [
+            'aantal3MeterKramen' => $this->getAantal3MeterKramen(),
+            'aantal4MeterKramen' => $this->getAantal4MeterKramen(),
+            'extraMeters' => $this->getAantalExtraMeters(),
+            'aantalElektra' => $this->getAantalElektra(),
+            'afvaleiland' => $this->getAantalAfvaleilanden(),
+            'krachtstroom' => $this->getKrachtstroom(),
+            'krachtstroomPerStuk' => $this->getKrachtstroomPerStuk(),
+            'grootPerMeter' => $this->getGrootPerMeter(),
+            'kleinPerMeter' => $this->getKleinPerMeter(),
+            'afvalEilandAgf' => $this->getAfvalEilandAgf(),
+        ];
+    }
 }

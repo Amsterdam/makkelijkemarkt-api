@@ -36,6 +36,8 @@ class DagvergunningMappingNormalizer implements NormalizerInterface, NormalizerA
             'archivedOn' => $archivedOn ? $archivedOn->format('Y-m-d') : null,
             'tariefSoortLabel' => $tariefSoort ? $tariefSoort->getLabel() : null,
             'tariefSoortId' => $tariefSoort ? $tariefSoort->getId() : null,
+            'appLabel' => $object->getAppLabel(),
+            'inputType' => $object->getInputType(),
         ];
     }
 }

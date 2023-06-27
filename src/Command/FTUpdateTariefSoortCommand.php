@@ -25,12 +25,9 @@ class FTUpdateTariefSoortCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $this->connection->executeStatement('ALTER TABLE tarief_soort ALTER COLUMN unit SET DEFAULT NULL');
-            $this->connection->executeStatement('ALTER TABLE tarief_soort ALTER COLUMN factuur_label SET DEFAULT NULL');
-
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'meters', factuur_label = 'afgenomen meters (normaal tarief)' WHERE label = 'Tarief per meter' AND tarief_type = 'lineair';");
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'meters', factuur_label = 'reiniging (normaal tarief)' WHERE label = 'Reiniging per meter' AND tarief_type = 'lineair';");
-            $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'meters', factuur_label = 'toeslag bedrijfsafval' WHERE label = 'Toeslag bedrijfsafval per meter' AND tarief_type = 'lineair';");
+            $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'meters-totaal', factuur_label = 'toeslag bedrijfsafval' WHERE label = 'Toeslag bedrijfsafval per meter' AND tarief_type = 'lineair';");
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'unit', factuur_label = 'elektra krachtstroom' WHERE label = 'Toeslag krachtstroom per aansluiting' AND tarief_type = 'lineair';");
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'meters', factuur_label = 'promotiegelden per meter' WHERE label = 'Promotie gelden per meter' AND tarief_type = 'lineair';");
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'one-off', factuur_label = 'promotiegelden per koopman' WHERE label = 'Promotie gelden per kraam' AND tarief_type = 'lineair';");
@@ -51,9 +48,6 @@ class FTUpdateTariefSoortCommand extends Command
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'unit', factuur_label = 'afvaleiland' WHERE label = 'Afvaleiland' AND tarief_type = 'concreet';");
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'one-off', factuur_label = 'eenmalige elektra' WHERE label = 'Eenmalig elektra' AND tarief_type = 'concreet';");
             $this->connection->executeStatement("UPDATE tarief_soort SET unit = 'unit', factuur_label = 'AGF per meter' WHERE label = 'Agf per meter' AND tarief_type = 'concreet';");
-
-            $this->connection->executeStatement('ALTER TABLE tarief_soort ALTER COLUMN unit SET NOT NULL');
-            $this->connection->executeStatement('ALTER TABLE tarief_soort ALTER COLUMN factuur_label SET NOT NULL');
         } catch (\Exception $e) {
             $this->connection->rollBack();
             $io->error($e->getMessage());

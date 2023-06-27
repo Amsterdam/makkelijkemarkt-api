@@ -38,6 +38,33 @@ class Dagvergunning
     /** @var string */
     public const AUDIT_LOTEN = 'loten';
 
+    // Keys of dagvergunning products that are related to SOLL tarieven which are not yet paid upfront.
+    // A lot of them have a NOT NULL constraint.
+    public const UNPAID_PRODUCT_KEYS = [
+            'aantal3MeterKramen',
+            'aantal4MeterKramen',
+            'extraMeters',
+            'aantalElektra',
+            'krachtstroom',
+            'reiniging',
+            'afvaleiland',
+            'eenmaligElektra',
+            'grootPerMeter',
+            'kleinPerMeter',
+            'krachtstroomPerStuk',
+    ];
+
+    public const PAID_PRODUCT_KEYS = [
+        'aantal3MeterKramenVast',
+        'aantal4MeterKramenVast',
+        'aantalExtraMetersVast',
+        'aantalElektraVast',
+        'krachtstroomVast',
+        'afvaleilandVast',
+        'aantalMetersGrootVast',
+        'aantalMetersKleinVast',
+    ];
+
     /**
      * @OA\Property(example="14")
      * @Groups("dagvergunning")

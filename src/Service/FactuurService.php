@@ -73,7 +73,11 @@ final class FactuurService
         $flexibeleTarievenEnabled = $this->featureFlagRepository->isEnabled('flexibele-tarieven');
 
         if ($flexibeleTarievenEnabled) {
-            $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning);
+            $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning->getMarkt(), $dagvergunning->getDag());
+
+            if (null === $tarievenplan) {
+                throw new \Exception('Can\'t create factuur, not able to find active tarievenplan.');
+            }
 
             return $this->flexibeleFactuurService->createFactuur($tarievenplan, $dagvergunning);
         }
@@ -210,9 +214,7 @@ final class FactuurService
         // set account
         $dagvergunning->setRegistratieAccount($user);
 
-        // TODO metadata toevoegen. Kan na eerste release.
         $infoJson = [
-            'metadata' => [],
             'paid' => [],
             'unpaid' => [],
         ];
@@ -222,41 +224,32 @@ final class FactuurService
         $dagvergunning->setAantal4MeterKramen($aantal4MeterKramen);
         $dagvergunning->setExtraMeters($extraMeters);
         $dagvergunning->setAantalElektra($aantalElektra);
-
-        // TODO we hebben dit niet nodig want hier wordt de per stuk variant altijd voor gebruikt
-        // Dit kan alleen pas verwijderd worden als de kolom verwijderd is (NOT NULL CONSTRAINT)
-        $dagvergunning->setEenmaligElektra($eenmaligElektra);
         $dagvergunning->setAfvaleiland($afvaleiland);
         $dagvergunning->setGrootPerMeter($grootPerMeter);
         $dagvergunning->setKleinPerMeter($kleinPerMeter);
         $dagvergunning->setGrootReiniging($grootReiniging);
         $dagvergunning->setKleinReiniging($kleinReiniging);
         $dagvergunning->setAfvalEilandAgf($afvalEilandAgf);
-
-        // TODO dit moet 1 attribute worden die kan worden gezet met $krachtstroom of
-        // $krachtstroomPerStuk. Het wordt per stuk dus waarschijnlijk dat laaste.
-        // Eerst uitzoeken met MB.
         $dagvergunning->setKrachtstroomPerStuk($krachtstroomPerStuk ?? $krachtstroom ?? 0);
-        $dagvergunning->setKrachtstroom($krachtstroom);
-
         $dagvergunning->setReiniging($reiniging);
 
+        // TODO dit moeten we supporten totdat we de kolom krachtstroom en eenmalig_elektra verwijderen uit dagvergunning tabel.
+        // Deze kunnen niet NULL zijn. Houd ik voor nu buiten de scope.
+        // Als we dit aanpassen moeten waarschijnlijk ook views in het dashboard aangepast worden.
+        $dagvergunning->setKrachtstroom((bool) $krachtstroomPerStuk ?? $krachtstroom ?? false);
+        $dagvergunning->setEenmaligElektra($eenmaligElektra);
+
         // TODO Dit is allemaal tijdelijk totdat we het nieuwe endpoint gaan gebruiken.
-        // For example: make every setter add two values
         $infoJson['total'] = [
-            '3MeterKramen' => $aantal3MeterKramen,
-            '4MeterKramen' => $aantal4MeterKramen,
+            'aantal3MeterKramen' => $aantal3MeterKramen,
+            'aantal4MeterKramen' => $aantal4MeterKramen,
             'extraMeters' => $extraMeters,
-            'elektra' => $aantalElektra,
+            'aantalElektra' => $aantalElektra,
             'afvaleiland' => $afvaleiland,
             'grootPerMeter' => $grootPerMeter,
             'kleinPerMeter' => $kleinPerMeter,
-            'grootReiniging' => $grootReiniging,
-            'kleinReiniging' => $kleinReiniging,
             'afvalEilandAgf' => $afvalEilandAgf,
             'krachstroomPerStuk' => $krachtstroomPerStuk,
-            'krachtstroom' => $krachtstroom,
-            'reiniging' => $reiniging,
         ];
 
         $dagvergunning->setNotitie($notitie);
@@ -279,14 +272,14 @@ final class FactuurService
 
             // TODO Dit is allemaal tijdelijk totdat we het nieuwe endpoint gaan gebruiken.
             $infoJson['paid'] = [
-                '3MeterKramen' => $sollicitatie->getAantal3MeterKramen(),
-                '4MeterKramen' => $sollicitatie->getAantal4MeterKramen(),
+                'aantal3MeterKramen' => $sollicitatie->getAantal3MeterKramen(),
+                'aantal4MeterKramen' => $sollicitatie->getAantal4MeterKramen(),
                 'extraMeters' => $sollicitatie->getAantalExtraMeters(),
-                'elektra' => $sollicitatie->getAantalElektra(),
+                'aantalElektra' => $sollicitatie->getAantalElektra(),
                 'afvaleiland' => $sollicitatie->getAantalAfvaleilanden(),
                 'grootPerMeter' => $sollicitatie->getGrootPerMeter(),
                 'kleinPerMeter' => $sollicitatie->getKleinPerMeter(),
-                'krachtstroom' => $sollicitatie->getKrachtstroom(),
+                'krachtstroomPerStuk' => $sollicitatie->getKrachtstroom(),
             ];
 
             $statusLot = $sollicitatie->getStatus();

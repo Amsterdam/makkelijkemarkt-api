@@ -105,7 +105,7 @@ final class TarievenplanController extends AbstractController
             'ignore' => ['tarieven'],
         ]);
 
-        return new JsonResponse($response, Response::HTTP_OK, [
+        return new Response($response, Response::HTTP_OK, [
             'Content-type' => 'application/json',
             'X-Api-ListSize' => count($tarievenplannen),
         ]);

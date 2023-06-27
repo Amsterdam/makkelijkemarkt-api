@@ -40,29 +40,25 @@ class FTSeedDagvergunningMappingCommand extends Command
         $i = 0;
 
         // For reference
-        $columnNames = ['dagvergunning_key', 'mercato_key', 'translated_to_unit', 'unit', 'tarief_type', 'tariefSoort.label'];
+        $columnNames = ['dagvergunning_key', 'mercato_key', 'translated_to_unit', 'unit', 'tarief_type', 'tariefSoort.label', 'app_label', 'input_type'];
 
         // TODO after release to PRD this should also be a fixture
         $data = [
-            ['3MeterKramen', 'Aantal3', 3, 'meters', 'lineair', null],
-            ['4MeterKramen', 'Aantal4', 4, 'meters', 'lineair', null],
-            ['extraMeters', 'Aantal1', 1, 'meters', 'lineair', null],
-            ['elektra', 'Aantelek', 1, 'unit', 'lineair', 'Elektra'],
-            ['krachtstroom', 'Krachtstroom', 1, 'unit', 'lineair', 'Toeslag krachtstroom per aansluiting'], // TODO remove this one, once we have migrated to krachstroom per stuk
-            ['afvaleiland', 'AANTAFV', 1, 'unit', 'lineair', 'Afvaleiland'],
-            ['grootPerMeter', null, 1, 'meters-groot', 'lineair', 'Tarief per meter groot'],
-            ['kleinPerMeter', null, 1, 'meters-klein', 'lineair', 'Tarief per meter klein'],
-            ['grootReiniging', null, 1, 'meters-groot', 'lineair', 'Reiniging per meter groot'],
-            ['kleinReiniging', null, 1, 'meters-klein', 'lineair', 'Reiniging per meter klein'],
-            ['afvalEilandAgf', null, 1, 'unit', 'lineair', 'Agf per meter'],
-            ['krachtstroomPerstuk', 'Krachtstroom', 1, 'unit', 'lineair', 'Toeslag krachtstroom per aansluiting'],
-            ['reiniging', null, 1, 'meters', 'lineair', 'Reiniging per meter'],
-            ['3MeterKramen', 'Aantal3', 1, 'unit', 'concreet', 'Drie meter'],
-            ['4MeterKramen', 'Aantal4', 1, 'unit', 'concreet', 'Vier meter'],
-            ['extraMeters', 'Aantal1', 1, 'unit', 'concreet', 'Een meter'],
-            ['elektra', 'Aantelek', 1, 'unit', 'concreet', 'Elektra'],
-            ['afvaleiland', 'AANTAFV', 1, 'unit', 'concreet', 'Afvaleiland'],
-            ['afvalEilandAgf', null, 1, 'unit', 'concreet', 'Agf per meter'],
+            ['aantal3MeterKramen', 'Aantal3', 3, 'meters', 'lineair', null, '3m plaatsen', 'number'],
+            ['aantal4MeterKramen', 'Aantal4', 4, 'meters', 'lineair', null, '4m plaatsen', 'number'],
+            ['extraMeters', 'Aantal1', 1, 'meters', 'lineair', null, 'Extra meters', 'number'],
+            ['aantalElektra', 'Aantelek', 1, 'unit', 'lineair', 'Elektra', 'Elektra', 'number'],
+            ['afvaleiland', 'AANTAFV', 1, 'unit', 'lineair', 'Afvaleiland', 'Afvaleiland', 'number'],
+            ['grootPerMeter', null, 1, 'meters-groot', 'lineair', null, 'Extra meters Groot', 'number'],
+            ['kleinPerMeter', null, 1, 'meters-klein', 'lineair', null, 'Extra meters Klein', 'number'],
+            ['afvalEilandAgf', null, 1, 'unit', 'lineair', 'Agf per meter', 'AGF per meter', 'number'],
+            ['krachtstroomPerStuk', 'Krachtstroom', 1, 'unit', 'lineair', 'Toeslag krachtstroom per aansluiting', 'Krachtstroom', 'number'],
+            ['aantal3MeterKramen', 'Aantal3', 1, 'unit', 'concreet', 'Drie meter', '3m plaatsen', 'number'],
+            ['aantal4MeterKramen', 'Aantal4', 1, 'unit', 'concreet', 'Vier meter', '4m plaatsen', 'number'],
+            ['extraMeters', 'Aantal1', 1, 'unit', 'concreet', 'Een meter', 'Extra meters', 'number'],
+            ['aantalElektra', 'Aantelek', 1, 'unit', 'concreet', 'Elektra', 'Elektra', 'number'],
+            ['afvaleiland', 'AANTAFV', 1, 'unit', 'concreet', 'Afvaleiland', 'Afvaleiland', 'number'],
+            ['afvalEilandAgf', null, 1, 'unit', 'concreet', 'Agf per meter', 'AGF per meter', 'number'],
         ];
 
         foreach ($data as $row) {
