@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 // TODO unique constraint lijkt nog niet helemaal te werken..
 /**
@@ -20,11 +21,13 @@ class DagvergunningMapping
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("marktProducts")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Groups("marktProducts")
      */
     private $dagvergunningKey;
 
@@ -40,6 +43,7 @@ class DagvergunningMapping
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Groups("marktProducts")
      */
     private $tariefType;
 
@@ -57,6 +61,18 @@ class DagvergunningMapping
      * @ORM\ManyToOne(targetEntity=TariefSoort::class, inversedBy="yes")
      */
     private $tariefSoort;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups("marktProducts")
+     */
+    private $appLabel;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups("marktProducts")
+     */
+    private $inputType;
 
     public function __construct()
     {
@@ -147,6 +163,30 @@ class DagvergunningMapping
     public function setTariefSoort(?TariefSoort $tariefSoort): self
     {
         $this->tariefSoort = $tariefSoort;
+
+        return $this;
+    }
+
+    public function getAppLabel(): ?string
+    {
+        return $this->appLabel;
+    }
+
+    public function setAppLabel(?string $appLabel): self
+    {
+        $this->appLabel = $appLabel;
+
+        return $this;
+    }
+
+    public function getInputType(): ?string
+    {
+        return $this->inputType;
+    }
+
+    public function setInputType(?string $inputType): self
+    {
+        $this->inputType = $inputType;
 
         return $this;
     }

@@ -14,14 +14,23 @@ use App\Repository\DagvergunningMappingRepository;
 use App\Repository\TariefRepository;
 use App\Repository\TariefSoortRepository;
 use App\Utils\Filters;
+use Psr\Log\LoggerInterface;
 
 final class FlexibeleFactuurService
 {
+    public const UNIT = 'unit';
+
+    public const ONE_OFF = 'one-off';
+
+    public const METERS_TOTAL = 'meters-totaal';
+
     public const METER_UNITS = [
         'meters',
         'meters-groot',
         'meters-klein',
     ];
+
+    private LoggerInterface $logger;
 
     private Factuur $factuur;
 
@@ -46,12 +55,17 @@ final class FlexibeleFactuurService
 
     private array $total;
 
+    private int $totalUnpaidMeters = 0;
+    private int $totalPaidMeters = 0;
+
     public function __construct(
+        LoggerInterface $logger,
         DagvergunningMappingRepository $dagvergunningMappingRepository,
         TariefRepository $tariefRepository,
         BtwWaardeRepository $btwWaardeRepository,
         TariefSoortRepository $tariefSoortRepository
     ) {
+        $this->logger = $logger;
         $this->dagvergunningMappingRepository = $dagvergunningMappingRepository;
         $this->tariefRepository = $tariefRepository;
         $this->btwWaardeRepository = $btwWaardeRepository;
@@ -81,11 +95,10 @@ final class FlexibeleFactuurService
         $this->total = Filters::filterOutValuesFromArray($dagvergunning->getInfoJson()['total'], [0, false]);
 
         foreach (self::METER_UNITS as $unit) {
-            $this->addProductsForMeters($unit);
+            $this->addProductsForMeterUnits($unit);
         }
-
+        $this->addProductsForTotalMeters();
         $this->addProductsForUnits();
-
         $this->addProductsForOneOffCosts();
 
         // TEMPORARY FIX for Ten Kate Markt
@@ -102,33 +115,16 @@ final class FlexibeleFactuurService
     // There are different items in a dagvergunning that
     // can translate to a meter variant. And there also different products in a
     // dagvergunning that are calculated based on meters. (MANY_TO_MANY relationship)
-    private function addProductsForMeters(string $unit): void
+    private function addProductsForMeterUnits(string $unit): void
     {
         $paidMeters = $this->calculateMeters($this->paid, $unit);
         $totalMeters = $this->calculateMeters($this->total, $unit);
         $unpaidMeters = $totalMeters - $paidMeters;
 
-        $tarieven = $this->tarievenplan->getTarieven();
+        $this->totalPaidMeters = $this->totalPaidMeters + $paidMeters;
+        $this->totalUnpaidMeters = $this->totalUnpaidMeters + $unpaidMeters;
 
-        foreach ($tarieven as $tarief) {
-            $tariefSoort = $tarief->getTariefSoort();
-
-            if ($unit !== $tariefSoort->getUnit()) {
-                continue;
-            }
-
-            if ($tarief->getTarief() < 0.01) {
-                continue;
-            }
-
-            if ($paidMeters > 0) {
-                $this->addPaidToFactuur($tariefSoort, $tarief, $paidMeters);
-            }
-
-            if ($unpaidMeters > 0) {
-                $this->addUnpaidToFactuur($tariefSoort, $tarief, $unpaidMeters);
-            }
-        }
+        $this->addProductsForOneUnitWithManyTarieven($unit, $paidMeters, $unpaidMeters);
     }
 
     // Sums up all the different elements in a dagvergunning
@@ -151,81 +147,86 @@ final class FlexibeleFactuurService
         return $meters;
     }
 
+    // Given a unit and its total amount add products if the tarievenplan has a tarief for it
+    // Use this function if you have 1 unit with multiple tarieven, f.e. meters or meters-totaal.
+    private function addProductsForOneUnitWithManyTarieven($unit, $paidAmount = 0, $unpaidAmount = 0)
+    {
+        $tarieven = $this->tarievenplan->getTarieven();
+
+        foreach ($tarieven as $tarief) {
+            $tariefSoort = $tarief->getTariefSoort();
+
+            if ($unit === $tariefSoort->getUnit()) {
+                $this->addPaidToFactuur($tariefSoort, $tarief, $paidAmount);
+                $this->addUnpaidToFactuur($tariefSoort, $tarief, $unpaidAmount);
+            }
+        }
+    }
+
+    // The cost of this product is calculated with the total of all meter units combined
+    // NOTE: we need this for only toeslag op bedrijfsafval on Waterlooplein
+    private function addProductsForTotalMeters(): void
+    {
+        $this->addProductsForOneUnitWithManyTarieven(self::METERS_TOTAL, $this->totalPaidMeters, $this->totalUnpaidMeters);
+    }
+
+    // This is typically need for calculations on the unit type: unit and one-off.
+    // They are always related to one tariefsoort.
+    private function addProductsForOneUnitWithOneTarief($tariefSoort, $paidAmount = 0, $unpaidAmount = 0)
+    {
+        $tarief = $this->getTariefByTariefSoort($tariefSoort);
+
+        if (!$tarief) {
+            return;
+        }
+
+        $this->addPaidToFactuur($tariefSoort, $tarief, $paidAmount);
+        $this->addUnpaidToFactuur($tariefSoort, $tarief, $unpaidAmount);
+    }
+
     // This adds products to the factuur if they are calculated per unit and
     // if the tarievenplan
     private function addProductsForUnits(): void
     {
-        // Example: AantalElektra => 2
-        foreach ($this->paid as $key => $amount) {
-            $mapping = $this->findMappingByDagvergunningKey($key, 'unit');
+        foreach ($this->tarievenplan->getTarieven() as $tarief) {
+            $tariefSoort = $tarief->getTariefSoort();
+            if (self::UNIT !== $tariefSoort->getUnit()) {
+                continue;
+            }
+            $mapping = $this->findMappingByTariefSoort($tariefSoort, self::UNIT);
 
             if (!$mapping) {
+                $this->logger->error('No mapping found for tariefsoort: '.$tariefSoort.'and unit: '.self::UNIT);
                 continue;
             }
-            $tariefSoort = $mapping->getTariefSoort();
-            $tarief = $this->getTariefByTariefSoort($tariefSoort);
 
-            if (!$tarief) {
-                continue;
-            }
-            // NOTE Convert to int is needed because krachtstroom is noted as boolean.
-            // When we sync with the mobile app we will convert it fully to a unit price.
-            // TODO Need to check if we can deploy this safely before mobile is done.
-            $definiteAmount = (int) $amount * $mapping->getTranslatedToUnit();
-
-            $this->addPaidToFactuur($tariefSoort, $tarief, $definiteAmount);
-        }
-
-        foreach ($this->total as $key => $totalAmount) {
-            $mapping = $this->findMappingByDagvergunningKey($key, 'unit');
-
-            if (!$mapping) {
-                continue;
-            }
-            // Check if the product is also paid
+            $key = $mapping->getDagvergunningKey();
+            $totalAmount = $this->total[$key] ?? 0;
             $paidAmount = $this->paid[$key] ?? 0;
+            $unpaidAmount = ((int) $totalAmount - $paidAmount) * $mapping->getTranslatedToUnit();
 
-            $tariefSoort = $mapping->getTariefSoort();
-            $tarief = $this->getTariefByTariefSoort($tariefSoort);
-
-            if (!$tarief) {
-                continue;
-            }
-            // NOTE Convert to int is needed because krachtstroom is noted as boolean.
-            // When we sync with the mobile app we will convert it fully to a unit price.
-            // TODO Need to check if we can deploy this safely before mobile is done.
-            $unpaidAmount = ((int) $totalAmount - (int) $paidAmount) * $mapping->getTranslatedToUnit();
-
-            $this->addUnpaidToFactuur($tariefSoort, $tarief, $unpaidAmount);
+            $this->addProductsForOneUnitWithOneTarief($tariefSoort, $paidAmount, $unpaidAmount);
         }
     }
 
-    // Add all one-off products to factuur
+    // Add all one-off products to factuur.
+    // An ondernemer will always need to pay for this, unless it is already paid according to Mercato.
     private function addProductsForOneOffCosts()
     {
-        foreach ($this->paid as $key => $amount) {
-            $mapping = $this->findMappingByDagvergunningKey($key, 'one-off');
+        // TODO test deze functie opnieuw
+        foreach ($this->tarievenplan->getTarieven() as $tarief) {
+            $tariefSoort = $tarief->getTariefSoort();
+            if (self::ONE_OFF !== $tariefSoort->getUnit()) {
+                continue;
+            }
+            $mapping = $this->findMappingByTariefSoort($tariefSoort, self::ONE_OFF);
 
             if (!$mapping) {
+                $this->logger->error('No mapping found for tariefsoort: '.$tariefSoort->getLabel().'and unit: unit');
                 continue;
             }
-            $tariefSoort = $mapping->getTariefSoort();
-            $tarief = $this->getTariefByTariefSoort($tariefSoort);
+            $key = $mapping->getDagvergunningKey();
 
-            if (!$tarief) {
-                continue;
-            }
-
-            $amount = 1;
-            $this->addPaidToFactuur($tariefSoort, $tarief, $amount);
-        }
-
-        foreach ($this->total as $key => $amount) {
-            $mapping = $this->findMappingByDagvergunningKey($key, 'one-off');
-
-            if (!$mapping) {
-                continue;
-            }
             // Check if the product is already paid
             $paidAmount = $this->paid[$key] ?? 0;
 
@@ -234,15 +235,7 @@ final class FlexibeleFactuurService
                 continue;
             }
 
-            $tariefSoort = $mapping->getTariefSoort();
-            $tarief = $this->getTariefByTariefSoort($tariefSoort);
-
-            if (!$tarief) {
-                continue;
-            }
-
-            $amount = 1;
-            $this->addUnpaidToFactuur($tariefSoort, $tarief, $amount);
+            $this->addProductsForOneUnitWithOneTarief($mapping->getTariefSoort(), 0, 1);
         }
     }
 
@@ -268,15 +261,24 @@ final class FlexibeleFactuurService
     private function findMappingByDagvergunningKey($key, $unit): ?DagvergunningMapping
     {
         foreach ($this->dagvergunningMappingList as $mapping) {
-            if ($mapping->getDagvergunningKey() !== $key) {
-                continue;
+            if ($mapping->getDagvergunningKey() === $key
+                && $mapping->getUnit() === $unit
+            ) {
+                return $mapping;
             }
+        }
 
-            if ($mapping->getUnit() !== $unit) {
-                continue;
+        return null;
+    }
+
+    private function findMappingByTariefSoort($tariefSoort, $unit): ?DagvergunningMapping
+    {
+        foreach ($this->dagvergunningMappingList as $mapping) {
+            if ($mapping->getTariefSoort() === $tariefSoort
+                && $mapping->getUnit() === $unit
+            ) {
+                return $mapping;
             }
-
-            return $mapping;
         }
 
         return null;

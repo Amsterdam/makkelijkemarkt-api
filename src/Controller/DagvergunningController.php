@@ -12,6 +12,9 @@ use App\Normalizer\EntityNormalizer;
 use App\Repository\DagvergunningRepository;
 use App\Repository\FeatureFlagRepository;
 use App\Repository\KoopmanRepository;
+use App\Repository\MarktRepository;
+use App\Repository\TarievenplanRepository;
+use App\Service\DagvergunningService;
 use App\Service\FactuurService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +37,10 @@ final class DagvergunningController extends AbstractController
 
     private FeatureFlagRepository $featureFlagRepository;
 
+    private MarktRepository $marktRepository;
+
+    private TarievenplanRepository $tarievenplanRepository;
+
     private FactuurService $factuurService;
 
     private EntityManagerInterface $entityManager;
@@ -46,11 +53,15 @@ final class DagvergunningController extends AbstractController
     public function __construct(
         DagvergunningRepository $dagvergunningRepository,
         FeatureFlagRepository $featureFlagRepository,
+        MarktRepository $marktRepository,
+        TarievenplanRepository $tarievenplanRepository,
         FactuurService $factuurService,
         EntityManagerInterface $entityManager
     ) {
         $this->dagvergunningRepository = $dagvergunningRepository;
         $this->featureFlagRepository = $featureFlagRepository;
+        $this->marktRepository = $marktRepository;
+        $this->tarievenplanRepository = $tarievenplanRepository;
         $this->factuurService = $factuurService;
         $this->entityManager = $entityManager;
 
@@ -760,5 +771,124 @@ final class DagvergunningController extends AbstractController
         $this->entityManager->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/1.1.0/flex/dagvergunning/",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="DagvergunningPostConcept",
+     *     tags={"Dagvergunning"},
+     *     summary="Create dagvergunning and return a factuur in the new flexibele tarieven way",
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="saveFactuur", type="bool", description="Determines if factuur is persisted"),
+     *                 @OA\Property(property="isSimulation", type="bool", description="Als er gesimuleerd wordt zijn er minder validaties en wordt er geen factuur opgeslagen"),
+     *                 @OA\Property(property="marktId", type="integer", description="ID van de markt"),
+     *                 @OA\Property(property="dag", type="string", example="yyyy-mm-dd", description="Als yyyy-mm-dd"),
+     *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
+     *                 @OA\Property(property="aanwezig", type="string", description="Aangetroffen persoon Zelf|Partner|Vervanger met toestemming|Vervanger zonder toestemming|Niet aanwezig|Niet geregisteerd"),
+     *                 @OA\Property(property="vervangerErkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
+     *                 @OA\Property(property="erkenningsnummerInvoerMethode", type="string", description="Waardes: handmatig, scan-foto, scan-nfc, scan-barcode, scan-qr, opgezocht, onbekend. Indien niet opgegeven wordt onbekend gebruikt."),
+     *                 @OA\Property(property="notitie", type="string", description="Vrij notitie veld"),
+     *                 @OA\Property(property="registratieDatumtijd", type="string", example="yyyy-mm-dd hh:ii:ss", description="Datum/tijd dat de registratie is gemaakt, indien niet opgegeven wordt het moment van de request gebruikt"),
+     *                 @OA\Property(property="registratieGeolocatie", type="string", example="lat,long", description="Geolocatie waar de registratie is ingevoerd, als lat,long"),
+     *                 @OA\Property(property="products", type="object", description="Consumed products (f.e.: 4meterKraam, elektra, krachtstroom)",),
+     *                 required={"saveFactuur", "marktId, products, dag, aanwezig"}
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *
+     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Factuur"))
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     *
+     * @Route("/flex/dagvergunning/", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function create(Request $request, DagvergunningService $dagvergunningService): Response
+    {
+        // TODO when flexibele tarieven is fully implemented, remove the /flex/ part from the route.
+        $data = json_decode((string) $request->getContent(), true);
+        $markt = $this->marktRepository->find($data['marktId']);
+
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt with id = '.$data['marktId'].' not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $expectedParameters = [
+            'dag',
+            'marktId',
+            'saveFactuur',
+            'erkenningsnummer',
+            'aanwezig',
+            'products',
+        ];
+
+        if (isset($data['isSimulation']) && true === $data['isSimulation']) {
+            // This data will not be saved but will help bypass validation
+            $data['erkenningsnummer'] = 'SIMULATION';
+            $data['erkenningsnummerInvoermethode'] = 'SIMULATION';
+            $data['aanwezig'] = 'SIMULATION';
+            $data['saveFactuur'] = false;
+        }
+
+        foreach ($expectedParameters as $expectedParameter) {
+            if (!array_key_exists($expectedParameter, $data)) {
+                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $tarievenplan = $this->tarievenplanRepository->getActivePlan($markt, new DateTime($data['dag']['date']));
+        $data['tarievenplan'] = $tarievenplan;
+
+        /* @var ?Account $account */
+        $data['account'] = $this->getUser();
+
+        $dagvergunning = $dagvergunningService->create($data);
+
+        $factuur = $this->factuurService->createFactuur($dagvergunning);
+
+        // TODO FOR TESTING - will remove later
+        // $data['saveFactuur'] = true;
+
+        if (true === $data['saveFactuur']) {
+            $producten = $factuur->getProducten();
+
+            if (null !== $producten) {
+                /** @var Product $product */
+                foreach ($producten as $product) {
+                    $this->entityManager->persist($product);
+                }
+            }
+
+            $factuur->setDagvergunning($dagvergunning);
+            $dagvergunning->setFactuur($factuur);
+
+            $this->entityManager->persist($dagvergunning);
+            $this->entityManager->persist($factuur);
+            $this->entityManager->flush();
+        }
+
+        $response = $this->serializer->serialize($factuur, 'json', ['groups' => $this->groups]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 }

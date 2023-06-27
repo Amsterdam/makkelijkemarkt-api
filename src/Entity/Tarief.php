@@ -51,7 +51,10 @@ class Tarief
         return $this->tarievenplan;
     }
 
-    public function setTarievenplan(Tarievenplan $tarievenplan): self
+    // Even though we dont accept null values in the DB,
+    // we want null values here to quickly remove all connections from the tarievenplan
+    // before deleting the rows from the database.
+    public function setTarievenplan(?Tarievenplan $tarievenplan): self
     {
         $this->tarievenplan = $tarievenplan;
 

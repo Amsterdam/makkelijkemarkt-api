@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Dagvergunning;
+use App\Entity\Markt;
 use App\Entity\Tarievenplan;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -41,19 +43,25 @@ class TarievenplanRepository extends ServiceEntityRepository
     }
 
     // Given a dagvergunning retrieve the correct active tarievenplan
-    public function getActivePlan(Dagvergunning $dagvergunning)
+    public function getActivePlan(Markt $markt, DateTimeInterface $dag)
     {
         // TODO probably needs to be rewritten when merging with Herindeling!!
 
-        return $this->createQueryBuilder('t')
+        $result = $this->createQueryBuilder('t')
             ->andWhere('t.markt = :markt')
-            ->andWhere('t.dateFrom < :dag')
+            ->andWhere('t.dateFrom <= :dag')
             ->andWhere('t.dateUntil IS NULL OR t.dateUntil > :dag')
-            ->setParameter('markt', $dagvergunning->getMarkt())
-            ->setParameter('dag', $dagvergunning->getDag())
+            ->setParameter('markt', $markt)
+            ->setParameter('dag', $dag)
             ->orderBy('t.dateFrom', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
-            ->getResult()[0];
+            ->getResult();
+
+        if ($result) {
+            return $result[0];
+        } else {
+            return null;
+        }
     }
 }

@@ -9,6 +9,7 @@ use App\Repository\DagvergunningMappingRepository;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -37,9 +38,12 @@ final class DagvergunningMappingController extends AbstractController
      *
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getAll()
+    public function getAll(Request $request)
     {
-        $dagvergunningMappingList = $this->dagvergunningMappingRepository->findBy([], ['unit' => 'ASC', 'dagvergunningKey' => 'ASC']);
+        $type = $request->attributes->get('type');
+
+        $queryParams = $type ? ['tariefType' => $type] : [];
+        $dagvergunningMappingList = $this->dagvergunningMappingRepository->findBy($queryParams, ['tariefType' => 'DESC', 'unit' => 'ASC', 'dagvergunningKey' => 'ASC']);
 
         $response = $this->serializer->serialize($dagvergunningMappingList, 'json');
 

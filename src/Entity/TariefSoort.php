@@ -47,6 +47,8 @@ class TariefSoort
      */
     private $deleted;
 
+    // TODO set unit and factuur label to not nullable and
+    // create a migration when all data is migrated on PRD
     /**
      * @ORM\Column(type="string", length=30, nullable=true)
      * @Groups("tarievenplan")
