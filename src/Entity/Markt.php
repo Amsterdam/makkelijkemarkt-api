@@ -309,6 +309,20 @@ class Markt
      */
     private $tariefplannen;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Tarievenplan::class, mappedBy="markt", fetch="EXTRA_LAZY", orphanRemoval=true)
+     */
+    private $tarievenplannen;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=DagvergunningMapping::class)
+     * @ORM\JoinTable(name="markt_dagvergunning_mapping")
+     * @ORM\OrderBy({"appLabel" = "ASC"})
+     * @Groups("marktProducts")
+     * @SerializedName("products")
+     */
+    private $dagvergunningMapping;
+
     public function __construct()
     {
         $this->auditMax = 10;
@@ -318,6 +332,8 @@ class Markt
         $this->kiesJeKraamMededelingActief = false;
         $this->indelingstype = 'a/b-lijst';
         $this->maxAantalKramenPerOndernemer = null;
+        $this->tarievenplannen = new ArrayCollection();
+        $this->dagvergunningMapping = new ArrayCollection();
     }
 
     public function __toString()
@@ -759,6 +775,28 @@ class Markt
     public function removeTariefplannen(Tariefplan $tariefplannen): self
     {
         $this->tariefplannen->removeElement($tariefplannen);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DagvergunningMapping>
+     */
+    public function getDagvergunningMapping(): Collection
+    {
+        return $this->dagvergunningMapping;
+    }
+
+    public function removeAllDagvergunningMappings(): self
+    {
+        $this->dagvergunningMapping->clear();
+
+        return $this;
+    }
+
+    public function setDagvergunningMappings(array $dagvergunningMappings): self
+    {
+        $this->dagvergunningMapping = new ArrayCollection($dagvergunningMappings);
 
         return $this;
     }

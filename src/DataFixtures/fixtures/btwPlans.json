@@ -6,7 +6,9 @@
     "btw_plan_id": 284,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters",
+    "factuur_label": "afgenomen meters (normaal tarief)"
   },
   {
     "tarief_soort_id": 2,
@@ -15,7 +17,9 @@
     "btw_plan_id": 245,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters",
+    "factuur_label": "reiniging (normaal tarief)"
   },
   {
     "tarief_soort_id": 3,
@@ -24,7 +28,9 @@
     "btw_plan_id": 289,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters",
+    "factuur_label": "toeslag bedrijfsafval"
   },
   {
     "tarief_soort_id": 4,
@@ -33,7 +39,9 @@
     "btw_plan_id": 290,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "elektra krachtstroom"
   },
   {
     "tarief_soort_id": 5,
@@ -42,7 +50,9 @@
     "btw_plan_id": 291,
     "btw_type_id": 37,
     "markt_id": 20,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters",
+    "factuur_label": "promotiegelden per meter"
   },
   {
     "tarief_soort_id": 6,
@@ -51,7 +61,9 @@
     "btw_plan_id": 292,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "one-off",
+    "factuur_label": "promotiegelden per koopman"
   },
   {
     "tarief_soort_id": 7,
@@ -60,7 +72,9 @@
     "btw_plan_id": 261,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "afvaleiland"
   },
   {
     "tarief_soort_id": 8,
@@ -69,7 +83,9 @@
     "btw_plan_id": 294,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "one-off",
+    "factuur_label": "eenmalig elektra"
   },
   {
     "tarief_soort_id": 9,
@@ -78,7 +94,9 @@
     "btw_plan_id": 253,
     "btw_type_id": 35,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "elektra"
   },
   {
     "tarief_soort_id": 10,
@@ -87,7 +105,9 @@
     "btw_plan_id": 283,
     "btw_type_id": 37,
     "markt_id": 20,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters-groot",
+    "factuur_label": "afgenomen meters (groot tarief)"
   },
   {
     "tarief_soort_id": 11,
@@ -96,7 +116,9 @@
     "btw_plan_id": 243,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters-klein",
+    "factuur_label": "afgenomen meters (klein tarief)"
   },
   {
     "tarief_soort_id": 12,
@@ -105,7 +127,9 @@
     "btw_plan_id": 244,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters-groot",
+    "factuur_label": "reiniging (groot tarief)"
   },
   {
     "tarief_soort_id": 13,
@@ -114,7 +138,9 @@
     "btw_plan_id": 246,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters-klein",
+    "factuur_label": "reiniging (klein tarief)"
   },
   {
     "tarief_soort_id": 14,
@@ -123,7 +149,9 @@
     "btw_plan_id": 254,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "AGF per meter"
   },
   {
     "tarief_soort_id": 15,
@@ -132,7 +160,9 @@
     "btw_plan_id": 218,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "extra meter"
   },
   {
     "tarief_soort_id": 16,
@@ -141,7 +171,9 @@
     "btw_plan_id": 219,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "3 meter plaats"
   },
   {
     "tarief_soort_id": 17,
@@ -150,7 +182,9 @@
     "btw_plan_id": 220,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "4 meter plaats"
   },
   {
     "tarief_soort_id": 18,
@@ -159,7 +193,9 @@
     "btw_plan_id": 221,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "elektra"
   },
   {
     "tarief_soort_id": 19,
@@ -168,7 +204,9 @@
     "btw_plan_id": 222,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "meters",
+    "factuur_label": "promotiegelden per meter"
   },
   {
     "tarief_soort_id": 20,
@@ -177,7 +215,9 @@
     "btw_plan_id": 223,
     "btw_type_id": 37,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "one-off",
+    "factuur_label": "promotiegelden per koopman"
   },
   {
     "tarief_soort_id": 21,
@@ -186,7 +226,9 @@
     "btw_plan_id": 224,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "afvaleiland"
   },
   {
     "tarief_soort_id": 22,
@@ -195,7 +237,9 @@
     "btw_plan_id": 225,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "one-off",
+    "factuur_label": "eenmalige elektra"
   },
   {
     "tarief_soort_id": 23,
@@ -204,6 +248,8 @@
     "btw_plan_id": 226,
     "btw_type_id": 36,
     "markt_id": null,
-    "date_from": "2023-01-01 00:00:00"
+    "date_from": "2023-01-01 00:00:00",
+    "unit": "unit",
+    "factuur_label": "AGF per meter"
   }
 ]

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Markt;
+use App\Normalizer\DagvergunningMappingNormalizer;
 use App\Normalizer\EntityNormalizer;
+use App\Repository\DagvergunningMappingRepository;
 use App\Repository\MarktRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
@@ -24,23 +26,24 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class MarktController extends AbstractController
 {
-    /** @var MarktRepository */
-    private $marktRepository;
+    private MarktRepository $marktRepository;
 
-    /** @var EntityManagerInterface */
-    private $entityManager;
+    private DagvergunningMappingRepository $dagvergunningMappingRepository;
 
-    /** @var Serializer */
-    private $serializer;
+    private EntityManagerInterface $entityManager;
+
+    private Serializer $serializer;
 
     public function __construct(
         MarktRepository $marktRepository,
+        DagvergunningMappingRepository $dagvergunningMappingRepository,
         EntityManagerInterface $entityManager
     ) {
         $this->marktRepository = $marktRepository;
+        $this->dagvergunningMappingRepository = $dagvergunningMappingRepository;
         $this->entityManager = $entityManager;
 
-        $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
+        $this->serializer = new Serializer([new EntityNormalizer(), new DagvergunningMappingNormalizer()], [new JsonEncoder()]);
     }
 
     /**
@@ -105,6 +108,44 @@ final class MarktController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/1.1.0/flex/markt/{id}",
+     *     security={{"api_key": {}}},
+     *     operationId="MarktGetById",
+     *     tags={"Markt"},
+     *     summary="Vraag een markt op",
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/Markt")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/flex/markt/{id}", methods={"GET"})
+     */
+    public function getByIdV2(int $id): Response
+    {
+        // TODO when flexibele tarieven is fully implemented, remove this method for getById.
+        // Merge the groups into one group.
+
+        /** @var ?Markt $markt */
+        $markt = $this->marktRepository->find($id);
+
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found, id = '.$id], Response::HTTP_NOT_FOUND);
+        }
+
+        $response = $this->serializer->serialize($markt, 'json', ['groups' => ['markt', 'marktProducts']]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
      * @OA\Post(
      *     path="/api/1.1.0/markt/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
@@ -135,6 +176,7 @@ final class MarktController extends AbstractController
      *                 @OA\Property(property="marktDagen", type="string"),
      *                 @OA\Property(property="indelingsTijdstipTekst", type="string"),
      *                 @OA\Property(property="telefoonNummerContact", type="string"),
+     *                 @OA\Property(property="products", type="array"),
      *                 required={
      *                      "aantalKramen",
      *                      "aantalMeter",
@@ -152,7 +194,8 @@ final class MarktController extends AbstractController
      *                      "marktDagenTekst",
      *                      "marktDagen",
      *                      "indelingsTijdstipTekst",
-     *                      "telefoonNummerContact"
+     *                      "telefoonNummerContact",
+     *                      "products"
      *                 }
      *             )
      *         )
@@ -205,6 +248,7 @@ final class MarktController extends AbstractController
             'marktDagen',
             'indelingsTijdstipTekst',
             'telefoonNummerContact',
+            'products',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -224,6 +268,11 @@ final class MarktController extends AbstractController
         $accessor = PropertyAccess::createPropertyAccessor();
 
         foreach ($expectedParameters as $key) {
+            if ('products' === $key) {
+                $mappings = $this->dagvergunningMappingRepository->findBy(['id' => array_values($data['products'])]);
+                $markt->setDagvergunningMappings($mappings);
+                continue;
+            }
             $value = $data[$key];
             $accessor->setValue($markt, $key, $value);
         }

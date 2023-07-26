@@ -59,7 +59,9 @@ class BtwFixtures extends BaseFixture implements DependentFixtureInterface
             $tariefSoort = (new TariefSoort())
                 ->setLabel($data['label'])
                 ->setDeleted(false)
-                ->setTariefType($data['tarief_type']);
+                ->setTariefType($data['tarief_type'])
+                ->setUnit($data['unit'])
+                ->setFactuurLabel($data['factuur_label']);
 
             $manager->persist($tariefSoort);
 

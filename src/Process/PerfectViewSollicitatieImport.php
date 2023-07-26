@@ -107,7 +107,11 @@ class PerfectViewSollicitatieImport
             $this->setValue($qb, 'aantal_extra_meters', \PDO::PARAM_INT, intval($pvRecord['Aantal1']));
             $this->setValue($qb, 'aantal_elektra', \PDO::PARAM_INT, intval($pvRecord['Aantelek']));
             $this->setValue($qb, 'aantal_afvaleilanden', \PDO::PARAM_INT, intval($pvRecord['AANTAFV']));
+
+            // NOTE: we slaan hier hetzelfde om toe te werken naar krachstroom per stuk. De krachtstroom kolom wordt deprecated.
             $this->setValue($qb, 'krachtstroom', \PDO::PARAM_BOOL, in_array($pvRecord['Krachtstroom'], ['True', '1', 1]));
+            $this->setValue($qb, 'krachtstroom_per_stuk', \PDO::PARAM_INT, in_array($pvRecord['Krachtstroom'], ['True', '1', 1]) ? 1 : 0);
+
             $this->setValue($qb, 'inschrijf_datum', \PDO::PARAM_STR, $this->convertToDateTimeString($pvRecord['Inschrijfdatum'].' '.$pvRecord['Inschrijftijd']));
             $this->setValue($qb, 'doorgehaald', \PDO::PARAM_BOOL, 'Doorgehaald' === $pvRecord['MarktStatus']);
             $this->setValue($qb, 'doorgehaald_reden', \PDO::PARAM_STR, utf8_encode($pvRecord['DoorHaalReden']));

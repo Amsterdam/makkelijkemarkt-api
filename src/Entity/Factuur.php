@@ -137,4 +137,18 @@ class Factuur
     {
         return $this->getTotaal(false);
     }
+
+    public function sortProductenAlphabetically(): self
+    {
+        $producten = $this->getProducten();
+
+        $sortedProducten = $producten->toArray();
+        usort($sortedProducten, function ($a, $b) {
+            return strcmp(strtolower($a->getNaam()), strtolower($b->getNaam()));
+        });
+
+        $this->producten = new ArrayCollection($sortedProducten);
+
+        return $this;
+    }
 }

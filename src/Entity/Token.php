@@ -90,10 +90,21 @@ class Token
      */
     private $account;
 
+    /**
+     * @OA\Property()
+     * @Groups("token")
+     *
+     * Non persisted property
+     *
+     * @var array
+     */
+    protected $featureFlags;
+
     public function __construct()
     {
         $this->creationDate = new \DateTime();
         $this->uuid = Uuid::v4()->toRfc4122();
+        $this->featureFlags = [];
     }
 
     public function __toString()
@@ -186,5 +197,17 @@ class Token
         $this->account = $account;
 
         return $this;
+    }
+
+    public function setFeatureFlags(array $featureFlags): self
+    {
+        $this->featureFlags = $featureFlags;
+
+        return $this;
+    }
+
+    public function getFeatureFlags(): array
+    {
+        return $this->featureFlags;
     }
 }

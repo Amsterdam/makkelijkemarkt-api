@@ -8,6 +8,7 @@ use App\Entity\Account;
 use App\Entity\Token;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\AccountRepository;
+use App\Repository\FeatureFlagRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
@@ -30,24 +31,24 @@ final class LoginController extends AbstractController
     private const API_KEY_PARAMETER_NAME = 'api_key';
     private const READONLY_ACCOUNT_ROLE = 'ROLE_ADMIN';
 
-    /** @var AccountRepository */
-    private $accountRepository;
+    private AccountRepository $accountRepository;
 
-    /** @var UserPasswordEncoderInterface */
-    private $userPasswordEncoder;
+    private FeatureFlagRepository $featureFlagRepository;
 
-    /** @var EntityManagerInterface */
-    private $entityManager;
+    private UserPasswordEncoderInterface $userPasswordEncoder;
 
-    /** @var Serializer */
-    private $serializer;
+    private EntityManagerInterface $entityManager;
+
+    private Serializer $serializer;
 
     public function __construct(
         AccountRepository $accountRepository,
+        FeatureFlagRepository $featureFlagRepository,
         UserPasswordEncoderInterface $userPasswordEncoder,
         EntityManagerInterface $entityManager
     ) {
         $this->accountRepository = $accountRepository;
+        $this->featureFlagRepository = $featureFlagRepository;
         $this->userPasswordEncoder = $userPasswordEncoder;
         $this->entityManager = $entityManager;
 
@@ -61,11 +62,15 @@ final class LoginController extends AbstractController
      *     operationId="LoginPostByAccountId",
      *     tags={"Login"},
      *     summary="Genereert een nieuw token op accountId + password",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="accountId", @OA\Schema(type="integer"), description="Account ID"),
      *                 @OA\Property(property="password", @OA\Schema(type="string"), example="string"),
      *                 @OA\Property(property="deviceUuid", @OA\Schema(type="string"), description="UUID van het gebruikte device", example="string"),
@@ -75,32 +80,43 @@ final class LoginController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Token")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="403",
      *         description="Forbidden",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="423",
      *         description="Locked",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/login/basicId/", methods={"POST"})
      */
     public function postByAccountId(Request $request): Response
@@ -136,11 +152,15 @@ final class LoginController extends AbstractController
      *     operationId="LoginPostByUsername",
      *     tags={"Login"},
      *     summary="Genereert een nieuw token op username + password",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="username", @OA\Schema(type="string"), description="Account Username", example="string"),
      *                 @OA\Property(property="password", @OA\Schema(type="string"), example="string"),
      *                 @OA\Property(property="deviceUuid", @OA\Schema(type="string"), description="UUID van het gebruikte device", example="string"),
@@ -150,32 +170,43 @@ final class LoginController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Token")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="403",
      *         description="Forbidden",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="423",
      *         description="Locked",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/login/basicUsername/", methods={"POST"})
      */
     public function postByUsername(Request $request): Response
@@ -211,11 +242,15 @@ final class LoginController extends AbstractController
      *     operationId="LoginPostByApiKey",
      *     tags={"Login"},
      *     summary="Genereert een nieuw token op apiKey",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="api_key", @OA\Schema(type="string"), example="string"),
      *                 @OA\Property(property="deviceUuid", @OA\Schema(type="string"), description="UUID van het gebruikte device", example="string"),
      *                 @OA\Property(property="clientApp", @OA\Schema(type="string"), description="appliciatie type", example="string"),
@@ -224,17 +259,22 @@ final class LoginController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Token")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/login/apiKey/", methods={"POST"})
      */
     public function postByApiKey(Request $request): Response
@@ -259,13 +299,17 @@ final class LoginController extends AbstractController
      *     operationId="LoginGetWhoAmI",
      *     tags={"Login"},
      *     summary="Geeft eigen account informatie",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Account"))
      *     )
      * )
+     *
      * @Route("/login/whoami/", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getWhoami(Request $request): Response
@@ -292,17 +336,21 @@ final class LoginController extends AbstractController
      *     operationId="LoginGetAllRoles",
      *     tags={"Login"},
      *     summary="Geeft lijst mogelijke rolen",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="ROLE_USER", @OA\Schema(type="string"), example="Gebruiker"),
      *             @OA\Property(property="ROLE_ADMIN", @OA\Schema(type="string"), example="Beheerder"),
      *             @OA\Property(property="ROLE_SENIOR", @OA\Schema(type="string"), example="Senior gebruiker")
      *         )
      *     )
      * )
+     *
      * @Route("/login/roles/", methods={"GET"})
      */
     public function getAllRoles(): JsonResponse
@@ -436,6 +484,11 @@ final class LoginController extends AbstractController
 
         $this->entityManager->persist($token);
         $this->entityManager->flush();
+
+        // Add feature flags to token so that it can be added in client sessions
+        // This is a non persistent attribute of the token entity
+        $featureFlags = $this->featureFlagRepository->findBy(['enabled' => true]);
+        $token->setFeatureFlags($featureFlags);
 
         $response = $this->serializer->serialize($token, 'json', ['groups' => ['token', 'account']]);
 
