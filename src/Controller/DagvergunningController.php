@@ -16,6 +16,7 @@ use App\Repository\MarktRepository;
 use App\Repository\TarievenplanRepository;
 use App\Service\DagvergunningService;
 use App\Service\FactuurService;
+use App\Service\FlexibeleFactuurService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
@@ -43,6 +44,8 @@ final class DagvergunningController extends AbstractController
 
     private FactuurService $factuurService;
 
+    private FlexibeleFactuurService $flexibeleFactuurService;
+
     private EntityManagerInterface $entityManager;
 
     private Serializer $serializer;
@@ -56,6 +59,7 @@ final class DagvergunningController extends AbstractController
         MarktRepository $marktRepository,
         TarievenplanRepository $tarievenplanRepository,
         FactuurService $factuurService,
+        FlexibeleFactuurService $flexibeleFactuurService,
         EntityManagerInterface $entityManager
     ) {
         $this->dagvergunningRepository = $dagvergunningRepository;
@@ -63,6 +67,7 @@ final class DagvergunningController extends AbstractController
         $this->marktRepository = $marktRepository;
         $this->tarievenplanRepository = $tarievenplanRepository;
         $this->factuurService = $factuurService;
+        $this->flexibeleFactuurService = $flexibeleFactuurService;
         $this->entityManager = $entityManager;
 
         $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
@@ -639,37 +644,33 @@ final class DagvergunningController extends AbstractController
         /** @var ?Account $account */
         $account = $this->getUser();
 
-        try {
-            /** @var Dagvergunning $dagvergunning */
-            $dagvergunning = $this->factuurService->createDagvergunning(
-                $data['marktId'],
-                $data['dag'],
-                $data['erkenningsnummer'],
-                $data['aanwezig'],
-                $data['erkenningsnummerInvoerMethode'],
-                $data['registratieDatumtijd'],
-                (int) $data['aantal3MeterKramen'],
-                (int) $data['aantal4MeterKramen'],
-                (int) $data['extraMeters'],
-                (int) $data['aantalElektra'],
-                (int) $data['afvaleiland'],
-                (int) $data['grootPerMeter'],
-                (int) $data['kleinPerMeter'],
-                (int) $data['grootReiniging'],
-                (int) $data['kleinReiniging'],
-                (int) $data['afvalEilandAgf'],
-                (int) $data['krachtstroomPerStuk'],
-                (bool) $data['eenmaligElektra'],
-                (bool) $data['krachtstroom'],
-                (bool) $data['reiniging'],
-                $data['notitie'],
-                $data['registratieGeolocatie'],
-                $account,
-                $data['vervangerErkenningsnummer']
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        }
+        /** @var Dagvergunning $dagvergunning */
+        $dagvergunning = $this->factuurService->createDagvergunning(
+            $data['marktId'],
+            $data['dag'],
+            $data['erkenningsnummer'],
+            $data['aanwezig'],
+            $data['erkenningsnummerInvoerMethode'],
+            $data['registratieDatumtijd'],
+            (int) $data['aantal3MeterKramen'],
+            (int) $data['aantal4MeterKramen'],
+            (int) $data['extraMeters'],
+            (int) $data['aantalElektra'],
+            (int) $data['afvaleiland'],
+            (int) $data['grootPerMeter'],
+            (int) $data['kleinPerMeter'],
+            (int) $data['grootReiniging'],
+            (int) $data['kleinReiniging'],
+            (int) $data['afvalEilandAgf'],
+            (int) $data['krachtstroomPerStuk'],
+            (bool) $data['eenmaligElektra'],
+            (bool) $data['krachtstroom'],
+            (bool) $data['reiniging'],
+            $data['notitie'],
+            $data['registratieGeolocatie'],
+            $account,
+            $data['vervangerErkenningsnummer']
+        );
 
         $this->entityManager->persist($dagvergunning);
         $this->entityManager->flush();
@@ -856,7 +857,7 @@ final class DagvergunningController extends AbstractController
             }
         }
 
-        $tarievenplan = $this->tarievenplanRepository->getActivePlan($markt, new DateTime($data['dag']['date']));
+        $tarievenplan = $this->tarievenplanRepository->getActivePlan($markt, new DateTime($data['dag']));
         $data['tarievenplan'] = $tarievenplan;
 
         /* @var ?Account $account */
@@ -864,7 +865,7 @@ final class DagvergunningController extends AbstractController
 
         $dagvergunning = $dagvergunningService->create($data);
 
-        $factuur = $this->factuurService->createFactuur($dagvergunning);
+        $factuur = $this->flexibeleFactuurService->createFactuur($tarievenplan, $dagvergunning);
 
         // TODO FOR TESTING - will remove later
         // $data['saveFactuur'] = true;

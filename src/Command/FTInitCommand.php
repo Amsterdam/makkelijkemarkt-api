@@ -37,6 +37,7 @@ final class FTInitCommand extends Command
             'flextarieven:dagvergunningmapping:seed',
             'flextarieven:tariefsoort:update',
             'flextarieven:tariefplannen:migrate',
+            'flextarieven:migrate:dagvergunningmappings',
         ];
 
         foreach ($commands as $command) {

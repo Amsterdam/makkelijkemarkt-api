@@ -38,4 +38,15 @@ class DagvergunningMappingRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function getActiveMappings($tariefType, $date): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.tariefType = :tariefType')
+            ->andWhere('d.archivedOn IS NULL OR d.archivedOn > :date')
+            ->setParameter('tariefType', $tariefType)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -25,10 +25,14 @@ class TariefSoortController extends AbstractController
 
     private Serializer $logSerializer;
 
-    public function __construct()
-    {
+    private TariefSoortRepository $tariefSoortRepository;
+
+    public function __construct(
+        TariefSoortRepository $tariefSoortRepository
+    ) {
         $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->logSerializer = new Serializer([new TariefSoortLogNormalizer()]);
+        $this->tariefSoortRepository = $tariefSoortRepository;
     }
 
     /**
@@ -88,6 +92,8 @@ class TariefSoortController extends AbstractController
         $expectedParameters = [
             'label',
             'tariefType',
+            'unit',
+            'factuurLabel',
         ];
 
         foreach ($expectedParameters as $parameter) {
@@ -100,6 +106,8 @@ class TariefSoortController extends AbstractController
             $tariefSoort = (new TariefSoort())
                 ->setLabel($data['label'])
                 ->setTariefType($data['tariefType'])
+                ->setUnit($data['unit'])
+                ->setFactuurLabel($data['factuurLabel'])
                 ->setDeleted(false);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -138,9 +146,11 @@ class TariefSoortController extends AbstractController
      *              mediaType="application/json",
      *
      *              @OA\Schema(
-     *
      *                  @OA\Property(property="label", type="string", description="Label of the TariefSoort"),
      *                  @OA\Property(property="tariefType", type="string", description="Tarief type [lineair, concreet]"),
+     *                  @OA\Property(property="unit", type="string", description="Unit [unit, one-off, meters, meters-klein, meters-groot, meters-totaal]"),
+     *                  @OA\Property(property="factuurLabel", type="string", description="Factuur label"),
+     *                  @OA\Property(property="deleted", type="boolean", description="Is deleted"),
      *              )
      *          )
      *      ),
@@ -169,8 +179,7 @@ class TariefSoortController extends AbstractController
         int $tariefSoortId,
         Request $request,
         EntityManagerInterface $entityManager,
-        EventDispatcherInterface $dispatcher,
-        TariefSoortRepository $tariefSoortRepository
+        EventDispatcherInterface $dispatcher
     ): Response {
         $data = json_decode((string) $request->getContent(), true);
         $user = $request->headers->get('user') ?: 'undefined user';
@@ -182,6 +191,9 @@ class TariefSoortController extends AbstractController
         $expectedParameters = [
             'label',
             'tariefType',
+            'unit',
+            'factuurLabel',
+            'deleted',
         ];
 
         if ('PUT' === $request->getMethod()) {
@@ -192,16 +204,14 @@ class TariefSoortController extends AbstractController
             }
         }
 
-        $tariefSoort = $tariefSoortRepository->find($tariefSoortId);
+        $tariefSoort = $this->tariefSoortRepository->find($tariefSoortId);
 
         try {
-            if (isset($data['label'])) {
-                $tariefSoort->setLabel($data['label']);
-            }
-
-            if (isset($data['tariefType'])) {
-                $tariefSoort->setTariefType($data['tariefType']);
-            }
+            $tariefSoort
+                ->setLabel($data['label'])
+                ->setUnit($data['unit'])
+                ->setFactuurLabel($data['factuurLabel'])
+                ->setDeleted($data['deleted']);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
@@ -256,12 +266,11 @@ class TariefSoortController extends AbstractController
         int $tariefSoortId,
         Request $request,
         EntityManagerInterface $entityManager,
-        EventDispatcherInterface $dispatcher,
-        TariefSoortRepository $tariefSoortRepository
+        EventDispatcherInterface $dispatcher
     ): Response {
         $user = $request->headers->get('user') ?: 'undefined user';
 
-        $tariefSoort = $tariefSoortRepository->find($tariefSoortId);
+        $tariefSoort = $this->tariefSoortRepository->find($tariefSoortId);
 
         // Maybe also delete all referencing entities (btw & tarief) ?
         try {
@@ -314,10 +323,43 @@ class TariefSoortController extends AbstractController
      *
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getAll(
-        TariefSoortRepository $tariefSoortRepository
-    ): Response {
-        $tariefSoort = $tariefSoortRepository->findBy([], ['tariefType' => 'DESC', 'label' => 'ASC']);
+    public function getAll(): Response
+    {
+        $tariefSoort = $this->tariefSoortRepository->findBy([], ['tariefType' => 'DESC', 'label' => 'ASC']);
+        $response = $this->serializer->serialize($tariefSoort, 'json');
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/1.1.0/tariefsoort/{tariefSoortId}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="TariefSoortGetById",
+     *      tags={"Tarief", "Tariefplan", "BTW"},
+     *      summary="Get TariefSoort by Id",
+     *      @OA\Parameter(name="tariefSoortId", @OA\Schema(type="integer"), in="path", required=true),
+     *      @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *
+     *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
+     *      ),
+     *      @OA\Response(
+     *          response="400",
+     *          description="Bad Request",
+     *
+     *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *      )
+     * )
+     *
+     * @Route("/tariefsoort/{tariefSoortId}", methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getById(int $tariefSoortId): Response
+    {
+        $tariefSoort = $this->tariefSoortRepository->find($tariefSoortId);
         $response = $this->serializer->serialize($tariefSoort, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
@@ -352,11 +394,10 @@ class TariefSoortController extends AbstractController
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getActive(
-        TariefSoortRepository $tariefSoortRepository,
         string $type = ''
     ): Response {
         $queryParams = $type ? ['deleted' => false, 'tariefType' => $type] : ['deleted' => false];
-        $tariefSoort = $tariefSoortRepository->findBy($queryParams, ['tariefType' => 'DESC', 'label' => 'ASC']);
+        $tariefSoort = $this->tariefSoortRepository->findBy($queryParams, ['tariefType' => 'DESC', 'label' => 'ASC']);
         $response = $this->serializer->serialize($tariefSoort, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);

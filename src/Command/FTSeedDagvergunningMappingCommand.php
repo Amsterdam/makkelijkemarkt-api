@@ -59,15 +59,23 @@ class FTSeedDagvergunningMappingCommand extends Command
             ['aantalElektra', 'Aantelek', 1, 'unit', 'concreet', 'Elektra', 'Elektra', 'number'],
             ['afvaleiland', 'AANTAFV', 1, 'unit', 'concreet', 'Afvaleiland', 'Afvaleiland', 'number'],
             ['afvalEilandAgf', null, 1, 'unit', 'concreet', 'Agf per meter', 'AGF per meter', 'number'],
+            ['krachtstroomPerStuk', 'Krachtstroom', 1, 'unit', 'concreet', 'Toeslag krachtstroom per aansluiting', 'Krachtstroom', 'number'],
+
+             // Legacy that we need to support otherwise data migrations will probably fail
+             // Can be removed after deployment to production
+            ['eenmaligElektra', null, 1, 'one-off', 'lineair', 'Eenmalig elektra', 'Eenmalig Elektra', 'number'],
+            ['eenmaligElektra', null, 1, 'one-off', 'concreet', 'Eenmalig elektra', 'Eenmalig Elektra', 'number'],
         ];
 
         foreach ($data as $row) {
-            $dataMapping = new DagvergunningMapping();
-            $dataMapping->setDagvergunningKey($row[0]);
-            $dataMapping->setMercatoKey($row[1]);
-            $dataMapping->setTranslatedToUnit((int) $row[2]);
-            $dataMapping->setUnit($row[3]);
-            $dataMapping->setTariefType($row[4]);
+            $dataMapping = (new DagvergunningMapping())
+                ->setDagvergunningKey($row[0])
+                ->setMercatoKey($row[1])
+                ->setTranslatedToUnit((int) $row[2])
+                ->setUnit($row[3])
+                ->setTariefType($row[4])
+                ->setAppLabel($row[6])
+                ->setInputType($row[7]);
 
             $tariefSoort = $this->tariefSoortRepository->findOneBy(['tariefType' => $dataMapping->getTariefType(), 'label' => $row[5]]);
             $dataMapping->setTariefSoort($tariefSoort);

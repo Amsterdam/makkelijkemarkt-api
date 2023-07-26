@@ -6,7 +6,6 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-// TODO unique constraint lijkt nog niet helemaal te werken..
 /**
  * @ORM\Entity(repositoryClass=DagvergunningMappingRepository::class)
  * @ORM\Table(
@@ -17,6 +16,32 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class DagvergunningMapping
 {
+    // This gives the mapping of 'aanwezigeOpties' on the Markt entity and their mapping to the dagvergunning keys
+    // Only necessary for migration.
+    // TODO Once everythings works after deployment, we can delete this again.
+    public const AANWEZIGE_OPTIES_MAPPINGS = [
+        '3mKramen' => 'aantal3MeterKramen',
+        '4mKramen' => 'aantal4MeterKramen',
+        'extraMeters' => 'extraMeters',
+        'afvaleiland' => 'afvaleiland',
+        'elektra' => 'aantalElektra',
+        'krachtstroom' => 'krachtstroomPerStuk',
+        'afvalEilandAgf' => 'afvalEilandAgf',
+        'krachtstroomPerStuk' => 'krachtstroomPerStuk',
+        'grootPerMeter' => 'grootPerMeter',
+        'kleinPerMeter' => 'kleinPerMeter',
+        'eenmaligElektra' => 'eenmaligElektra',
+    ];
+
+    public const UNITS = [
+        'unit',
+        'one-off',
+        'meters',
+        'meters-klein',
+        'meters-groot',
+        'meters-totaal',
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -150,6 +175,10 @@ class DagvergunningMapping
 
     public function setUnit(string $unit): self
     {
+        if (!in_array($unit, self::UNITS)) {
+            throw new \InvalidArgumentException("Invalid unit $unit");
+        }
+
         $this->unit = $unit;
 
         return $this;

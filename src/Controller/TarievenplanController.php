@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Markt;
 use App\Entity\Tarief;
 use App\Entity\Tarievenplan;
+use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\TariefNormalizer;
 use App\Normalizer\TariefSoortNormalizer;
 use App\Normalizer\TarievenplanNormalizer;
@@ -14,11 +15,13 @@ use App\Repository\MarktRepository;
 use App\Repository\TariefSoortRepository;
 use App\Repository\TarievenplanRepository;
 use App\Utils\Filters;
-use App\Utils\Logger;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use OpenApi\Annotations as OA;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,7 +44,9 @@ final class TarievenplanController extends AbstractController
 
     private EntityManagerInterface $entityManager;
 
-    private Logger $logger;
+    private EventDispatcherInterface $dispatcher;
+
+    private LoggerInterface $logger;
 
     private Serializer $serializer;
 
@@ -52,15 +57,16 @@ final class TarievenplanController extends AbstractController
         MarktRepository $marktRepository,
         TarievenplanRepository $tarievenplanRepository,
         TariefSoortRepository $tariefSoortenRepository,
-        Logger $logger,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->marktRepository = $marktRepository;
         $this->tarievenplanRepository = $tarievenplanRepository;
         $this->tariefSoortenRepository = $tariefSoortenRepository;
-        $this->logger = $logger;
         $this->entityManager = $entityManager;
-
+        $this->logger = $logger;
+        $this->dispatcher = $dispatcher;
         $this->serializer = new Serializer([new TarievenplanNormalizer(), new TariefNormalizer(), new TariefSoortNormalizer()], [new JsonEncoder()]);
         $this->groups = ['tarievenplan'];
     }
@@ -98,7 +104,7 @@ final class TarievenplanController extends AbstractController
             return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
-        $tarievenplannen = $this->tarievenplanRepository->findBy(['markt' => $markt], ['dateFrom' => 'DESC']);
+        $tarievenplannen = $this->tarievenplanRepository->findBy(['markt' => $markt, 'deleted' => false], ['dateFrom' => 'DESC']);
 
         $response = $this->serializer->serialize($tarievenplannen, 'json', [
             'groups' => 'simpleTarievenplan',
@@ -184,21 +190,30 @@ final class TarievenplanController extends AbstractController
      *
      * @Security("is_granted('ROLE_ADMIN')")
      */
-    public function delete(int $id): JsonResponse
+    public function delete(Request $request, int $id): JsonResponse
     {
-        // TODO voor later: hier moet nog een (algemene) validatie aan toegevoegd worden als we tarievenplan obv dag toevoegen.
-        // Je kan alleen verwijderen als een ander tarievenplan de default is oid.
+        $user = $request->headers->get('user') ?: 'undefined user';
 
         /** @var ?Tarievenplan $tarievenplan */
         $tarievenplan = $this->tarievenplanRepository->find($id);
-        $tarievenplan->removeAllTarieven();
 
         if (null === $tarievenplan) {
             return new JsonResponse(['error' => 'Tarievenplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
-        $this->entityManager->remove($tarievenplan);
+        if ($tarievenplan->getVariant() === Tarievenplan::VARIANTS['STANDARD']
+            && $this->tarievenplanRepository->countActiveStandardPlans($tarievenplan->getMarkt()) < 2
+        ) {
+            return new JsonResponse(['error' => 'For deletion there always needs to be one standard plan left.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $tarievenplan->setDeleted(true);
+        $this->entityManager->persist($tarievenplan);
         $this->entityManager->flush();
+
+        $logItem = $this->serializer->normalize($tarievenplan);
+        $shortClassName = (new \ReflectionClass($tarievenplan))->getShortName();
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'delete', $shortClassName, $logItem));
 
         return new JsonResponse(null, Response::HTTP_OK);
     }
@@ -225,6 +240,8 @@ final class TarievenplanController extends AbstractController
      *                 @OA\Property(property="dateFrom", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="dateUntil", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="tarieven", type="array", example="tarieven", description="Tarieven van het tariefplan"),
+     *                 @OA\Property(property="weekdays", type="array", example="[tuesday, wednesday]", description="If variant is weekdays, the days of the week it is active"),
+     *                 @OA\Property(property="ignoreVastePlaats", type="boolean", example="true", description="Wether payments for vaste plaats products are ignored"),
      *                 required={
      *                      "naam",
      *                      "dateFrom",
@@ -262,17 +279,23 @@ final class TarievenplanController extends AbstractController
      */
     public function updateTariefPlan(Request $request, int $id): JsonResponse
     {
+        $user = $request->headers->get('user') ?: 'undefined user';
         $data = json_decode($request->getContent(), true);
+
+        if (!$data) {
+            return new JsonResponse('Invalid request without POST data', Response::HTTP_NOT_FOUND);
+        }
 
         $tarievenplan = $this->tarievenplanRepository->find($id);
         if (!$tarievenplan) {
             return new JsonResponse('Tariefplan not found', Response::HTTP_NOT_FOUND);
         }
 
-        $tarievenplan = $this->updateData($tarievenplan, $data);
+        $this->updateData($tarievenplan, $data);
 
-        $this->entityManager->persist($tarievenplan);
-        $this->entityManager->flush();
+        $logItem = $this->serializer->normalize($tarievenplan);
+        $shortClassName = (new \ReflectionClass($tarievenplan))->getShortName();
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'edit', $shortClassName, $logItem));
 
         return new JsonResponse("Tarievenplan $id updated", Response::HTTP_OK);
     }
@@ -281,9 +304,9 @@ final class TarievenplanController extends AbstractController
      * @OA\Post(
      *     path="/api/1.1.0/tarievenplan/create/{type}/{marktId}",
      *     security={{"api_key": {}, "bearer": {}}},
-     *     operationId="TariefplanPutLineairplan",
+     *     operationId="TariefplanPostLineairplan",
      *     tags={"Tariefplan"},
-     *     summary="Overwrite a tariefplan",
+     *     summary="Creates a new tariefplan",
      *
      *     @OA\Parameter(name="type", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
@@ -293,17 +316,17 @@ final class TarievenplanController extends AbstractController
      *
      *         @OA\MediaType(
      *             mediaType="application/json",
-     *
      *             @OA\Schema(
-     *
      *                 @OA\Property(property="name", type="string"),
      *                 @OA\Property(property="dateFrom", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="dateUntil", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="tarieven", type="array", example="tarieven", description="Tarieven van het tariefplan"),
+     *                 @OA\Property(property="tarievenplan", type="array", example="tarievenplan", description="Tarievenplan data"),
      *                 required={
      *                      "naam",
      *                      "dateFrom",
      *                      "tarieven",
+     *                      "tarievenplan"
      *                 }
      *             )
      *         )
@@ -337,6 +360,7 @@ final class TarievenplanController extends AbstractController
      */
     public function create(Request $request, int $marktId, string $type): Response
     {
+        $user = $request->headers->get('user') ?: 'undefined user';
         $data = json_decode($request->getContent(), true);
         $markt = $this->marktRepository->find($marktId);
         if (!$markt) {
@@ -347,37 +371,43 @@ final class TarievenplanController extends AbstractController
             return new Response('Type not found', Response::HTTP_NOT_FOUND);
         }
 
+        // Set values here that can only be set once during creation
         $tarievenplan = new Tarievenplan();
-        $tarievenplan->setMarkt($markt)
-            ->setType($type);
-
-        $this->entityManager->persist($tarievenplan);
+        $tarievenplan
+            ->setMarkt($markt)
+            ->setType($type)
+            ->setDeleted(false)
+            ->setVariant($data['tarievenplan']['variant']);
 
         try {
             $this->updateData($tarievenplan, $data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error($e->getMessage());
 
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->entityManager->flush();
+        $logItem = $this->serializer->normalize($tarievenplan);
+        $shortClassName = (new \ReflectionClass($tarievenplan))->getShortName();
+        $this->dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         return new Response('Tarievenplan created', Response::HTTP_OK);
     }
 
     // Updates Tarievenplan with data that can be changed after initial creation
-    private function updateData($tarievenplan, $data)
+    private function updateData($tarievenplan, $data): void
     {
         $tarievenplan
             ->setName($data['name'])
             ->setDateFrom(new DateTime($data['dateFrom']['date']))
-            ->setDateUntil($data['dateUntil'] ? new DateTime($data['dateUntil']['date']) : null);
+            ->setDateUntil(isset($data['dateUntil']) ? new DateTime($data['dateUntil']['date']) : null)
+            ->setIgnoreVastePlaats(isset($data['ignoreVastePlaats']) ? (bool) $data['ignoreVastePlaats'] : false)
+            ->setAllWeekdays(isset($data['weekdays']) ? $data['weekdays'] : []);
 
         $tariefSoorten = $this->tariefSoortenRepository->findBy(['tariefType' => $tarievenplan->getType(), 'deleted' => false]);
         $newTarieven = new ArrayCollection();
 
-        foreach ($data['tariefSoortIdWithTarief'] as $tariefSoortId => $tariefWaarde) {
+        foreach ($data['tarieven'] as $tariefSoortId => $tariefWaarde) {
             // Dont save tarieven that are 0ish.
             // All old tarieven will be deleted anyway.
             if ($tariefWaarde < 0.01) {
@@ -387,7 +417,7 @@ final class TarievenplanController extends AbstractController
             $tariefSoort = Filters::getEntityInListById($tariefSoortId, $tariefSoorten);
 
             if (!$tariefSoort) {
-                throw new \Exception("Tariefsoort $tariefSoortId not found");
+                throw new Exception("Tariefsoort $tariefSoortId not found");
             }
 
             $tarief = new Tarief();
@@ -403,7 +433,5 @@ final class TarievenplanController extends AbstractController
 
         $this->entityManager->persist($tarievenplan);
         $this->entityManager->flush();
-
-        return $tarievenplan;
     }
 }
