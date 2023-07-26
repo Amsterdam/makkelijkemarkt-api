@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\DagvergunningMapping;
 use App\Repository\DagvergunningMappingRepository;
 use App\Repository\MarktRepository;
 use App\Repository\TarievenplanRepository;
@@ -47,26 +48,31 @@ final class FTMigrateMappingsCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $i = 0;
-        $dagvergunningMappings = $this->dagvergunningMappingRepository->findAll();
+
         $markten = $this->marktRepository->findAll();
 
         foreach ($markten as $markt) {
             $opties = $markt->getAanwezigeOpties();
             $tarievenplan = $this->tarievenplanRepository->findOneBy(['markt' => $markt], ['id' => 'DESC']);
-
+            $mappingsList = [];
             if ($tarievenplan) {
                 foreach ($opties as $optie) {
-                    foreach ($dagvergunningMappings as $mapping) {
-                        if ($mapping->getDagvergunningKey() === $optie
-                            && $mapping->getTariefType() === $tarievenplan->getType()
-                        ) {
-                            $markt->addDagvergunningMapping($mapping);
-                        }
+                    $key = DagvergunningMapping::AANWEZIGE_OPTIES_MAPPINGS[$optie];
+
+                    $mapping = $this->dagvergunningMappingRepository->findBy([
+                        'dagvergunningKey' => $key,
+                        'tariefType' => $tarievenplan->getType(),
+                    ]);
+
+                    if ($mapping) {
+                        $mappingsList[] = $mapping[0];
                     }
                 }
             }
 
+            $markt->setDagvergunningMappings($mappingsList);
             $this->em->persist($markt);
+
             ++$i;
         }
 

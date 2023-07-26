@@ -66,7 +66,7 @@ final class LineairplanFactuurService
         $this->berekenEenmaligElektra($dagvergunning);
         $this->berekenAfvaleilanden($dagvergunning);
         $this->berekenAfvaleilandenAgf($dagvergunning);
-        $this->berekenKrachtstroomPerStuk($dagvergunning);
+        // $this->berekenKrachtstroomPerStuk($dagvergunning);
         $this->berekenBedrijfsAfval($dagvergunning, $totaalMeters);
 
         $this->berekenPromotiegelden($totaalMeters, $totaalKramen, $dagvergunning);

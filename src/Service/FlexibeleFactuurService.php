@@ -11,7 +11,6 @@ use App\Entity\TariefSoort;
 use App\Entity\Tarievenplan;
 use App\Repository\BtwWaardeRepository;
 use App\Repository\DagvergunningMappingRepository;
-use App\Repository\TariefRepository;
 use App\Repository\TariefSoortRepository;
 use App\Utils\Filters;
 use Psr\Log\LoggerInterface;
@@ -43,8 +42,6 @@ final class FlexibeleFactuurService
 
     private DagvergunningMappingRepository $dagvergunningMappingRepository;
 
-    private TariefRepository $tariefRepository;
-
     private BtwWaardeRepository $btwWaardeRepository;
 
     /** @var TariefSoortRepository */
@@ -61,13 +58,11 @@ final class FlexibeleFactuurService
     public function __construct(
         LoggerInterface $logger,
         DagvergunningMappingRepository $dagvergunningMappingRepository,
-        TariefRepository $tariefRepository,
         BtwWaardeRepository $btwWaardeRepository,
         TariefSoortRepository $tariefSoortRepository
     ) {
         $this->logger = $logger;
         $this->dagvergunningMappingRepository = $dagvergunningMappingRepository;
-        $this->tariefRepository = $tariefRepository;
         $this->btwWaardeRepository = $btwWaardeRepository;
         $this->tariefSoortRepository = $tariefSoortRepository;
 
@@ -80,11 +75,10 @@ final class FlexibeleFactuurService
         $this->dagvergunning = $dagvergunning;
 
         // This connects the different data between dagvergunningen and tariefsoorten to eachother.
-        // TODO volgende iteratie: include archivedOn in the future??
-        $this->dagvergunningMappingList = $this->dagvergunningMappingRepository->findBy([
-            'tariefType' => $tarievenplan->getType(),
-            'archivedOn' => null,
-        ]);
+        $this->dagvergunningMappingList = $this->dagvergunningMappingRepository->getActiveMappings(
+            $this->tarievenplan->getType(),
+            $this->dagvergunning->getDag()
+        );
 
         // This is a collection of products a Marktondernemer typically has paid when they have bought a fixed spot (VPL) in Mercato
         // Filter out any values that we don't have to calculate for the factuur
@@ -151,7 +145,7 @@ final class FlexibeleFactuurService
     // Use this function if you have 1 unit with multiple tarieven, f.e. meters or meters-totaal.
     private function addProductsForOneUnitWithManyTarieven($unit, $paidAmount = 0, $unpaidAmount = 0)
     {
-        $tarieven = $this->tarievenplan->getTarieven();
+        $tarieven = $this->tarievenplan->getActiveTarieven();
 
         foreach ($tarieven as $tarief) {
             $tariefSoort = $tarief->getTariefSoort();
@@ -188,7 +182,7 @@ final class FlexibeleFactuurService
     // if the tarievenplan
     private function addProductsForUnits(): void
     {
-        foreach ($this->tarievenplan->getTarieven() as $tarief) {
+        foreach ($this->tarievenplan->getActiveTarieven() as $tarief) {
             $tariefSoort = $tarief->getTariefSoort();
             if (self::UNIT !== $tariefSoort->getUnit()) {
                 continue;
@@ -196,7 +190,7 @@ final class FlexibeleFactuurService
             $mapping = $this->findMappingByTariefSoort($tariefSoort, self::UNIT);
 
             if (!$mapping) {
-                $this->logger->error('No mapping found for tariefsoort: '.$tariefSoort.'and unit: '.self::UNIT);
+                $this->logger->error('No mapping found for tariefsoort: '.$tariefSoort->getLabel().' and unit: '.self::UNIT);
                 continue;
             }
 
@@ -213,8 +207,7 @@ final class FlexibeleFactuurService
     // An ondernemer will always need to pay for this, unless it is already paid according to Mercato.
     private function addProductsForOneOffCosts()
     {
-        // TODO test deze functie opnieuw
-        foreach ($this->tarievenplan->getTarieven() as $tarief) {
+        foreach ($this->tarievenplan->getActiveTarieven() as $tarief) {
             $tariefSoort = $tarief->getTariefSoort();
             if (self::ONE_OFF !== $tariefSoort->getUnit()) {
                 continue;
@@ -222,7 +215,7 @@ final class FlexibeleFactuurService
             $mapping = $this->findMappingByTariefSoort($tariefSoort, self::ONE_OFF);
 
             if (!$mapping) {
-                $this->logger->error('No mapping found for tariefsoort: '.$tariefSoort->getLabel().'and unit: unit');
+                $this->logger->error('No mapping found for tariefsoort: '.$tariefSoort->getLabel().' and unit: '.self::ONE_OFF);
                 continue;
             }
             $key = $mapping->getDagvergunningKey();
@@ -242,7 +235,7 @@ final class FlexibeleFactuurService
     // Find the right tarief by looping through the tarievenplan and matching on tariefsoort.
     private function getTariefByTariefSoort(TariefSoort $tariefSoort): ?Tarief
     {
-        $tarieven = $this->tarievenplan->getTarieven();
+        $tarieven = $this->tarievenplan->getActiveTarieven();
 
         foreach ($tarieven as $tarief) {
             if ($tarief->getTariefSoort() === $tariefSoort) {

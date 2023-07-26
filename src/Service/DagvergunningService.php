@@ -60,7 +60,7 @@ final class DagvergunningService
                 $data['registratieDatumtijd'] ?? (new DateTime())->format('Y-m-d H:i:s')
             ))
             ->setRegistratieAccount($data['account'])
-            ->setDag(new DateTime($data['dag']['date']));
+            ->setDag(new DateTime($data['dag']));
 
         $point = Helpers::parseGeolocation($data['registratieGeolocatie'] ?? '');
         $dagvergunning->setRegistratieGeolocatie($point[0], $point[1]);
@@ -99,7 +99,7 @@ final class DagvergunningService
     // Determines what to use for paid data in the dagvergunning
     private function getPaidData(array $data, $sollicitatie)
     {
-        if ($data['isSimulation']) {
+        if (isset($data['isSimulation']) && true === $data['isSimulation']) {
             return $this->prepareProductData($data['products']['paid'] ?? []);
         }
 

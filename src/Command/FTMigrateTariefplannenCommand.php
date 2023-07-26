@@ -81,7 +81,17 @@ final class FTMigrateTariefplannenCommand extends Command
             ->setMarkt($tariefplan->getMarkt())
             ->setName($tariefplan->getNaam())
             ->setDateFrom($tariefplan->getGeldigVanaf())
-            ->setDateUntil($tariefplan->getGeldigTot());
+            ->setVariant('standard')
+            ->setIgnoreVastePlaats(false)
+            ->setMonday(false)
+            ->setTuesday(false)
+            ->setWednesday(false)
+            ->setThursday(false)
+            ->setFriday(false)
+            ->setSaturday(false)
+            ->setSunday(false)
+            ->setDeleted(false)
+            ->setDateUntil(null);
 
         $tarieven = [];
 

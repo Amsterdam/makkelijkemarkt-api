@@ -230,13 +230,13 @@ final class FactuurService
         $dagvergunning->setGrootReiniging($grootReiniging);
         $dagvergunning->setKleinReiniging($kleinReiniging);
         $dagvergunning->setAfvalEilandAgf($afvalEilandAgf);
-        $dagvergunning->setKrachtstroomPerStuk($krachtstroomPerStuk ?? $krachtstroom ?? 0);
         $dagvergunning->setReiniging($reiniging);
+        $dagvergunning->setKrachtstroomPerStuk($krachtstroomPerStuk);
 
         // TODO dit moeten we supporten totdat we de kolom krachtstroom en eenmalig_elektra verwijderen uit dagvergunning tabel.
         // Deze kunnen niet NULL zijn. Houd ik voor nu buiten de scope.
         // Als we dit aanpassen moeten waarschijnlijk ook views in het dashboard aangepast worden.
-        $dagvergunning->setKrachtstroom((bool) $krachtstroomPerStuk ?? $krachtstroom ?? false);
+        $dagvergunning->setKrachtstroom($krachtstroom);
         $dagvergunning->setEenmaligElektra($eenmaligElektra);
 
         // TODO Dit is allemaal tijdelijk totdat we het nieuwe endpoint gaan gebruiken.
@@ -249,7 +249,7 @@ final class FactuurService
             'grootPerMeter' => $grootPerMeter,
             'kleinPerMeter' => $kleinPerMeter,
             'afvalEilandAgf' => $afvalEilandAgf,
-            'krachstroomPerStuk' => $krachtstroomPerStuk,
+            'krachtstroomPerStuk' => (int) $krachtstroom,
         ];
 
         $dagvergunning->setNotitie($notitie);

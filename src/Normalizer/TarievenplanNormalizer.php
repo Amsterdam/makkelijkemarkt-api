@@ -28,11 +28,15 @@ class TarievenplanNormalizer implements NormalizerInterface, NormalizerAwareInte
         return [
             'id' => $object->getId(),
             'marktId' => $object->getMarkt()->getId(),
+            'marktName' => $object->getMarkt()->getNaam(),
             'name' => $object->getName(),
             'type' => $object->getType(),
             'dateFrom' => $object->getDateFrom()->format('Y-m-d'),
             'dateUntil' => $dateUntil ? $dateUntil->format('Y-m-d') : '',
-            'tarieven' => $this->normalizer->normalize($object->getTarieven(), $format, $context),
+            'tarieven' => $this->normalizer->normalize($object->getActiveTarieven(), $format, $context),
+            'weekdays' => $object->getAllWeekdays(),
+            'variant' => $object->getVariant(),
+            'ignoreVastePlaats' => $object->isIgnoreVastePlaats(),
         ];
     }
 }
