@@ -30,7 +30,9 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
         $status = [
             'lot',
             'soll',
-            'vkk',
+            'tvpl',
+            'tvplz',
+            'eb',
             'vpl',
         ];
 
