@@ -54,15 +54,18 @@ final class FTMigrateTariefplannenCommand extends Command
         foreach ($tariefplannen as $tariefplan) {
             $lineairPlan = $tariefplan->getLineairplan();
             $concreetPlan = $tariefplan->getConcreetplan();
+            try {
+                if (isset($lineairPlan)) {
+                    $this->handlePlan($tariefplan, $lineairPlan, 'lineair');
+                    ++$i;
+                }
 
-            if (isset($lineairPlan)) {
-                $this->handlePlan($tariefplan, $lineairPlan, 'lineair');
-                ++$i;
-            }
-
-            if (isset($concreetPlan)) {
-                $this->handlePlan($tariefplan, $concreetPlan, 'concreet');
-                ++$i;
+                if (isset($concreetPlan)) {
+                    $this->handlePlan($tariefplan, $concreetPlan, 'concreet');
+                    ++$i;
+                }
+            } catch (\Exception $e) {
+                $io->error($e->getMessage());
             }
         }
 
