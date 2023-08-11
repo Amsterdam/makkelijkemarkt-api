@@ -71,6 +71,8 @@ final class FlexibeleFactuurService
 
     public function createFactuur(Tarievenplan $tarievenplan, Dagvergunning $dagvergunning): Factuur
     {
+        $this->factuur->setDagvergunning($dagvergunning);
+        $dagvergunning->setFactuur($this->factuur);
         $this->tarievenplan = $tarievenplan;
         $this->dagvergunning = $dagvergunning;
 
