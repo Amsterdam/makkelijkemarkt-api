@@ -10,15 +10,20 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=TarievenplanRepository::class)
+ * @ORM\Entity(repositoryClass=App\Repository\TarievenplanRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={
- *        @ORM\UniqueConstraint(name="tarievenplan_unique", columns={"markt_id", "date_from", "deleted", "variant"})
+ *        @ORM\UniqueConstraint(name="tarievenplan_unique", columns={"markt_id", "date_from", "variant"}, options={"where": "deleted = false"})
  *     }
  * )
  */
 class Tarievenplan
 {
+    public const TYPES = [
+        'LINEAIR' => 'lineair',
+        'CONCREET' => 'concreet',
+    ];
+
     public const VARIANTS = [
         'STANDARD' => 'standard',
         'DAY_OF_WEEK' => 'daysOfWeek',

@@ -198,12 +198,16 @@ final class TarievenplanController extends AbstractController
         $tarievenplan = $this->tarievenplanRepository->find($id);
 
         if (null === $tarievenplan) {
+            $this->logger->error("Tarievenplan with $id not found");
+
             return new JsonResponse(['error' => 'Tarievenplan not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
         if ($tarievenplan->getVariant() === Tarievenplan::VARIANTS['STANDARD']
-            && $this->tarievenplanRepository->countActiveStandardPlans($tarievenplan->getMarkt()) < 2
+            && $this->tarievenplanRepository->countActiveStandardPlansAfterDeletion($tarievenplan) < 1
         ) {
+            $this->logger->error("Tarievenplan with $id can't be deleted because it's the last undeleted standard plan");
+
             return new JsonResponse(['error' => 'For deletion there always needs to be one standard plan left.'], Response::HTTP_BAD_REQUEST);
         }
 
