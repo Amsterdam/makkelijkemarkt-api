@@ -92,11 +92,12 @@ class TarievenplanRepository extends ServiceEntityRepository
     }
 
     // Count how many standard plans are active after deletion of a plan
-    // There must always be an active standard plan
-    public function countActiveStandardPlans(Markt $markt): int
+    // There must always be an active standard plan left
+    public function countActiveStandardPlansAfterDeletion($tarievenplan): int
     {
         return $this->createQueryBuilder('t')
             ->select('count(t.id)')
+            ->andWhere('t.id != :id')
             ->andWhere('t.variant = :variant')
             ->andWhere('t.dateFrom <= :day')
             ->andWhere('t.dateUntil IS NULL')
@@ -104,7 +105,8 @@ class TarievenplanRepository extends ServiceEntityRepository
             ->andWhere('t.deleted = false')
             ->setParameter('variant', Tarievenplan::VARIANTS['STANDARD'])
             ->setParameter('day', new \DateTime())
-            ->setParameter('markt', $markt)
+            ->setParameter('id', $tarievenplan->getId())
+            ->setParameter('markt', $tarievenplan->getMarkt())
             ->getQuery()
             ->getSingleScalarResult();
     }
