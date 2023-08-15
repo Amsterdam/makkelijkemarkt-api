@@ -323,14 +323,14 @@ final class FlexibeleFactuurService
     private function legacyBerekenPromotiegeldenPerMeter(): void
     {
         $paidMeters = array_sum([
-            (isset($this->paid['3MeterKramen'])) ? $this->paid['3MeterKramen'] * 3 : 0,
-            (isset($this->paid['4MeterKramen'])) ? $this->paid['4MeterKramen'] * 4 : 0,
+            (isset($this->paid['aantal3MeterKramen'])) ? $this->paid['aantal3MeterKramen'] * 3 : 0,
+            (isset($this->paid['aantal4MeterKramen'])) ? $this->paid['aantal4MeterKramen'] * 4 : 0,
             (isset($this->paid['extraMeters'])) ? $this->paid['extraMeters'] : 0,
         ]);
 
         $totalMeters = array_sum([
-            (isset($this->total['3MeterKramen'])) ? $this->total['3MeterKramen'] * 3 : 0,
-            (isset($this->total['4MeterKramen'])) ? $this->total['4MeterKramen'] * 4 : 0,
+            (isset($this->total['aantal3MeterKramen'])) ? $this->total['aantal3MeterKramen'] * 3 : 0,
+            (isset($this->total['aantal4MeterKramen'])) ? $this->total['aantal4MeterKramen'] * 4 : 0,
             (isset($this->total['extraMeters'])) ? $this->total['extraMeters'] : 0,
         ]);
 
