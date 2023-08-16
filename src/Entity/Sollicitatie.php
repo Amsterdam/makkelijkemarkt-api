@@ -52,6 +52,9 @@ class Sollicitatie
     /** @var string */
     public const STATUS_EXPF = 'expf';
 
+    /** @var string */
+    public const STATUS_LOT = 'lot';
+
     /**
      * @OA\Property(example="14")
      * @Groups({"sollicitatie", "simpleSollicitatie"})

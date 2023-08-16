@@ -44,6 +44,8 @@ final class FactuurService
 
     private EntityManagerInterface $entityManager;
 
+    private bool $flexibeleTarievenEnabled;
+
     public function __construct(
         ConcreetplanFactuurService $concreetplanFactuurService,
         LineairplanFactuurService $lineairplanFactuurService,
@@ -66,13 +68,13 @@ final class FactuurService
         $this->koopmanRepository = $koopmanRepository;
         $this->sollicitatieRepository = $sollicitatieRepository;
         $this->entityManager = $entityManager;
+
+        $this->flexibeleTarievenEnabled = $this->featureFlagRepository->isEnabled('flexibele-tarieven');
     }
 
     public function createFactuur(Dagvergunning $dagvergunning): ?Factuur
     {
-        $flexibeleTarievenEnabled = $this->featureFlagRepository->isEnabled('flexibele-tarieven');
-
-        if ($flexibeleTarievenEnabled) {
+        if ($this->flexibeleTarievenEnabled) {
             $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning->getMarkt(), $dagvergunning->getDag());
 
             if (null === $tarievenplan) {
@@ -257,9 +259,18 @@ final class FactuurService
         /** @var Sollicitatie $sollicitatie */
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $erkenningsnummer, false);
 
-        $statusLot = 'lot';
+        $ignoreVastePlaats = false;
+        if ($this->flexibeleTarievenEnabled) {
+            $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning->getMarkt(), $dagvergunning->getDag());
 
-        if (null !== $sollicitatie) {
+            // If this is true, every ondernemer will be seen as a sollicitant and vergunde plaatsen do not matter.
+            // This is because the current day is probably not a typical market day.
+            $ignoreVastePlaats = $tarievenplan->isIgnoreVastePlaats();
+        }
+
+        $statusLot = $ignoreVastePlaats ? Sollicitatie::STATUS_SOLL : Sollicitatie::STATUS_LOT;
+
+        if (null !== $sollicitatie && false === $ignoreVastePlaats) {
             $dagvergunning->setAantal3meterKramenVast($sollicitatie->getAantal3MeterKramen());
             $dagvergunning->setAantal4meterKramenVast($sollicitatie->getAantal4MeterKramen());
             $dagvergunning->setAantalMetersGrootVast($sollicitatie->getGrootPerMeter());
