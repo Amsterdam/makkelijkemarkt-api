@@ -858,6 +858,11 @@ final class DagvergunningController extends AbstractController
         }
 
         $tarievenplan = $this->tarievenplanRepository->getActivePlan($markt, new DateTime($data['dag']));
+
+        if (null === $tarievenplan) {
+            return new JsonResponse(['error' => 'Tarievenplan not found for markt with id = '.$data['marktId'].' and date = '.$data['dag']], Response::HTTP_NOT_FOUND);
+        }
+
         $data['tarievenplan'] = $tarievenplan;
 
         /* @var ?Account $account */
@@ -866,9 +871,6 @@ final class DagvergunningController extends AbstractController
         $dagvergunning = $dagvergunningService->create($data);
 
         $factuur = $this->flexibeleFactuurService->createFactuur($tarievenplan, $dagvergunning);
-
-        // TODO FOR TESTING - will remove later
-        // $data['saveFactuur'] = true;
 
         if (true === $data['saveFactuur']) {
             $producten = $factuur->getProducten();

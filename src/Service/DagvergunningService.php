@@ -45,10 +45,6 @@ final class DagvergunningService
         $erkenningsnummer = str_replace('.', '', $data['erkenningsnummer']);
         $vervangerErkenningsnummer = str_replace('.', '', $data['vervangerErkenningsnummer'] ?? '');
 
-        // TODO remove later - FOR TESTING LOCALLY
-        // $data['isSimulation'] = false;
-        // $erkenningsnummer = '87654321';
-
         $dagvergunning = (new Dagvergunning())
             ->setMarkt($markt)
             ->setAanwezig($data['aanwezig'])
@@ -69,12 +65,7 @@ final class DagvergunningService
 
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $erkenningsnummer, false);
 
-        $status = 'lot';
-        if (null !== $sollicitatie) {
-            $status = $sollicitatie->getStatus();
-        }
-
-        $dagvergunning->setStatusSolliciatie($status);
+        $dagvergunning->setStatusSolliciatie($this->handleStatusSollicitatie($data, $sollicitatie));
         $dagvergunning->setSollicitatie($sollicitatie);
 
         $infoJson = $this->prepareJson($data, $sollicitatie);
@@ -99,11 +90,13 @@ final class DagvergunningService
     // Determines what to use for paid data in the dagvergunning
     private function getPaidData(array $data, $sollicitatie)
     {
+        if ($data['tarievenplan']->isIgnoreVastePlaats()) {
+            return [];
+        }
+
         if (isset($data['isSimulation']) && true === $data['isSimulation']) {
             return $this->prepareProductData($data['products']['paid'] ?? []);
         }
-
-        // TODO bij implementatie flexibele tariefplannen (waarbij VPL volle pond moet betalen) moet dit anders
 
         if (null !== $sollicitatie && $sollicitatie->isVast()) {
             $mappings = $this->dagvergunningMappingRepository->findBy(['tariefType' => $data['tarievenplan']->getType(), 'archivedOn' => null]);
@@ -191,5 +184,20 @@ final class DagvergunningService
         }
 
         return $prepared;
+    }
+
+    // Determines what status should be in dagvergunning
+    private function handleStatusSollicitatie(array $data, ?Sollicitatie $sollicitatie): string
+    {
+        $status = 'lot';
+        if (null !== $sollicitatie && false === $data['tarievenplan']->isIgnoreVastePlaats()) {
+            $status = $sollicitatie->getStatus();
+        }
+
+        if (true === $data['tarievenplan']->isIgnoreVastePlaats()) {
+            $status = Sollicitatie::STATUS_SOLL;
+        }
+
+        return $status;
     }
 }

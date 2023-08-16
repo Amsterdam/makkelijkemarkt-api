@@ -84,6 +84,9 @@ class Tarievenplan
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
      * @Groups("tarievenplan")
+     *
+     * If this is true, every ondernemer will be seen as a sollicitant and vergunde plaatsen do not matter.
+     * This is because the current day is probably not a typical market day.
      */
     private $ignoreVastePlaats;
 
