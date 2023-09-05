@@ -163,7 +163,7 @@ final class DagvergunningService
             $dagvergunning->setKoopman($koopman);
         }
 
-        if (!$vervangerErkenningsnummer) {
+        if ($vervangerErkenningsnummer) {
             /** @var Koopman $vervanger */
             $vervanger = $this->koopmanRepository->findOneBy(['erkenningsnummer' => str_replace('.', '', $vervangerErkenningsnummer)]);
 
