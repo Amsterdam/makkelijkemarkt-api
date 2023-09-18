@@ -54,7 +54,7 @@ class SendTestMailCommand extends Command
         try {
             $message = (new Swift_Message())
                 ->setSubject('Test email Makkelijke Markt API')
-                ->setFrom(['Salmagundi-Markten@amsterdam.nl' => 'Team Salmagundi'])
+                ->setFrom(['marktbureau@amsterdam.nl' => 'Markbureau Amsterdam'])
                 ->setTo([$email])
                 ->setBody('Dit is een test e-mail om te valideren of e-mails goed worden verzonden.')
             ;
