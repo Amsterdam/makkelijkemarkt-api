@@ -3,7 +3,7 @@ services:
   mm-api_phpfpm:
     build:
       dockerfile: Dockerfile_phpfpm
-    container_name: salmagundi_markten_mm-api_phpfpm
+    # container_name: salmagundi_markten_mm-api_phpfpm
     command: >
       sh -c "apk add --no-cache $$PHPIZE_DEPS ;\
              nslookup host.docker.internal || echo '172.172.0.1 host.docker.internal' >> /etc/hosts ;\
@@ -15,27 +15,12 @@ services:
              echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
              echo 'xdebug.log=/var/www/xdebug.log' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
              php-fpm -e"
-    volumes:
-      - ../../../makkelijkemarkt/makkelijkemarkt-api/src:/var/www/src
-      - ../../../makkelijkemarkt/makkelijkemarkt-api/config:/var/www/config
-      - ../../../makkelijkemarkt/makkelijkemarkt-api/tests:/var/www/tests
     image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-salmagundi/mm-api}:${VERSION:-latest}
-    networks:
-      - salmagundi-dev-env
-
   mm-api_nginx:
     build:
       dockerfile: Dockerfile_nginx
-    container_name: salmagundi_markten_mm-api_nginx
     depends_on:
       - mm-api_phpfpm
-    networks:
-      - salmagundi-dev-env
     image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-salmagundi/mm-api-nginx}:${VERSION:-latest}
     ports:
       - "127.0.0.1:8091:80"
-
-networks:
-  salmagundi-dev-env:
-    external:
-      name: salmagundi-dev-env
