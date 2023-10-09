@@ -29,8 +29,6 @@ services:
     container_name: salmagundi_markten_mm-api_nginx
     depends_on:
       - mm-api_phpfpm
-    environment:
-      - FASTCGI_PASS=mm-api_phpfpm:9000
     networks:
       - salmagundi-dev-env
     image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-salmagundi/mm-api-nginx}:${VERSION:-latest}
