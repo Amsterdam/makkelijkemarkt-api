@@ -26,10 +26,6 @@ secrets:
 
 deployments:
   mm-api:
-    env:
-      APP_ENV: dev
-      APP_DEBUG: 1
-      APP_SECRET: insecure
     image:
       repository: salmagundi/mm-api
     securityContext:
