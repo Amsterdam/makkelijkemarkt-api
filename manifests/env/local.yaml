@@ -1,0 +1,59 @@
+image:
+  registry: 127.0.0.1:5001
+  imagePullPolicy: Always
+
+host: localhost
+
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+
+secrets:
+  certificate:
+    enabled: false
+
+deployments:
+  mm-api:
+    env:
+      APP_ENV: dev
+      APP_DEBUG: 1
+      APP_SECRET: insecure
+      DATABASE_URL: pgsql://salmagundi:insecure@psql-postgresql:5432/makkelijkemarkt?serverVersion=11&charset=utf8
+      MAILER_URL: smtp://null:null@salmagundi_mailhog:1025
+      APP_ANDROID_VERSION: 1.4.6
+      APP_ANDROID_BUILD: 2017020244
+      APP_MM_KEY: insecure
+      API_KEY: insecure
+      TRUSTED_PROXIES: 0.0.0.0/0
+      SWIFT_AUTH_URL: http://stubserver:8080/markten/openstack
+      SWIFT_REGION: NL
+      SWIFT_USER_NAME:
+      SWIFT_USER_DOMAIN_ID:
+      SWIFT_USER_PASSWORD:
+      SWIFT_PROJECT_ID:
+      SWIFT_TEMP_URL_KEY:
+      SWIFT_EXTERNAL_DOMAIN:
+      MM_API__NGINX_HTPASSWD: insecure
+services:
+  mm-api-nginx:
+    selector:
+      component: nginx
+    ports:
+      - port: 80
+        targetPort: http
+
+ingress:
+  mm-api-nginx-internal:
+    className: nginx
+    paths:
+      - path: /api/
+        patyType: Prefix
+        service: mm-api-nginx
+        port: 80
+    volumes:
+      - name: cache
+        spec:
+          emptyDir: {}
+      - name: logs
+        spec:
+          emptyDir: {}

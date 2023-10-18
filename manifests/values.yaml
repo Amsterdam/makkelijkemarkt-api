@@ -1,0 +1,140 @@
+name: mm-api
+
+labels:
+  app: mm-api
+
+image:
+  registry: saks01weuacrpgpgo5qvmwo.azurecr.io
+  tag: latest
+
+network:
+  allow-ingress:
+    selector: app == 'mm-api'
+    ingress:
+      - action: Allow
+    egress:
+      - action: Allow
+
+serviceAccount: app
+serviceAccounts:
+  app: {}
+
+secrets:
+  certificate:
+    type: keyvault
+    tls: mm-api
+
+deployments:
+  mm-api:
+    image:
+      repository: salmagundi/mm-api
+    securityContext:
+      runAsUser: 82
+    selectorLabels:
+      component: phpfpm
+    containers:
+      - name: main
+        ports:
+          - port: 9000
+            name: http
+        volumes:
+          - name: cache
+            mountPath: /var/www/var/cache
+          - name: logs
+            mountPath: /var/www/var/log
+    volumes:
+      - name: cache
+        spec:
+          emptyDir: {}
+      - name: logs
+        spec:
+          emptyDir: {}
+      - name: tmp
+        spec:
+          emptyDir: {}
+
+  mm-api-nginx:
+    image:
+      repository: salmagundi/mm-api-nginx
+    securityContext:
+      runAsUser: 101
+    selectorLabels:
+      component: nginx
+    containers:
+      - name: main
+        ports:
+          - port: 8080
+            name: http
+        volumes:
+          - name: logs
+            mountPath: /var/log/nginx
+          - name: run
+            mountPath: /var/run
+          - name: cache
+            mountPath: /var/cache/nginx
+    volumes:
+      - name: logs
+        spec:
+          emptyDir: {}
+      - name: run
+        spec:
+          emptyDir: {}
+      - name: cache
+        spec:
+          emptyDir: {}
+
+services:
+  mm-api-nginx:
+    selector:
+      component: nginx
+    ports:
+      - port: 8080
+        targetPort: http
+  mm-api:
+    selector:
+      component: phpfpm
+    ports:
+      - port: 9000
+        targetPort: http
+
+ingress:
+  mm-api-nginx-internal:
+    className: nginx-internal
+    paths:
+      - path: /api/
+        pathType: Prefix
+        service: mm-api-nginx
+        port: 8080
+    tls: certificate
+
+jobs:
+  migrate:
+    ttlSecondsAfterFinished: 100
+    image:
+      repository: salmagundi/mm-api
+    annotations:
+      helm.sh/hook: post-install,post-upgrade
+    containers:
+      - name: main
+        volumes:
+          - name: cache
+            mountPath: /var/www/var/cache
+          - name: logs
+            mountPath: /var/www/var/log
+        command: ["php", "bin/console", "doc:mig:mig"]
+        env:
+          APP_ENV: dev
+          APP_DEBUG: 1
+          APP_SECRET: insecure
+          DATABASE_URL: pgsql://salmagundi:insecure@psql-postgresql:5432/makkelijkemarkt?serverVersion=11&charset=utf8
+    backoffLimit: 2
+
+    volumes:
+      - name: cache
+        spec:
+          emptyDir: {}
+      - name: logs
+        spec:
+          emptyDir: {}
+
+          
