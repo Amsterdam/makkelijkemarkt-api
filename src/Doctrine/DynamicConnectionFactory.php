@@ -21,6 +21,7 @@ class DynamicConnectionFactory extends BaseConnectionFactory
     {
         $defaultConnection = parent::createConnection($params, $config, $eventManager, $mappingTypes);
         $driver = $defaultConnection->getDriver();
+
         return new DynamicConnection($defaultConnection->getParams(), $driver, $defaultConnection->getConfiguration(), $defaultConnection->getEventManager(), $this->azureDatabase);
     }
 }

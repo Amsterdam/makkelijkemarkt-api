@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace App\Doctrine;
 
@@ -22,8 +22,7 @@ class DynamicConnection extends Connection
         ?Configuration $config = null,
         ?EventManager $eventManager = null,
         ?AzureDatabase $azureDatabase = null
-    )
-    {
+    ) {
         $this->params = $params;
         $this->driver = $driver;
         $this->config = $config;

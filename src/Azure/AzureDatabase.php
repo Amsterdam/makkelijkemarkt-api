@@ -1,6 +1,7 @@
 <?php
+
 namespace App\Azure;
-use GuzzleHttp\ClientInterface;
+
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -23,13 +24,16 @@ class AzureDatabase
 
     public function getPassword(string $default): string
     {
-        if (!$this->azureAuthorityHost || !$this->azureTenantId || !$this->azureFederatedTokenFile || !$this->azureClientId) return $default;
+        if (!$this->azureAuthorityHost || !$this->azureTenantId || !$this->azureFederatedTokenFile || !$this->azureClientId) {
+            return $default;
+        }
+
         return $this->getPasswordFromAzure();
     }
 
     private function getPasswordFromAzure(): string
     {
-        echo "HOST: " . $this->azureAuthorityHost;
+        echo 'HOST: '.$this->azureAuthorityHost;
         $authorityHost = $this->azureAuthorityHost;
         $tenantId = $this->azureTenantId;
         $tokenUrl = "$authorityHost$tenantId/oauth2/v2.0/token";
