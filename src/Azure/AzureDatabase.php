@@ -20,8 +20,7 @@ class AzureDatabase
         string $azureTenantId,
         string $azureFederatedTokenFile,
         string $azureClientId
-    )
-    {
+    ) {
         $this->client = $client;
         $this->azureAuthorityHost = $azureAuthorityHost;
         $this->azureTenantId = $azureTenantId;
