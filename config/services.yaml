@@ -57,7 +57,7 @@ services:
     App\Azure\AzureDatabase:
         arguments:
             $azureAuthorityHost: '%azureAuthorityHost%'
-            $azureTenantId: '%azureTentantId%'
+            $azureTenantId: '%azureTenantId%'
             $azureClientId: '%azureClientId%'
             $azureFederatedTokenFile: '%azureFederatedTokenFile%'
 
