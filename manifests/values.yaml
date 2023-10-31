@@ -109,34 +109,37 @@ ingress:
         port: 8080
     tls: certificate
 
-jobs:
-  migrate:
-    ttlSecondsAfterFinished: 100
-    image:
-      repository: salmagundi/mm-api
-    annotations:
-      helm.sh/hook: post-install,post-upgrade
-    containers:
-      - name: main
-        volumes:
-          - name: cache
-            mountPath: /var/www/var/cache
-          - name: logs
-            mountPath: /var/www/var/log
-        command: ["php", "bin/console", "doc:mig:mig"]
-        env:
-          APP_ENV: dev
-          APP_DEBUG: 1
-          APP_SECRET: insecure
-          DATABASE_URL: pgsql://salmagundi:insecure@psql-postgresql:5432/makkelijkemarkt?serverVersion=11&charset=utf8
-    backoffLimit: 2
+# kubectl config set-context markten-o --cluster=s-aks-01-weu-o --namespace=ns-ccc-mrkt-ont-01-markten --user=clusterUser_s-aks-01-weu-o-rg_s-aks-01-weu-o
 
-    volumes:
-      - name: cache
-        spec:
-          emptyDir: {}
-      - name: logs
-        spec:
-          emptyDir: {}
 
-          
+
+# jobs:
+#   migrate:
+#     ttlSecondsAfterFinished: 100
+#     image:
+#       repository: salmagundi/mm-api
+#     annotations:
+#       helm.sh/hook: post-install,post-upgrade
+#     containers:
+#       - name: main
+#         volumes:
+#           - name: cache
+#             mountPath: /var/www/var/cache
+#           - name: logs
+#             mountPath: /var/www/var/log
+#         command: ["php", "bin/console", "doc:mig:mig"]
+#         env:
+#           APP_ENV: dev
+#           APP_DEBUG: 1
+#           APP_SECRET: insecure
+#           DATABASE_URL: pgsql://salmagundi:insecure@psql-postgresql:5432/makkelijkemarkt?serverVersion=11&charset=utf8
+#     backoffLimit: 2
+
+    # volumes:
+    #   - name: cache
+    #     spec:
+    #       emptyDir: {}
+    #   - name: logs
+    #     spec:
+    #       emptyDir: {}
+

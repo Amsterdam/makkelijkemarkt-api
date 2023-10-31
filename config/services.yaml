@@ -8,9 +8,9 @@ parameters:
     data_dir: '%kernel.project_dir%/var/data'
     swift_flysystem_container_fotos: 'fotos'
     swift_flysystem_container_thumbs: 'thumbs'
-    string $azureAuthorityHost: '%env(AZURE_AUTHORITY_HOST)%'
-    string $azureTenantId: '%env(AZURE_TENANT_ID)%'
-    string $azureClientId: '%env(AZURE_CLIENT_ID)%'
+    $azureAuthorityHost: '%env(AZURE_AUTHORITY_HOST)%'
+    $azureTenantId: '%env(AZURE_TENANT_ID)%'
+    $azureClientId: '%env(AZURE_CLIENT_ID)%'
     $azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
 
 services:

@@ -14,7 +14,13 @@ class AzureDatabase
     private string $azureFederatedTokenFile;
     private string $azureClientId;
 
-    public function __construct(HttpClientInterface $client, string $azureAuthorityHost, string $azureTenantId, string $azureFederatedTokenFile, string $azureClientId)
+    public function __construct(
+        HttpClientInterface $client,
+        string $azureAuthorityHost,
+        string $azureTenantId,
+        string $azureFederatedTokenFile,
+        string $azureClientId
+    )
     {
         $this->client = $client;
         $this->azureAuthorityHost = $azureAuthorityHost;
