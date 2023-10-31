@@ -8,10 +8,10 @@ parameters:
     data_dir: '%kernel.project_dir%/var/data'
     swift_flysystem_container_fotos: 'fotos'
     swift_flysystem_container_thumbs: 'thumbs'
-    $azureAuthorityHost: '%env(AZURE_AUTHORITY_HOST)%'
-    $azureTenantId: '%env(AZURE_TENANT_ID)%'
-    $azureClientId: '%env(AZURE_CLIENT_ID)%'
-    $azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
+    azureAuthorityHost: '%env(AZURE_AUTHORITY_HOST)%'
+    azureTenantId: '%env(AZURE_TENANT_ID)%'
+    azureClientId: '%env(AZURE_CLIENT_ID)%'
+    azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
 
 services:
     # default configuration for services in *this* file
@@ -53,6 +53,13 @@ services:
     App\Process\PerfectViewKoopmanFotoImport:
         bind:
             $container: '@service_container'
+
+    App\Azure\AzureDatabase:
+        arguments:
+            $azureAuthorityHost: '%azureAuthorityHost%'
+            $azureTenantId: '%azureTentantId%'
+            $azureClientId: '%azureClientId%'
+            $azureFederatedTokenFile: '%azureFederatedTokenFile%'
 
     # for unit test
     app.service.factuur:
