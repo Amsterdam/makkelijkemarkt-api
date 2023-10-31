@@ -34,6 +34,10 @@ deployments:
       SWIFT_TEMP_URL_KEY:
       SWIFT_EXTERNAL_DOMAIN:
       MM_API__NGINX_HTPASSWD: insecure
+      AZURE_AUTHORITY_HOST: host
+      AZURE_TENANT_ID: tenantId
+      AZURE_FEDERATED_TOKEN_FILE: file
+      AZURE_CLIENT_ID: clientId
 services:
   mm-api-nginx:
     selector:

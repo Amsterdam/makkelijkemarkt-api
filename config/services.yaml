@@ -8,6 +8,10 @@ parameters:
     data_dir: '%kernel.project_dir%/var/data'
     swift_flysystem_container_fotos: 'fotos'
     swift_flysystem_container_thumbs: 'thumbs'
+    string $azureAuthorityHost: '%env(AZURE_AUTHORITY_HOST)%'
+    string $azureTenantId: '%env(AZURE_TENANT_ID)%'
+    string $azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
+    string $azureClientId: '%env(AZURE_CLIENT_ID)%'
 
 services:
     # default configuration for services in *this* file
@@ -125,3 +129,6 @@ services:
     # Custom formatter for Monolog
     log.custom.formatter:
         class: App\Logging\LogFormatter
+
+    doctrine.dbal.connection_factory:
+        class: App\Doctrine\DynamicConnectionFactory
