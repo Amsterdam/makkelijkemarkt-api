@@ -41,9 +41,11 @@ RUN mkdir -p /var/www/var/cache
 
 WORKDIR /var/www
 
-RUN composer install --prefer-dist --no-progress --no-suggest --no-scripts
+USER www-data
 
 RUN chown -R www-data: /var/www
+
+RUN composer install --prefer-dist --no-progress --no-suggest --no-scripts
 
 RUN vendor/bin/grumphp run -n
 
