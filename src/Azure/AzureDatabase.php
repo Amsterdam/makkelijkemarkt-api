@@ -3,6 +3,7 @@
 namespace App\Azure;
 
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AzureDatabase
@@ -44,25 +45,38 @@ class AzureDatabase
         $clientId = $this->azureClientId;
         // Prepare the request payload
         $payload = ['grant_type' => $grantType, 'scope' => $scope, 'client_assertion' => $clientAssertion, 'client_assertion_type' => $clientAssertionType, 'client_id' => $clientId];
-        try {
-            print_r($payload);
-            // Send the request using Guzzle client
-            // $response = $this->client->request('POST', $tokenUrl, ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded',], 'form_params' => $payload]);
-            // Get the response body
-            // $body = $response->getContent();
-            // $data = json_decode($body, true);
-            // Access the token or any other response data
-            // $accessToken = $data['access_token'];
-            // echo "ACCESS TOKEN IS " . $accessToken;
-            // Do something with the access token...
-        } catch (RequestException $e) {
-            // Handle the request exception
-            if ($e->hasResponse()) {
-                $response = $e->getResponse();
-                $body = $response->getBody();
-                $statusCode = $response->getStatusCode();
-                // Handle the error response...
-            }
+        // try {
+        //     print_r($payload);
+        //     // Send the request using Guzzle client
+        //     // $response = $this->client->request('POST', $tokenUrl, ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded',], 'form_params' => $payload]);
+        //     // Get the response body
+        //     // $body = $response->getContent();
+        //     // $data = json_decode($body, true);
+        //     // Access the token or any other response data
+        //     // $accessToken = $data['access_token'];
+        //     // echo "ACCESS TOKEN IS " . $accessToken;
+        //     // Do something with the access token...
+        // } catch (RequestException $e) {
+        //     // Handle the request exception
+        //     if ($e->hasResponse()) {
+        //         $response = $e->getResponse();
+        //         $body = $response->getBody();
+        //         $statusCode = $response->getStatusCode();
+        //         // Handle the error response...
+        //     }
+        // }
+
+        $response = $this->client->request('POST', $tokenUrl, [RequestOptions::HEADERS => ['Content-Type' => 'application/x-www-form-urlencoded'], RequestOptions::BODY => http_build_query($payload)]);
+
+        if ($response->getStatusCode() >= 400) {
+            throw new \Exception(json_encode(['url' => $tokenUrl, 'payload' => $payload, 'response' => $response->getContent(false), 'fullresponse' => $response->toArray(false)]));
         }
+
+        $body = $response->getContent(false);
+        $data = json_decode($body, true);
+
+        $accessToken = $data['access_token'];
+
+        return $accessToken;
     }
 }
