@@ -22,7 +22,7 @@ serviceAccounts:
 secrets:
   certificate:
     type: keyvault
-    tls: mm-api
+    tls: markten
 
 deployments:
   mm-api:
