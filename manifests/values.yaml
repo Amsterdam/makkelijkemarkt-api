@@ -109,8 +109,22 @@ ingress:
         port: 8080
     tls: certificate
 
-# kubectl config set-context markten-o --cluster=s-aks-01-weu-o --namespace=ns-ccc-mrkt-ont-01-markten --user=clusterUser_s-aks-01-weu-o-rg_s-aks-01-weu-o
-
+jobs:
+  certificate-init:
+    image:
+      repository: salmagundi/mm-api-nginx
+    annotations:
+      helm.sh/hook: post-install,post-upgrade
+    labels:
+      component: certificate
+    secrets:
+      - certificate
+    containers:
+      - name: main
+        command:
+          - sleep
+        args:
+          - "1"
 
 
 # jobs:

@@ -61,3 +61,7 @@ ingress:
       - name: logs
         spec:
           emptyDir: {}
+
+jobs:
+  certificate-init:
+    enabled: false
