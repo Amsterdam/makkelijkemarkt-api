@@ -26,17 +26,12 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class SollicitatieController extends AbstractController
 {
-    /** @var MarktRepository */
-    private $marktRepository;
+    private MarktRepository $marktRepository;
 
-    /** @var SollicitatieRepository */
-    private $sollicitatieRepository;
+    private SollicitatieRepository $sollicitatieRepository;
 
-    /** @var Serializer */
-    private $serializer;
-
-    /** @var array<string> */
-    private $groups;
+    private Serializer $serializer;
+    private array $groups;
 
     public function __construct(
         MarktRepository $marktRepository,
@@ -75,6 +70,7 @@ final class SollicitatieController extends AbstractController
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @todo fixtures + unit-test
+     * @todo DECOM when flexibele tarieven becomes the default
      */
     public function getAllByMarkt(Request $request, int $marktId): Response
     {
@@ -103,6 +99,69 @@ final class SollicitatieController extends AbstractController
         /** @var \Doctrine\ORM\Tools\Pagination\Paginator<mixed> $sollicitaties */
         $sollicitaties = $this->sollicitatieRepository->search($q, $listOffset, $listLength);
         $response = $this->serializer->serialize($sollicitaties, 'json', ['groups' => $this->groups]);
+
+        return new Response($response, Response::HTTP_OK, [
+            'Content-type' => 'application/json',
+            'X-Api-ListSize' => count($sollicitaties),
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/flex/sollicitaties/markt/{marktId}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="FlexSollicitatieGetAllByMarktIdWithFilter",
+     *     tags={"Sollicitatie"},
+     *     summary="Vraag sollicitaties op voor een markt",
+     *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true, description="ID van markt"),
+     *     @OA\Parameter(name="includeDoorgehaald", @OA\Schema(type="integer"), in="query", description="Default=1"),
+     *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
+     *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=100"),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Sollicitatie"))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/flex/sollicitaties/markt/{marktId}", methods={"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @todo remove flex from path after DECOM.
+     */
+    public function flexGetAllSollicitatiesByMarkt(
+        Request $request,
+        int $marktId
+    ): Response {
+        /** @var int $listOffset */
+        $listOffset = $request->query->getInt('listOffset', 0);
+
+        /** @var int $listLength */
+        $listLength = $request->query->getInt('listLength', 10000);
+
+        /** @var bool $includeDoorgehaald */
+        $includeDoorgehaald = $request->query->getBoolean('includeDoorgehaald', false);
+
+        /** @var ?Markt $markt */
+        $markt = $this->marktRepository->find($marktId);
+
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
+        }
+
+        /** @var array<string> $q */
+        $q = [
+            'markt' => $markt,
+            'includeDoorgehaald' => $includeDoorgehaald,
+        ];
+
+        /** @var \Doctrine\ORM\Tools\Pagination\Paginator<mixed> $sollicitaties */
+        $sollicitaties = $this->sollicitatieRepository->search($q, $listOffset, $listLength);
+        $response = $this->serializer->serialize($sollicitaties, 'json', ['groups' => ['sollicitatie_m', 'simpleKoopman', 'marktId', 'vervanger']]);
 
         return new Response($response, Response::HTTP_OK, [
             'Content-type' => 'application/json',

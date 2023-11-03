@@ -24,7 +24,7 @@ class Account implements UserInterface
 
     /**
      * @OA\Property(example="14")
-     * @Groups("account")
+     * @Groups({"account", "account_xs"})
      *
      * @var int
      * @ORM\Id()
@@ -35,7 +35,7 @@ class Account implements UserInterface
 
     /**
      * @OA\Property()
-     * @Groups("account")
+     * @Groups({"account", "account_xs"})
      *
      * @var string
      * @ORM\Column(type="string")

@@ -216,10 +216,7 @@ final class FactuurService
         // set account
         $dagvergunning->setRegistratieAccount($user);
 
-        $infoJson = [
-            'paid' => [],
-            'unpaid' => [],
-        ];
+        $infoJson = [];
 
         // extras
         $dagvergunning->setAantal3MeterKramen($aantal3MeterKramen);

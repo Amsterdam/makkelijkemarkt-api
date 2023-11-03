@@ -37,7 +37,7 @@ class Markt
 
     /**
      * @OA\Property(example="14")
-     * @Groups({"markt", "simpleMarkt"})
+     * @Groups({"markt", "simpleMarkt", "markt_xs"})
      *
      * @var int
      * @ORM\Id()

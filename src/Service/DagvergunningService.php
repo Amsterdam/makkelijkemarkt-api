@@ -12,6 +12,7 @@ use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\SollicitatieRepository;
 use App\Utils\Helpers;
+use App\Utils\LocalTime;
 use DateTime;
 
 // This service will be used in the flexibele tarieven project and doesn't support
@@ -45,16 +46,19 @@ final class DagvergunningService
         $erkenningsnummer = str_replace('.', '', $data['erkenningsnummer']);
         $vervangerErkenningsnummer = str_replace('.', '', $data['vervangerErkenningsnummer'] ?? '');
 
+        // TODO make sure we save this in UTC and it still works in the app and dashboard.
+        // We are now purposefully saving it in CET, because to migrate to the new app, it needs to be backwards compatible.
+        $time = $data['registratieDatumtijd'] ?
+            DateTime::createFromFormat('Y-m-d H:i:s', $data['registratieDatumtijd'])
+            : new LocalTime();
+
         $dagvergunning = (new Dagvergunning())
             ->setMarkt($markt)
             ->setAanwezig($data['aanwezig'])
             ->setErkenningsnummerInvoerWaarde($erkenningsnummer)
             ->setErkenningsnummerInvoerMethode($data['erkenningsnummerInvoerMethode'] ?? 'onbekend')
             ->setNotitie($data['notitie'] ?? '')
-            ->setRegistratieDatumtijd(DateTime::createFromFormat(
-                'Y-m-d H:i:s',
-                $data['registratieDatumtijd'] ?? (new DateTime())->format('Y-m-d H:i:s')
-            ))
+            ->setRegistratieDatumtijd($time)
             ->setRegistratieAccount($data['account'])
             ->setDag(new DateTime($data['dag']));
 
@@ -105,7 +109,7 @@ final class DagvergunningService
                 return $mapping->getDagvergunningKey();
             }, $mappings);
 
-            return $sollicitatie->getVastePlaatsProducten($dagvergunningKey);
+            return $sollicitatie->getProducts($dagvergunningKey);
         }
 
         return [];

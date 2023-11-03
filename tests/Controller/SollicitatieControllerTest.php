@@ -162,4 +162,52 @@ class SollicitatieControllerTest extends ApiTestCase
 
         return $sollicitatie;
     }
+
+    public function testFlexGetAllByMarkt(): void
+    {
+        /** @var MarktRepository $marktRepository */
+        $marktRepository = $this->entityManager
+            ->getRepository(Markt::class);
+
+        /** @var Markt markt */
+        $markt = $marktRepository->findOneBy(['afkorting' => 'AC-2022']);
+
+        $response = $this->client->get('/api/1.1.0/flex/sollicitaties/markt/'.$markt->getId(), ['headers' => $this->headers]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+        $sollicitatieData = reset($responseData);
+
+        $expectedKeys = [
+            'id',
+            'koopman',
+            'markt',
+            'sollicitatieNummer',
+            'status',
+            'vastePlaatsen',
+            'products',
+            'doorgehaald',
+        ];
+
+        foreach ($expectedKeys as $expectedKey) {
+            $this->assertArrayHasKey($expectedKey, $sollicitatieData);
+        }
+
+        $expectedInts = [
+            'sollicitatieNummer',
+        ];
+
+        foreach ($expectedInts as $expectedInt) {
+            $this->assertIsInt($sollicitatieData[$expectedInt]);
+        }
+
+        $expectedBooleans = [
+            'doorgehaald',
+        ];
+
+        foreach ($expectedBooleans as $expectedBoolean) {
+            $this->assertIsBool($sollicitatieData[$expectedBoolean]);
+        }
+    }
 }
