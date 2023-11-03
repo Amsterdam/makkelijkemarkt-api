@@ -47,7 +47,7 @@ class Koopman
 
     /**
      * @OA\Property(example="14")
-     * @Groups({"koopman", "simpleKoopman"})
+     * @Groups({"koopman", "simpleKoopman", "koopman_xs"})
      *
      * @var int
      * @ORM\Id()
@@ -58,7 +58,7 @@ class Koopman
 
     /**
      * @OA\Property()
-     * @Groups({"koopman", "simpleKoopman"})
+     * @Groups({"koopman", "simpleKoopman", "koopman_xs"})
      *
      * @var string
      * @ORM\Column(type="string", length=255)

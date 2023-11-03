@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Utils\LocalTime;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -41,17 +42,17 @@ class Dagvergunning
     // Keys of dagvergunning products that are related to SOLL tarieven which are not yet paid upfront.
     // A lot of them have a NOT NULL constraint.
     public const UNPAID_PRODUCT_KEYS = [
-            'aantal3MeterKramen',
-            'aantal4MeterKramen',
-            'extraMeters',
-            'aantalElektra',
-            'krachtstroom',
-            'reiniging',
-            'afvaleiland',
-            'eenmaligElektra',
-            'grootPerMeter',
-            'kleinPerMeter',
-            'krachtstroomPerStuk',
+        'aantal3MeterKramen',
+        'aantal4MeterKramen',
+        'extraMeters',
+        'aantalElektra',
+        'krachtstroom',
+        'reiniging',
+        'afvaleiland',
+        'eenmaligElektra',
+        'grootPerMeter',
+        'kleinPerMeter',
+        'krachtstroomPerStuk',
     ];
 
     public const PAID_PRODUCT_KEYS = [
@@ -67,7 +68,7 @@ class Dagvergunning
 
     /**
      * @OA\Property(example="14")
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      *
      * @var int
      * @ORM\Id()
@@ -78,7 +79,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var DateTimeInterface
      * @ORM\Column(type="date")
@@ -87,7 +88,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
      * @ORM\Column(type="string", length=50)
@@ -96,7 +97,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @SerializedName("erkenningsnummer")
      *
      * @var string
@@ -106,7 +107,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      *
      * @var string
      * @ORM\Column(type="string", length=50)
@@ -287,7 +288,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @SerializedName("status")
      *
      * @var string
@@ -297,7 +298,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
      * @ORM\Column(type="text", nullable=true)
@@ -324,7 +325,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var bool
      * @ORM\Column(type="boolean", options={"default": false})
@@ -333,7 +334,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
      * @ORM\Column(type="string", nullable=true)
@@ -391,7 +392,7 @@ class Dagvergunning
     private $doorgehaaldAccount;
 
     /**
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @MaxDepth(1)
      *
      * @var Markt
@@ -401,7 +402,7 @@ class Dagvergunning
     private $markt;
 
     /**
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      * @MaxDepth(1)
      *
      * @var Koopman
@@ -411,7 +412,7 @@ class Dagvergunning
     private $koopman;
 
     /**
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @MaxDepth(1)
      *
      * @var Koopman
@@ -422,7 +423,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var Account
      * @ORM\ManyToOne(targetEntity="Account", fetch="LAZY")
@@ -443,7 +444,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @MaxDepth(1)
      *
      * @var Factuur
@@ -462,7 +463,9 @@ class Dagvergunning
     private $vergunningControles;
 
     /**
+     * @Groups("dagvergunning_s")
      * @ORM\Column(type="json", nullable=true)
+     * @SerializedName("products")
      */
     private $infoJson = [];
 
@@ -865,7 +868,9 @@ class Dagvergunning
         $this->doorgehaaldDatumtijd = $doorgehaaldDatumtijd;
 
         if (null !== $doorgehaaldDatumtijd) {
-            $this->verwijderdDatumtijd = new \DateTime();
+            // TODO convert this to UTC when we have released the new mobile app
+            // and dont need to be backwards compatible anymore.
+            $this->verwijderdDatumtijd = new LocalTime();
         }
 
         return $this;
@@ -1036,7 +1041,11 @@ class Dagvergunning
 
     public function getInfoJson(): ?array
     {
-        return $this->infoJson;
+        $infoJson = $this->infoJson;
+
+        $infoJson['unpaid'] = $this->getUnpaidProducts();
+
+        return $infoJson;
     }
 
     public function setInfoJson(?array $infoJson): self
@@ -1044,5 +1053,27 @@ class Dagvergunning
         $this->infoJson = $infoJson;
 
         return $this;
+    }
+
+    public function getTotalProducts(): array
+    {
+        return $this->infoJson['total'] ?? [];
+    }
+
+    public function getPaidProducts(): array
+    {
+        return $this->infoJson['paid'] ?? [];
+    }
+
+    public function getUnpaidProducts(): array
+    {
+        $total = $this->getTotalProducts();
+        $paid = $this->getPaidProducts();
+        $unpaid = [];
+        foreach ($total as $key => $value) {
+            $unpaid[$key] = array_key_exists($key, $paid) ? intval($value) - intval($paid[$key]) : intval($value);
+        }
+
+        return $unpaid;
     }
 }

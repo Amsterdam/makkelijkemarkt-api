@@ -36,7 +36,7 @@ trait MarktKraamTrait
     private $erkenningsnummerInvoerWaarde;
 
     /**
-     * @Groups("vergunningControle")
+     * @Groups({"vergunningControle", "vergunningControle_l"})
      *
      * @var string
      * @ORM\Column(type="string", length=50)
@@ -80,40 +80,30 @@ trait MarktKraamTrait
     private $registratieAccount;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var int
      * @ORM\Column(name="aantal3meter_kramen", type="integer")
      */
     private $aantal3MeterKramen;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var int
      * @ORM\Column(name="aantal4meter_kramen", type="integer")
      */
     private $aantal4MeterKramen;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var int
      * @ORM\Column(type="integer")
      */
     private $extraMeters;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var int
      * @ORM\Column(type="integer")
      */
     private $aantalElektra;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var int
      * @ORM\Column(type="integer")
      */
@@ -174,7 +164,6 @@ trait MarktKraamTrait
     private $krachtstroomPerStuk;
 
     /**
-     * @Groups("vergunningControle")
      * @SerializedName("eenmaligElektra")
      *
      * @var bool
@@ -183,80 +172,60 @@ trait MarktKraamTrait
     private $eenmalig_elektra;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
     private $afvaleilandVast;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?bool
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $krachtstroom;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?bool
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $reiniging;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantal3meterKramenVast;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantal4meterKramenVast;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalMetersGrootVast;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalExtraMetersVast;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalMetersKleinVast;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?int
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalElektraVast;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var ?bool
      * @ORM\Column(type="boolean", nullable=true)
      */
@@ -271,15 +240,11 @@ trait MarktKraamTrait
     private $notitie;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var int
      */
     private $totaleLengte;
 
     /**
-     * @Groups("vergunningControle")
-     *
      * @var int
      */
     private $totaleLengteVast;

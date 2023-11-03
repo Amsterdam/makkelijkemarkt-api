@@ -17,6 +17,7 @@ use App\Repository\TarievenplanRepository;
 use App\Service\DagvergunningService;
 use App\Service\FactuurService;
 use App\Service\FlexibeleFactuurService;
+use App\Utils\LocalTime;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
@@ -69,7 +70,6 @@ final class DagvergunningController extends AbstractController
         $this->factuurService = $factuurService;
         $this->flexibeleFactuurService = $flexibeleFactuurService;
         $this->entityManager = $entityManager;
-
         $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = [
             'account',
@@ -277,6 +277,91 @@ final class DagvergunningController extends AbstractController
 
     /**
      * @OA\Get(
+     *     path="/api/1.1.0/flex/dagvergunning/",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="DagvergunningGetAll",
+     *     tags={"Dagvergunning"},
+     *     summary="Geeft dagvergunningen",
+     *
+     *     @OA\Parameter(name="naam", @OA\Schema(type="string"), in="query", required=false, in="query", required=false, description="Deel van een naam"),
+     *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="query", required=false, description="ID van de markt"),
+     *     @OA\Parameter(name="dag", @OA\Schema(type="string"), in="query", required=false, description="Als yyyy-mm-dd"),
+     *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="query", required=false, description="Als yyyy-mm-dd, alleen i.c.m. dagEind"),
+     *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="query", required=false, description="Als yyyy-mm-dd, alleen i.c.m. dagStart"),
+     *     @OA\Parameter(name="koopmanId", @OA\Schema(type="integer"), in="query", required=false, description="Id van de koopman"),
+     *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="integer"), in="query", required=false, description="Nummer van koopman waarop vergunning is uitgeschreven"),
+     *     @OA\Parameter(name="doorgehaald", @OA\Schema(type="integer"), in="query", required=false, description="Indien niet opgenomen of leeg of 0 enkel niet doorgehaalde dagvergunningen, indien opgenomen en 1 dan enkel doorgehaalde dagvergunningen"),
+     *     @OA\Parameter(name="accountId", @OA\Schema(type="integer"), in="query", required=false, description="Filter op de persoon die de dagvergunning uitgegeven heeft"),
+     *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
+     *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=1000000"),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *
+     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Dagvergunning"))
+     *     )
+     * )
+     *
+     * @Route("/flex/dagvergunning/", methods={"GET"})
+     *
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+    public function flexGetAll(Request $request): Response
+    {
+        /** @var int $listOffset */
+        $listOffset = $request->query->getInt('listOffset', 0);
+
+        /** @var int $listLength */
+        $listLength = $request->query->getInt('listLength', 1000000);
+
+        /** @var array<string> $q */
+        $q = [];
+
+        if (true === $request->query->has('marktId')) {
+            $q['marktId'] = $request->query->getInt('marktId');
+        }
+
+        if (true === $request->query->has('dag')) {
+            $q['dag'] = $request->query->get('dag');
+        }
+
+        if (true === $request->query->has('dagStart') && true === $request->query->has('dagEind')) {
+            $q['dagRange'] = [
+                $request->query->get('dagStart'),
+                $request->query->get('dagEind'),
+            ];
+        }
+
+        if (true === $request->query->has('koopmanId')) {
+            $q['koopmanId'] = $request->query->getInt('koopmanId');
+        }
+
+        if (true === $request->query->has('erkenningsnummer')) {
+            $q['erkenningsnummer'] = str_replace('.', '', $request->query->get('erkenningsnummer'));
+        }
+
+        if (true === $request->query->has('doorgehaald')) {
+            $q['doorgehaald'] = $request->query->get('doorgehaald');
+        }
+
+        if (true === $request->query->has('accountId')) {
+            $q['accountId'] = $request->query->getInt('accountId');
+        }
+
+        /** @var \Doctrine\ORM\Tools\Pagination\Paginator<mixed> $dagvergunningen */
+        $dagvergunningen = $this->dagvergunningRepository->search($q, $listOffset, $listLength);
+
+        $response = $this->serializer->serialize($dagvergunningen, 'json', ['groups' => ['dagvergunning_s', 'koopman_xs', 'account_xs']]);
+
+        return new Response($response, Response::HTTP_OK, [
+            'Content-type' => 'application/json',
+            'X-Api-ListSize' => $dagvergunningen->count(),
+        ]);
+    }
+
+    /**
+     * @OA\Get(
      *     path="/api/1.1.0/dagvergunning/{id}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="DagvergunningGetById",
@@ -303,6 +388,8 @@ final class DagvergunningController extends AbstractController
      * @Route("/dagvergunning/{id}", methods={"GET"})
      *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @todo DECOM when new app is live
      */
     public function getById(int $id): Response
     {
@@ -314,6 +401,51 @@ final class DagvergunningController extends AbstractController
         }
 
         $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/flex/dagvergunning/{id}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="FlexDagvergunningGetById",
+     *     tags={"Dagvergunning"},
+     *     summary="Geeft informatie over specifiek dagvergunning",
+     *
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Dagvergunning")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     *
+     * @Route("/flex/dagvergunning/{id}", methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     *
+     * @todo integrate with dashboard when new app is live
+     */
+    public function flexGetById(int $id): Response
+    {
+        /** @var ?Dagvergunning $dagvergunning */
+        $dagvergunning = $this->dagvergunningRepository->find($id);
+
+        if (null === $dagvergunning) {
+            return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$id], Response::HTTP_NOT_FOUND);
+        }
+
+        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => ['account_xs', 'markt_xs', 'koopman_xs', 'dagvergunning_s', 'factuur', 'simpleProduct']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -573,8 +705,9 @@ final class DagvergunningController extends AbstractController
      */
     public function put(Request $request, int $id): Response
     {
+        // TODO save time in UTC when we dont have to be backwards compatible with the old app anymore
         // sub-request to deleteAction()
-        $request->query->set('doorgehaaldDatumtijd', $request->query->get('registratieDatumtijd'));
+        $request->query->set('doorgehaaldDatumtijd', $request->query->get('registratieDatumtijd') ?? new LocalTime());
         $request->query->set('doorgehaaldGeolocatie', $request->query->get('registratieGeolocatie'));
 
         $response = $this->delete($request, $id);
@@ -730,7 +863,8 @@ final class DagvergunningController extends AbstractController
 
         // set defaults
         $defaultParameters = [
-            'doorgehaaldDatumtijd' => date('Y-m-d H:i:s'),
+            // TODO save time in UTC when we dont have to be backwards compatible with the old app anymore
+            'doorgehaaldDatumtijd' => (new LocalTime())->format('Y-m-d H:i:s'),
             'doorgehaaldGeolocatie' => null,
         ];
 
@@ -891,6 +1025,71 @@ final class DagvergunningController extends AbstractController
         }
 
         $response = $this->serializer->serialize($factuur, 'json', ['groups' => $this->groups]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Patch(
+     *     path="/api/1.1.0/dagvergunning/{id}",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="DagvergunningPatch",
+     *     tags={"Dagvergunning"},
+     *     summary="Create dagvergunning and return a factuur in the new flexibele tarieven way",
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="audit", type="bool", description="Determines if dagvergunnig is audited"),
+     *                 @OA\Property(property="auditReason", type="string", description="Gives reason for audit"),
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *
+     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Factuur"))
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     *
+     * @Route("/dagvergunning/{id}", methods={"PATCH"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function patch(Request $request, int $id)
+    {
+        $patchables = ['audit', 'auditReason'];
+
+        $data = json_decode($request->getContent(), true);
+        $dagvergunning = $this->dagvergunningRepository->find($id);
+
+        if (!$dagvergunning) {
+            throw $this->createNotFoundException('Dagvergunning not found');
+        }
+
+        foreach ($patchables as $attribute) {
+            if (isset($data[$attribute])) {
+                $setter = 'set'.ucfirst($attribute);
+                $dagvergunning->$setter($data[$attribute]);
+            }
+        }
+
+        $this->entityManager->persist($dagvergunning);
+        $this->entityManager->flush();
+
+        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }

@@ -81,7 +81,7 @@ final class VergunningControleController extends AbstractController
         ];
     }
 
-    private function createOrUpdateVergunningscontrole($data, $controleId = null)
+    private function createOrUpdateVergunningscontrole($data, $controleId = null, $v2 = false)
     {
         if (null === $data) {
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
@@ -191,7 +191,11 @@ final class VergunningControleController extends AbstractController
         $this->entityManager->persist($controle);
         $this->entityManager->flush();
 
-        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
+        if (true === $v2) {
+            $response = $this->serializer->serialize($controle, 'json', ['groups' => ['vergunningControle_l', 'dagvergunning_s', 'koopman_xs']]);
+        } else {
+            $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => $this->groups]);
+        }
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -343,6 +347,62 @@ final class VergunningControleController extends AbstractController
     }
 
     /**
+     * @OA\Post(
+     *     path="/api/1.1.0/flex/controle/",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="VergunningControlePost",
+     *     tags={"VergunningControle"},
+     *     summary="Maak een vergunning controle",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(property="dagvergunningId", type="integer", description="ID van de dagvergunning"),
+     *                 @OA\Property(property="aanwezig", type="string", description="Aangetroffen persoon Zelf|Partner|Vervanger met toestemming|Vervanger zonder toestemming|Niet aanwezig|Niet geregisteerd"),
+     *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
+     *                 @OA\Property(property="registratieGeolocatie", type="string", example="lat,long", description="Geolocatie waar de registratie is ingevoerd, als lat,long"),
+     *                 @OA\Property(property="ronde", type="integer", description="Ronde nummer"),
+     *                 @OA\Property(property="aantal3MeterKramen", type="integer", description="Aantal 3 meter kramen"),
+     *                 @OA\Property(property="aantal4MeterKramen", type="integer", description="Aantal 4 meter kramen"),
+     *                 @OA\Property(property="extraMeters", type="integer", description="Extra meters"),
+     *                 @OA\Property(property="aantalElektra", type="integer", description="Aantal elektra aansluitingen dat is afgenomen"),
+     *                 @OA\Property(property="afvaleiland", type="integer"),
+     *                 @OA\Property(property="eenmaligElektra", type="integer", description="Eenmalige elektra kosten ongeacht plekken"),
+     *                 @OA\Property(property="krachtstroom", type="integer", description="Is er een krachtstroom aansluiting afgenomen?"),
+     *                 @OA\Property(property="reiniging", type="boolean", description="Is er reiniging afgenomen?"),
+     *                 @OA\Property(property="vervangerErkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
+     *                 @OA\Property(property="erkenningsnummerInvoerMethode", type="string", description="Waardes: handmatig, scan-foto, scan-nfc, scan-barcode, scan-qr, opgezocht, onbekend. Indien niet opgegeven wordt onbekend gebruikt."),
+     *                 @OA\Property(property="notitie", type="string", description="Vrij notitie veld"),
+     *                 required={"dagvergunningId", "aanwezig", "registratieGeolocatie", "erkenningsnummer", "ronde"}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/VergunningControle")
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/flex/controle/", methods={"POST"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+    public function postFlex(Request $request): Response
+    {
+        return $this->createOrUpdateVergunningscontrole(json_decode((string) $request->getContent(), true), null, true);
+    }
+
+    /**
      * @OA\Put(
      *     path="/api/1.1.0/controle/{controleId}",
      *     security={{"api_key": {}, "bearer": {}}},
@@ -397,5 +457,35 @@ final class VergunningControleController extends AbstractController
     public function put(Request $request, int $controleId): Response
     {
         return $this->createOrUpdateVergunningscontrole(json_decode((string) $request->getContent(), true), $controleId);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/controle/{marktId}/{date}/",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="GetVergunningControleByMarktAndDate",
+     *     tags={"VergunningControle"},
+     *     summary="Maak een vergunning controle",
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *         @OA\JsonContent(ref="#/components/schemas/VergunningControle")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Not Found",
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * @Route("/controle/{marktId}/{date}", methods={"GET"})
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getByMarktAndDate(Request $request, int $marktId, string $date): Response
+    {
+        $vergunningControles = $this->vergunningControleRepository->findByMarktAndDate($marktId, $date);
+
+        $response = $this->serializer->serialize($vergunningControles, 'json', ['groups' => ['vergunningControle_l', 'dagvergunning_xs', 'koopman_xs']]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 }

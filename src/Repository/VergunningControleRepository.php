@@ -50,4 +50,23 @@ final class VergunningControleRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->execute();
     }
+
+    public function findByMarktAndDate(int $marktId, string $date): array
+    {
+        $qb = $this
+            ->createQueryBuilder('vc')
+            ->select('vc')
+            ->join('vc.dagvergunning', 'd')
+            ->where('d.markt = :marktId')
+            ->andWhere('vc.registratieDatumtijd > :date')
+            ->andWhere('vc.registratieDatumtijd < :dayAfterDate')
+            ->andWhere('d.doorgehaald = false')
+            ->setParameter('marktId', $marktId)
+            ->setParameter('date', new DateTime($date))
+            ->setParameter('dayAfterDate', (new DateTime($date))->modify('+1 day'));
+
+        $data = $qb->getQuery()->execute();
+
+        return $data;
+    }
 }

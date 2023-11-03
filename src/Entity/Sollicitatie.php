@@ -57,7 +57,7 @@ class Sollicitatie
 
     /**
      * @OA\Property(example="14")
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var int
      * @ORM\Id()
@@ -68,7 +68,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var int
      * @ORM\Column(type="integer")
@@ -77,7 +77,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var string
      * @ORM\Column(type="string", length=15)
@@ -86,7 +86,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var ?array<string>
      * @ORM\Column(type="simple_array", nullable=true)
@@ -216,7 +216,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var bool
      * @ORM\Column(type="boolean")
@@ -249,7 +249,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      * @MaxDepth(1)
      *
      * @var Markt
@@ -260,7 +260,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups("sollicitatie")
+     * @Groups({"sollicitatie", "sollicitatie_m"})
      * @MaxDepth(1)
      *
      * @var Koopman
@@ -268,6 +268,12 @@ class Sollicitatie
      * @ORM\JoinColumn(name="koopman_id", referencedColumnName="id", nullable=false)
      */
     private $koopman;
+
+    /**
+     * @Groups({"sollicitatie_m"})
+     * @SerializedName("products")
+     */
+    private $products;
 
     public function __toString()
     {
@@ -552,7 +558,7 @@ class Sollicitatie
 
     // Gets all paid products from a vaste plaats
     // The keys in this array have to match the keys of dagvergunning_mappings
-    public function getVastePlaatsProducten(array $productKeys): array
+    public function getProducts(): array
     {
         return [
             'aantal3MeterKramen' => $this->getAantal3MeterKramen(),
