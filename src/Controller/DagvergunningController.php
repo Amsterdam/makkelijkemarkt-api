@@ -14,6 +14,7 @@ use App\Repository\FeatureFlagRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\TarievenplanRepository;
+use App\Response\WarningResponse;
 use App\Service\DagvergunningService;
 use App\Service\FactuurService;
 use App\Service\FlexibeleFactuurService;
@@ -352,7 +353,7 @@ final class DagvergunningController extends AbstractController
         /** @var \Doctrine\ORM\Tools\Pagination\Paginator<mixed> $dagvergunningen */
         $dagvergunningen = $this->dagvergunningRepository->search($q, $listOffset, $listLength);
 
-        $response = $this->serializer->serialize($dagvergunningen, 'json', ['groups' => ['dagvergunning_s', 'koopman_xs', 'account_xs']]);
+        $response = $this->serializer->serialize($dagvergunningen, 'json', ['groups' => ['dagvergunning_s', 'koopman_s', 'account_xs']]);
 
         return new Response($response, Response::HTTP_OK, [
             'Content-type' => 'application/json',
@@ -445,7 +446,7 @@ final class DagvergunningController extends AbstractController
             return new JsonResponse(['error' => 'Dagvergunning not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
-        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => ['account_xs', 'markt_xs', 'koopman_xs', 'dagvergunning_s', 'factuur', 'simpleProduct']]);
+        $response = $this->serializer->serialize($dagvergunning, 'json', ['groups' => ['account_xs', 'markt_xs', 'koopman_s', 'dagvergunning_s', 'factuur', 'simpleProduct']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -934,6 +935,7 @@ final class DagvergunningController extends AbstractController
      *                 @OA\Property(property="registratieDatumtijd", type="string", example="yyyy-mm-dd hh:ii:ss", description="Datum/tijd dat de registratie is gemaakt, indien niet opgegeven wordt het moment van de request gebruikt"),
      *                 @OA\Property(property="registratieGeolocatie", type="string", example="lat,long", description="Geolocatie waar de registratie is ingevoerd, als lat,long"),
      *                 @OA\Property(property="products", type="object", description="Consumed products (f.e.: 4meterKraam, elektra, krachtstroom)",),
+     *                 @OA\Property(property="allowDubbelstaan", type="bool", description="Allows dubbelstaan of an ondernemer on same market"),
      *                 required={"saveFactuur", "marktId, products, dag, aanwezig"}
      *             )
      *         )
@@ -968,6 +970,10 @@ final class DagvergunningController extends AbstractController
             return new JsonResponse(['error' => 'Markt with id = '.$data['marktId'].' not found'], Response::HTTP_NOT_FOUND);
         }
 
+        if (isset($data['isSimulation']) && true === $data['isSimulation']) {
+            $data = $dagvergunningService->prepareSimulationData($data);
+        }
+
         $expectedParameters = [
             'dag',
             'marktId',
@@ -977,18 +983,33 @@ final class DagvergunningController extends AbstractController
             'products',
         ];
 
-        if (isset($data['isSimulation']) && true === $data['isSimulation']) {
-            // This data will not be saved but will help bypass validation
-            $data['erkenningsnummer'] = 'SIMULATION';
-            $data['erkenningsnummerInvoermethode'] = 'SIMULATION';
-            $data['aanwezig'] = 'SIMULATION';
-            $data['saveFactuur'] = false;
-        }
-
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
                 return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
             }
+        }
+
+        $dubbelStaan = $dagvergunningService->getDubbelstaan($data);
+        if (count($dubbelStaan) > 0) {
+            $data = array_map(function ($dagvergunning) {
+                return [
+                    'id' => $dagvergunning->getId(),
+                    'markt' => [
+                        'id' => $dagvergunning->getMarkt()->getId(),
+                        'naam' => $dagvergunning->getMarkt()->getNaam(),
+                    ],
+                    'aanwezig' => $dagvergunning->getAanwezig(),
+                ];
+            }, $dubbelStaan);
+
+            return new WarningResponse(
+                [
+                    'type' => WarningResponse::TYPES['DUBBELSTAAN'],
+                    'message' => 'Ondernemer is registered on too many markets.',
+                    'data' => $data,
+                ],
+                Response::HTTP_OK
+            );
         }
 
         $tarievenplan = $this->tarievenplanRepository->getActivePlan($markt, new DateTime($data['dag']));

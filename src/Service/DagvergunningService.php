@@ -8,6 +8,7 @@ use App\Entity\Dagvergunning;
 use App\Entity\Koopman;
 use App\Entity\Sollicitatie;
 use App\Repository\DagvergunningMappingRepository;
+use App\Repository\DagvergunningRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\SollicitatieRepository;
@@ -22,6 +23,8 @@ final class DagvergunningService
 {
     private DagvergunningMappingRepository $dagvergunningMappingRepository;
 
+    private DagvergunningRepository $dagvergunningRepository;
+
     private MarktRepository $marktRepository;
 
     private KoopmanRepository $koopmanRepository;
@@ -30,11 +33,13 @@ final class DagvergunningService
 
     public function __construct(
         DagvergunningMappingRepository $dagvergunningMappingRepository,
+        DagvergunningRepository $dagvergunningRepository,
         MarktRepository $marktRepository,
         KoopmanRepository $koopmanRepository,
         SollicitatieRepository $sollicitatieRepository
     ) {
         $this->dagvergunningMappingRepository = $dagvergunningMappingRepository;
+        $this->dagvergunningRepository = $dagvergunningRepository;
         $this->marktRepository = $marktRepository;
         $this->koopmanRepository = $koopmanRepository;
         $this->sollicitatieRepository = $sollicitatieRepository;
@@ -203,5 +208,55 @@ final class DagvergunningService
         }
 
         return $status;
+    }
+
+    // If the ondernemer is violating the dubbelstaan rules, we will return an array of dagvergunningen
+    // Otherwise array will be empty.
+    //
+    // We are following these rules:
+    // 1 - An ondernemer can only have 4 dagvergunningen per day (including vervangers)
+    // 2 - An ondernemer can only be present themselves (zelf) on 1 dagvergunning per day
+    // 3 - A marktmeester can decide to ignore the dubbelstaan rules (allowDubbelstaan)
+    public function getDubbelstaan($data): array
+    {
+        $allowDubbelstaan = $data['allowDubbelstaan'] ?? false;
+        if (true === $allowDubbelstaan) {
+            return [];
+        }
+
+        $dagvergunningen = $this->dagvergunningRepository->findBy([
+            'erkenningsnummerInvoerWaarde' => $data['erkenningsnummer'],
+            'dag' => new DateTime($data['dag']),
+            'doorgehaald' => false,
+        ]);
+
+        $countPresenceSelf = 0;
+        foreach ($dagvergunningen as $dagvergunning) {
+            // When data contains an id we are editing a dagvergunning and creating a new concept for it
+            if (isset($data['id']) && $dagvergunning->getId() === $data['id']) {
+                continue;
+            }
+
+            if (in_array($dagvergunning->getAanwezig(), array_values(Dagvergunning::PRESENCE_SELF))) {
+                ++$countPresenceSelf;
+            }
+        }
+
+        if ($countPresenceSelf < 1 && count($dagvergunningen) < 4) {
+            return [];
+        }
+
+        return $dagvergunningen;
+    }
+
+    // This data will not be saved but will help bypass validation
+    public function prepareSimulationData($data)
+    {
+        $data['erkenningsnummer'] = 'SIMULATION';
+        $data['erkenningsnummerInvoermethode'] = 'SIMULATION';
+        $data['aanwezig'] = 'SIMULATION';
+        $data['saveFactuur'] = false;
+
+        return $data;
     }
 }

@@ -30,6 +30,20 @@ class Dagvergunning
 {
     use MarktKraamTrait;
 
+    // These are states in de aanwezig (presence) column.
+    // All these states count as presence for the ondernemer (not replacement)
+    public const PRESENCE_SELF = [
+        'SELF' => 'zelf',
+        'NOT_PRESENT' => 'niet_aanwezig',
+        'PARTNER' => 'partner',
+        'UNAUTHORIZED_REPLACEMENT' => 'vervanger_zonder_toestemming',
+        'REPLACEMENT_WITH_EXEMPTION' => 'vervanger_met_ontheffing',
+    ];
+
+    public const PRESENCE_AUTHORIZED_REPLACEMENT = [
+        'AUTHORIZED_REPLACEMENT' => 'vervanger_met_toestemming',
+    ];
+
     /** @var string */
     public const AUDIT_VERVANGER_ZONDER_TOESTEMMING = 'vervanger_zonder_toestemming';
 

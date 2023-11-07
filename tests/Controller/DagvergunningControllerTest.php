@@ -12,6 +12,7 @@ use App\Repository\DagvergunningRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\TariefplanRepository;
 use App\Test\ApiTestCase;
+use App\Utils\LocalTime;
 use DateTime;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -692,8 +693,9 @@ class DagvergunningControllerTest extends ApiTestCase
     public function testCreateFlexDagvergunning(): void
     {
         $data = [
-            'aanwezig' => 'vervanger_met_toestemming',
-            'dag' => '5-9-2023',
+            'aanwezig' => 'vervanger',
+            'allowDubbelstaan' => true, // turn this off to test dubbelstaan check and error TODO create a seperate test for this
+            'dag' => (new DateTime())->format('Y-m-d'),
             'erkenningsnummer' => '12345678',
             'erkenningsnummerInvoerMethode' => 'handmatig',
             'marktId' => 37,
@@ -723,7 +725,7 @@ class DagvergunningControllerTest extends ApiTestCase
             'registratieGeolocatie' => '52.3675733,4.9041383',
             'saveFactuur' => true,
             'vervangerErkenningsnummer' => '1973394344',
-            'registratieDatumtijd' => '2023-09-05 10:11:12',
+            'registratieDatumtijd' => (new LocalTime())->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->client->post('/api/1.1.0/flex/dagvergunning/', [
