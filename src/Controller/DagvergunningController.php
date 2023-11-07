@@ -1004,11 +1004,9 @@ final class DagvergunningController extends AbstractController
 
             return new WarningResponse(
                 [
-                    'type' => WarningResponse::TYPES['DUBBELSTAAN'],
-                    'message' => 'Ondernemer is registered on too many markets.',
+                    'type' => WarningResponse::DUBBELSTAAN,
                     'data' => $data,
-                ],
-                Response::HTTP_OK
+                ]
             );
         }
 
