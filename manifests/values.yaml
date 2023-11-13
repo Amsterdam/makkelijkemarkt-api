@@ -104,7 +104,7 @@ ingress:
   mm-api-nginx-internal:
     className: nginx-internal
     paths:
-      - path: /api/
+      - path: /
         pathType: Prefix
         service: mm-api-nginx
         port: 8080
