@@ -2,6 +2,15 @@ name: deploy-mm-api
 
 trigger: none
 
+parameters:
+  - name: preSteps
+    type: object
+    default:
+      - script: kubectl get all
+        displayName: kubectl get all
+      - script: kubectl get all
+        displayName: kubectl get all
+
 variables:
   # Debugging
   System.Debug: true
@@ -24,6 +33,8 @@ extends:
       pool: salmagundi
       namespace: ns-ccc-mrkt-ont-01-markten
       kubernetesServiceConnection: SCN-K8S-ns-ccc-mrkt-ont-01-markten
+      presteps: ${{ parameters.preSteps }}
+
     # test:
     #   pool: salmagundi
     #   namespace: ns-ccc-salm-tst-01-mm-api
