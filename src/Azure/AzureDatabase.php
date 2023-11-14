@@ -2,7 +2,6 @@
 
 namespace App\Azure;
 
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
