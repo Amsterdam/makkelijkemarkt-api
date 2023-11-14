@@ -8,8 +8,6 @@ parameters:
     default:
       - script: kubectl get all
         displayName: kubectl get all
-      - script: kubectl get all
-        displayName: kubectl get all
 
 variables:
   # Debugging

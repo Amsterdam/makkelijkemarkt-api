@@ -39,12 +39,14 @@ deployments:
           - port: 9000
             name: http
         volumes:
-          - name: cache
-            mountPath: /var/www/var/cache
-          - name: logs
-            mountPath: /var/www/var/log
-          - name: tmp
-            mountPath: /tmp
+          # - name: cache
+          #   mountPath: /var/www/var/cache
+          # - name: logs
+          #   mountPath: /var/www/var/log
+          # - name: tmp
+          #   mountPath: /tmp
+          - name: www
+            mountPath: /var/www
     volumes:
       - name: cache
         spec:
@@ -53,6 +55,9 @@ deployments:
         spec:
           emptyDir: {}
       - name: tmp
+        spec:
+          emptyDir: {}
+      - name: www
         spec:
           emptyDir: {}
 
