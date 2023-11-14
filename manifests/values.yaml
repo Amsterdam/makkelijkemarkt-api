@@ -24,6 +24,10 @@ secrets:
   certificate:
     type: keyvault
     tls: markten
+  php:
+    type: keyvault
+    secrets:
+      APP_MM_KEY: api-key
 
 deployments:
   mm-api:
@@ -39,14 +43,14 @@ deployments:
           - port: 9000
             name: http
         volumes:
-          # - name: cache
-          #   mountPath: /var/www/var/cache
-          # - name: logs
-          #   mountPath: /var/www/var/log
-          # - name: tmp
-          #   mountPath: /tmp
-          - name: www
-            mountPath: /var/www
+          - name: cache
+            mountPath: /var/www/var/cache
+          - name: logs
+            mountPath: /var/www/var/log
+          - name: tmp
+            mountPath: /tmp
+        secrets:
+          - php
     volumes:
       - name: cache
         spec:
@@ -55,9 +59,6 @@ deployments:
         spec:
           emptyDir: {}
       - name: tmp
-        spec:
-          emptyDir: {}
-      - name: www
         spec:
           emptyDir: {}
 
