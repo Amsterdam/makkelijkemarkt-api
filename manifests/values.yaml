@@ -24,7 +24,7 @@ secrets:
   certificate:
     type: keyvault
     tls: markten
-  php:
+  vault:
     type: keyvault
     secrets:
       APP_MM_KEY: api-key
@@ -50,7 +50,7 @@ deployments:
           - name: tmp
             mountPath: /tmp
         secrets:
-          - php
+          - vault
     volumes:
       - name: cache
         spec:
