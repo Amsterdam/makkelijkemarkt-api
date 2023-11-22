@@ -12,6 +12,8 @@ REGISTRY ?= 127.0.0.1:5001
 REPOSITORY ?= salmagundi/mm-api
 VERSION ?= latest
 
+all: build push deploy fixtures
+
 build:
 	$(dc) build
 
@@ -21,6 +23,8 @@ test:
 migrate:
 	kubectl exec -it deploy/mm-api-mm-api -- sh -c "php bin/console --no-interaction doctrine:migrations:migrate"
 	kubectl exec -it deploy/mm-api-mm-api -- sh -c "php bin/console doc:fix:load  --no-interaction --purge-with-truncate"
+
+fixtures: migrate
 
 push:
 	$(dc) push
@@ -41,7 +45,7 @@ clean:
 	$(dc) down -v --remove-orphans
 
 reset:
-	kubectl delete deployments --all && helm uninstall mm-api
+	kubectl delete deployment mm-api-mm-api && kubectl delete deployment mm-api-nginx-mm-api && kubectl delete ingress mm-api-nginx-internal-mm-api && helm uninstall mm-api
 
 refresh: reset build push deploy
 
