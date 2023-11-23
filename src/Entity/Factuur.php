@@ -42,6 +42,7 @@ class Factuur
      *
      * @var Collection|Product[]
      * @ORM\OneToMany(targetEntity="Product", mappedBy="factuur")
+     * @ORM\OrderBy({"naam" = "ASC"})
      */
     private $producten;
 

@@ -141,7 +141,7 @@ final class SollicitatieController extends AbstractController
         $listOffset = $request->query->getInt('listOffset', 0);
 
         /** @var int $listLength */
-        $listLength = $request->query->getInt('listLength', 10000);
+        $listLength = $request->query->getInt('listLength', 1000);
 
         /** @var bool $includeDoorgehaald */
         $includeDoorgehaald = $request->query->getBoolean('includeDoorgehaald', false);
