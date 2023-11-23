@@ -1,0 +1,56 @@
+workloadIdentity: 82370263-90e0-4b27-9d8d-3f8d1689065a
+nodepool: cccmrktont01
+keyVaultName: markten-o-l5ct7bz3yelys
+
+host: api.makkelijkemarkt.mrkt-o.azure.amsterdam.nl
+
+secrets:
+  certificate:
+    keyVaultName: shared-o-jpc4hlk5yveei
+
+deployments:
+  mm-api:
+    env:
+      DATABASE_URL: pgsql://markten-app-o:temporary@markten-o-l5ct7bz3yelys.postgres.database.azure.com:5432/main?serverVersion=13&charset=utf8
+      APP_ENV: dev
+      APP_DEBUG: 1
+      APP_SECRET: insecure
+    autoscale:
+      cpu: 70
+      memory: 90
+      min: 1
+      max: 2
+
+  # jobs:
+  #   migrate:
+  #     ttlSecondsAfterFinished: 100
+  #     image:
+  #       repository: salmagundi/mm-api
+  #     annotations:
+  #       helm.sh/hook: post-install,post-upgrade
+  #     containers:
+  #       - name: main
+  #         volumes:
+  #           - name: cache
+  #             mountPath: /var/www/var/cache
+  #           - name: logs
+  #             mountPath: /var/www/var/log
+  #           - name: tmp
+  #             mountPath: /tmp
+  #         command: ["php", "bin/console", "doc:mig:mig"]
+  #         env:
+  #           APP_ENV: dev
+  #           APP_DEBUG: 1
+  #           APP_SECRET: insecure
+  #           DATABASE_URL: pgsql://markten-app-o:temporary@markten-o-l5ct7bz3yelys.postgres.database.azure.com:5432/main?serverVersion=13&charset=utf8
+  #     backoffLimit: 2
+  #     volumes:
+  #       - name: cache
+  #         spec:
+  #           emptyDir: {}
+  #       - name: logs
+  #         spec:
+  #           emptyDir: {}
+  #       - name: tmp
+  #         spec:
+  #           emptyDir: {}
