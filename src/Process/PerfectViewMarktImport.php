@@ -111,9 +111,13 @@ class PerfectViewMarktImport
                 $opties[] = 'afvaleiland';
             }
             if ('True' === $pvRecord['KRACHTROOM'] || 'Waar' === $pvRecord['KRACHTROOM']) {
-                $opties[] = 'elektra';
                 $opties[] = 'krachtstroom';
             }
+
+            if (in_array($upperCaseAfkorting, ['WEESP', 'WEESPBIO'])) {
+                $opties[] = 'elektra';
+            }
+
             /* TODO: Zorg dat deze optie in perfectview gedefineerd wordt */
             if ('PEK' === $upperCaseAfkorting) {
                 $opties[] = 'eenmaligElektra';
@@ -121,7 +125,6 @@ class PerfectViewMarktImport
             if ('WAT-2022' === $upperCaseAfkorting) {
                 $opties[] = 'grootPerMeter';
                 $opties[] = 'kleinPerMeter';
-                $opties[] = 'krachtstroomPerStuk';
             }
 
             // Add this option manually, because it's currently not set in Mercato

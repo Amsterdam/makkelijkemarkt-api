@@ -52,9 +52,12 @@ class Sollicitatie
     /** @var string */
     public const STATUS_EXPF = 'expf';
 
+    /** @var string */
+    public const STATUS_LOT = 'lot';
+
     /**
      * @OA\Property(example="14")
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var int
      * @ORM\Id()
@@ -65,7 +68,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var int
      * @ORM\Column(type="integer")
@@ -74,7 +77,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var string
      * @ORM\Column(type="string", length=15)
@@ -83,7 +86,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var ?array<string>
      * @ORM\Column(type="simple_array", nullable=true)
@@ -213,7 +216,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var bool
      * @ORM\Column(type="boolean")
@@ -246,7 +249,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups({"sollicitatie", "simpleSollicitatie"})
+     * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      * @MaxDepth(1)
      *
      * @var Markt
@@ -257,7 +260,7 @@ class Sollicitatie
 
     /**
      * @OA\Property()
-     * @Groups("sollicitatie")
+     * @Groups({"sollicitatie", "sollicitatie_m"})
      * @MaxDepth(1)
      *
      * @var Koopman
@@ -265,6 +268,12 @@ class Sollicitatie
      * @ORM\JoinColumn(name="koopman_id", referencedColumnName="id", nullable=false)
      */
     private $koopman;
+
+    /**
+     * @Groups({"sollicitatie_m"})
+     * @SerializedName("products")
+     */
+    private $products;
 
     public function __toString()
     {
@@ -545,5 +554,23 @@ class Sollicitatie
     public function isVast(): bool
     {
         return in_array($this->getStatus(), [self::STATUS_VPL, self::STATUS_EB, self::STATUS_VKK, self::STATUS_TVPL, self::STATUS_TVPLZ, self::STATUS_EXP, self::STATUS_EXPF]);
+    }
+
+    // Gets all paid products from a vaste plaats
+    // The keys in this array have to match the keys of dagvergunning_mappings
+    public function getProducts(): array
+    {
+        return [
+            'aantal3MeterKramen' => $this->getAantal3MeterKramen(),
+            'aantal4MeterKramen' => $this->getAantal4MeterKramen(),
+            'extraMeters' => $this->getAantalExtraMeters(),
+            'aantalElektra' => $this->getAantalElektra(),
+            'afvaleiland' => $this->getAantalAfvaleilanden(),
+            'krachtstroom' => $this->getKrachtstroom(),
+            'krachtstroomPerStuk' => $this->getKrachtstroomPerStuk(),
+            'grootPerMeter' => $this->getGrootPerMeter(),
+            'kleinPerMeter' => $this->getKleinPerMeter(),
+            'afvalEilandAgf' => $this->getAfvalEilandAgf(),
+        ];
     }
 }

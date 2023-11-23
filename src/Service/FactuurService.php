@@ -13,40 +13,46 @@ use App\Entity\Markt;
 use App\Entity\Product;
 use App\Entity\Sollicitatie;
 use App\Entity\Tariefplan;
+use App\Repository\FeatureFlagRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\SollicitatieRepository;
 use App\Repository\TariefplanRepository;
+use App\Repository\TarievenplanRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class FactuurService
 {
-    /** @var ConcreetplanFactuurService */
-    private $concreetplanFactuurService;
+    private ConcreetplanFactuurService $concreetplanFactuurService;
 
-    /** @var LineairplanFactuurService */
-    private $lineairplanFactuurService;
+    private LineairplanFactuurService $lineairplanFactuurService;
 
-    /** @var TariefplanRepository */
-    private $tariefplanRepository;
+    private FlexibeleFactuurService $flexibeleFactuurService;
 
-    /** @var MarktRepository */
-    private $marktRepository;
+    private TariefplanRepository $tariefplanRepository;
 
-    /** @var KoopmanRepository */
-    private $koopmanRepository;
+    private TarievenplanRepository $tarievenplanRepository;
 
-    /** @var SollicitatieRepository */
-    private $sollicitatieRepository;
+    private FeatureFlagRepository $featureFlagRepository;
 
-    /** @var EntityManagerInterface */
-    private $entityManager;
+    private MarktRepository $marktRepository;
+
+    private KoopmanRepository $koopmanRepository;
+
+    private SollicitatieRepository $sollicitatieRepository;
+
+    private EntityManagerInterface $entityManager;
+
+    private bool $flexibeleTarievenEnabled;
 
     public function __construct(
         ConcreetplanFactuurService $concreetplanFactuurService,
         LineairplanFactuurService $lineairplanFactuurService,
+        FlexibeleFactuurService $flexibeleFactuurService,
         TariefplanRepository $tariefplanRepository,
+        TarievenplanRepository $tarievenplanRepository,
+        FeatureFlagRepository $featureFlagRepository,
         MarktRepository $marktRepository,
         KoopmanRepository $koopmanRepository,
         SollicitatieRepository $sollicitatieRepository,
@@ -54,15 +60,30 @@ final class FactuurService
     ) {
         $this->concreetplanFactuurService = $concreetplanFactuurService;
         $this->lineairplanFactuurService = $lineairplanFactuurService;
+        $this->flexibeleFactuurService = $flexibeleFactuurService;
         $this->tariefplanRepository = $tariefplanRepository;
+        $this->tarievenplanRepository = $tarievenplanRepository;
+        $this->featureFlagRepository = $featureFlagRepository;
         $this->marktRepository = $marktRepository;
         $this->koopmanRepository = $koopmanRepository;
         $this->sollicitatieRepository = $sollicitatieRepository;
         $this->entityManager = $entityManager;
+
+        $this->flexibeleTarievenEnabled = $this->featureFlagRepository->isEnabled('flexibele-tarieven');
     }
 
     public function createFactuur(Dagvergunning $dagvergunning): ?Factuur
     {
+        if ($this->flexibeleTarievenEnabled) {
+            $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning->getMarkt(), $dagvergunning->getDag());
+
+            if (null === $tarievenplan) {
+                throw new \Exception('Can\'t create factuur, not able to find active tarievenplan.');
+            }
+
+            return $this->flexibeleFactuurService->createFactuur($tarievenplan, $dagvergunning);
+        }
+
         /** @var ?Tariefplan $tariefplan */
         $tariefplan = $this->tariefplanRepository->findOneByMarktAndDag($dagvergunning->getMarkt(), $dagvergunning->getDag());
 
@@ -183,41 +204,73 @@ final class FactuurService
         $dagvergunning->setRegistratieGeolocatie($point[0], $point[1]);
 
         // set dag
-        /** @var DateTime $dag */
+        /** @var \DateTime $dag */
         $dag = DateTime::createFromFormat('Y-m-d', $dag);
         $dagvergunning->setDag($dag);
 
         // set registratie datum/tijd
-        /** @var DateTime $registratieDatumtijd */
+        /** @var \DateTime $registratieDatumtijd */
         $registratieDatumtijd = DateTime::createFromFormat('Y-m-d H:i:s', $registratieDatumtijd);
         $dagvergunning->setRegistratieDatumtijd($registratieDatumtijd);
 
         // set account
         $dagvergunning->setRegistratieAccount($user);
 
+        $infoJson = [
+            'total' => [],
+            'paid' => [],
+        ];
+
         // extras
         $dagvergunning->setAantal3MeterKramen($aantal3MeterKramen);
         $dagvergunning->setAantal4MeterKramen($aantal4MeterKramen);
         $dagvergunning->setExtraMeters($extraMeters);
         $dagvergunning->setAantalElektra($aantalElektra);
-        $dagvergunning->setEenmaligElektra($eenmaligElektra);
         $dagvergunning->setAfvaleiland($afvaleiland);
         $dagvergunning->setGrootPerMeter($grootPerMeter);
         $dagvergunning->setKleinPerMeter($kleinPerMeter);
         $dagvergunning->setGrootReiniging($grootReiniging);
         $dagvergunning->setKleinReiniging($kleinReiniging);
         $dagvergunning->setAfvalEilandAgf($afvalEilandAgf);
-        $dagvergunning->setKrachtstroomPerStuk($krachtstroomPerStuk);
-        $dagvergunning->setKrachtstroom($krachtstroom);
         $dagvergunning->setReiniging($reiniging);
+        $dagvergunning->setKrachtstroomPerStuk($krachtstroomPerStuk);
+
+        // TODO dit moeten we supporten totdat we de kolom krachtstroom en eenmalig_elektra verwijderen uit dagvergunning tabel.
+        // Deze kunnen niet NULL zijn. Houd ik voor nu buiten de scope.
+        // Als we dit aanpassen moeten waarschijnlijk ook views in het dashboard aangepast worden.
+        $dagvergunning->setKrachtstroom($krachtstroom);
+        $dagvergunning->setEenmaligElektra($eenmaligElektra);
+
+        // TODO Dit is allemaal tijdelijk totdat we het nieuwe endpoint gaan gebruiken.
+        $infoJson['total'] = [
+            'aantal3MeterKramen' => $aantal3MeterKramen,
+            'aantal4MeterKramen' => $aantal4MeterKramen,
+            'extraMeters' => $extraMeters,
+            'aantalElektra' => $aantalElektra,
+            'afvaleiland' => $afvaleiland,
+            'grootPerMeter' => $grootPerMeter,
+            'kleinPerMeter' => $kleinPerMeter,
+            'afvalEilandAgf' => $afvalEilandAgf,
+            'krachtstroomPerStuk' => (int) $krachtstroom,
+        ];
+
         $dagvergunning->setNotitie($notitie);
 
         /** @var Sollicitatie $sollicitatie */
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $erkenningsnummer, false);
 
-        $statusLot = 'lot';
+        $ignoreVastePlaats = false;
+        if ($this->flexibeleTarievenEnabled) {
+            $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning->getMarkt(), $dagvergunning->getDag());
 
-        if (null !== $sollicitatie) {
+            // If this is true, every ondernemer will be seen as a sollicitant and vergunde plaatsen do not matter.
+            // This is because the current day is probably not a typical market day.
+            $ignoreVastePlaats = $tarievenplan->isIgnoreVastePlaats();
+        }
+
+        $statusLot = $ignoreVastePlaats ? Sollicitatie::STATUS_SOLL : Sollicitatie::STATUS_LOT;
+
+        if (null !== $sollicitatie && false === $ignoreVastePlaats) {
             $dagvergunning->setAantal3meterKramenVast($sollicitatie->getAantal3MeterKramen());
             $dagvergunning->setAantal4meterKramenVast($sollicitatie->getAantal4MeterKramen());
             $dagvergunning->setAantalMetersGrootVast($sollicitatie->getGrootPerMeter());
@@ -227,8 +280,23 @@ final class FactuurService
             $dagvergunning->setKrachtstroomVast($sollicitatie->getKrachtstroom());
             $dagvergunning->setAfvaleilandVast($sollicitatie->getAantalAfvaleilanden());
             $dagvergunning->setSollicitatie($sollicitatie);
+
+            // TODO Dit is allemaal tijdelijk totdat we het nieuwe endpoint gaan gebruiken.
+            $infoJson['paid'] = [
+                'aantal3MeterKramen' => $sollicitatie->getAantal3MeterKramen(),
+                'aantal4MeterKramen' => $sollicitatie->getAantal4MeterKramen(),
+                'extraMeters' => $sollicitatie->getAantalExtraMeters(),
+                'aantalElektra' => $sollicitatie->getAantalElektra(),
+                'afvaleiland' => $sollicitatie->getAantalAfvaleilanden(),
+                'grootPerMeter' => $sollicitatie->getGrootPerMeter(),
+                'kleinPerMeter' => $sollicitatie->getKleinPerMeter(),
+                'krachtstroomPerStuk' => $sollicitatie->getKrachtstroom(),
+            ];
+
             $statusLot = $sollicitatie->getStatus();
         }
+
+        $dagvergunning->setInfoJson($infoJson);
 
         $dagvergunning->setStatusSolliciatie($statusLot);
 

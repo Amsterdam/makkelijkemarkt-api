@@ -47,7 +47,7 @@ class Koopman
 
     /**
      * @OA\Property(example="14")
-     * @Groups({"koopman", "simpleKoopman"})
+     * @Groups({"koopman", "simpleKoopman", "koopman_xs", "koopman_s"})
      *
      * @var int
      * @ORM\Id()
@@ -58,7 +58,7 @@ class Koopman
 
     /**
      * @OA\Property()
-     * @Groups({"koopman", "simpleKoopman"})
+     * @Groups({"koopman", "simpleKoopman", "koopman_xs", "koopman_s"})
      *
      * @var string
      * @ORM\Column(type="string", length=255)
@@ -67,7 +67,7 @@ class Koopman
 
     /**
      * @OA\Property()
-     * @Groups({"koopman", "simpleKoopman"})
+     * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
      * @var string
      * @ORM\Column(type="string", length=255)
@@ -76,7 +76,7 @@ class Koopman
 
     /**
      * @OA\Property()
-     * @Groups({"koopman", "simpleKoopman"})
+     * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
      * @var ?string
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -85,7 +85,7 @@ class Koopman
 
     /**
      * @OA\Property()
-     * @Groups({"koopman", "simpleKoopman"})
+     * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
      * @var string
      * @ORM\Column(type="string", length=255)

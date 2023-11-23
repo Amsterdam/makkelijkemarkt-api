@@ -30,7 +30,9 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
         $status = [
             'lot',
             'soll',
-            'vkk',
+            'tvpl',
+            'tvplz',
+            'eb',
             'vpl',
         ];
 
@@ -59,7 +61,7 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
             $dagvergunning->setDag($dt);
             $dagvergunning->setErkenningsnummerInvoerMethode($enim);
             $dagvergunning->setRegistratieDatumtijd($dt);
-            $dagvergunning->setErkenningsnummerInvoerWaarde('1993081004');
+            $dagvergunning->setErkenningsnummerInvoerWaarde($koopman->getErkenningsnummer());
             $dagvergunning->setAanwezig('Zelf');
             $dagvergunning->setDoorgehaald(false);
             $dagvergunning->setAudit(true);

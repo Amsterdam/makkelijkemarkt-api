@@ -436,12 +436,6 @@ final class RapportController extends AbstractController
                     'vplAantalKramen%' => 0.0,
                     'vplAantalMeter' => 0,
                     'vplAantalMeter%' => 0.0,
-                    'vkkAantalDagvergunningen' => 0,
-                    'vkkAantalDagvergunningen%' => 0.0,
-                    'vkkAantalKramen' => 0,
-                    'vkkAantalKramen%' => 0.0,
-                    'vkkAantalMeter' => 0,
-                    'vkkAantalMeter%' => 0.0,
                     'tvplAantalDagvergunningen' => 0,
                     'tvplAantalDagvergunningen%' => 0.0,
                     'tvplAantalKramen' => 0,
@@ -454,6 +448,12 @@ final class RapportController extends AbstractController
                     'tvplzAantalKramen%' => 0.0,
                     'tvplzAantalMeter' => 0,
                     'tvplzAantalMeter%' => 0.0,
+                    'ebAantalDagvergunningen' => 0,
+                    'ebAantalDagvergunningen%' => 0.0,
+                    'ebAantalKramen' => 0,
+                    'ebAantalKramen%' => 0.0,
+                    'ebAantalMeter' => 0,
+                    'ebAantalMeter%' => 0.0,
                     'expAantalDagvergunningen' => 0,
                     'expAantalDagvergunningen%' => 0.0,
                     'expAantalKramen' => 0,
@@ -489,7 +489,7 @@ final class RapportController extends AbstractController
 
         foreach ($rapport as $key => $row) {
             $rapport[$key]['vplAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['vplAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
-            $rapport[$key]['vkkAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['vkkAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
+            $rapport[$key]['ebAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['ebAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
             $rapport[$key]['tvplAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['tvplAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
             $rapport[$key]['tvplzAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['tvplzAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
             $rapport[$key]['expAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['expAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
@@ -497,26 +497,26 @@ final class RapportController extends AbstractController
             $rapport[$key]['sollAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['sollAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
             $rapport[$key]['lotAantalDagvergunningen%'] = $rapport[$key]['aantalDagvergunningen'] > 0 ? $rapport[$key]['lotAantalDagvergunningen'] / $rapport[$key]['aantalDagvergunningen'] : 0;
 
-            $rapport[$key]['vplAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['vplAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['vkkAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['vkkAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['tvplAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['tvplAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['tvplzAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['tvplzAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['expAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['expAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['expfAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['expfAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['sollAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['sollAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['lotAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['lotAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
+            $rapport[$key]['vplAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['vplAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['ebAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['ebAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['tvplAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['tvplAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['tvplzAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['tvplzAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['expAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['expAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['expfAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['expfAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['sollAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['sollAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['lotAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['lotAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
 
-            $rapport[$key]['vplAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['vplAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
-            $rapport[$key]['vkkAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['vkkAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
-            $rapport[$key]['tvplAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['tvplAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
-            $rapport[$key]['tvplzAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['tvplzAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
-            $rapport[$key]['expAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['expAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
-            $rapport[$key]['expfAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['expfAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
-            $rapport[$key]['sollAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['sollAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
-            $rapport[$key]['lotAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['lotAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
+            $rapport[$key]['vplAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['vplAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
+            $rapport[$key]['ebAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['ebAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
+            $rapport[$key]['tvplAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['tvplAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
+            $rapport[$key]['tvplzAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['tvplzAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
+            $rapport[$key]['expAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['expAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
+            $rapport[$key]['expfAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['expfAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
+            $rapport[$key]['sollAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['sollAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
+            $rapport[$key]['lotAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['lotAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
 
-            $rapport[$key]['totaalAantalKramen'] = $rapport[$key]['vplAantalKramen'] + $rapport[$key]['vkkAantalKramen'] + $rapport[$key]['tvplAantalKramen'] + $rapport[$key]['tvplzAantalKramen'] + $rapport[$key]['expAantalKramen'] + $rapport[$key]['expfAantalKramen'] + $rapport[$key]['sollAantalKramen'] + $rapport[$key]['lotAantalKramen'];
-            $rapport[$key]['totaalAantalMeter'] = $rapport[$key]['vplAantalMeter'] + $rapport[$key]['vkkAantalMeter'] + $rapport[$key]['tvplAantalMeter'] + $rapport[$key]['tvplzAantalMeter'] + $rapport[$key]['expAantalMeter'] + $rapport[$key]['expfAantalMeter'] + $rapport[$key]['sollAantalMeter'] + $rapport[$key]['lotAantalMeter'];
+            $rapport[$key]['totaalAantalKramen'] = $rapport[$key]['vplAantalKramen'] + $rapport[$key]['ebAantalKramen'] + $rapport[$key]['tvplAantalKramen'] + $rapport[$key]['tvplzAantalKramen'] + $rapport[$key]['expAantalKramen'] + $rapport[$key]['expfAantalKramen'] + $rapport[$key]['sollAantalKramen'] + $rapport[$key]['lotAantalKramen'];
+            $rapport[$key]['totaalAantalMeter'] = $rapport[$key]['vplAantalMeter'] + $rapport[$key]['ebAantalMeter'] + $rapport[$key]['tvplAantalMeter'] + $rapport[$key]['tvplzAantalMeter'] + $rapport[$key]['expAantalMeter'] + $rapport[$key]['expfAantalMeter'] + $rapport[$key]['sollAantalMeter'] + $rapport[$key]['lotAantalMeter'];
 
             $rapport[$key]['totaalAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['totaalAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
             $rapport[$key]['totaalAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['totaalAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;

@@ -175,7 +175,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
 
             ->setParameter('doorgehaald', false)
             ->setParameter('dag', $dag)
-
+            ->orderBy('aantal', 'DESC')
             ->addGroupBy('d.erkenningsnummerInvoerWaarde')
             ->andHaving('COUNT(d.erkenningsnummerInvoerWaarde) > 1');
 

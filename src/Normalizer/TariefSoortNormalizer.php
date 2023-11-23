@@ -28,6 +28,8 @@ class TariefSoortNormalizer implements NormalizerInterface, NormalizerAwareInter
             'label' => $object->getLabel(),
             'tariefType' => $object->getTariefType(),
             'deleted' => $object->getDeleted(),
+            'unit' => $object->getUnit(),
+            'factuurLabel' => $object->getFactuurLabel(),
         ];
     }
 }

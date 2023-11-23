@@ -12,7 +12,11 @@ use App\Repository\DagvergunningRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\TariefplanRepository;
 use App\Test\ApiTestCase;
+use App\Utils\LocalTime;
 use DateTime;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpFoundation\Response;
 
 class DagvergunningControllerTest extends ApiTestCase
 {
@@ -684,5 +688,197 @@ class DagvergunningControllerTest extends ApiTestCase
         $this->assertIsArray($dagvergunningData['koopman']);
         $this->assertEquals($koopman->getId(), $dagvergunningData['koopman']['id']);
         $this->assertStringStartsWith($dt->format('Y-m-'), $dagvergunningData['dag']);
+    }
+
+    public function testCreateFlexDagvergunning(): void
+    {
+        $data = [
+            'aanwezig' => 'vervanger',
+            'allowDubbelstaan' => true, // turn this off to test dubbelstaan check and error TODO create a seperate test for this
+            'dag' => (new DateTime())->format('Y-m-d'),
+            'erkenningsnummer' => '12345678',
+            'erkenningsnummerInvoerMethode' => 'handmatig',
+            'marktId' => 37,
+            'notitie' => 'test',
+            'products' => [
+                'total' => [
+                    [
+                        'dagvergunningKey' => 'aantal3MeterKramen',
+                        'amount' => 25,
+                    ],
+                    [
+                        'dagvergunningKey' => 'aantal4MeterKramen',
+                        'amount' => 23,
+                    ],
+                    [
+                        'dagvergunningKey' => 'extraMeters',
+                        'amount' => 22,
+                    ],
+                ],
+                'paid' => [
+                    [
+                        'dagvergunningKey' => 'aantal3MeterKramen',
+                        'amount' => 2,
+                    ],
+                ],
+            ],
+            'registratieGeolocatie' => '52.3675733,4.9041383',
+            'saveFactuur' => true,
+            'vervangerErkenningsnummer' => '1973394344',
+            'registratieDatumtijd' => (new LocalTime())->format('Y-m-d H:i:s'),
+        ];
+
+        $response = $this->client->post('/api/1.1.0/flex/dagvergunning/', [
+            'headers' => $this->headers,
+            'body' => json_encode($data),
+        ]);
+
+        $factuurData = json_decode((string) $response->getBody(), true);
+
+        $expectedKeys = [
+            'id',
+            'producten',
+            'totaal',
+            'exclusief',
+        ];
+
+        foreach ($expectedKeys as $expectedKey) {
+            $this->assertArrayHasKey($expectedKey, $factuurData);
+        }
+    }
+
+    public function testFlexGetById(): void
+    {
+        /** @var DagvergunningRepository $dagvergunningRepository */
+        $dagvergunningRepository = $this->entityManager->getRepository(Dagvergunning::class);
+        $dagvergunning = $dagvergunningRepository->findOneBy([], ['id' => 'DESC']);
+        $id = $dagvergunning->getId();
+
+        $response = $this->client->get("/api/1.1.0/flex/dagvergunning/$id", ['headers' => $this->headers]);
+        $dagvergunningData = json_decode((string) $response->getBody(), true);
+
+        $expectedKeys = [
+            'id',
+            'dag',
+            'erkenningsnummerInvoerMethode',
+            'erkenningsnummer',
+            'aanwezig',
+            'status',
+            'notitie',
+            'markt',
+            'koopman',
+            'factuur',
+            'products',
+            'aanmaakDatumtijd',
+            'registratieDatumtijd',
+            'audit',
+            'auditReason',
+            'vervanger',
+            'registratieAccount',
+        ];
+
+        foreach ($expectedKeys as $expectedKey) {
+            $this->assertArrayHasKey($expectedKey, $dagvergunningData);
+        }
+    }
+
+    // Used for app, very slim call.
+    public function testFlexGetAll(): void
+    {
+        $response = $this->client->get('/api/1.1.0/flex/dagvergunning/', ['headers' => $this->headers]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $responseData = json_decode((string) $response->getBody(), true);
+        $dagvergunningData = reset($responseData);
+
+        $expectedKeys = [
+            'id',
+            'koopman',
+            'audit',
+            'auditReason',
+            'notitie',
+            'registratieAccount',
+        ];
+
+        foreach ($expectedKeys as $expectedKey) {
+            $this->assertArrayHasKey($expectedKey, $dagvergunningData);
+        }
+    }
+
+    public function testPatchDagvergunning(): void
+    {
+        $repository = $this->entityManager->getRepository(Dagvergunning::class);
+        $dagvergunning = $repository->findOneBy([], ['id' => 'ASC']);
+        $id = $dagvergunning->getId();
+
+        $reason = 'Audit reason '.bin2hex(random_bytes(4));
+        $data = [
+            'audit' => !$dagvergunning->getAudit(),
+            'auditReason' => $reason,
+        ];
+
+        $response = $this->client->patch(
+            "/api/1.1.0/dagvergunning/$id",
+            [
+                'headers' => $this->headers,
+                'body' => json_encode($data),
+            ]
+        );
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->entityManager->refresh($dagvergunning);
+
+        $updatedDagvergunning = $repository->find($id);
+
+        $this->assertEquals($data['audit'], $updatedDagvergunning->getAudit());
+        $this->assertEquals($reason, $updatedDagvergunning->getAuditReason());
+    }
+
+    public function testPatchNonexistentDagvergunning(): void
+    {
+        $dagvergunning = $this->entityManager->getRepository(Dagvergunning::class)->findOneBy([], ['id' => 'DESC']);
+        $id = $dagvergunning->getId() + 1;
+
+        $data = [
+            'audit' => true,
+            'auditReason' => 'Audit reason # '.rand(1, 1000),
+        ];
+
+        try {
+            $response = $this->client->patch(
+                "/api/1.1.0/dagvergunning/$id",
+                [
+                'headers' => $this->headers,
+                'body' => json_encode($data),
+                ]
+            );
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+        }
+    }
+
+    public function testPatchInvalidData(): void
+    {
+        $dagvergunning = $this->entityManager->getRepository(Dagvergunning::class)->findOneBy([]);
+
+        $id = $dagvergunning->getId();
+
+        $data = [
+            'audit' => 'invalid',
+        ];
+
+        try {
+            $response = $this->client->patch(
+                "/api/1.1.0/dagvergunning/$id",
+                [
+                    'headers' => $this->headers,
+                    'body' => json_encode($data),
+                ]
+            );
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
+        }
     }
 }

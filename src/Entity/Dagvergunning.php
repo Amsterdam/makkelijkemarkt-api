@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Utils\LocalTime;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,6 +30,20 @@ class Dagvergunning
 {
     use MarktKraamTrait;
 
+    // These are states in de aanwezig (presence) column.
+    // All these states count as presence for the ondernemer (not replacement)
+    public const PRESENCE_SELF = [
+        'SELF' => 'zelf',
+        'NOT_PRESENT' => 'niet_aanwezig',
+        'PARTNER' => 'partner',
+        'UNAUTHORIZED_REPLACEMENT' => 'vervanger_zonder_toestemming',
+        'REPLACEMENT_WITH_EXEMPTION' => 'vervanger_met_ontheffing',
+    ];
+
+    public const PRESENCE_AUTHORIZED_REPLACEMENT = [
+        'AUTHORIZED_REPLACEMENT' => 'vervanger_met_toestemming',
+    ];
+
     /** @var string */
     public const AUDIT_VERVANGER_ZONDER_TOESTEMMING = 'vervanger_zonder_toestemming';
 
@@ -38,9 +53,36 @@ class Dagvergunning
     /** @var string */
     public const AUDIT_LOTEN = 'loten';
 
+    // Keys of dagvergunning products that are related to SOLL tarieven which are not yet paid upfront.
+    // A lot of them have a NOT NULL constraint.
+    public const UNPAID_PRODUCT_KEYS = [
+        'aantal3MeterKramen',
+        'aantal4MeterKramen',
+        'extraMeters',
+        'aantalElektra',
+        'krachtstroom',
+        'reiniging',
+        'afvaleiland',
+        'eenmaligElektra',
+        'grootPerMeter',
+        'kleinPerMeter',
+        'krachtstroomPerStuk',
+    ];
+
+    public const PAID_PRODUCT_KEYS = [
+        'aantal3MeterKramenVast',
+        'aantal4MeterKramenVast',
+        'aantalExtraMetersVast',
+        'aantalElektraVast',
+        'krachtstroomVast',
+        'afvaleilandVast',
+        'aantalMetersGrootVast',
+        'aantalMetersKleinVast',
+    ];
+
     /**
      * @OA\Property(example="14")
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      *
      * @var int
      * @ORM\Id()
@@ -51,7 +93,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var DateTimeInterface
      * @ORM\Column(type="date")
@@ -60,7 +102,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
      * @ORM\Column(type="string", length=50)
@@ -69,7 +111,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @SerializedName("erkenningsnummer")
      *
      * @var string
@@ -79,7 +121,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      *
      * @var string
      * @ORM\Column(type="string", length=50)
@@ -260,7 +302,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @SerializedName("status")
      *
      * @var string
@@ -270,7 +312,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
      * @ORM\Column(type="text", nullable=true)
@@ -297,7 +339,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var bool
      * @ORM\Column(type="boolean", options={"default": false})
@@ -306,7 +348,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
      * @ORM\Column(type="string", nullable=true)
@@ -364,7 +406,7 @@ class Dagvergunning
     private $doorgehaaldAccount;
 
     /**
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @MaxDepth(1)
      *
      * @var Markt
@@ -374,7 +416,7 @@ class Dagvergunning
     private $markt;
 
     /**
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      * @MaxDepth(1)
      *
      * @var Koopman
@@ -384,7 +426,7 @@ class Dagvergunning
     private $koopman;
 
     /**
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @MaxDepth(1)
      *
      * @var Koopman
@@ -395,7 +437,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var Account
      * @ORM\ManyToOne(targetEntity="Account", fetch="LAZY")
@@ -416,7 +458,7 @@ class Dagvergunning
 
     /**
      * @OA\Property()
-     * @Groups("dagvergunning")
+     * @Groups({"dagvergunning", "dagvergunning_s"})
      * @MaxDepth(1)
      *
      * @var Factuur
@@ -433,6 +475,13 @@ class Dagvergunning
      * @ORM\OneToMany(targetEntity="VergunningControle", mappedBy="dagvergunning")
      */
     private $vergunningControles;
+
+    /**
+     * @Groups("dagvergunning_s")
+     * @ORM\Column(type="json", nullable=true)
+     * @SerializedName("products")
+     */
+    private $infoJson = [];
 
     public function __construct()
     {
@@ -833,7 +882,9 @@ class Dagvergunning
         $this->doorgehaaldDatumtijd = $doorgehaaldDatumtijd;
 
         if (null !== $doorgehaaldDatumtijd) {
-            $this->verwijderdDatumtijd = new \DateTime();
+            // TODO convert this to UTC when we have released the new mobile app
+            // and dont need to be backwards compatible anymore.
+            $this->verwijderdDatumtijd = new LocalTime();
         }
 
         return $this;
@@ -1000,5 +1051,43 @@ class Dagvergunning
         $this->vergunningControles[] = $vergunningControle;
 
         return $this;
+    }
+
+    public function getInfoJson(): ?array
+    {
+        $infoJson = $this->infoJson;
+
+        $infoJson['unpaid'] = $this->getUnpaidProducts();
+
+        return $infoJson;
+    }
+
+    public function setInfoJson(?array $infoJson): self
+    {
+        $this->infoJson = $infoJson;
+
+        return $this;
+    }
+
+    public function getTotalProducts(): array
+    {
+        return $this->infoJson['total'] ?? [];
+    }
+
+    public function getPaidProducts(): array
+    {
+        return $this->infoJson['paid'] ?? [];
+    }
+
+    public function getUnpaidProducts(): array
+    {
+        $total = $this->getTotalProducts();
+        $paid = $this->getPaidProducts();
+        $unpaid = [];
+        foreach ($total as $key => $value) {
+            $unpaid[$key] = array_key_exists($key, $paid) ? intval($value) - intval($paid[$key]) : intval($value);
+        }
+
+        return $unpaid;
     }
 }

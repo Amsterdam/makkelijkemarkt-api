@@ -7,6 +7,7 @@ use App\Entity\TariefSoort;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method BtwPlan|null find($id, $lockMode = null, $lockVersion = null)
@@ -21,7 +22,24 @@ class BtwPlanRepository extends ServiceEntityRepository
         parent::__construct($registry, BtwPlan::class);
     }
 
-    public function findCurrentByTariefSoort(TariefSoort $tariefSoort)
+    public function findCurrentByTariefSoort(TariefSoort $tariefSoort, $marktId = null)
+    {
+        // First check if there is a BTW plan specific for this market
+        $btwPlan = $this->findCurrentForMarket($tariefSoort, $marktId);
+
+        // Check for a generic plan if we can't find a BTW plan related to a market
+        if (!$btwPlan) {
+            $btwPlan = $this->findCurrentForMarket($tariefSoort, null);
+        }
+
+        if (!$btwPlan) {
+            throw new Exception("Can't find BTW Plan for tariefsoort: ".$tariefSoort->getId());
+        }
+
+        return $btwPlan;
+    }
+
+    public function findCurrentForMarket(TariefSoort $tariefSoort, $marktId)
     {
         $now = new DateTime();
         $qb = $this
@@ -34,10 +52,12 @@ class BtwPlanRepository extends ServiceEntityRepository
             ->orderBy('row.dateFrom', 'DESC')
             ->setMaxResults(1);
 
-        /** @var BtwPlan[] */
-        $btwPlan = $qb->getQuery()->execute();
+        $marktId
+            ? $qb->andWhere('row.markt = :marktId')->setParameter('marktId', $marktId)
+            : $qb->andWhere('row.markt IS NULL');
 
-        return $btwPlan;
+        /* @var BtwPlan[] */
+        return $qb->getQuery()->execute();
     }
 
     /**
