@@ -74,7 +74,6 @@ class ApiTestCase extends WebTestCase
             'Content-Type' => 'application/json',
             'HTTP_Authorization' => 'Bearer '.$token->getUuid(),
             'Authorization' => 'Bearer '.$token->getUuid(),
-            'HTTP_MmAppKey' => $_SERVER['MM_APP_KEY'],
             'MmAppKey' => $_SERVER['MM_APP_KEY'],
         ];
     }

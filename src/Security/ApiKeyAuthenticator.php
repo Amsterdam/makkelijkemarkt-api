@@ -7,6 +7,7 @@ namespace App\Security;
 use App\Entity\Account;
 use App\Entity\Token;
 use App\Repository\TokenRepository;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,12 +22,18 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
     /** @var string */
     private $mmApiKey;
 
+    private FirewallMap $firewallMap;
+
     /** @var TokenRepository */
     private $tokenRepository;
 
-    public function __construct(string $mmApiKey, TokenRepository $tokenRepository)
-    {
+    public function __construct(
+        string $mmApiKey,
+        FirewallMap $firewallMap,
+        TokenRepository $tokenRepository
+    ) {
         $this->mmApiKey = $mmApiKey;
+        $this->firewallMap = $firewallMap;
         $this->tokenRepository = $tokenRepository;
     }
 
@@ -39,7 +46,11 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
     {
         $appKey = $request->headers->get('MmAppKey');
 
-        if ($appKey !== $this->mmApiKey) {
+        // Since API keys cannot be safely stored in mobile apps,
+        // we have two seperate routes for mobile and API.
+        $firewallName = $this->firewallMap->getFirewallConfig($request)->getName();
+
+        if ($appKey !== $this->mmApiKey && 'mobile' !== $firewallName) {
             throw new AuthenticationException('Invalid application key');
         }
 

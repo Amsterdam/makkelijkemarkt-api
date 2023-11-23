@@ -45,6 +45,7 @@ services:
     App\Security\ApiKeyAuthenticator:
         arguments:
             $mmApiKey: '%app_mm_key%'
+            $firewallMap: '@security.firewall.map'
 
     App\Process\PerfectViewKoopmanFotoImport:
         bind:
