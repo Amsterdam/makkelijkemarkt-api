@@ -6,6 +6,7 @@ use App\Azure\AzureStorage;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -53,6 +54,8 @@ class ImageController extends AbstractController
 
         $url = 'https://marktendataol5ct7bz3yely.blob.core.windows.net/data/avatar.png';
 
-        return new RedirectResponse($url, 302, $headers);
+        return new JsonResponse(['token' => $jwtToken], 200);
+
+        // return new RedirectResponse($url, 302, $headers);
     }
 }
