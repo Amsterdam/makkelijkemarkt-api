@@ -7,6 +7,7 @@ use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ImageController extends AbstractController
 {
@@ -19,7 +20,9 @@ class ImageController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/image/open/{id}",
+     *     path="/api/1.1.0/image/open/{id}",
+     *     security={{"api_key": {}}},
+     *     operationId="Get image from object store Azure",
      *     tags={"Images"},
      *     summary="Get all images",
      *     description="Get all images",
@@ -33,6 +36,8 @@ class ImageController extends AbstractController
      *     )
      * )
      * @Security("is_granted('ROLE_SENIOR')")
+     *
+     * @Route("/image/open/{id}", methods={"GET"})
      */
     public function open(string $id = '')
     {
