@@ -42,10 +42,10 @@ deployments:
       SWIFT_TEMP_URL_KEY:
       SWIFT_EXTERNAL_DOMAIN:
       MM_API__NGINX_HTPASSWD: insecure
-      AZURE_AUTHORITY_HOST:
-      AZURE_TENANT_ID:
-      AZURE_FEDERATED_TOKEN_FILE:
-      AZURE_CLIENT_ID:
+      AZURE_AUTHORITY_HOST: ''
+      AZURE_TENANT_ID: ' '
+      AZURE_FEDERATED_TOKEN_FILE: ''
+      AZURE_CLIENT_ID: ''
     containers:
       - name: main
         ports:
