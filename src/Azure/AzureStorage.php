@@ -199,7 +199,7 @@ class AzureStorage
         $tenantId = $this->azureTenantId;
         $tokenUrl = "$authorityHost$tenantId/oauth2/v2.0/token";
         $grantType = 'client_credentials';
-        $scope = 'https://storage.azure.com/.default';
+        $scope = 'https://management.azure.com//.default'; // double slash is on purpose
         $clientAssertion = file_get_contents($this->azureFederatedTokenFile);
         $clientAssertionType = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
         $clientId = $this->azureClientId;
