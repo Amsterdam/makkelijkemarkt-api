@@ -131,7 +131,7 @@ class AzureStorage
         $body = $response->getContent(false);
         $data = json_decode($body, true);
 
-        $this->logger->warning('SAS: '.$data);
+        $this->logger->warning('SAS: ', $data);
 
         return $data['serviceSasToken'];
     }
