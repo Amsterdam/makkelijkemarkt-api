@@ -44,7 +44,7 @@ class AzureStorage
         $accountName = $config['accountName'];
         $resourceType = $config['resourceType'];
         $permissions = $config['permissions'];
-        $key = $config['key'];
+        // $key = $config['key'];
         $sv = $config['sv'];
 
         $expired = (new \DateTime('now + 1 hour'))->format('Y-m-d\TH:i:s\Z');
