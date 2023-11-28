@@ -202,7 +202,7 @@ class AzureStorage
         $scope = 'https://management.azure.com//.default'; // double slash is on purpose
         $clientAssertion = file_get_contents($this->azureFederatedTokenFile);
         $clientAssertionType = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
-        $clientId = $this->azureClientId;
+        $clientId = '04fee5af-8045-4b7d-a0b9-c8c755ebbb63';
         // Prepare the request payload
         $payload = ['grant_type' => $grantType, 'scope' => $scope, 'client_assertion' => $clientAssertion, 'client_assertion_type' => $clientAssertionType, 'client_id' => $clientId];
 
