@@ -12,12 +12,12 @@ class SASImageReaderConfig
         // $key
     ) {
         $this->config = [
-        'accountName' => $storageAccountName,
-        'container' => $imageContainer,
-        'resourceType' => 'b',
-        'permissions' => 'r',
-        // 'key' => $key,
-        'sv' => '2023-01-01',
+            'accountName' => $storageAccountName,
+            'container' => $imageContainer,
+            'resourceType' => 'b',
+            'permissions' => 'r',
+            // 'key' => $key,
+            'sv' => '2023-01-01',
         ];
     }
 
