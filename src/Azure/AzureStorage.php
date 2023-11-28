@@ -32,17 +32,17 @@ class AzureStorage
     // Generate a service SAS token.
     // https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/tutorial-linux-vm-access-storage-sas
     // https://learn.microsoft.com/en-us/rest/api/storageservices/service-sas-examples
-    public function generateURLForImageReading(SASImageReaderConfig $config, $blob)
+    public function generateURLForImageReading(SASImageReaderConfig $SASImageReaderConfig, $blob)
     {
-        $settings = $config->getConfig();
+        $config = $SASImageReaderConfig->getConfig();
 
         $blob = 'avatar.png';
-        $container = $settings['container'];
-        $accountName = $settings['accountName'];
-        $resourceType = $settings['resourceType'];
-        $permissions = $settings['permissions'];
-        $key = $settings['key'];
-        $sv = $settings['sv'];
+        $container = $config['container'];
+        $accountName = $config['accountName'];
+        $resourceType = $config['resourceType'];
+        $permissions = $config['permissions'];
+        $key = $config['key'];
+        $sv = $config['sv'];
 
         $expired = (new \DateTime('now + 1 hour'))->format('Y-m-d\TH:i:s\Z');
         $start = (new \DateTime('15 minutes ago'))->format('Y-m-d\TH:i:s\Z');
