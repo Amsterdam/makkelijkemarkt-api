@@ -17,6 +17,12 @@ class AzureStorage
 
     private string $imageStorageId;
 
+    private string $azureAuthorityHost;
+
+    private string $azureTenantId;
+
+    private string $azureFederatedTokenFile;
+
     private SASImageReaderConfig $SASImageReaderConfig;
 
     private LoggerInterface $logger;
@@ -27,7 +33,10 @@ class AzureStorage
         string $azureSubscriptionId,
         string $azureClientId,
         string $imageStorageId,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        string $azureAuthorityHost,
+        string $azureTenantId,
+        string $azureFederatedTokenFile
     ) {
         $this->client = $client;
         $this->azureSubscriptionId = $azureSubscriptionId;
@@ -35,6 +44,9 @@ class AzureStorage
         $this->SASImageReaderConfig = $SASImageReaderConfig;
         $this->imageStorageId = $imageStorageId;
         $this->logger = $logger;
+        $this->azureAuthorityHost = $azureAuthorityHost;
+        $this->azureTenantId = $azureTenantId;
+        $this->azureFederatedTokenFile = $azureFederatedTokenFile;
         // $this->azureAuthorityHost = $azureAuthorityHost;
         // $this->azureTenantId = $azureTenantId;
         // $this->azureFederatedTokenFile = $azureFederatedTokenFile;
@@ -59,7 +71,7 @@ class AzureStorage
         $start = (new \DateTime('15 minutes ago'))->format('Y-m-d\TH:i:s\Z');
 
         // First we need an access token to get a SAS from the resource manager
-        $accessToken = $this->getAccessTokenThroughManagedIdentity();
+        $accessToken = $this->getPasswordFromAzure();
 
         $signature = $this->getSASFromResourceManager(
             $accessToken,
@@ -175,52 +187,34 @@ class AzureStorage
         return $accessToken;
     }
 
+    // TODO deze manier weer proberen
     // https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/tutorial-linux-vm-access-storage-sas
-    // private function getPasswordFromAzure(): string
-    // {
+    private function getPasswordFromAzure(): string
+    {
+        // TODO implement caching
+        // TODO make this a bit more clean
+        $authorityHost = $this->azureAuthorityHost;
+        $tenantId = $this->azureTenantId;
+        $tokenUrl = "$authorityHost$tenantId/oauth2/v2.0/token";
+        $grantType = 'client_credentials';
+        $scope = 'https://management.azure.com/';
+        $clientAssertion = file_get_contents($this->azureFederatedTokenFile);
+        $clientAssertionType = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
+        $clientId = $this->azureClientId;
+        // Prepare the request payload
+        $payload = ['grant_type' => $grantType, 'scope' => $scope, 'client_assertion' => $clientAssertion, 'client_assertion_type' => $clientAssertionType, 'client_id' => $clientId];
 
-    //     $response = $this->client->request('GET', 'http://169.254.169.254/metadata/identity/oauth2/token', [
-    //         RequestOptions::HEADERS => [
-    //             'Metadata' => 'true'
-    //         ],
-    //         RequestOptions::QUERY => [
-    //             'api-version' => '2018-02-01',
-    //             'resource' => 'https://management.azure.com/'
-    //         ]
-    //     ]);
+        $response = $this->client->request('POST', $tokenUrl, [RequestOptions::HEADERS => ['Content-Type' => 'application/x-www-form-urlencoded'], RequestOptions::BODY => http_build_query($payload)]);
 
-    //     if ($response->getStatusCode() >= 400) {
-    //         throw new \Exception(json_encode(['url' => $response->getInfo('url'), 'response' => $response->getContent(false), 'fullresponse' => $response->toArray(false)]));
-    //     }
+        if ($response->getStatusCode() >= 400) {
+            throw new \Exception(json_encode(['url' => $tokenUrl, 'payload' => $payload, 'response' => $response->getContent(false), 'fullresponse' => $response->toArray(false)]));
+        }
 
-    //     $body = $response->getContent(false);
-    //     $data = json_decode($body, true);
+        $body = $response->getContent(false);
+        $data = json_decode($body, true);
 
-    //     $accessToken = $data['access_token'];
-    //     // TODO implement caching
-    //     // TODO make this a bit more clean
-    //     $authorityHost = $this->azureAuthorityHost;
-    //     $tenantId = $this->azureTenantId;
-    //     $tokenUrl = "$authorityHost$tenantId/oauth2/v2.0/token";
-    //     $grantType = 'client_credentials';
-    //     $scope = 'https://storage.azure.com/.default';
-    //     $clientAssertion = file_get_contents($this->azureFederatedTokenFile);
-    //     $clientAssertionType = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
-    //     $clientId = $this->azureClientId;
-    //     // Prepare the request payload
-    //     $payload = ['grant_type' => $grantType, 'scope' => $scope, 'client_assertion' => $clientAssertion, 'client_assertion_type' => $clientAssertionType, 'client_id' => $clientId];
+        $accessToken = $data['access_token'];
 
-    //     $response = $this->client->request('POST', $tokenUrl, [RequestOptions::HEADERS => ['Content-Type' => 'application/x-www-form-urlencoded'], RequestOptions::BODY => http_build_query($payload)]);
-
-    //     if ($response->getStatusCode() >= 400) {
-    //         throw new \Exception(json_encode(['url' => $tokenUrl, 'payload' => $payload, 'response' => $response->getContent(false), 'fullresponse' => $response->toArray(false)]));
-    //     }
-
-    //     $body = $response->getContent(false);
-    //     $data = json_decode($body, true);
-
-    //     $accessToken = $data['access_token'];
-
-    //     return $accessToken;
-    // }
+        return $accessToken;
+    }
 }
