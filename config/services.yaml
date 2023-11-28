@@ -72,10 +72,8 @@ services:
 
     App\Azure\Config\SASImageReaderConfig:
         arguments:
-            $azureAuthorityHost: '%azureAuthorityHost%'
-            $azureTenantId: '%azureTenantId%'
-            $azureClientId: '%azureClientId%'
-            $azureFederatedTokenFile: '%azureFederatedTokenFile%'
+            $accountName: '%accountName%'
+            $imageContainer: '%imageContainer%'
 
     # for unit test
     app.service.factuur:

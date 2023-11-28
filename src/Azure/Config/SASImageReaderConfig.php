@@ -7,12 +7,12 @@ class SASImageReaderConfig
     private array $config;
 
     public function __construct(
-        $accountName,
+        $storageAccountName,
         $imageContainer
         // $key
     ) {
         $this->config = [
-        'accountName' => $accountName,
+        'accountName' => $storageAccountName,
         'container' => $imageContainer,
         'resourceType' => 'b',
         'permissions' => 'r',
