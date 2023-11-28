@@ -21,7 +21,7 @@ class ImageController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/api/1.1.0/image/open/{id}",
+     *     path="/api/1.1.0/image/open/{image}",
      *     security={{"api_key": {}}},
      *     operationId="Get image from object store Azure",
      *     tags={"Images"},
@@ -38,7 +38,7 @@ class ImageController extends AbstractController
      * )
      * @Security("is_granted('ROLE_SENIOR')")
      *
-     * @Route("/image/open/{id}", methods={"GET"})
+     * @Route("/image/open/{image}", methods={"GET"})
      */
     public function open(string $image = '')
     {
