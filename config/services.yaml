@@ -64,16 +64,17 @@ services:
             $azureClientId: '%azureClientId%'
             $azureFederatedTokenFile: '%azureFederatedTokenFile%'
 
+    app_azure_sas_image_config:
+        class: App\Azure\Config\SASImageReaderConfig
+        arguments:
+            $storageAccountName: '%storageAccountName%'
+            $imageContainer: '%imageContainer%'
+
     App\Azure\AzureStorage:
         arguments:
             $azureSubscriptionId: '%azureSubscriptionId%'
         bind:
-            $SASImageReaderConfig: '@App\Azure\Config\SASImageReaderConfig'
-
-    App\Azure\Config\SASImageReaderConfig:
-        arguments:
-            $storageAccountName: '%storageAccountName%'
-            $imageContainer: '%imageContainer%'
+            $SASImageReaderConfig: app_azure_sas_image_config'
 
     # for unit test
     app.service.factuur:
