@@ -13,6 +13,10 @@ class AzureStorage
 
     private string $azureSubscriptionId;
 
+    private string $azureClientId;
+
+    private string $imageStorageId;
+
     private SASImageReaderConfig $SASImageReaderConfig;
 
     private LoggerInterface $logger;
@@ -21,11 +25,15 @@ class AzureStorage
         HttpClientInterface $client,
         SASImageReaderConfig $SASImageReaderConfig,
         string $azureSubscriptionId,
+        string $azureClientId,
+        string $imageStorageId,
         LoggerInterface $logger
     ) {
         $this->client = $client;
         $this->azureSubscriptionId = $azureSubscriptionId;
+        $this->azureClientId = $azureClientId;
         $this->SASImageReaderConfig = $SASImageReaderConfig;
+        $this->imageStorageId = $imageStorageId;
         $this->logger = $logger;
         // $this->azureAuthorityHost = $azureAuthorityHost;
         // $this->azureTenantId = $azureTenantId;
@@ -149,6 +157,8 @@ class AzureStorage
             RequestOptions::QUERY => [
                 'api-version' => '2018-02-01',
                 'resource' => 'https://management.azure.com/',
+                'clientId' => $this->azureClientId,
+                'resourceId' => $this->imageStorageId,
             ],
         ]);
 

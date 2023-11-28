@@ -18,6 +18,7 @@ deployments:
       AZURE_STORAGE_ACCOUNT_NAME: marktendataol5ct7bz3yely
       AZURE_STORAGE_IMAGE_CONTAINER: data
       AZURE_SUBSCRIPTION_ID: 20ca2e82-e9ec-4254-9f69-fee7686aede6
+      AZURE_IMAGE_STORAGE_ID: "/subscriptions/20ca2e82-e9ec-4254-9f69-fee7686aede6/resourceGroups/markten-o-rg/providers/Microsoft.Storage/storageAccounts/marktendataol5ct7bz3yely"
 
     autoscale:
       cpu: 70

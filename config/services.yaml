@@ -15,6 +15,7 @@ parameters:
     storageAccountName: '%env(AZURE_STORAGE_ACCOUNT_NAME)%'
     imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
     azureSubscriptionId: '%env(AZURE_SUBSCRIPTION_ID)%'
+    imageStorageId: '%env(AZURE_IMAGE_STORAGE_ID)%'
 
 services:
     # default configuration for services in *this* file
@@ -73,7 +74,9 @@ services:
     App\Azure\AzureStorage:
         arguments:
             $azureSubscriptionId: '%azureSubscriptionId%'
+            $azureClientId: '%azureClientId%'
             $SASImageReaderConfig: '@app_azure_sas_image_config'
+            $imageStorageId: '%imageStorageId%'
 
     # for unit test
     app.service.factuur:
