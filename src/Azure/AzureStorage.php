@@ -158,7 +158,7 @@ class AzureStorage
                 'api-version' => '2018-02-01',
                 'resource' => 'https://management.azure.com/',
                 'clientId' => $this->azureClientId,
-                'resourceId' => $this->imageStorageId,
+                // 'resourceId' => $this->imageStorageId,
             ],
         ]);
 
