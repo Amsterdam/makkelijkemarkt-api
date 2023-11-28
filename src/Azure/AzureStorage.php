@@ -13,15 +13,19 @@ class AzureStorage
 
     private string $azureSubscriptionId;
 
+    private SASImageReaderConfig $SASImageReaderConfig;
+
     private LoggerInterface $logger;
 
     public function __construct(
         HttpClientInterface $client,
+        SASImageReaderConfig $SASImageReaderConfig,
         string $azureSubscriptionId,
         LoggerInterface $logger
     ) {
         $this->client = $client;
         $this->azureSubscriptionId = $azureSubscriptionId;
+        $this->SASImageReaderConfig = $SASImageReaderConfig;
         $this->logger = $logger;
         // $this->azureAuthorityHost = $azureAuthorityHost;
         // $this->azureTenantId = $azureTenantId;
@@ -34,7 +38,7 @@ class AzureStorage
     // https://learn.microsoft.com/en-us/rest/api/storageservices/service-sas-examples
     public function generateURLForImageReading(SASImageReaderConfig $SASImageReaderConfig, $blob)
     {
-        $config = $SASImageReaderConfig->getConfig();
+        $config = $this->SASImageReaderConfig->getConfig();
 
         $blob = 'avatar.png';
         $container = $config['container'];
@@ -90,7 +94,7 @@ class AzureStorage
 
     private function getSASFromResourceManager($accessToken, $start, $expired)
     {
-        $response = $this->client->request('POST', 'https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/MarktenData/providers/Microsoft.Storage/storageAccounts/marktendataol5ct7bz3yely/listServiceSas?api-version=2019-06-01', [
+        $response = $this->client->request('POST', 'https://management.azure.com/subscriptions/'.$this->azureSubscriptionId.'/resourceGroups/MarktenData/providers/Microsoft.Storage/storageAccounts/marktendataol5ct7bz3yely/listServiceSas?api-version=2019-06-01', [
             RequestOptions::HEADERS => [
                 'Authorization' => 'Bearer '.$accessToken,
                 'Content-Type' => 'application/json',

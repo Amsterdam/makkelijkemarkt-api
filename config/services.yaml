@@ -73,7 +73,6 @@ services:
     App\Azure\AzureStorage:
         arguments:
             $azureSubscriptionId: '%azureSubscriptionId%'
-        bind:
             $SASImageReaderConfig: '@app_azure_sas_image_config'
 
     # for unit test
