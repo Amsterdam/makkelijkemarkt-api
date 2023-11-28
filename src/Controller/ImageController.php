@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Azure\AzureStorage;
+use App\Azure\Config\SASImageReaderConfig;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,9 +15,12 @@ class ImageController extends AbstractController
 {
     private AzureStorage $azureStorage;
 
-    public function __construct(AzureStorage $azureStorage)
+    private SASImageReaderConfig $config;
+
+    public function __construct(AzureStorage $azureStorage, $config)
     {
         $this->azureStorage = $azureStorage;
+        $this->config = $config;
     }
 
     /**
@@ -40,22 +44,27 @@ class ImageController extends AbstractController
      *
      * @Route("/image/open/{id}", methods={"GET"})
      */
-    public function open(string $id = '')
+    public function open(string $image = '')
     {
-        if ('' === $id) {
-            throw new \Exception('No id given');
+        if ('' === $image) {
+            throw new \Exception('No image given');
         }
 
-        $jwtToken = $this->azureStorage->getPassword('');
+        $image = 'avatar.png';
 
-        $headers = [
-            'Authorization' => 'Bearer '.$jwtToken,
-        ];
+        $imageUrl = $this->azureStorage->generateURLForImageReading(
+            $this->config,
+            $image,
+        );
+
+        // $headers = [
+        //     'Authorization' => 'Bearer '.$jwtToken,
+        // ];
 
         $url = 'https://marktendataol5ct7bz3yely.blob.core.windows.net/data/avatar.png';
 
-        return new JsonResponse(['token' => $jwtToken], 200);
+        // return new JsonResponse(['token' => $jwtToken], 200);
 
-        // return new RedirectResponse($url, 302, $headers);
+        return new RedirectResponse($imageUrl, 302);
     }
 }

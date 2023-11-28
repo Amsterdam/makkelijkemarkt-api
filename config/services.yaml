@@ -12,6 +12,9 @@ parameters:
     azureTenantId: '%env(AZURE_TENANT_ID)%'
     azureClientId: '%env(AZURE_CLIENT_ID)%'
     azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
+    accountName: '%env(AZURE_STORAGE_ACCOUNT_NAME)%'
+    imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
+    azureSubscriptionId: '%env(AZURE_SUBSCRIPTION_ID)%'
 
 services:
     # default configuration for services in *this* file
@@ -55,6 +58,19 @@ services:
             $container: '@service_container'
 
     App\Azure\AzureDatabase:
+        arguments:
+            $azureAuthorityHost: '%azureAuthorityHost%'
+            $azureTenantId: '%azureTenantId%'
+            $azureClientId: '%azureClientId%'
+            $azureFederatedTokenFile: '%azureFederatedTokenFile%'
+
+    App\Azure\AzureStorage:
+        arguments:
+            $azureSubscriptionId: '%azureSubscriptionId%'
+        bind:
+            $SASImageReaderConfig: '@App\Azure\Config\SASImageReaderConfig'
+
+    App\Azure\Config\SASImageReaderConfig:
         arguments:
             $azureAuthorityHost: '%azureAuthorityHost%'
             $azureTenantId: '%azureTenantId%'
