@@ -157,7 +157,7 @@ class AzureStorage
             RequestOptions::QUERY => [
                 'api-version' => '2018-02-01',
                 'resource' => 'https://management.azure.com/',
-                'client_id' => $this->azureClientId,
+                'client_id' => '04fee5af-8045-4b7d-a0b9-c8c755ebbb63',
                 // 'resource_id' => $this->imageStorageId,
             ],
         ]);
