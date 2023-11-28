@@ -36,11 +36,10 @@ class AzureStorage
     // Generate a service SAS token.
     // https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/tutorial-linux-vm-access-storage-sas
     // https://learn.microsoft.com/en-us/rest/api/storageservices/service-sas-examples
-    public function generateURLForImageReading(SASImageReaderConfig $SASImageReaderConfig, $blob)
+    public function generateURLForImageReading($blob)
     {
         $config = $this->SASImageReaderConfig->getConfig();
 
-        $blob = 'avatar.png';
         $container = $config['container'];
         $accountName = $config['accountName'];
         $resourceType = $config['resourceType'];

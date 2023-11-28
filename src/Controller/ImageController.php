@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Azure\AzureStorage;
-use App\Azure\Config\SASImageReaderConfig;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,12 +14,9 @@ class ImageController extends AbstractController
 {
     private AzureStorage $azureStorage;
 
-    private SASImageReaderConfig $config;
-
-    public function __construct(AzureStorage $azureStorage, $config)
+    public function __construct(AzureStorage $azureStorage)
     {
         $this->azureStorage = $azureStorage;
-        $this->config = $config;
     }
 
     /**
@@ -53,7 +49,6 @@ class ImageController extends AbstractController
         $image = 'avatar.png';
 
         $imageUrl = $this->azureStorage->generateURLForImageReading(
-            $this->config,
             $image,
         );
 
