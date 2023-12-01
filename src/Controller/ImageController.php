@@ -58,8 +58,8 @@ class ImageController extends AbstractController
 
         $url = 'https://marktendataol5ct7bz3yely.blob.core.windows.net/data/avatar.png';
 
-        // return new JsonResponse(['token' => $jwtToken], 200);
+        return new JsonResponse(['url' => $imageUrl], 200);
 
-        return new RedirectResponse($imageUrl, 302);
+        // return new RedirectResponse($imageUrl, 302);
     }
 }
