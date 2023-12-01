@@ -74,6 +74,8 @@ services:
             $clientId: '%azureClientId%'
             $tenantId: '%azureTenantId%'
             $federatedTokenFile: '%azureFederatedTokenFile%'
+            $authorityHost: '%azureAuthorityHost%'
+
 
     app_azure_sas_image_config:
         class: App\Azure\Config\SASImageReaderConfig
