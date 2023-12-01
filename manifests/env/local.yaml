@@ -46,6 +46,10 @@ deployments:
       AZURE_TENANT_ID: ' '
       AZURE_FEDERATED_TOKEN_FILE: ''
       AZURE_CLIENT_ID: ''
+      AZURE_STORAGE_IMAGE_ACCOUNT: 'test'
+      AZURE_STORAGE_IMAGE_CONTAINER: 'test'
+      AZURE_SUBSCRIPTION_ID: 'test'
+      AZURE_RESOURCE_GROUP: 'test'
     containers:
       - name: main
         ports:
