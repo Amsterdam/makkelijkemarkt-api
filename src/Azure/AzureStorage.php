@@ -113,7 +113,7 @@ class AzureStorage
 
     private function getSASFromResourceManager($accessToken, $start, $expired)
     {
-        $response = $this->client->request('POST', 'https://management.azure.com/subscriptions/'.$this->azureSubscriptionId.'/resourceGroups/MarktenData/providers/Microsoft.Storage/storageAccounts/marktendataol5ct7bz3yely/listServiceSas?api-version=2019-06-01', [
+        $response = $this->client->request('POST', 'https://management.azure.com/subscriptions/'.$this->azureSubscriptionId.'/resourceGroups/markten-o-rg/providers/Microsoft.Storage/storageAccounts/marktendataol5ct7bz3yely/listServiceSas?api-version=2019-06-01', [
             RequestOptions::HEADERS => [
                 'Authorization' => 'Bearer '.$accessToken,
                 'Content-Type' => 'application/json',
