@@ -69,11 +69,11 @@ services:
     app_azure_base_config:
         class: App\Azure\Config\AzureBaseConfig
         arguments:
-            $azureSubscriptionId: '%azureSubscriptionId%'
-            $azureResourceGroup: '%azureResourceGroup%'
-            $azureClientId: '%azureClientId%'
-            $azureTenantId: '%azureTenantId%'
-            $azureFederatedTokenFile: '%azureFederatedTokenFile%'
+            $subscriptionId: '%azureSubscriptionId%'
+            $resourceGroup: '%azureResourceGroup%'
+            $clientId: '%azureClientId%'
+            $tenantId: '%azureTenantId%'
+            $federatedTokenFile: '%azureFederatedTokenFile%'
 
     app_azure_sas_image_config:
         class: App\Azure\Config\SASImageReaderConfig
