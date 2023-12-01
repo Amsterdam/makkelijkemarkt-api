@@ -15,7 +15,6 @@ parameters:
     imageStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
     imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
     azureSubscriptionId: '%env(AZURE_SUBSCRIPTION_ID)%'
-    imageStorageId: '%env(AZURE_IMAGE_STORAGE_ID)%'
     azureResourceGroup: '%env(AZURE_RESOURCE_GROUP)%'
 
 services:
