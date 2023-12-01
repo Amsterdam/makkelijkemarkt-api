@@ -171,7 +171,7 @@ class AzureStorage
             RequestOptions::QUERY => [
                 'api-version' => '2018-02-01',
                 'resource' => 'https://management.azure.com/',
-                'client_id' => '04fee5af-8045-4b7d-a0b9-c8c755ebbb63',
+                'client_id' => $this->azureClientId,
                 // 'resource_id' => $this->imageStorageId,
             ],
         ]);
@@ -202,7 +202,7 @@ class AzureStorage
         $scope = 'https://management.azure.com//.default'; // double slash is on purpose
         $clientAssertion = file_get_contents($this->azureFederatedTokenFile);
         $clientAssertionType = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
-        $clientId = '04fee5af-8045-4b7d-a0b9-c8c755ebbb63';
+        $clientId = $this->azureClientId;
         // Prepare the request payload
         $payload = ['grant_type' => $grantType, 'scope' => $scope, 'client_assertion' => $clientAssertion, 'client_assertion_type' => $clientAssertionType, 'client_id' => $clientId];
 
