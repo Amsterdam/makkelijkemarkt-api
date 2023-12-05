@@ -13,6 +13,7 @@ class MobileControllerTest extends ApiTestCase
     {
         parent::setUp();
         unset($this->headers['MmAppKey']);
+        $this->headers['mobileAccessKey'] = $_SERVER['MOBILE_ACCESS_KEY'];
     }
 
     public function testMobileLoginBasic(): void

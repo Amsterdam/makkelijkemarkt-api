@@ -19,20 +19,22 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
 {
-    /** @var string */
-    private $mmApiKey;
+    private string $mmApiKey;
+
+    private string $mobileAccessKey;
 
     private FirewallMap $firewallMap;
 
-    /** @var TokenRepository */
-    private $tokenRepository;
+    private TokenRepository $tokenRepository;
 
     public function __construct(
         string $mmApiKey,
+        string $mobileAccessKey,
         FirewallMap $firewallMap,
         TokenRepository $tokenRepository
     ) {
         $this->mmApiKey = $mmApiKey;
+        $this->mobileAccessKey = $mobileAccessKey;
         $this->firewallMap = $firewallMap;
         $this->tokenRepository = $tokenRepository;
     }
@@ -45,6 +47,7 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
     public function supports(Request $request): bool
     {
         $appKey = $request->headers->get('MmAppKey');
+        $mobileAccessKey = $request->headers->get('mobileAccessKey');
 
         // Since API keys cannot be safely stored in mobile apps,
         // we have two seperate routes for mobile and API.
@@ -52,6 +55,10 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
 
         if ($appKey !== $this->mmApiKey && 'mobile' !== $firewallName) {
             throw new AuthenticationException('Invalid application key');
+        }
+
+        if ('mobile' === $firewallName && $mobileAccessKey !== $this->mobileAccessKey) {
+            throw new AuthenticationException('Invalid mobile access key');
         }
 
         $authorizationHeader = $request->headers->get('Authorization');

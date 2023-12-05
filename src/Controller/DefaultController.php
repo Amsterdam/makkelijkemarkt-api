@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @OA\SecurityScheme(securityScheme="api_key", type="apiKey", in="header", name="MmAppKey")
  * @OA\SecurityScheme(securityScheme="bearer", type="apiKey", name="Authorization", in="header")
+ * @OA\SecurityScheme(securityScheme="mobile_access_key", type="apiKey", in="header", name="mobileAccessKey")
  */
 final class DefaultController extends AbstractController
 {
