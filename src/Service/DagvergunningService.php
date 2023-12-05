@@ -65,6 +65,7 @@ final class DagvergunningService
             ->setNotitie($data['notitie'] ?? '')
             ->setRegistratieDatumtijd($time)
             ->setAudit($data['audit'] ?? false)
+            ->setAuditReason($data['auditReason'] ?? '')
             ->setRegistratieAccount($data['account'])
             ->setDag(new DateTime($data['dag']));
 
