@@ -64,6 +64,7 @@ final class DagvergunningService
             ->setErkenningsnummerInvoerMethode($data['erkenningsnummerInvoerMethode'] ?? 'onbekend')
             ->setNotitie($data['notitie'] ?? '')
             ->setRegistratieDatumtijd($time)
+            ->setAudit($data['audit'] ?? false)
             ->setRegistratieAccount($data['account'])
             ->setDag(new DateTime($data['dag']));
 

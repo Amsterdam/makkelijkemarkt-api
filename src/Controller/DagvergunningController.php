@@ -932,6 +932,7 @@ final class DagvergunningController extends AbstractController
      *                 @OA\Property(property="vervangerErkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
      *                 @OA\Property(property="erkenningsnummerInvoerMethode", type="string", description="Waardes: handmatig, scan-foto, scan-nfc, scan-barcode, scan-qr, opgezocht, onbekend. Indien niet opgegeven wordt onbekend gebruikt."),
      *                 @OA\Property(property="notitie", type="string", description="Vrij notitie veld"),
+     *                 @OA\Property(property="audit", type="bool", description="Ondernemer should be audited in next vergunningcontrole scan"),
      *                 @OA\Property(property="registratieDatumtijd", type="string", example="yyyy-mm-dd hh:ii:ss", description="Datum/tijd dat de registratie is gemaakt, indien niet opgegeven wordt het moment van de request gebruikt"),
      *                 @OA\Property(property="registratieGeolocatie", type="string", example="lat,long", description="Geolocatie waar de registratie is ingevoerd, als lat,long"),
      *                 @OA\Property(property="products", type="object", description="Consumed products (f.e.: 4meterKraam, elektra, krachtstroom)",),
