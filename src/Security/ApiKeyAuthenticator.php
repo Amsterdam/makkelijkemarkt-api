@@ -58,6 +58,8 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
         }
 
         if ('mobile' === $firewallName && $mobileAccessKey !== $this->mobileAccessKey) {
+            // TODO return 403 response want dit geeft lelijke 500 error met stacktace
+
             throw new AuthenticationException('Invalid mobile access key');
         }
 

@@ -164,10 +164,7 @@ final class SollicitatieController extends AbstractController
         $response = $this->serializer->serialize(
             $sollicitaties,
             'json',
-            [
-                'groups' => ['sollicitatie_m', 'simpleKoopman', 'marktId', 'vervanger'],
-                'skip_null_values' => true,
-            ]
+            ['groups' => ['sollicitatie_m', 'simpleKoopman', 'marktId', 'vervanger']]
         );
 
         return new Response($response, Response::HTTP_OK, [
