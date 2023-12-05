@@ -2,19 +2,18 @@
 
 namespace App\Controller;
 
-use App\Azure\AzureStorage;
+use App\Azure\AzureStorageInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ImageController extends AbstractController
 {
-    private AzureStorage $azureStorage;
+    private AzureStorageInterface $azureStorage;
 
-    public function __construct(AzureStorage $azureStorage)
+    public function __construct(AzureStorageInterface $azureStorage)
     {
         $this->azureStorage = $azureStorage;
     }
@@ -52,14 +51,6 @@ class ImageController extends AbstractController
             $image,
         );
 
-        // $headers = [
-        //     'Authorization' => 'Bearer '.$jwtToken,
-        // ];
-
-        $url = 'https://marktendataol5ct7bz3yely.blob.core.windows.net/data/avatar.png';
-
         return new JsonResponse(['url' => $imageUrl], 200);
-
-        // return new RedirectResponse($imageUrl, 302);
     }
 }

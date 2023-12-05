@@ -65,6 +65,9 @@ services:
             $azureClientId: '%azureClientId%'
             $azureFederatedTokenFile: '%azureFederatedTokenFile%'
 
+    App\Controller\ImageController:
+        arguments: ["@=parameter('azureClientId') !== '' ? service('App\\\\Azure\\\\AzureStorage') : service('App\\\\Azure\\\\AzureStorageLocal')"]
+
     app_azure_base_config:
         class: App\Azure\Config\AzureBaseConfig
         arguments:
@@ -86,6 +89,8 @@ services:
     App\Azure\AzureStorage:
         arguments:
             $SASImageReaderConfig: '@app_azure_sas_image_config'
+
+
 
     # for unit test
     app.service.factuur:

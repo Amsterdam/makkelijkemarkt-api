@@ -7,7 +7,7 @@ use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class AzureStorage
+class AzureStorage implements AzureStorageInterface
 {
     private HttpClientInterface $client;
 
@@ -28,7 +28,7 @@ class AzureStorage
     }
 
     // Returns a url that is is signed with a SAS
-    public function generateURLForImageReading($blob)
+    public function generateURLForImageReading(string $blob): string
     {
         // Use a config to keep everything extensible
         $this->config = $this->SASImageReaderConfig->getConfig();
