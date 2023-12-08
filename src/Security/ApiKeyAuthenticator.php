@@ -11,6 +11,7 @@ use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -59,8 +60,7 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
 
         if ('mobile' === $firewallName && $mobileAccessKey !== $this->mobileAccessKey) {
             // TODO return 403 response want dit geeft lelijke 500 error met stacktace
-
-            throw new AuthenticationException('Invalid mobile access key');
+            throw new AccessDeniedHttpException('Invalid mobile access key');
         }
 
         $authorizationHeader = $request->headers->get('Authorization');
