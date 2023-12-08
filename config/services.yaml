@@ -12,6 +12,10 @@ parameters:
     azureTenantId: '%env(AZURE_TENANT_ID)%'
     azureClientId: '%env(AZURE_CLIENT_ID)%'
     azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
+    imageStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
+    imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
+    azureSubscriptionId: '%env(AZURE_SUBSCRIPTION_ID)%'
+    azureResourceGroup: '%env(AZURE_RESOURCE_GROUP)%'
 
 services:
     # default configuration for services in *this* file
@@ -60,6 +64,33 @@ services:
             $azureTenantId: '%azureTenantId%'
             $azureClientId: '%azureClientId%'
             $azureFederatedTokenFile: '%azureFederatedTokenFile%'
+
+    App\Controller\ImageController:
+        arguments: ["@=parameter('azureClientId') !== '' ? service('App\\\\Azure\\\\AzureStorage') : service('App\\\\Azure\\\\AzureStorageLocal')"]
+
+    app_azure_base_config:
+        class: App\Azure\Config\AzureBaseConfig
+        arguments:
+            $subscriptionId: '%azureSubscriptionId%'
+            $resourceGroup: '%azureResourceGroup%'
+            $clientId: '%azureClientId%'
+            $tenantId: '%azureTenantId%'
+            $federatedTokenFile: '%azureFederatedTokenFile%'
+            $authorityHost: '%azureAuthorityHost%'
+
+
+    app_azure_sas_image_config:
+        class: App\Azure\Config\SASImageReaderConfig
+        arguments:
+            $baseConfig: '@app_azure_base_config'
+            $imageStorageAccount: '%imageStorageAccount%'
+            $imageContainer: '%imageContainer%'
+
+    App\Azure\AzureStorage:
+        arguments:
+            $SASImageReaderConfig: '@app_azure_sas_image_config'
+
+
 
     # for unit test
     app.service.factuur:
