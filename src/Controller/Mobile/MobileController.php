@@ -107,36 +107,26 @@ class MobileController extends AbstractController
      */
     public function handleRequest(Request $request, string $version = 'v1')
     {
-        // VOEG API KEY TOE: insecure
-        // Voor ACC en PRD toevoegen aan vault
+        $body = json_decode($request->getContent(), true);
 
-        try {
-            $body = json_decode($request->getContent(), true);
+        if (!isset($body['type'])) {
+            $this->logger->warning('Mobile request without action', ['data' => $body ?? null]);
 
-            if (!isset($body['type'])) {
-                $this->logger->warning('Mobile request without action', ['data' => $body ?? null]);
-
-                return new Response('Mobile request without action', Response::HTTP_BAD_REQUEST);
-            }
-
-            $action = $body['type'];
-
-            $this->setActionMap($version);
-
-            // To avoid logging sensitive data, we only log requests that are not secure.
-            if (isset($body['secure'])) {
-                return $this->handleSecure($request, $action, $body['secure']);
-            }
-
-            // TODO log
-            $this->logger->warning('Incoming mobile request', $body);
-
-            return $this->handleAction($request, $action, $body['data'] ?? []);
-        } catch (\Exception $e) {
-            // TODO log
-
-            return new Response('Error while handling mobile request', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new Response('Mobile request without action', Response::HTTP_BAD_REQUEST);
         }
+
+        $action = $body['type'];
+
+        $this->setActionMap($version);
+
+        // To avoid logging sensitive data, we only log requests that are not secure.
+        if (isset($body['secure'])) {
+            return $this->handleSecure($request, $action, $body['secure']);
+        }
+
+        $this->logger->warning('Incoming mobile request', $body);
+
+        return $this->handleAction($request, $action, $body['data'] ?? []);
     }
 
     private function handleAction(Request $request, string $action, array $data): Response
