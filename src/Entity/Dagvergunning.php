@@ -30,21 +30,18 @@ class Dagvergunning
 {
     use MarktKraamTrait;
 
-    // These are states in de aanwezig (presence) column.
-    // All these states count as presence for the ondernemer (not replacement)
-    public const PRESENCE_SELF = [
+    // These are the aanwezig states that are counted as: ondernemer is present theirselves.
+    public const PRESENCE_SELF_EXCEPT_AUTHORIZED_REPLACEMENT = [
         'SELF' => 'zelf',
         'REPLACEMENT_WITH_EXEMPTION' => 'vervanger_met_ontheffing',
-    ];
-
-    public const PRESENCE_AUTHORIZED_REPLACEMENT = [
-        'AUTHORIZED_REPLACEMENT' => 'vervanger_met_toestemming',
-    ];
-
-    public const PRESENCE_UNAUTHORIZED = [
-        'NOT_PRESENT' => 'niet_aanwezig',
         'PARTNER' => 'partner',
         'UNAUTHORIZED_REPLACEMENT' => 'vervanger_zonder_toestemming',
+        'NOT_PRESENT' => 'niet_aanwezig',
+    ];
+
+    // This is counted as a replacement (vervanger) which are maximum 3 allowed per day
+    public const PRESENCE_AUTHORIZED_REPLACEMENT = [
+        'AUTHORIZED_REPLACEMENT' => 'vervanger_met_toestemming',
     ];
 
     /** @var string */

@@ -239,7 +239,7 @@ final class DagvergunningService
                 continue;
             }
 
-            if (in_array($dagvergunning->getAanwezig(), array_values(Dagvergunning::PRESENCE_SELF))) {
+            if (in_array($dagvergunning->getAanwezig(), array_values(Dagvergunning::PRESENCE_SELF_EXCEPT_AUTHORIZED_REPLACEMENT))) {
                 ++$countPresenceSelf;
             }
         }
