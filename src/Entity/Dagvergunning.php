@@ -67,6 +67,7 @@ class Dagvergunning
         'grootPerMeter',
         'kleinPerMeter',
         'krachtstroomPerStuk',
+        'afvalEilandAgf',
     ];
 
     public const PAID_PRODUCT_KEYS = [

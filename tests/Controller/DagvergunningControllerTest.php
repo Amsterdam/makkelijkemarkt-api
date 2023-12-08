@@ -714,6 +714,10 @@ class DagvergunningControllerTest extends ApiTestCase
                         'dagvergunningKey' => 'extraMeters',
                         'amount' => 22,
                     ],
+                    [
+                        'dagvergunningKey' => 'afvalEilandAgf',
+                        'amount' => 3,
+                    ],
                 ],
                 'paid' => [
                     [
