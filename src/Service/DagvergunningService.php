@@ -244,7 +244,7 @@ final class DagvergunningService
             }
         }
 
-        if ($countPresenceSelf < 1 && count($dagvergunningen) < 4) {
+        if ($countPresenceSelf <= 1 && count($dagvergunningen) < 4) {
             return [];
         }
 
