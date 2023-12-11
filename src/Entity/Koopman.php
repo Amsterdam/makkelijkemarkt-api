@@ -182,7 +182,7 @@ class Koopman
 
     /**
      * @OA\Property()
-     * @Groups("koopman")
+     * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
      * @var ?DateTimeInterface
      * @ORM\Column(type="date", nullable=true, options={"default": null})

@@ -161,7 +161,11 @@ final class SollicitatieController extends AbstractController
 
         /** @var \Doctrine\ORM\Tools\Pagination\Paginator<mixed> $sollicitaties */
         $sollicitaties = $this->sollicitatieRepository->search($q, $listOffset, $listLength);
-        $response = $this->serializer->serialize($sollicitaties, 'json', ['groups' => ['sollicitatie_m', 'simpleKoopman', 'marktId', 'vervanger']]);
+        $response = $this->serializer->serialize(
+            $sollicitaties,
+            'json',
+            ['groups' => ['sollicitatie_m', 'simpleKoopman', 'marktId', 'vervanger']]
+        );
 
         return new Response($response, Response::HTTP_OK, [
             'Content-type' => 'application/json',

@@ -64,6 +64,8 @@ final class DagvergunningService
             ->setErkenningsnummerInvoerMethode($data['erkenningsnummerInvoerMethode'] ?? 'onbekend')
             ->setNotitie($data['notitie'] ?? '')
             ->setRegistratieDatumtijd($time)
+            ->setAudit($data['audit'] ?? false)
+            ->setAuditReason($data['auditReason'] ?? '')
             ->setRegistratieAccount($data['account'])
             ->setDag(new DateTime($data['dag']));
 
@@ -237,12 +239,12 @@ final class DagvergunningService
                 continue;
             }
 
-            if (in_array($dagvergunning->getAanwezig(), array_values(Dagvergunning::PRESENCE_SELF))) {
+            if (in_array($dagvergunning->getAanwezig(), array_values(Dagvergunning::PRESENCE_SELF_EXCEPT_AUTHORIZED_REPLACEMENT))) {
                 ++$countPresenceSelf;
             }
         }
 
-        if ($countPresenceSelf < 1 && count($dagvergunningen) < 4) {
+        if ($countPresenceSelf <= 1 && count($dagvergunningen) < 4) {
             return [];
         }
 

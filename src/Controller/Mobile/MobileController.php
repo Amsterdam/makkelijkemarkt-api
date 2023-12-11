@@ -55,6 +55,7 @@ class MobileController extends AbstractController
      * @OA\Post(
      *     path="/mobile/{version}",
      *     operationId="MobileProxy",
+     *     security={{"mobile_access_key": {} }},
      *     tags={"Login"},
      *     summary="Proxies incoming requests with actions to API endpoints",
      *
