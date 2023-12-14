@@ -22,6 +22,18 @@ security:
                 authenticators:
                     - App\Security\ApiKeyAuthenticator
             provider: api_user_provider
+        mobile:
+            pattern: ^/mobile/
+            stateless: true
+            anonymous: true
+            lazy: true
+            provider: api_user_provider
+
+            # Were are using the same authenticator, but for mobile we dont need to check for an API key
+            guard:
+                authenticators:
+                    - App\Security\ApiKeyAuthenticator
+
         main:
             anonymous: true
             lazy: true

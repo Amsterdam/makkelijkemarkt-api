@@ -7,9 +7,11 @@ namespace App\Security;
 use App\Entity\Account;
 use App\Entity\Token;
 use App\Repository\TokenRepository;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,15 +20,23 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
 {
-    /** @var string */
-    private $mmApiKey;
+    private string $mmApiKey;
 
-    /** @var TokenRepository */
-    private $tokenRepository;
+    private string $mobileAccessKey;
 
-    public function __construct(string $mmApiKey, TokenRepository $tokenRepository)
-    {
+    private FirewallMap $firewallMap;
+
+    private TokenRepository $tokenRepository;
+
+    public function __construct(
+        string $mmApiKey,
+        string $mobileAccessKey,
+        FirewallMap $firewallMap,
+        TokenRepository $tokenRepository
+    ) {
         $this->mmApiKey = $mmApiKey;
+        $this->mobileAccessKey = $mobileAccessKey;
+        $this->firewallMap = $firewallMap;
         $this->tokenRepository = $tokenRepository;
     }
 
@@ -38,9 +48,19 @@ final class ApiKeyAuthenticator extends AbstractGuardAuthenticator
     public function supports(Request $request): bool
     {
         $appKey = $request->headers->get('MmAppKey');
+        $mobileAccessKey = $request->headers->get('mobileAccessKey');
 
-        if ($appKey !== $this->mmApiKey) {
+        // Since API keys cannot be safely stored in mobile apps,
+        // we have two seperate routes for mobile and API.
+        $firewallName = $this->firewallMap->getFirewallConfig($request)->getName();
+
+        if ($appKey !== $this->mmApiKey && 'mobile' !== $firewallName) {
             throw new AuthenticationException('Invalid application key');
+        }
+
+        if ('mobile' === $firewallName && $mobileAccessKey !== $this->mobileAccessKey) {
+            // TODO return 403 response want dit geeft lelijke 500 error met stacktace
+            throw new AccessDeniedHttpException('Invalid mobile access key');
         }
 
         $authorizationHeader = $request->headers->get('Authorization');

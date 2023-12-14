@@ -5,6 +5,7 @@ parameters:
     app_android_build: '%env(APP_ANDROID_BUILD)%'
     app_mm_key: '%env(APP_MM_KEY)%'
     api_key: '%env(API_KEY)%'
+    mobile_access_key: '%env(MOBILE_ACCESS_KEY)%'
     data_dir: '%kernel.project_dir%/var/data'
     swift_flysystem_container_fotos: 'fotos'
     swift_flysystem_container_thumbs: 'thumbs'
@@ -53,6 +54,8 @@ services:
     App\Security\ApiKeyAuthenticator:
         arguments:
             $mmApiKey: '%app_mm_key%'
+            $mobileAccessKey: '%mobile_access_key%'
+            $firewallMap: '@security.firewall.map'
 
     App\Process\PerfectViewKoopmanFotoImport:
         bind:
