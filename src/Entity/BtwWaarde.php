@@ -10,8 +10,10 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="BtwWaarde", type="object")
  *
  * @ORM\Entity(repositoryClass=BtwWaardeRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="btw_waarde_unique", columns={"btw_type_id", "date_from"})
  *     }
  * )
@@ -20,13 +22,16 @@ class BtwWaarde
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="BtwType")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $btwType;

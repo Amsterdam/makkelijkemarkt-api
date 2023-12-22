@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Markt;
 use App\Entity\Tarievenplan;
-use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -42,7 +41,7 @@ class TarievenplanRepository extends ServiceEntityRepository
     }
 
     // Given a dagvergunning retrieve the correct active tarievenplan
-    public function getActivePlan(Markt $markt, DateTimeInterface $day)
+    public function getActivePlan(Markt $markt, \DateTimeInterface $day)
     {
         // TODO probably needs to be rewritten when merging with Herindeling!!
 

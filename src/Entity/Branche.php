@@ -10,8 +10,10 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="Branche", type="object")
  *
  * @ORM\Entity(repositoryClass=BrancheRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="afkorting", columns={"afkorting"})
  *     }
  * )
@@ -20,7 +22,9 @@ class Branche
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;

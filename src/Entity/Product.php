@@ -18,54 +18,68 @@ class Product
 {
     /**
      * @OA\Property(example="14")
+     *
      * @Groups({"product", "simpleProduct"})
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"product", "simpleProduct"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $naam;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"product", "simpleProduct"})
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $bedrag;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"product", "simpleProduct"})
+     *
      * @SerializedName("btw_percentage")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $btwHoog;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"product", "simpleProduct"})
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $aantal;
 
     /**
      * @OA\Property(type="string", example="10.01")
+     *
      * @Groups({"product", "simpleProduct"})
      *
      * @var string
@@ -74,7 +88,9 @@ class Product
 
     /**
      * @OA\Property(type="string", example="3.01")
+     *
      * @Groups({"product", "simpleProduct"})
+     *
      * @SerializedName("btw_totaal")
      *
      * @var string
@@ -83,7 +99,9 @@ class Product
 
     /**
      * @OA\Property(type="string", example="13.02")
+     *
      * @Groups({"product", "simpleProduct"})
+     *
      * @SerializedName("totaal_inclusief")
      *
      * @var string
@@ -92,10 +110,13 @@ class Product
 
     /**
      * @OA\Property()
+     *
      * @Groups("product")
      *
      * @var Factuur
+     *
      * @ORM\ManyToOne(targetEntity="Factuur")
+     *
      * @ORM\JoinColumn(name="factuur_id", referencedColumnName="id", nullable=true)
      */
     private $factuur;

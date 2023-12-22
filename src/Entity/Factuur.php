@@ -20,34 +20,44 @@ class Factuur
 {
     /**
      * @OA\Property(example="14")
+     *
      * @Groups("factuur")
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var Dagvergunning
+     *
      * @ORM\OneToOne(targetEntity="Dagvergunning", inversedBy="factuur")
+     *
      * @ORM\JoinColumn(name="dagvergunning_id", referencedColumnName="id", nullable=true)
      */
     private $dagvergunning;
 
     /**
      * @Groups("factuur")
+     *
      * @MaxDepth(1)
      *
      * @var Collection|Product[]
+     *
      * @ORM\OneToMany(targetEntity="Product", mappedBy="factuur")
+     *
      * @ORM\OrderBy({"naam" = "ASC"})
      */
     private $producten;
 
     /**
      * @OA\Property(type="string", example="10.01")
+     *
      * @Groups("factuur")
      *
      * @var string
@@ -56,6 +66,7 @@ class Factuur
 
     /**
      * @OA\Property(type="string", example="12.11")
+     *
      * @Groups("factuur")
      *
      * @var string

@@ -5,7 +5,6 @@ namespace App\DataFixtures;
 use App\Entity\Koopman;
 use App\Entity\RsvpPattern;
 use App\Utils\Constants;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -33,7 +32,7 @@ class RsvpPatternFixtures extends BaseFixture implements DependentFixtureInterfa
             $rsvp_pattern = new RsvpPattern();
             $rsvp_pattern->setMarkt($markt);
             $rsvp_pattern->setKoopman($koopman);
-            $rsvp_pattern->setPatternDate(new DateTime($data['pattern_date']));
+            $rsvp_pattern->setPatternDate(new \DateTime($data['pattern_date']));
             foreach ($weekDays as $day) {
                 $rsvp_pattern->setDay($day, $data[$day]);
             }

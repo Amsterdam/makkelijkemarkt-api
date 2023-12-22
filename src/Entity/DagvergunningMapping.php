@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=DagvergunningMappingRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="dagvergunning_mapping_unique", columns={"dagvergunning_key", "tarief_type", "archived_on"})
  *     }
  * )
@@ -44,14 +45,18 @@ class DagvergunningMapping
 
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
+     *
      * @Groups("marktProducts")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     *
      * @Groups("marktProducts")
      */
     private $dagvergunningKey;
@@ -68,6 +73,7 @@ class DagvergunningMapping
 
     /**
      * @ORM\Column(type="string", length=30)
+     *
      * @Groups("marktProducts")
      */
     private $tariefType;
@@ -89,12 +95,14 @@ class DagvergunningMapping
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
+     *
      * @Groups("marktProducts")
      */
     private $appLabel;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
+     *
      * @Groups("marktProducts")
      */
     private $inputType;
@@ -156,12 +164,12 @@ class DagvergunningMapping
         return $this;
     }
 
-    public function getArchivedOn(): ?DateTimeInterface
+    public function getArchivedOn(): ?\DateTimeInterface
     {
         return $this->archivedOn;
     }
 
-    public function setArchivedOn(?DateTimeInterface $archivedOn): self
+    public function setArchivedOn(?\DateTimeInterface $archivedOn): self
     {
         $this->archivedOn = $archivedOn;
 

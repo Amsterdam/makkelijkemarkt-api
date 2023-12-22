@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Utils\Logger;
-use Swift_Mailer;
-use Swift_Message;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,7 +17,7 @@ class SendTestMailCommand extends Command
      */
     private $mailer;
 
-    public function __construct(Swift_Mailer $mailer)
+    public function __construct(\Swift_Mailer $mailer)
     {
         $this->mailer = $mailer;
 
@@ -52,7 +50,7 @@ class SendTestMailCommand extends Command
         $output->writeln("Got email address: $email");
 
         try {
-            $message = (new Swift_Message())
+            $message = (new \Swift_Message())
                 ->setSubject('Test email Makkelijke Markt API')
                 ->setFrom(['marktbureau@amsterdam.nl' => 'Markbureau Amsterdam'])
                 ->setTo([$email])

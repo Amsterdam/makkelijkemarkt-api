@@ -10,8 +10,10 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="Rsvp", type="object")
  *
  * @ORM\Entity(repositoryClass=RsvpRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="rsvp_unique", columns={"koopman_id", "markt_id", "markt_date"})
  *     }
  * )
@@ -20,7 +22,9 @@ class Rsvp
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -37,12 +41,14 @@ class Rsvp
 
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $markt;
 
     /**
      * @ORM\ManyToOne(targetEntity=Koopman::class, inversedBy="rsvps")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $koopman;

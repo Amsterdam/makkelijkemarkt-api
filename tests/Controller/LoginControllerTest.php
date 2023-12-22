@@ -42,7 +42,7 @@ class LoginControllerTest extends ApiTestCase
             '/api/1.1.0/login/apiKey/',
             [
                 'headers' => $this->headers,
-                'body' => '{"api_key": "'.'NotTheCorrectKey'.'"}',
+                'body' => '{"api_key": "NotTheCorrectKey"}',
                 'http_errors' => false,
             ]
         );

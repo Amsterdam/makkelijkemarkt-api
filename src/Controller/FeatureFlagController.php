@@ -39,6 +39,7 @@ final class FeatureFlagController extends AbstractController
      * )
      *
      * @Route("/feature_flags", name="feature_flags", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function getAll()
@@ -55,12 +56,14 @@ final class FeatureFlagController extends AbstractController
      *     path="/feature_flag/{id}",
      *     tags={"getFeatureFlagById"},
      * )
+     *
      * @OA\Parameter(
      *    name="id",
      *    in="path",
      *    required=true,
      *    description="Id of the feature flag"
      * )
+     *
      * @OA\Response(
      *   response=200,
      *   description="Returns the feature flag",
@@ -71,6 +74,7 @@ final class FeatureFlagController extends AbstractController
      * )
      *
      * @Route("/feature_flag/{id}", name="feature_flag", methods={"GET"}, requirements={"id"="\d+"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function getById(int $id)
@@ -91,15 +95,20 @@ final class FeatureFlagController extends AbstractController
      *     path="/feature_flag/{id}",
      *     tags={"updateFeatureFlag"},
      * )
+     *
      * @OA\RequestBody(
      *      required=true,
+     *
      *      @OA\MediaType(
      *      mediaType="application/json",
+     *
      *         @OA\Schema(
+     *
      *             @OA\Property(property="enabled", type="boolean", description="=")
      *         )
      *      )
      * )
+     *
      * @OA\Response(
      *      response=200,
      *      description="Feature flag updated",
@@ -110,6 +119,7 @@ final class FeatureFlagController extends AbstractController
      * )
      *
      * @Route("/feature_flag/{id}", methods={"PATCH"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function update(Request $request, EntityManagerInterface $em, int $id)
@@ -135,11 +145,15 @@ final class FeatureFlagController extends AbstractController
      *     path="/feature_flag",
      *     tags={"createNewFeatureflag"},
      * )
+     *
      * @OA\RequestBody(
      *     required=true,
+     *
      *     @OA\MediaType(
      *         mediaType="application/json",
+     *
      *         @OA\Schema(
+     *
      *             @OA\Property(property="feature", type="string", description="="),
      *             @OA\Property(property="enabled", type="boolean", description="=")
      *         )
@@ -147,6 +161,7 @@ final class FeatureFlagController extends AbstractController
      * ),
      *
      * @Route("/feature_flag", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function create(Request $request, EntityManagerInterface $em)

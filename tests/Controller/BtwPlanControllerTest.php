@@ -9,7 +9,6 @@ use App\Entity\BtwType;
 use App\Entity\TariefSoort;
 use App\Repository\BtwPlanRepository;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class BtwPlanControllerTest extends ApiTestCase
 {
@@ -40,7 +39,7 @@ class BtwPlanControllerTest extends ApiTestCase
         $btwPlan = [
             'btwTypeId' => $this->btwType->getId(),
             'tariefSoortId' => $this->tariefSoort->getId(),
-            'dateFrom' => (new DateTime()),
+            'dateFrom' => (new \DateTime()),
         ];
 
         $response = $this->createBtwPlan($btwPlan);
@@ -67,7 +66,7 @@ class BtwPlanControllerTest extends ApiTestCase
         $newValues = [
             'btwTypeId' => $this->btwType->getId(),
             'tariefSoortId' => $this->tariefSoort->getId(),
-            'dateFrom' => (new DateTime()),
+            'dateFrom' => (new \DateTime()),
         ];
 
         $response = $this->putBtwPlan($btwPlan->getId(), $newValues);
@@ -93,7 +92,7 @@ class BtwPlanControllerTest extends ApiTestCase
         $randomTarief = rand(0, 200);
 
         $newValues = [
-            'dateFrom' => new DateTime(),
+            'dateFrom' => new \DateTime(),
         ];
 
         $response = $this->patchBtwPlan($btwPlan->getId(), $newValues);

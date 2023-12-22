@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -12,8 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @OA\Schema(schema="AllocationV2", type="object")
  *
  * @ORM\Entity(repositoryClass=AllocationV2Repository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="allocation_v2_unique", columns={"markt_id", "markt_date", "creation_date"})
  *     }
  * )
@@ -22,76 +23,90 @@ class AllocationV2
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\Column(type="date")
      */
     private $marktDate;
 
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class)
+     *
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $markt;
 
     /**
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\Column(type="string")
      */
     private $email;
 
     /**
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\Column(type="datetime")
      */
     private $creationDate;
 
     /**
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\Column(type="integer", nullable=false)
      */
     private $allocationStatus;
 
     /**
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\Column(type="integer", nullable=false)
      */
     private $allocationType;
 
     /**
      * @Groups({"allocation_v2_detailed", "allocation_v2_simple"})
+     *
      * @ORM\Column(type="string", nullable=false)
      */
     private $allocationVersion;
 
     /**
      * @Groups("allocation_v2_detailed")
+     *
      * @ORM\Column(type="json", options={"jsonb": true})
      */
     private $input;
 
     /**
      * @Groups("allocation_v2_detailed")
+     *
      * @ORM\Column(type="json", options={"jsonb": true})
      */
     private $allocation;
 
     /**
      * @Groups("allocation_v2_detailed")
+     *
      * @ORM\Column(type="json", options={"jsonb": true}, nullable=true)
      */
     private $log;
 
     public function __construct()
     {
-        $this->creationDate = new DateTime();
+        $this->creationDate = new \DateTime();
     }
 
     public function getId(): ?int
@@ -102,7 +117,7 @@ class AllocationV2
     /**
      * Get the value of marktDate.
      */
-    public function getMarktDate(): DateTime
+    public function getMarktDate(): \DateTime
     {
         return $this->marktDate;
     }
@@ -110,7 +125,7 @@ class AllocationV2
     /**
      * Set the value of marktDate.
      */
-    public function setMarktDate(DateTime $marktDate): self
+    public function setMarktDate(\DateTime $marktDate): self
     {
         $this->marktDate = $marktDate;
 
@@ -138,7 +153,7 @@ class AllocationV2
     /**
      * Get the value of creationDate.
      */
-    public function getCreationDate(): DateTime
+    public function getCreationDate(): \DateTime
     {
         return $this->creationDate;
     }
@@ -146,7 +161,7 @@ class AllocationV2
     /**
      * Set the value of creationDate.
      */
-    public function setCreationDate(DateTimeInterface $creationDate): self
+    public function setCreationDate(\DateTimeInterface $creationDate): self
     {
         $this->creationDate = $creationDate;
 

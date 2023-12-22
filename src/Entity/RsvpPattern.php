@@ -4,15 +4,16 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
 use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(schema="RsvpPattern", type="object")
  *
  * @ORM\Entity(repositoryClass="App\Repository\RsvpPatternRepository")
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="rsvp_plan_unique", columns={"koopman_id", "markt_id", "pattern_date"})
  *     }
  * )
@@ -21,19 +22,23 @@ class RsvpPattern
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $markt;
 
     /**
      * @ORM\ManyToOne(targetEntity=Koopman::class, inversedBy="rsvps")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $koopman;
@@ -80,7 +85,7 @@ class RsvpPattern
 
     public function __construct()
     {
-        $this->patternDate = new DateTime();
+        $this->patternDate = new \DateTime();
     }
 
     public function getId(): ?int
@@ -142,7 +147,7 @@ class RsvpPattern
             case 'sunday':
                 return $this->getSunday();
             default:
-                throw new InvalidArgumentException('no valid weekDay given as argument');
+                throw new \InvalidArgumentException('no valid weekDay given as argument');
         }
     }
 
@@ -164,7 +169,7 @@ class RsvpPattern
             case 'sunday':
                 return $this->setSunday($value);
             default:
-                throw new InvalidArgumentException('no valid weekDay given as argument');
+                throw new \InvalidArgumentException('no valid weekDay given as argument');
         }
     }
 

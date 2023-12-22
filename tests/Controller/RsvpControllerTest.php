@@ -5,7 +5,6 @@ namespace App\Tests;
 use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class RsvpControllerTest extends ApiTestCase
 {
@@ -24,7 +23,7 @@ class RsvpControllerTest extends ApiTestCase
         $koopmanRepository = $this->entityManager->getRepository(Koopman::class);
         $koopman = $koopmanRepository->findOneBy([]);
 
-        $this->marktDate = (new DateTime('now'))->format('Y-m-d');
+        $this->marktDate = (new \DateTime('now'))->format('Y-m-d');
         $this->attending = true;
         $this->marktId = $markt->getId();
         $this->koopmanErkenningsNummer = $koopman->getErkenningsnummer();

@@ -3,18 +3,20 @@
 namespace App\Entity;
 
 use App\Repository\KiesJeKraamAuditLogRepository;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=KiesJeKraamAuditLogRepository::class)
+ *
  * @ORM\Table(name="kjk_audit_log")
  */
 class KiesJeKraamAuditLog
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -126,7 +128,7 @@ class KiesJeKraamAuditLog
     /**
      * Get the value of datetime.
      */
-    public function getDatetime(): DateTimeInterface
+    public function getDatetime(): \DateTimeInterface
     {
         return $this->datetime;
     }
@@ -134,7 +136,7 @@ class KiesJeKraamAuditLog
     /**
      * Set the value of datetime.
      */
-    public function setDatetime(DateTimeInterface $datetime): self
+    public function setDatetime(\DateTimeInterface $datetime): self
     {
         $this->datetime = $datetime;
 

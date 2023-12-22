@@ -14,7 +14,6 @@ use App\Repository\MarktRepository;
 use App\Repository\SollicitatieRepository;
 use App\Utils\Helpers;
 use App\Utils\LocalTime;
-use DateTime;
 
 // This service will be used in the flexibele tarieven project and doesn't support
 // the old way of creating facturen and dagvergunnningen.
@@ -54,7 +53,7 @@ final class DagvergunningService
         // TODO make sure we save this in UTC and it still works in the app and dashboard.
         // We are now purposefully saving it in CET, because to migrate to the new app, it needs to be backwards compatible.
         $time = isset($data['registratieDatumtijd']) ?
-            DateTime::createFromFormat('Y-m-d H:i:s', $data['registratieDatumtijd'])
+            \DateTime::createFromFormat('Y-m-d H:i:s', $data['registratieDatumtijd'])
             : new LocalTime();
 
         $dagvergunning = (new Dagvergunning())
@@ -67,7 +66,7 @@ final class DagvergunningService
             ->setAudit($data['audit'] ?? false)
             ->setAuditReason($data['auditReason'] ?? '')
             ->setRegistratieAccount($data['account'])
-            ->setDag(new DateTime($data['dag']));
+            ->setDag(new \DateTime($data['dag']));
 
         $point = Helpers::parseGeolocation($data['registratieGeolocatie'] ?? '');
         $dagvergunning->setRegistratieGeolocatie($point[0], $point[1]);
@@ -228,7 +227,7 @@ final class DagvergunningService
 
         $dagvergunningen = $this->dagvergunningRepository->findBy([
             'erkenningsnummerInvoerWaarde' => $data['erkenningsnummer'],
-            'dag' => new DateTime($data['dag']),
+            'dag' => new \DateTime($data['dag']),
             'doorgehaald' => false,
         ]);
 

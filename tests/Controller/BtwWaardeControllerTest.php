@@ -8,7 +8,6 @@ use App\Entity\BtwType;
 use App\Entity\BtwWaarde;
 use App\Repository\BtwWaardeRepository;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class BtwWaardeControllerTest extends ApiTestCase
 {
@@ -36,7 +35,7 @@ class BtwWaardeControllerTest extends ApiTestCase
 
         $btwWaarde = [
             'btwTypeId' => $this->btwType->getId(),
-            'dateFrom' => (new DateTime()),
+            'dateFrom' => (new \DateTime()),
             'tarief' => $randomTarief,
         ];
 

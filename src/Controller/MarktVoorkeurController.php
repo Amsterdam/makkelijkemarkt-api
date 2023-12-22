@@ -10,7 +10,6 @@ use App\Repository\BrancheRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\MarktVoorkeurRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
@@ -80,11 +79,15 @@ class MarktVoorkeurController extends AbstractController
      *     operationId="MarktVoorkeurCreate",
      *     tags={"MarktVoorkeur"},
      *     summary="Maakt nieuwe MarktVoorkeur aan",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="anywhere", type="boolean", description="mag de koopman overal ingedeeld worden?"),
      *                 @OA\Property(property="minimum", type="integer", description="minimaal aantal plaatsen"),
      *                 @OA\Property(property="maximum", type="integer", description="maximaal aantal plaatsen"),
@@ -98,18 +101,24 @@ class MarktVoorkeurController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/marktvoorkeur", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function createOrUpdate(Request $request): Response
@@ -187,7 +196,7 @@ class MarktVoorkeurController extends AbstractController
         $absentFrom = null;
         if (array_key_exists('absentFrom', $data) && null !== $data['absentFrom']) {
             if (strtotime($data['absentFrom'])) {
-                $absentFrom = new DateTime($data['absentFrom']);
+                $absentFrom = new \DateTime($data['absentFrom']);
             } else {
                 $this->logger->warning('absentFrom is not a date');
 
@@ -198,7 +207,7 @@ class MarktVoorkeurController extends AbstractController
         $absentUntil = null;
         if (array_key_exists('absentUntil', $data) && null !== $data['absentUntil']) {
             if (strtotime($data['absentUntil'])) {
-                $absentUntil = new DateTime($data['absentUntil']);
+                $absentUntil = new \DateTime($data['absentUntil']);
             } else {
                 $this->logger->warning('absentUntil is not a date');
 
@@ -244,19 +253,26 @@ class MarktVoorkeurController extends AbstractController
      *     operationId="MarktVoorkeurGetByMarktId",
      *     tags={"MarktVoorkeur"},
      *     summary="Vraag marktvoorkeuren op met een MarktId.",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/marktvoorkeur/markt/{marktId}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getByMarktId(string $marktId): Response
@@ -281,19 +297,26 @@ class MarktVoorkeurController extends AbstractController
      *     operationId="MarktVoorkeurGetByKoopmanErkenningsNummer",
      *     tags={"MarktVoorkeur"},
      *     summary="Vraag marktvoorkeuren op met een KoopmanErkenningsNummer.",
+     *
      *     @OA\Parameter(name="koopmanErkenningsNummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/marktvoorkeur/koopman/{koopmanErkenningsNummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getByKoopmanErkenningsNummer(string $koopmanErkenningsNummer): Response
@@ -318,20 +341,27 @@ class MarktVoorkeurController extends AbstractController
      *     operationId="MarktVoorkeurGetByMarktIdAndKoopmanErkenningsNummer",
      *     tags={"MarktVoorkeur"},
      *     summary="Vraag marktvoorkeuren op met een KoopmanErkenningsNummer.",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="string"), in="path", required=true),
      *     @OA\Parameter(name="koopmanErkenningsNummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/MarktVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/marktvoorkeur/markt/{marktId}/koopman/{koopmanErkenningsNummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getByMarktIdAndKoopmanErkenningsNummer(string $marktId, string $koopmanErkenningsNummer): Response

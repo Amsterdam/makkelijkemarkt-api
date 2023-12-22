@@ -9,14 +9,13 @@ use App\Entity\Tariefplan;
 use App\Repository\MarktRepository;
 use App\Repository\TariefplanRepository;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class TariefplanControllerTest extends ApiTestCase
 {
     public function testGetAllByMarkt(): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var TariefplanRepository $tariefplanRepository */
         $tariefplanRepository = $this->entityManager
@@ -67,8 +66,8 @@ class TariefplanControllerTest extends ApiTestCase
 
     public function testGetById(): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var MarktRepository $marktRepository */
         $marktRepository = $this->entityManager
@@ -83,8 +82,8 @@ class TariefplanControllerTest extends ApiTestCase
         $dataTariefplan = [
             'markt' => $markt,
             'naam' => 'Tarieven '.$dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => new DateTime($dt->format('Y').'-01-01 00:00:00'),
-            'geldigTot' => new DateTime($dt->format('Y').'-12-31 23:59:59'),
+            'geldigVanaf' => new \DateTime($dt->format('Y').'-01-01 00:00:00'),
+            'geldigTot' => new \DateTime($dt->format('Y').'-12-31 23:59:59'),
         ];
 
         /** @var Tariefplan $tariefplan */
@@ -112,8 +111,8 @@ class TariefplanControllerTest extends ApiTestCase
 
     public function testPostConcreetplan(): int
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var MarktRepository $marktRepository */
         $marktRepository = $this->entityManager
@@ -164,9 +163,9 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['concreetplan']);
 
         foreach ($data as $key => $val) {
-            if ('naam' !== $key &&
-                'geldigVanaf' !== $key &&
-                'geldigTot' !== $key
+            if ('naam' !== $key
+                && 'geldigVanaf' !== $key
+                && 'geldigTot' !== $key
             ) {
                 $this->assertEquals($val, $responseData['concreetplan'][$key]);
             }
@@ -177,8 +176,8 @@ class TariefplanControllerTest extends ApiTestCase
 
     public function testPostLineairplan(): int
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var MarktRepository $marktRepository */
         $marktRepository = $this->entityManager
@@ -235,9 +234,9 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['lineairplan']);
 
         foreach ($data as $key => $val) {
-            if ('naam' !== $key &&
-                'geldigVanaf' !== $key &&
-                'geldigTot' !== $key
+            if ('naam' !== $key
+                && 'geldigVanaf' !== $key
+                && 'geldigTot' !== $key
             ) {
                 $this->assertEquals($val, $responseData['lineairplan'][$key]);
             }
@@ -251,8 +250,8 @@ class TariefplanControllerTest extends ApiTestCase
      */
     public function testPutConcreetplan(int $id): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string, mixed> $data */
         $data = [
@@ -294,9 +293,9 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['concreetplan']);
 
         foreach ($data as $key => $val) {
-            if ('naam' !== $key &&
-                'geldigVanaf' !== $key &&
-                'geldigTot' !== $key
+            if ('naam' !== $key
+                && 'geldigVanaf' !== $key
+                && 'geldigTot' !== $key
             ) {
                 $this->assertEquals($val, $responseData['concreetplan'][$key]);
             }
@@ -308,8 +307,8 @@ class TariefplanControllerTest extends ApiTestCase
      */
     public function testPutLineairplan(int $id): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string, mixed> $data */
         $data = [
@@ -357,9 +356,9 @@ class TariefplanControllerTest extends ApiTestCase
         $this->assertIsArray($responseData['lineairplan']);
 
         foreach ($data as $key => $val) {
-            if ('naam' !== $key &&
-                'geldigVanaf' !== $key &&
-                'geldigTot' !== $key
+            if ('naam' !== $key
+                && 'geldigVanaf' !== $key
+                && 'geldigTot' !== $key
             ) {
                 $this->assertEquals($val, $responseData['lineairplan'][$key]);
             }

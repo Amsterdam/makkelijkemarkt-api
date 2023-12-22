@@ -15,12 +15,12 @@ class AllocationLogNormalizer implements NormalizerInterface, NormalizerAwareInt
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof Allocation;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         /* @var Allocation $object */
         return [

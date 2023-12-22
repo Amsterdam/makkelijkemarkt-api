@@ -15,12 +15,12 @@ class BtwWaardeLogNormalizer implements NormalizerInterface, NormalizerAwareInte
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof BtwWaarde;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         /* @var BtwWaarde $object */
         return [

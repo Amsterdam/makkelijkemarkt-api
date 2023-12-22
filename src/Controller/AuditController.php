@@ -10,7 +10,6 @@ use App\Entity\Markt;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\DagvergunningRepository;
 use App\Repository\MarktRepository;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
@@ -72,20 +71,27 @@ final class AuditController extends AbstractController
      *     operationId="AuditGetAllByMarktIdAndDatum",
      *     tags={"Audit"},
      *     summary="Haal de lijst van te auditen dagvergunning op",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="datum", @OA\Schema(type="string"), in="path", required=true, description="datum YYYY-MM-DD"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Dagvergunning"))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/audit/{marktId}/{datum}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getAllByMarktIdAndDatum(int $marktId, string $datum): Response
@@ -97,7 +103,7 @@ final class AuditController extends AbstractController
             return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
-        $date = new DateTime($datum);
+        $date = new \DateTime($datum);
 
         $dagvergunningen = $this->dagvergunningRepository->findBy([
             'audit' => true,
@@ -121,25 +127,34 @@ final class AuditController extends AbstractController
      *     operationId="AuditPost",
      *     tags={"Audit"},
      *     summary="Maak of werk audit dagvergunning bij voor een markt en dag kombinatie",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="datum", @OA\Schema(type="string"), in="path", required=true, description="datum YYYY-MM-DD"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Dagvergunning"))
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/audit/{marktId}/{datum}", methods={"POST"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function post(int $marktId, string $datum): Response
@@ -151,7 +166,7 @@ final class AuditController extends AbstractController
             return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
-        $now = new DateTime($datum);
+        $now = new \DateTime($datum);
         $now->setTime(0, 0, 0);
 
         $dagvergunningen = $this->dagvergunningRepository->findBy([
@@ -186,8 +201,8 @@ final class AuditController extends AbstractController
             /** @var Koopman $koopman */
             $koopman = $dagvergunning->getKoopman();
 
-            if (null !== $koopman->getHandhavingsVerzoek() &&
-                $now <= $koopman->getHandhavingsVerzoek()
+            if (null !== $koopman->getHandhavingsVerzoek()
+                && $now <= $koopman->getHandhavingsVerzoek()
             ) {
                 $dagvergunning->setAuditReason(Dagvergunning::AUDIT_HANDHAVINGS_VERZOEK);
                 $dagvergunning->setAudit(true);
@@ -206,8 +221,8 @@ final class AuditController extends AbstractController
             $koopman = $dagvergunning->getKoopman();
 
             // verwijder iedereen uit deze poule die al in de lijst zit (want handhavingsverzoek)
-            if (null !== $koopman->getHandhavingsVerzoek() &&
-                $now <= $koopman->getHandhavingsVerzoek()
+            if (null !== $koopman->getHandhavingsVerzoek()
+                && $now <= $koopman->getHandhavingsVerzoek()
             ) {
                 return false;
             }
@@ -225,8 +240,8 @@ final class AuditController extends AbstractController
             $koopman = $dagvergunning->getKoopman();
 
             // verwijder iedereen uit deze poule die al in de lijst zit (want handhavingsverzoek)
-            if (null !== $koopman->getHandhavingsVerzoek() &&
-                $now <= $koopman->getHandhavingsVerzoek()
+            if (null !== $koopman->getHandhavingsVerzoek()
+                && $now <= $koopman->getHandhavingsVerzoek()
             ) {
                 return false;
             }
@@ -265,7 +280,7 @@ final class AuditController extends AbstractController
             ++$pouleAselected;
         }
 
-        while ($pouleA->count() > 0 && (count($audits) < ($markt->getAuditMax()))) {
+        while ($pouleA->count() > 0 && (count($audits) < $markt->getAuditMax())) {
             $key = array_rand($pouleA->toArray());
             $dagvergunning = $pouleA->get($key);
 
@@ -293,20 +308,27 @@ final class AuditController extends AbstractController
      *     operationId="AuditPostReset",
      *     tags={"Audit"},
      *     summary="Reset te auditen dagvergunning op een markt en dag",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="datum", @OA\Schema(type="string"), in="path", required=true, description="datum YYYY-MM-DD"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Dagvergunning"))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/audit_reset/{marktId}/{datum}", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function reset(int $marktId, string $datum): JsonResponse
@@ -318,7 +340,7 @@ final class AuditController extends AbstractController
             return new JsonResponse(['error' => 'Markt not found, id = '.$marktId], Response::HTTP_NOT_FOUND);
         }
 
-        $date = new DateTime($datum);
+        $date = new \DateTime($datum);
 
         $dagvergunningen = $this->dagvergunningRepository->findBy([
             'audit' => true,

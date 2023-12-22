@@ -61,8 +61,8 @@ class AuditControllerTest extends ApiTestCase
             'factuur',
             'loten',
             'auditReason',
-            //TODO: controles is still missing fixtures
-            //'controles',
+            // TODO: controles is still missing fixtures
+            // 'controles',
         ];
 
         foreach ($expectedKeys as $expectedKey) {
@@ -74,11 +74,11 @@ class AuditControllerTest extends ApiTestCase
         $expectedArrays = [
             'markt',
             'koopman',
-            //TODO: the following data is still missing from the fixtures
-            //'sollicitatie',
-            //'registratieGeolocatie',
-            //'registratieAccount',
-            //'factuur',
+            // TODO: the following data is still missing from the fixtures
+            // 'sollicitatie',
+            // 'registratieGeolocatie',
+            // 'registratieAccount',
+            // 'factuur',
         ];
 
         foreach ($expectedArrays as $expectedArray) {

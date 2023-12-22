@@ -12,7 +12,7 @@ abstract class AbstractBasicControllerTest extends ApiTestCase
     private string $entityClassname;
     private string $apiRoute;
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    public function __construct(string $name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 

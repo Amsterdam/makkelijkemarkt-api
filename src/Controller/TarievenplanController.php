@@ -15,10 +15,8 @@ use App\Repository\MarktRepository;
 use App\Repository\TariefSoortRepository;
 use App\Repository\TarievenplanRepository;
 use App\Utils\Filters;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OpenApi\Annotations as OA;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -320,7 +318,9 @@ final class TarievenplanController extends AbstractController
      *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="name", type="string"),
      *                 @OA\Property(property="dateFrom", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="dateUntil", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
@@ -385,7 +385,7 @@ final class TarievenplanController extends AbstractController
 
         try {
             $this->updateData($tarievenplan, $data);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
 
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -403,8 +403,8 @@ final class TarievenplanController extends AbstractController
     {
         $tarievenplan
             ->setName($data['name'])
-            ->setDateFrom(new DateTime($data['dateFrom']['date']))
-            ->setDateUntil(isset($data['dateUntil']) ? new DateTime($data['dateUntil']['date']) : null)
+            ->setDateFrom(new \DateTime($data['dateFrom']['date']))
+            ->setDateUntil(isset($data['dateUntil']) ? new \DateTime($data['dateUntil']['date']) : null)
             ->setIgnoreVastePlaats(isset($data['ignoreVastePlaats']) ? (bool) $data['ignoreVastePlaats'] : false)
             ->setAllWeekdays(isset($data['weekdays']) ? $data['weekdays'] : []);
 
@@ -421,7 +421,7 @@ final class TarievenplanController extends AbstractController
             $tariefSoort = Filters::getEntityInListById($tariefSoortId, $tariefSoorten);
 
             if (!$tariefSoort) {
-                throw new Exception("Tariefsoort $tariefSoortId not found");
+                throw new \Exception("Tariefsoort $tariefSoortId not found");
             }
 
             $tarief = new Tarief();

@@ -15,14 +15,15 @@ class BtwPlanLogNormalizer implements NormalizerInterface, NormalizerAwareInterf
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof BtwPlan;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         $markt = $object->getMarkt();
+
         /* @var BtwPlan $object */
         return [
             'id' => $object->getId(),

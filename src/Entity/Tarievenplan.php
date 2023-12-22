@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Utils\Constants;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,8 +10,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=App\Repository\TarievenplanRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="tarievenplan_unique", columns={"markt_id", "date_from", "variant"}, options={"where": "deleted = false"})
  *     }
  * )
@@ -32,57 +33,69 @@ class Tarievenplan
 
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
+     *
      * @Groups("simpleTarievenplan", "tarievenplan")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     *
      * @Groups("simpleTarievenplan", "tarievenplan")
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class, inversedBy="tarievenplannen")
+     *
      * @ORM\JoinColumn(nullable=false)
+     *
      * @Groups("tarievenplan")
      */
     private $markt;
 
     /**
      * @ORM\Column(type="string", length=30)
+     *
      * @Groups("simpleTarievenplan", "tarievenplan")
      */
     private $type;
 
     /**
      * @ORM\Column(type="datetime")
+     *
      * @Groups("simpleTarievenplan", "tarievenplan")
      */
     private $dateFrom;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     *
      * @Groups("simpleTarievenplan", "tarievenplan")
      */
     private $dateUntil;
 
     /**
      * @ORM\OneToMany(targetEntity=Tarief::class, mappedBy="tarievenplan", orphanRemoval=true, fetch="EAGER")
+     *
      * @Groups("tarievenplan")
      */
     private $tarieven;
 
     /**
      * @ORM\Column(type="string", length=50, options={"default":"standard"}))
+     *
      * @Groups("tarievenplan")
      */
     private $variant;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      *
      * If this is true, every ondernemer will be seen as a sollicitant and vergunde plaatsen do not matter.
@@ -92,42 +105,49 @@ class Tarievenplan
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      */
     private $monday;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      */
     private $tuesday;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      */
     private $wednesday;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      */
     private $thursday;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      */
     private $friday;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      */
     private $saturday;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"}))
+     *
      * @Groups("tarievenplan")
      */
     private $sunday;
@@ -183,24 +203,24 @@ class Tarievenplan
         return $this;
     }
 
-    public function getDateFrom(): DateTimeInterface
+    public function getDateFrom(): \DateTimeInterface
     {
         return $this->dateFrom;
     }
 
-    public function setDateFrom(DateTimeInterface $dateFrom = null): self
+    public function setDateFrom(\DateTimeInterface $dateFrom = null): self
     {
         $this->dateFrom = $dateFrom;
 
         return $this;
     }
 
-    public function getDateUntil(): ?DateTimeInterface
+    public function getDateUntil(): ?\DateTimeInterface
     {
         return $this->dateUntil;
     }
 
-    public function setDateUntil(?DateTimeInterface $dateUntil): self
+    public function setDateUntil(?\DateTimeInterface $dateUntil): self
     {
         $this->dateUntil = $dateUntil;
 
@@ -209,7 +229,7 @@ class Tarievenplan
 
     /**
      * @return Collection<int, Tarief>
-     *                         Get all tarieven but filter out tariefsoorten that are deleted
+     *                                 Get all tarieven but filter out tariefsoorten that are deleted
      */
     public function getActiveTarieven(): Collection
     {

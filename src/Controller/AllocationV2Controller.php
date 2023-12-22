@@ -8,7 +8,6 @@ use App\Event\KiesJeKraamAuditLogEvent;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\AllocationV2Repository;
 use App\Repository\MarktRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -54,13 +53,18 @@ class AllocationV2Controller extends AbstractController
      *     operationId="AllocationCreate",
      *     tags={"Allocation"},
      *     summary="Maakt nieuwe AllocationV2 aan",
+     *
      *     @OA\Property(property="markt", type="integer", description="Markt id van allocation"),
      *     @OA\Property(property="marktDate", type="string", description="Markt date van allocation"),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="allocationStatus", type="integer", description="Status van allocation"),
      *                 @OA\Property(property="allocationVersion", type="string", description="Versie van allocationscript"),
      *                 @OA\Property(property="allocationType", type="integer", description="Type van allocation [concept, voorlopig, definitief]"),
@@ -70,18 +74,24 @@ class AllocationV2Controller extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/AllocationV2")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation_v2/markt/{marktId}/date/{marktDateStr}", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(
@@ -115,7 +125,7 @@ class AllocationV2Controller extends AbstractController
             return new JsonResponse(['error' => "No markt found with $marktId"], Response::HTTP_BAD_REQUEST);
         }
 
-        $marktDate = new DateTime($marktDateStr);
+        $marktDate = new \DateTime($marktDateStr);
 
         $allocData = $data['allocation'];
 
@@ -154,24 +164,33 @@ class AllocationV2Controller extends AbstractController
      *     operationId="AllocationV2GetByMarkt",
      *     tags={"AllocationV2"},
      *     summary="Vraag alle allocaties van een markt.",
+     *
      *     @OA\Property(property="markt", type="integer", description="Markt id van allocation"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation_v2/markt/{marktId}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationByMarkt(
@@ -199,24 +218,33 @@ class AllocationV2Controller extends AbstractController
      *     operationId="AllocationV2GetByMarkt",
      *     tags={"AllocationV2"},
      *     summary="Vraag alle allocaties van een markt.",
+     *
      *     @OA\Property(property="markt", type="integer", description="Markt id van allocation"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation_v2/markt/{marktId}/date/{marktDateStr}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationByMarktAndDate(
@@ -231,7 +259,7 @@ class AllocationV2Controller extends AbstractController
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $marktDate = new DateTime($marktDateStr);
+        $marktDate = new \DateTime($marktDateStr);
 
         $allocations = $allocationV2Repository->findByMarktAndDate($markt, $marktDate);
 
@@ -247,24 +275,33 @@ class AllocationV2Controller extends AbstractController
      *     operationId="AllocationV2GetByMarkt",
      *     tags={"AllocationV2"},
      *     summary="Vraag alle allocaties van een markt.",
+     *
      *     @OA\Property(property="markt", type="integer", description="Markt id van allocation"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation_v2/markt/{marktId}/date/{marktDateStr}/last", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getLastAllocationByMarktAndDate(
@@ -279,7 +316,7 @@ class AllocationV2Controller extends AbstractController
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $marktDate = new DateTime($marktDateStr);
+        $marktDate = new \DateTime($marktDateStr);
 
         $allocations = $allocationV2Repository->findOneByMarktAndDate($markt, $marktDate);
 
@@ -295,24 +332,33 @@ class AllocationV2Controller extends AbstractController
      *     operationId="AllocationV2GetByMarkt",
      *     tags={"AllocationV2"},
      *     summary="Vraag alle allocaties van een markt.",
+     *
      *     @OA\Property(property="allocationID", type="integer", description="Id van allocation"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation_v2/{allocationId}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getById(

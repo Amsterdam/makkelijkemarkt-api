@@ -146,6 +146,7 @@ class TariefSoortController extends AbstractController
      *              mediaType="application/json",
      *
      *              @OA\Schema(
+     *
      *                  @OA\Property(property="label", type="string", description="Label of the TariefSoort"),
      *                  @OA\Property(property="tariefType", type="string", description="Tarief type [lineair, concreet]"),
      *                  @OA\Property(property="unit", type="string", description="Unit [unit, one-off, meters, meters-klein, meters-groot, meters-totaal]"),
@@ -338,13 +339,16 @@ class TariefSoortController extends AbstractController
      *      operationId="TariefSoortGetById",
      *      tags={"Tarief", "Tariefplan", "BTW"},
      *      summary="Get TariefSoort by Id",
+     *
      *      @OA\Parameter(name="tariefSoortId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
      *
      *          @OA\JsonContent(ref="#/components/schemas/TariefSoort")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",

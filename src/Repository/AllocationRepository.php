@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Allocation;
 use App\Entity\Koopman;
 use App\Entity\Markt;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,7 +21,7 @@ class AllocationRepository extends ServiceEntityRepository
         parent::__construct($registry, Allocation::class);
     }
 
-    public function findAllByMarktAndDate(Markt $markt, DateTime $date)
+    public function findAllByMarktAndDate(Markt $markt, \DateTime $date)
     {
         return $this->findBy(['markt' => $markt, 'date' => $date]);
     }

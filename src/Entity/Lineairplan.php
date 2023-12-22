@@ -17,144 +17,178 @@ class Lineairplan
 {
     /**
      * @OA\Property(example="14")
+     *
      * @Groups("lineairplan")
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     private $tariefPerMeterGroot;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $tariefPerMeter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     private $tariefPerMeterKlein;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     private $reinigingPerMeterGroot;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $reinigingPerMeter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     private $reinigingPerMeterKlein;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $toeslagBedrijfsafvalPerMeter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $toeslagKrachtstroomPerAansluiting;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $promotieGeldenPerMeter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $promotieGeldenPerKraam;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $afvaleiland;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $eenmaligElektra;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $elektra;
 
     /**
      * @OA\Property()
+     *
      * @Groups("lineairplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     private $agfPerMeter;
 
     /**
      * @var Tariefplan
+     *
      * @ORM\OneToOne(targetEntity="Tariefplan", inversedBy="lineairplan")
+     *
      * @ORM\JoinColumn(name="tariefplan_id", referencedColumnName="id")
      */
     private $tariefplan;

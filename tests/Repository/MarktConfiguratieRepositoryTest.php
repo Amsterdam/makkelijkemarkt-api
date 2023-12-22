@@ -6,7 +6,6 @@ use App\Entity\Markt;
 use App\Entity\MarktConfiguratie;
 use App\Repository\MarktConfiguratieRepository;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class MarktConfiguratieRepositoryTest extends ApiTestCase
 {
@@ -34,7 +33,7 @@ class MarktConfiguratieRepositoryTest extends ApiTestCase
         $marktConfiguratie2 = new MarktConfiguratie();
 
         $marktConfiguratie->setMarkt($this->markt)
-            ->setAanmaakDatumtijd((new DateTime()))
+            ->setAanmaakDatumtijd(new \DateTime())
             ->setMarktOpstelling(['testKey' => 1])
             ->setBranches(['testKey' => 2])
             ->setGeografie(['testKey' => 3])
@@ -42,7 +41,7 @@ class MarktConfiguratieRepositoryTest extends ApiTestCase
             ->setPaginas(['testKey' => 5]);
 
         $marktConfiguratie2->setMarkt($this->markt)
-            ->setAanmaakDatumtijd(new DateTime())
+            ->setAanmaakDatumtijd(new \DateTime())
             ->setMarktOpstelling(['testKey' => 6])
             ->setBranches(['testKey' => 7])
             ->setGeografie(['testKey' => 8])

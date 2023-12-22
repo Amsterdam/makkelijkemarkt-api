@@ -10,8 +10,10 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="BtwPlan", type="object")
  *
  * @ORM\Entity(repositoryClass=BtwPlanRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="btw_plan_unique", columns={"tarief_soort_id", "date_from", "markt_id", "archived_on"})
  *     }
  * )
@@ -20,25 +22,30 @@ class BtwPlan
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="TariefSoort")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $tariefSoort;
 
     /**
      * @ORM\ManyToOne(targetEntity="BtwType")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $btwType;
 
     /**
      * @ORM\ManyToOne(targetEntity="Markt")
+     *
      * @ORM\JoinColumn(nullable=true)
      */
     private $markt;

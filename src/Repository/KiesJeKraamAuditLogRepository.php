@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\KiesJeKraamAuditLog;
-use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,7 +26,7 @@ class KiesJeKraamAuditLogRepository extends ServiceEntityRepository
     /**
      * @return KiesJeKraamAuditLog[] Returns array of KiesJeKraamAuditLog objects
      */
-    public function findAllBetweenDates(DateTimeInterface $start, DateTimeInterface $end = null)
+    public function findAllBetweenDates(\DateTimeInterface $start, \DateTimeInterface $end = null)
     {
         $qb = $this
             ->createQueryBuilder('row')
@@ -45,7 +44,7 @@ class KiesJeKraamAuditLogRepository extends ServiceEntityRepository
     /**
      * @return KiesJeKraamAuditLog[] Returns array of KiesJeKraamAuditLog objects
      */
-    public function findAllByTypeAndBetweenDates(string $entityType, DateTimeInterface $start, DateTimeInterface $end = null)
+    public function findAllByTypeAndBetweenDates(string $entityType, \DateTimeInterface $start, \DateTimeInterface $end = null)
     {
         $qb = $this
             ->createQueryBuilder('row')

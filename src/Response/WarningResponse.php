@@ -9,9 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class WarningResponse extends JsonResponse
 {
     // TODO make this enum when php 8.1
-    const DUBBELSTAAN = 'DUBBELSTAAN';
+    public const DUBBELSTAAN = 'DUBBELSTAAN';
 
-    const MESSAGES = [
+    public const MESSAGES = [
         self::DUBBELSTAAN => 'Ondernemer is registered on too many markets.',
     ];
 

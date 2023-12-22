@@ -15,12 +15,12 @@ class PlaatsVoorkeurLogNormalizer implements NormalizerInterface, NormalizerAwar
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof PlaatsVoorkeur;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         // Human readable string:
         // {actor} changed PlaatsVoorkeur for {koopmanName} on the {marktName} to {plaatsen}

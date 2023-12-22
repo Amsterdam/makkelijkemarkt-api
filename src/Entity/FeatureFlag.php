@@ -7,8 +7,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=FeatureFlagRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="feature_unique", columns={"feature"})
  *     }
  * )
@@ -17,19 +19,23 @@ class FeatureFlag
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     *
      * @Groups("token")
      */
     private $feature;
 
     /**
      * @ORM\Column(type="boolean")
+     *
      * @Groups("token")
      */
     private $enabled;

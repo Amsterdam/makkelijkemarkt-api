@@ -15,11 +15,14 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * @OA\Schema(schema="Markt", type="object")
  *
  * @ORM\Entity(repositoryClass="App\Repository\MarktRepository")
+ *
  * @ORM\Table(
  *     indexes={
+ *
  *         @ORM\Index(name="marktperfectviewnumber", columns={"perfect_view_nummer"})
  *     },
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="marktafkorting", columns={"afkorting"})
  *     }
  * )
@@ -37,87 +40,108 @@ class Markt
 
     /**
      * @OA\Property(example="14")
+     *
      * @Groups({"markt", "simpleMarkt", "markt_xs"})
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property(example="NOM-M")
+     *
      * @Groups({"markt", "simpleMarkt"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=10)
      */
     private $afkorting;
 
     /**
      * @OA\Property(example="Noordermarkt maandag")
+     *
      * @Groups({"markt", "simpleMarkt"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=125)
      */
     private $naam;
 
     /**
      * @OA\Property(example="week")
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=10)
      */
     private $soort;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var ?string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $geoArea;
 
     /**
      * @OA\Property(type="array", items={"type":"string"}, example={"ma","di"})
+     *
      * @Groups("markt")
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $marktDagen;
 
     /**
      * @OA\Property(example=3)
+     *
      * @Groups("markt")
      *
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $standaardKraamAfmeting;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var ?bool
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $extraMetersMogelijk;
 
     /**
      * @var ?array<string>
+     *
      * @ORM\Column(type="json_array", nullable=true)
      */
     private $aanwezigeOpties;
 
     /**
      * @OA\Property(type="array", items={"type":"string"}, example={"3mKramen"=true,"4mKramen"=false,"extraMeters"=true,"elektra"=true})
+     *
      * @Groups("markt")
+     *
      * @SerializedName("aanwezigeOpties")
      *
      * @var ?array<string>
@@ -126,185 +150,227 @@ class Markt
 
     /**
      * @OA\Property(example=40)
+     *
      * @Groups("markt")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $perfectViewNummer;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalKramen;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $maxAantalKramenPerOndernemer;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalMeter;
 
     /**
      * @OA\Property(example=10)
+     *
      * @Groups("markt")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=false, options={"default": 10})
      */
     private $auditMax;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $kiesJeKraamMededelingActief;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $kiesJeKraamMededelingTitel;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $kiesJeKraamMededelingTekst;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $kiesJeKraamActief;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $marktBeeindigd;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $kiesJeKraamFase;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $kiesJeKraamGeblokkeerdePlaatsen;
 
     /**
      * @OA\Property(example="2019-12-25,2019-12-26")
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $kiesJeKraamGeblokkeerdeData;
 
     /**
      * @OA\Property(example="test@domain.tld")
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $kiesJeKraamEmailKramenzetter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $marktDagenTekst;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $indelingsTijdstipTekst;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $telefoonNummerContact;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $makkelijkeMarktActief;
 
     /**
      * @OA\Property()
+     *
      * @Groups("markt")
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $indelingstype;
 
     /**
      * @var Collection|Sollicitatie[]
+     *
      * @ORM\OneToMany(targetEntity="Sollicitatie", mappedBy="markt", fetch="EXTRA_LAZY", orphanRemoval=true)
+     *
      * @ORM\OrderBy({"sollicitatieNummer"="ASC"})
      */
     private $sollicitaties;
 
     /**
      * @var Collection|Tariefplan[]
+     *
      * @ORM\OneToMany(targetEntity="Tariefplan", mappedBy="markt", fetch="EXTRA_LAZY", orphanRemoval=true)
+     *
      * @ORM\OrderBy({"geldigVanaf"="DESC"})
      */
     private $tariefplannen;
@@ -316,9 +382,13 @@ class Markt
 
     /**
      * @ORM\ManyToMany(targetEntity=DagvergunningMapping::class)
+     *
      * @ORM\JoinTable(name="markt_dagvergunning_mapping")
+     *
      * @ORM\OrderBy({"appLabel" = "ASC"})
+     *
      * @Groups("marktProducts")
+     *
      * @SerializedName("products")
      */
     private $dagvergunningMapping;

@@ -14,13 +14,16 @@ class MarktGeografie
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
 
     /**
      * @Ignore()
+     *
      * @ORM\ManyToOne(targetEntity="MarktConfiguratie", inversedBy="marktGeografies", cascade={"persist"})
      */
     private MarktConfiguratie $marktConfiguratie;

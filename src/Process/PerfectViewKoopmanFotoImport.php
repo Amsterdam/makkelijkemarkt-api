@@ -38,7 +38,6 @@ class PerfectViewKoopmanFotoImport
     }
 
     /**
-     * @param array  $perfectViewData
      * @param string $imageSourceDirectory
      */
     public function execute(CsvIterator $content, $imageSourceDirectory)

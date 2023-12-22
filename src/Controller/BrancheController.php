@@ -6,7 +6,6 @@ use App\Entity\Branche;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\BrancheRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -50,34 +49,46 @@ class BrancheController extends AbstractController
      *     operationId="BranchCreate",
      *     tags={"Branche"},
      *     summary="Maakt nieuwe Branche aan",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="afkorting", type="string", description="afkorting van de branche"),
      *                 @OA\Property(property="omschrijving", type="string", description="omschrijving van de branche"),
      *                 @OA\Property(property="color", type="string", description="kleur van de branche")
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Branche")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/branche", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response
@@ -123,20 +134,24 @@ class BrancheController extends AbstractController
      *     operationId="BrancheGetAll",
      *     tags={"Branche"},
      *     summary="Vraag alle branches op.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Branche")
      *     )
      * )
+     *
      * @Route("/branche/all", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllBranches(): Response
     {
         $branches = $this->brancheRepository->findAll();
 
-        //we don't return the 000-EMPTY branche because it has no value outside of makkelijkemarkt-api
+        // we don't return the 000-EMPTY branche because it has no value outside of makkelijkemarkt-api
         $branches = array_filter($branches, function (Branche $b) {
             return '000-EMPTY' !== $b->getAfkorting();
         });
@@ -153,19 +168,26 @@ class BrancheController extends AbstractController
      *     operationId="BrancheGetById",
      *     tags={"Branche"},
      *     summary="Vraag branches op met een bracheId.",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Branche")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/branche/{id}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getBrancheById(int $id): Response
@@ -188,34 +210,46 @@ class BrancheController extends AbstractController
      *     operationId="BranchUpdate",
      *     tags={"Branche"},
      *     summary="Past een Branche aan",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="afkorting", type="string", description="afkorting van de branche"),
      *                 @OA\Property(property="omschrijving", type="string", description="omschrijving van de branche"),
      *                 @OA\Property(property="color", type="string", description="kleur van de branche"),
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Branche")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/branche/{id}", methods={"PUT"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function update(Request $request, int $id): Response
@@ -251,7 +285,9 @@ class BrancheController extends AbstractController
      *     operationId="BrancheDelete",
      *     tags={"Branche"},
      *     summary="Verwijderd een branche",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true , description="id van de branche"),
+     *
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -263,10 +299,13 @@ class BrancheController extends AbstractController
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/branche/{id}", methods={"DELETE"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function delete(int $id): JsonResponse
@@ -281,7 +320,7 @@ class BrancheController extends AbstractController
 
         try {
             $this->entityManager->flush();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->warning($e->getMessage());
 
             return new JsonResponse([], Response::HTTP_CONFLICT);

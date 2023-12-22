@@ -92,9 +92,12 @@ final class DagvergunningMappingController extends AbstractController
      * @OA\Put(
      *     path="/dagvergunning_mapping/{id}",
      *     tags={"DagvergunningMapping"},
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="appLabel", type="string"),
      *             @OA\Property(property="inputType", type="string"),
      *             @OA\Property(property="archivedOn", type="string"),
@@ -139,9 +142,12 @@ final class DagvergunningMappingController extends AbstractController
      * @OA\Post(
      *     path="/dagvergunning_mapping",
      *     tags={"DagvergunningMapping"},
+     *
      *     @OA\RequestBody(
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="appLabel", type="string"),
      *             @OA\Property(property="inputType", type="string"),
      *             @OA\Property(property="tariefType", type="string"),

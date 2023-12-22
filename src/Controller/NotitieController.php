@@ -9,7 +9,6 @@ use App\Entity\Notitie;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\MarktRepository;
 use App\Repository\NotitieRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -56,19 +55,26 @@ final class NotitieController extends AbstractController
      *     operationId="NotitieGetById",
      *     tags={"Notitie"},
      *     summary="Geeft een specifieke notitie",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Notitie")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/notitie/{id}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getById(int $id): Response
@@ -92,23 +98,30 @@ final class NotitieController extends AbstractController
      *     operationId="NotitieGetAllByMarktAndDag",
      *     tags={"Notitie"},
      *     summary="Geeft alle notities voor een bepaalde dag en markt",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="dag", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="verwijderdStatus", @OA\Schema(type="integer"), in="query", required=false, description="-1 = alles, 0 = actief, 1 = enkel verwijderd, default: 0"),
      *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
      *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=100"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Notitie"))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/notitie/{marktId}/{dag}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getAllByMarktAndDag(Request $request, int $marktId, string $dag, MarktRepository $marktRepository): Response
@@ -150,11 +163,15 @@ final class NotitieController extends AbstractController
      *     operationId="NotitiePost",
      *     tags={"Notitie"},
      *     summary="Maak een nieuw notitie",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="marktId", type="integer"),
      *                 @OA\Property(property="dag", type="string", example="yyyy-mm-dd", description="Als yyyy-mm-dd"),
      *                 @OA\Property(property="bericht", type="string"),
@@ -164,23 +181,31 @@ final class NotitieController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Notitie")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/notitie/", methods={"POST"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function post(Request $request, MarktRepository $marktRepository): Response
@@ -223,20 +248,20 @@ final class NotitieController extends AbstractController
             return new JsonResponse(['error' => 'Markt not found, id = '.$data['marktId']], Response::HTTP_NOT_FOUND);
         }
 
-        /** @var DateTime $dt */
-        $dt = new DateTime($data['dag']);
+        /** @var \DateTime $dt */
+        $dt = new \DateTime($data['dag']);
 
         /** @var Notitie $notitie */
         $notitie = new Notitie();
         $notitie->setDag($dt);
         $notitie->setMarkt($markt);
         $notitie->setBericht($data['bericht']);
-        $notitie->setAangemaaktDatumtijd(new DateTime());
+        $notitie->setAangemaaktDatumtijd(new \DateTime());
         $notitie->setAfgevinktStatus($data['afgevinkt']);
         $notitie->setVerwijderd(false);
 
         if (true === $data['afgevinkt']) {
-            $notitie->setAfgevinktDatumtijd(new DateTime());
+            $notitie->setAfgevinktDatumtijd(new \DateTime());
         }
 
         if (null !== $data['aangemaaktGeolocatie'] && '' !== $data['aangemaaktGeolocatie']) {
@@ -261,35 +286,48 @@ final class NotitieController extends AbstractController
      *     operationId="NotitiePut",
      *     tags={"Notitie"},
      *     summary="Werk een notitie bij",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true, description="ID van de notitie"),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="bericht", type="string"),
      *                 @OA\Property(property="afgevinkt", type="boolean", description="If not set, false"),
      *                 required={"bericht"}
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Notitie")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/notitie/{id}", methods={"PUT"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function put(Request $request, int $id, MarktRepository $marktRepository): Response
@@ -332,7 +370,7 @@ final class NotitieController extends AbstractController
         $afgevinkt = null;
 
         if (true === $data['afgevinkt']) {
-            $afgevinkt = new DateTime();
+            $afgevinkt = new \DateTime();
         }
 
         $notitie->setBericht($data['bericht']);
@@ -354,7 +392,9 @@ final class NotitieController extends AbstractController
      *     operationId="NotitieDelete",
      *     tags={"Notitie"},
      *     summary="Verwijderd een notitie",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=false, description="ID van de notitie"),
+     *
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -362,10 +402,13 @@ final class NotitieController extends AbstractController
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/notitie/{id}", methods={"DELETE"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function delete(int $id): JsonResponse
@@ -384,7 +427,7 @@ final class NotitieController extends AbstractController
 
         // save
         $notitie->setVerwijderd(true);
-        $notitie->setVerwijderdDatumtijd(new DateTime());
+        $notitie->setVerwijderdDatumtijd(new \DateTime());
 
         $this->entityManager->persist($notitie);
         $this->entityManager->flush();

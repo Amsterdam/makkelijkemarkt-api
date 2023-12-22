@@ -8,9 +8,7 @@ use App\Normalizer\BtwTypeLogNormalizer;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\BtwTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OpenApi\Annotations as OA;
-use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,28 +40,38 @@ class BtwTypeController extends AbstractController
      *      operationId="BtwTypeCreate",
      *      tags={"BtwType", "BtwPlan", "BTW"},
      *      summary="Maakt nieuwe BtwType aan",
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *
      *              @OA\Schema(
+     *
      *                  @OA\Property(property="label", type="string", description="Label of the BtwType"),
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/BtwType")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      *
      * )
+     *
      * @Route("/btw_type", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(
@@ -94,12 +102,12 @@ class BtwTypeController extends AbstractController
         try {
             $entityManager->persist($btwType);
             $entityManager->flush();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
         }
 
         $logItem = $this->logSerializer->normalize($btwType);
-        $shortClassName = (new ReflectionClass($btwType))->getShortName();
+        $shortClassName = (new \ReflectionClass($btwType))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'create', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($btwType, 'json');
@@ -114,29 +122,40 @@ class BtwTypeController extends AbstractController
      *      operationId="BtwTypeUpdate",
      *      tags={"BtwType", "BtwPlan", "BTW"},
      *      summary="Update BtwType",
+     *
      *      @OA\Parameter(name="btwTypeId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *
      *              @OA\Schema(
+     *
      *                  @OA\Property(property="label", type="string", description="Label of the BtwType"),
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/BtwType")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      *
      * )
+     *
      * @Route("/btw_type/{btwTypeId}", methods={"PUT", "PATCH"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function update(
@@ -174,12 +193,12 @@ class BtwTypeController extends AbstractController
         try {
             $entityManager->persist($btwType);
             $entityManager->flush();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage(), Response::HTTP_BAD_REQUEST]);
         }
 
         $logItem = $this->logSerializer->normalize($btwType);
-        $shortClassName = (new ReflectionClass($btwType))->getShortName();
+        $shortClassName = (new \ReflectionClass($btwType))->getShortName();
         $dispatcher->dispatch(new KiesJeKraamAuditLogEvent($user, 'update', $shortClassName, $logItem));
 
         $response = $this->serializer->serialize($btwType, 'json');
