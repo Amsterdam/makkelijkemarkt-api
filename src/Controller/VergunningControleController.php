@@ -478,7 +478,7 @@ final class VergunningControleController extends AbstractController
      *     )
      * )
      * @Route("/controle/{marktId}/{date}", methods={"GET"})
-     * @Security("is_granted('ROLE_SENIOR')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getByMarktAndDate(Request $request, int $marktId, string $date): Response
     {

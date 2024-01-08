@@ -433,7 +433,7 @@ final class DagvergunningController extends AbstractController
      *
      * @Route("/flex/dagvergunning/{id}", methods={"GET"})
      *
-     * @Security("is_granted('ROLE_SENIOR')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @todo integrate with dashboard when new app is live
      */
@@ -960,7 +960,7 @@ final class DagvergunningController extends AbstractController
      *
      * @Route("/flex/dagvergunning/", methods={"POST"})
      *
-     * @Security("is_granted('ROLE_SENIOR')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function create(Request $request, DagvergunningService $dagvergunningService): Response
     {
@@ -1087,7 +1087,7 @@ final class DagvergunningController extends AbstractController
      *
      * @Route("/dagvergunning/{id}", methods={"PATCH"})
      *
-     * @Security("is_granted('ROLE_SENIOR')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function patch(Request $request, int $id)
     {
