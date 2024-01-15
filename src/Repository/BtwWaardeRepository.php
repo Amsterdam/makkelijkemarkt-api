@@ -6,7 +6,6 @@ use App\Entity\BtwPlan;
 use App\Entity\BtwType;
 use App\Entity\BtwWaarde;
 use App\Entity\TariefSoort;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,7 +24,7 @@ class BtwWaardeRepository extends ServiceEntityRepository
 
     public function findCurrentBtwWaardeByBtwType(BtwType $btwType): ?BtwWaarde
     {
-        $now = new DateTime();
+        $now = new \DateTime();
 
         $qb = $this
             ->createQueryBuilder('row')
@@ -47,7 +46,7 @@ class BtwWaardeRepository extends ServiceEntityRepository
 
     public function findCurrentBtwWaardeByTariefSoort(TariefSoort $tariefSoort, $marktId = null): ?BtwWaarde
     {
-        $now = new DateTime();
+        $now = new \DateTime();
         $em = $this->getEntityManager();
         /** @var BtwPlanRepository */
         $btwPlanRepository = $em->getRepository(BtwPlan::class);

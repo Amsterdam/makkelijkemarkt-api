@@ -13,7 +13,6 @@ use App\Repository\MarktRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SollicitatieRepository;
 use App\Repository\VergunningControleRepository;
-use DateTime;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,15 +58,20 @@ final class RapportController extends AbstractController
      *     operationId="RapportGetAanwezigheid",
      *     tags={"Rapport"},
      *     summary="Geeft persoonlijke anwezigheid rapport",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true, description="ID van markt"),
      *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(
+     *
      *          @OA\Items(
      *             type="object",
+     *
      *             @OA\Property(property="week_nummer", @OA\Schema(type="string")),
      *             @OA\Property(property="dagen", @OA\Schema(type="string")),
      *             @OA\Property(property="aantal", @OA\Schema(type="integer")),
@@ -77,7 +81,9 @@ final class RapportController extends AbstractController
      *        ))
      *     )
      * )
+     *
      * @Route("/rapport/aanwezigheid/{marktId}/{dagStart}/{dagEind}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      *
      * @todo OpenApi 200-Response doesnt show in /doc
@@ -101,16 +107,21 @@ final class RapportController extends AbstractController
      *     operationId="RapportGetFrequentie",
      *     tags={"Rapport"},
      *     summary="Geeft frequentie rapport",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true, description="ID van markt"),
      *     @OA\Parameter(name="type", @OA\Schema(type="string"), in="path", required=true, description="dag|week|soll"),
      *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(
+     *
      *          @OA\Items(
      *             type="object",
+     *
      *             @OA\Property(property="week_nummer", @OA\Schema(type="string")),
      *             @OA\Property(property="dagen", @OA\Schema(type="string")),
      *             @OA\Property(property="aantal", @OA\Schema(type="integer")),
@@ -120,7 +131,9 @@ final class RapportController extends AbstractController
      *        ))
      *     )
      * )
+     *
      * @Route("/rapport/frequentie/{marktId}/{type}/{dagStart}/{dagEind}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      *
      * @todo OpenApi 200-Response doesnt show in /doc
@@ -151,16 +164,21 @@ final class RapportController extends AbstractController
      *     operationId="RapportGetInvoer",
      *     tags={"Rapport"},
      *     summary="Geeft invoer rapport",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true, description="ID van markt"),
      *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent()
      *     )
      * )
+     *
      * @Route("/rapport/invoer/{marktId}/{dagStart}/{dagEind}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      *
      * @todo fixtures + unit test for output-data
@@ -183,34 +201,42 @@ final class RapportController extends AbstractController
      *     operationId="RapportGetDetailfactuur",
      *     tags={"Rapport"},
      *     summary="Geeft detail factuur rapport",
+     *
      *     @OA\Parameter(name="marktIds", @OA\Schema(type="string"), in="query", required=true, description="ID van markt - multiple separated by comma"),
      *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="query", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="query", required=true, description="Als yyyy-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="type", @OA\Schema(type="string")),
      *             @OA\Property(property="input", @OA\Schema(type="array")),
      *             @OA\Property(property="output", @OA\Schema(type="array"))
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/rapport/detailfactuur", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR') or is_granted('ROLE_ACCOUNTANT')")
      *
      * @todo fixtures + unit test for output-data
      */
     public function getDetailFactuur(Request $request, ProductRepository $productRepository): Response
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var string $dagStart */
         $dagStart = $request->query->get('dagStart', null);
@@ -270,27 +296,33 @@ final class RapportController extends AbstractController
      *     operationId="RapportGetDubbelstaan",
      *     tags={"Rapport"},
      *     summary="Geeft dubbelstaan rapport",
+     *
      *     @OA\Parameter(name="dag", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="type", @OA\Schema(type="string")),
      *             @OA\Property(property="input", @OA\Schema(type="array")),
      *             @OA\Property(property="output", @OA\Schema(type="array"))
      *         )
      *     )
      * )
+     *
      * @Route("/rapport/dubbelstaan/{dag}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      *
      * @todo fixtures + unit test for output-data
      */
     public function getDubbelstaan(string $dag): Response
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string> $data */
         $data = [
@@ -341,34 +373,42 @@ final class RapportController extends AbstractController
      *     operationId="RapportGetMarktcapaciteit",
      *     tags={"Rapport"},
      *     summary="Geeft markt capaciteit rapport",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="string"), in="query", required=true, description="ID van markt - multiple separated by comma"),
      *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="query", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="query", required=true, description="Als yyyy-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="type", @OA\Schema(type="string")),
      *             @OA\Property(property="input", @OA\Schema(type="array")),
      *             @OA\Property(property="output", @OA\Schema(type="array"))
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/rapport/marktcapaciteit", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      *
      * @todo fixtures + unit test for output-data
      */
     public function getMarktCapaciteit(Request $request, MarktRepository $marktRepository): Response
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var string $dagStart */
         $dagStart = $request->query->get('dagStart', null);
@@ -518,8 +558,8 @@ final class RapportController extends AbstractController
             $rapport[$key]['totaalAantalKramen'] = $rapport[$key]['vplAantalKramen'] + $rapport[$key]['ebAantalKramen'] + $rapport[$key]['tvplAantalKramen'] + $rapport[$key]['tvplzAantalKramen'] + $rapport[$key]['expAantalKramen'] + $rapport[$key]['expfAantalKramen'] + $rapport[$key]['sollAantalKramen'] + $rapport[$key]['lotAantalKramen'];
             $rapport[$key]['totaalAantalMeter'] = $rapport[$key]['vplAantalMeter'] + $rapport[$key]['ebAantalMeter'] + $rapport[$key]['tvplAantalMeter'] + $rapport[$key]['tvplzAantalMeter'] + $rapport[$key]['expAantalMeter'] + $rapport[$key]['expfAantalMeter'] + $rapport[$key]['sollAantalMeter'] + $rapport[$key]['lotAantalMeter'];
 
-            $rapport[$key]['totaalAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? (($rapport[$key]['totaalAantalKramen'] / $rapport[$key]['capaciteitKramen'])) : 0;
-            $rapport[$key]['totaalAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? (($rapport[$key]['totaalAantalMeter'] / $rapport[$key]['capaciteitMeter'])) : 0;
+            $rapport[$key]['totaalAantalKramen%'] = $rapport[$key]['capaciteitKramen'] > 0 ? ($rapport[$key]['totaalAantalKramen'] / $rapport[$key]['capaciteitKramen']) : 0;
+            $rapport[$key]['totaalAantalMeter%'] = $rapport[$key]['capaciteitMeter'] > 0 ? ($rapport[$key]['totaalAantalMeter'] / $rapport[$key]['capaciteitMeter']) : 0;
         }
 
         /** @var array<string> $data */
@@ -549,22 +589,28 @@ final class RapportController extends AbstractController
      *     operationId="RapportGetStaanverplichting",
      *     tags={"Rapport"},
      *     summary="Geeft staanverplichting rapport",
+     *
      *     @OA\Parameter(name="dagStart", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="dagEind", @OA\Schema(type="string"), in="path", required=true, description="Als yyyy-mm-dd"),
      *     @OA\Parameter(name="vergunningType", @OA\Schema(type="string"), in="path", required=true, description="alle|soll|vkk|vpl|lot"),
      *     @OA\Parameter(name="marktId[]", @OA\Schema(type="string"), in="path", required=false, description="ID van markt"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="type", @OA\Schema(type="string")),
      *             @OA\Property(property="input", @OA\Schema(type="array")),
      *             @OA\Property(property="output", @OA\Schema(type="array"))
      *         )
      *     )
      * )
+     *
      * @Route("/rapport/staanverplichting/{dagStart}/{dagEind}/{vergunningType}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      *
      * @todo fixtures + unit test for output-data
@@ -587,8 +633,8 @@ final class RapportController extends AbstractController
         }
         $marktIds = array_values($marktIds);
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string> $data */
         $data = [

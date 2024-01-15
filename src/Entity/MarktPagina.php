@@ -14,19 +14,23 @@ class MarktPagina
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
 
     /**
      * @Ignore()
+     *
      * @ORM\ManyToOne(targetEntity="MarktConfiguratie", inversedBy="marktPaginas", cascade={"persist"})
      */
     private MarktConfiguratie $marktConfiguratie;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktPaginaIndelingslijstGroup", mappedBy="marktPagina", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktPaginaIndelingslijstGroups;

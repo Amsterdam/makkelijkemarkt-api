@@ -6,7 +6,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Koopman;
 use App\Entity\Sollicitatie;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -53,7 +52,7 @@ final class KoopmanFixtures extends BaseFixture implements DependentFixtureInter
             $sollicitatie->setVastePlaatsen(explode(',', $data['vaste_plaatsen']));
             $sollicitatie->setDoorgehaald($data['doorgehaald']);
             $sollicitatie->setDoorgehaaldReden($data['doorgehaald_reden']);
-            $sollicitatie->setInschrijfDatum(new DateTime($data['inschrijf_datum']));
+            $sollicitatie->setInschrijfDatum(new \DateTime($data['inschrijf_datum']));
             $sollicitatie->setAantalAfvaleilanden($data['aantal_afvaleilanden']);
             $sollicitatie->setAantal3MeterKramen($data['aantal_3meter_kramen']);
             $sollicitatie->setAantal4MeterKramen($data['aantal_4meter_kramen']);

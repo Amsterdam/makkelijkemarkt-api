@@ -26,17 +26,11 @@ final class EntityNormalizer extends ObjectNormalizer
         parent::__construct($classMetadataFactory, $metadataAwareNameConverter, null, null);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsDenormalization($data, string $type, string $format = null): bool
     {
         return parent::supportsDenormalization($data, $type, $format);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsNormalization($data, string $format = null): bool
     {
         return parent::supportsNormalization($data, $format);
@@ -75,7 +69,6 @@ final class EntityNormalizer extends ObjectNormalizer
     }
 
     /**
-     * @param mixed        $object
      * @param array<mixed> $data
      *
      * @return array<mixed>
@@ -128,7 +121,6 @@ final class EntityNormalizer extends ObjectNormalizer
     }
 
     /**
-     * @param mixed        $object
      * @param array<mixed> $data
      *
      * @return array<mixed>
@@ -152,7 +144,6 @@ final class EntityNormalizer extends ObjectNormalizer
     }
 
     /**
-     * @param mixed        $object
      * @param array<mixed> $data
      *
      * @return array<mixed>
@@ -175,7 +166,6 @@ final class EntityNormalizer extends ObjectNormalizer
     }
 
     /**
-     * @param mixed        $object
      * @param array<mixed> $data
      *
      * @return array<mixed>

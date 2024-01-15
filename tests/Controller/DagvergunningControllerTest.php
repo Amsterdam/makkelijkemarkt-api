@@ -13,7 +13,6 @@ use App\Repository\KoopmanRepository;
 use App\Repository\TariefplanRepository;
 use App\Test\ApiTestCase;
 use App\Utils\LocalTime;
-use DateTime;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\HttpFoundation\Response;
@@ -107,8 +106,8 @@ class DagvergunningControllerTest extends ApiTestCase
 
     public function testGetById(): Dagvergunning
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var KoopmanRepository $koopmanRepository */
         $koopmanRepository = $this->entityManager
@@ -166,12 +165,12 @@ class DagvergunningControllerTest extends ApiTestCase
         $this->assertEquals($dagvergunning->getId(), $responseData['id']);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if ('koopman' !== $key &&
-                'markt' !== $key &&
-                'dag' !== $key &&
-                'registratie_datumtijd' !== $key &&
-                'aanmaak_datumtijd' !== $key &&
-                'erkenningsnummerInvoerWaarde' !== $key
+            if ('koopman' !== $key
+                && 'markt' !== $key
+                && 'dag' !== $key
+                && 'registratie_datumtijd' !== $key
+                && 'aanmaak_datumtijd' !== $key
+                && 'erkenningsnummerInvoerWaarde' !== $key
             ) {
                 $this->assertEquals($val, $responseData[$key]);
             }
@@ -194,8 +193,8 @@ class DagvergunningControllerTest extends ApiTestCase
 
     public function testPostConcept(): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var TariefplanRepository $tariefplanRepository */
         $tariefplanRepository = $this->entityManager
@@ -268,8 +267,8 @@ class DagvergunningControllerTest extends ApiTestCase
      */
     public function testPostLineairplan(): int
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var TariefplanRepository $tariefplanRepository */
         $tariefplanRepository = $this->entityManager
@@ -314,10 +313,10 @@ class DagvergunningControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if ('marktId' !== $key &&
-                'dag' !== $key &&
-                'registratieDatumtijd' !== $key &&
-                'registratieGeolocatie' !== $key
+            if ('marktId' !== $key
+                && 'dag' !== $key
+                && 'registratieDatumtijd' !== $key
+                && 'registratieGeolocatie' !== $key
             ) {
                 $this->assertEquals($val, $responseData[$key]);
             }
@@ -328,8 +327,8 @@ class DagvergunningControllerTest extends ApiTestCase
             'aanmaakDatumtijd',
         ];
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         foreach ($expectedDates as $key) {
             $this->assertStringStartsWith($dt->format('Y-m-d'), $responseData[$key]);
@@ -382,8 +381,8 @@ class DagvergunningControllerTest extends ApiTestCase
 
     public function testPostConcreetplan(): int
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var TariefplanRepository $tariefplanRepository */
         $tariefplanRepository = $this->entityManager
@@ -428,10 +427,10 @@ class DagvergunningControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if ('marktId' !== $key &&
-                'dag' !== $key &&
-                'registratieDatumtijd' !== $key &&
-                'registratieGeolocatie' !== $key
+            if ('marktId' !== $key
+                && 'dag' !== $key
+                && 'registratieDatumtijd' !== $key
+                && 'registratieGeolocatie' !== $key
             ) {
                 $this->assertEquals($val, $responseData[$key]);
             }
@@ -442,8 +441,8 @@ class DagvergunningControllerTest extends ApiTestCase
             'aanmaakDatumtijd',
         ];
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         foreach ($expectedDates as $key) {
             $this->assertStringStartsWith($dt->format('Y-m-d'), $responseData[$key]);
@@ -577,8 +576,8 @@ class DagvergunningControllerTest extends ApiTestCase
         /** @var Dagvergunning $dagvergunning */
         $dagvergunning = $dagvergunningRepository->find($id);
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         $this->assertEquals(204, $response->getStatusCode());
         $this->assertEquals($dt->format('Y-m-d'), $dagvergunning->getDoorgehaaldDatumtijd()->format('Y-m-d'));
@@ -623,8 +622,8 @@ class DagvergunningControllerTest extends ApiTestCase
         /** @var Koopman $koopman */
         $koopman = $dagvergunning->getKoopman();
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
         $startDate = $dt->format('Y-m-').'01';
         $endDate = $dt->format('Y-m-t');
 
@@ -695,7 +694,7 @@ class DagvergunningControllerTest extends ApiTestCase
         $data = [
             'aanwezig' => 'vervanger',
             'allowDubbelstaan' => true, // turn this off to test dubbelstaan check and error TODO create a seperate test for this
-            'dag' => (new DateTime())->format('Y-m-d'),
+            'dag' => (new \DateTime())->format('Y-m-d'),
             'erkenningsnummer' => '12345678',
             'erkenningsnummerInvoerMethode' => 'handmatig',
             'marktId' => 37,

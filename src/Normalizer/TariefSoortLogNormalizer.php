@@ -15,12 +15,12 @@ class TariefSoortLogNormalizer implements NormalizerInterface, NormalizerAwareIn
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof TariefSoort;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         /* @var TariefSoort $object */
         return [

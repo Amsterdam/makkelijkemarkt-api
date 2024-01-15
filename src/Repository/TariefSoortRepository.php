@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\TariefSoort;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use InvalidArgumentException;
 
 /**
  * @method TariefSoort|null find($id, $lockMode = null, $lockVersion = null)
@@ -26,7 +25,7 @@ class TariefSoortRepository extends ServiceEntityRepository
     public function findByTariefType(string $tariefType)
     {
         if (!in_array($tariefType, TariefSoort::TARIEF_TYPES)) {
-            throw new InvalidArgumentException('Invalid tarief type');
+            throw new \InvalidArgumentException('Invalid tarief type');
         }
 
         return $this->findBy(['tariefType', $tariefType]);
@@ -35,7 +34,7 @@ class TariefSoortRepository extends ServiceEntityRepository
     public function findByLabelAndType(string $label, string $tariefType)
     {
         if (!in_array($tariefType, TariefSoort::TARIEF_TYPES)) {
-            throw new InvalidArgumentException('Invalid tarief type');
+            throw new \InvalidArgumentException('Invalid tarief type');
         }
 
         return $this->findOneBy(['tariefType' => $tariefType, 'label' => $label]);

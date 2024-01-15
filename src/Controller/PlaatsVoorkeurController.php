@@ -73,29 +73,40 @@ class PlaatsVoorkeurController extends AbstractController
      *     operationId="PlaatsVoorkeurCreate",
      *     tags={"PlaatsVoorkeur"},
      *     summary="Maakt nieuwe of bewerkt bestaande PlaatsVoorkeur",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Items(items="plaatsen", type="array", description="array met voorkeursplaatsen op volgorde van prio (hoogste prio eerst)"),
+     *
      *                 @OA\Property(property="marktId", type="string", description="id van de markt"),
      *                 @OA\Property(property="koopmanErkenningsNummer", type="string", description="erkenningsnummer van de koopman")
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/plaatsvoorkeur", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function createOrUpdate(Request $request): Response
@@ -179,18 +190,24 @@ class PlaatsVoorkeurController extends AbstractController
      *     operationId="PlaatsVoorkeurGetByMarktId",
      *     tags={"PlaatsVoorkeur"},
      *     summary="Vraag PlaatsVoorkeuren op met een marktId.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/plaatsvoorkeur/markt/{marktId}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getPlaatsVoorkeurByMarktId(string $marktId): Response
@@ -217,18 +234,24 @@ class PlaatsVoorkeurController extends AbstractController
      *     operationId="PlaatsVoorkeurGetByMarktIdAndKoopmanErkenningsNummer",
      *     tags={"PlaatsVoorkeur"},
      *     summary="Vraag PlaatsVoorkeuren op met een marktId en koopmanErkenningsnummer.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/plaatsvoorkeur/markt/{marktId}/koopman/{koopmanErkenningsNummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getPlaatsVoorkeurByMarktIdAndKoopmanErkenningsNummer(string $marktId, string $koopmanErkenningsNummer): Response
@@ -263,18 +286,24 @@ class PlaatsVoorkeurController extends AbstractController
      *     operationId="PlaatsVoorkeurGetByKoopmanErkenningsNummer",
      *     tags={"PlaatsVoorkeur"},
      *     summary="Vraag PlaatsVoorkeuren op met een koopmanErkenningsnummer.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/PlaatsVoorkeur")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/plaatsvoorkeur/koopman/{koopmanErkenningsNummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getPlaatsVoorkeurByKoopmanErkenningsNummer(string $koopmanErkenningsNummer): Response
@@ -301,6 +330,7 @@ class PlaatsVoorkeurController extends AbstractController
      *     operationId="PlaatsVoorkeurRemoveByMarktIdAndKoopmanErkenningsNummer",
      *     tags={"PlaatsVoorkeur"},
      *     summary="Verwijder PlaatsVoorkeuren met een marktId en koopmanErkenningsnummer.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success"
@@ -308,10 +338,13 @@ class PlaatsVoorkeurController extends AbstractController
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/plaatsvoorkeur/markt/{marktId}/koopman/{koopmanErkenningsNummer}", methods={"DELETE"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function removePlaatsVoorkeurByMarktIdAndKoopmanErkenningsNummer(string $marktId, string $koopmanErkenningsNummer): Response

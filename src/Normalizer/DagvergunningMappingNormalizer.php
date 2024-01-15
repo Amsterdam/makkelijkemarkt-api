@@ -15,12 +15,12 @@ class DagvergunningMappingNormalizer implements NormalizerInterface, NormalizerA
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof DagvergunningMapping;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         $archivedOn = $object->getArchivedOn();
         $tariefSoort = $object->getTariefsoort();

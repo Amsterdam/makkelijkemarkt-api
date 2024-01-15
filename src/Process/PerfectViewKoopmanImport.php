@@ -83,7 +83,7 @@ class PerfectViewKoopmanImport
             // prepare query builder
             $qb = $this->conn->createQueryBuilder();
 
-            if ((null !== $koopmanRecord)) {
+            if (null !== $koopmanRecord) {
                 // update
                 $qb->update('koopman', 'e');
                 $qb->where('e.id = :id')->setParameter('id', $koopmanRecord['id']);
@@ -103,7 +103,7 @@ class PerfectViewKoopmanImport
             $this->setValue($qb, 'voorletters', \PDO::PARAM_STR, utf8_encode(str_replace('.', '', $pvRecord['Voorletters'])));
             $this->setValue($qb, 'tussenvoegsels', \PDO::PARAM_STR, utf8_encode($pvRecord['Tussenvoegsels']));
             $this->setValue($qb, 'status', \PDO::PARAM_STR, $this->convertKoopmanStatus($pvRecord['Status']));
-            //$this->setValue($qb, 'perfect_view_nummer',  \PDO::PARAM_INT,  $pvRecord['Kaartnr']);
+            // $this->setValue($qb, 'perfect_view_nummer',  \PDO::PARAM_INT,  $pvRecord['Kaartnr']);
             $this->setValue($qb, 'pas_uid', \PDO::PARAM_STR, strtoupper($pvRecord['NFCHEX']));
 
             // execute insert/update query

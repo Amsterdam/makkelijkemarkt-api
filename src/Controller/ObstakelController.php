@@ -24,32 +24,44 @@ class ObstakelController extends AbstractBasicController
      *     operationId="ObstakelCreate",
      *     tags={"Obstakel"},
      *     summary="Maakt nieuwe Obstakel aan",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string", description="naam van het obstakel")
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/obstakel", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response
@@ -64,13 +76,17 @@ class ObstakelController extends AbstractBasicController
      *     operationId="ObstakelGetAll",
      *     tags={"Obstakel"},
      *     summary="Vraag alle obstakels op.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
      *     )
      * )
+     *
      * @Route("/obstakel/all", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAll(): Response
@@ -85,19 +101,26 @@ class ObstakelController extends AbstractBasicController
      *     operationId="ObstakelGetById",
      *     tags={"Obstakel"},
      *     summary="Vraag obstakel op met een id.",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/obstakel/{id}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getById(string $id): Response
@@ -112,32 +135,44 @@ class ObstakelController extends AbstractBasicController
      *     operationId="ObstakelUpdate",
      *     tags={"Obstakel"},
      *     summary="Past een Obstakel aan",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string", description="naam van het obstakel"),
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Obstakel")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/obstakel/{id}", methods={"PUT"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function update(Request $request, string $id): Response
@@ -152,7 +187,9 @@ class ObstakelController extends AbstractBasicController
      *     operationId="ObstakelDelete",
      *     tags={"Obstakel"},
      *     summary="Verwijdert een obstakel",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="string"), in="path", required=true , description="id van het obstakel"),
+     *
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -160,10 +197,13 @@ class ObstakelController extends AbstractBasicController
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/obstakel/{id}", methods={"DELETE"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function delete(string $id): JsonResponse

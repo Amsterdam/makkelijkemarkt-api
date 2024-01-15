@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 // This is done to prevent the mobile app from accessing more than it should.
 class MobileController extends AbstractController
 {
-    const APP_NAMESPACE = 'App\Controller\\';
+    public const APP_NAMESPACE = 'App\Controller\\';
 
     // Maps actions to controllers
-    const V1_ACTION_MAP = [
+    public const V1_ACTION_MAP = [
         'login' => 'LoginController::postByUserName',
         'getMarkten' => 'MarktController::getAll',
         'getMarkt' => 'MarktController::getByIdV2',
@@ -34,9 +34,9 @@ class MobileController extends AbstractController
         'getOndernemerByErkenningsnummmer' => 'KoopmanController::getByErkenningsnummer',
     ];
 
-    const V2_ACTION_MAP = [];
+    public const V2_ACTION_MAP = [];
 
-    const ACTION_MAP_COLLECTION = [
+    public const ACTION_MAP_COLLECTION = [
         1 => self::V1_ACTION_MAP,
         2 => self::V2_ACTION_MAP,
     ];
@@ -64,7 +64,9 @@ class MobileController extends AbstractController
      *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="type", @OA\Schema(type="string"), description="describes the action to the API", example="getFooBars"),
      *                 @OA\Property(property="data", @OA\Schema(type="object"), example="{foo: bar}"),
      *                 @OA\Property(property="secure", @OA\Schema(type="object"), description="data object which is not logged"),

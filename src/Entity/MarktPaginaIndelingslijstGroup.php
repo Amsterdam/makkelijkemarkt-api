@@ -13,13 +13,16 @@ class MarktPaginaIndelingslijstGroup
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
 
     /**
      * @Ignore()
+     *
      * @ORM\ManyToOne(targetEntity="MarktPagina", inversedBy="marktPaginaIndelingslijstGroups", cascade={"persist"})
      */
     private MarktPagina $marktPagina;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
@@ -13,7 +12,9 @@ trait MarktKraamTrait
 {
     /**
      * @var Koopman
+     *
      * @ORM\ManyToOne(targetEntity="Koopman", fetch="EAGER")
+     *
      * @ORM\JoinColumn(name="vervanger_id", referencedColumnName="id", nullable=true)
      */
     private $vervanger;
@@ -22,15 +23,18 @@ trait MarktKraamTrait
      * @Groups("vergunningControle")
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=50)
      */
     private $erkenningsnummerInvoerMethode;
 
     /**
      * @Groups("vergunningControle")
+     *
      * @SerializedName("erkenningsnummer")
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=50)
      */
     private $erkenningsnummerInvoerWaarde;
@@ -39,6 +43,7 @@ trait MarktKraamTrait
      * @Groups({"vergunningControle", "vergunningControle_l"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=50)
      */
     private $aanwezig;
@@ -46,7 +51,8 @@ trait MarktKraamTrait
     /**
      * @Groups("vergunningControle")
      *
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
+     *
      * @ORM\Column(type="datetime")
      */
     private $registratieDatumtijd;
@@ -60,12 +66,14 @@ trait MarktKraamTrait
 
     /**
      * @var ?float
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $registratieGeolocatieLat;
 
     /**
      * @var ?float
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $registratieGeolocatieLong;
@@ -74,91 +82,110 @@ trait MarktKraamTrait
      * @Groups("vergunningControle")
      *
      * @var Account
+     *
      * @ORM\ManyToOne(targetEntity="Account", fetch="LAZY")
+     *
      * @ORM\JoinColumn(name="registratie_account", referencedColumnName="id", nullable=true)
      */
     private $registratieAccount;
 
     /**
      * @var int
+     *
      * @ORM\Column(name="aantal3meter_kramen", type="integer")
      */
     private $aantal3MeterKramen;
 
     /**
      * @var int
+     *
      * @ORM\Column(name="aantal4meter_kramen", type="integer")
      */
     private $aantal4MeterKramen;
 
     /**
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $extraMeters;
 
     /**
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $aantalElektra;
 
     /**
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $afvaleiland;
 
     /**
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("grootPerMeter")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $grootPerMeter;
 
     /**
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("kleinPerMeter")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinPerMeter;
 
     /**
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("grootReiniging")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $grootReiniging;
 
     /**
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("kleinReiniging")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinReiniging;
 
     /**
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("afvalEilandAgf")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $afvalEilandAgf;
 
     /**
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("krachtstroomPerStuk")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $krachtstroomPerStuk;
@@ -167,66 +194,77 @@ trait MarktKraamTrait
      * @SerializedName("eenmaligElektra")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $eenmalig_elektra;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $afvaleilandVast;
 
     /**
      * @var ?bool
+     *
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $krachtstroom;
 
     /**
      * @var ?bool
+     *
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $reiniging;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantal3meterKramenVast;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantal4meterKramenVast;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalMetersGrootVast;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalExtraMetersVast;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalMetersKleinVast;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalElektraVast;
 
     /**
      * @var ?bool
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $krachtstroomVast;
@@ -235,6 +273,7 @@ trait MarktKraamTrait
      * @Groups("vergunningControle")
      *
      * @var ?string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $notitie;
@@ -251,16 +290,20 @@ trait MarktKraamTrait
 
     /**
      * @Groups("vergunningControle")
+     *
      * @SerializedName("status")
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $statusSolliciatie;
 
     /**
      * @var Sollicitatie
+     *
      * @ORM\ManyToOne(targetEntity="Sollicitatie", fetch="LAZY")
+     *
      * @ORM\JoinColumn(name="sollicitatie_id", referencedColumnName="id", nullable=true)
      */
     private $sollicitatie;
@@ -313,12 +356,12 @@ trait MarktKraamTrait
         return $this;
     }
 
-    public function getRegistratieDatumtijd(): DateTimeInterface
+    public function getRegistratieDatumtijd(): \DateTimeInterface
     {
         return $this->registratieDatumtijd;
     }
 
-    public function setRegistratieDatumtijd(DateTimeInterface $registratieDatumtijd): self
+    public function setRegistratieDatumtijd(\DateTimeInterface $registratieDatumtijd): self
     {
         $this->registratieDatumtijd = $registratieDatumtijd;
 

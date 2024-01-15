@@ -11,9 +11,7 @@ use App\Repository\AllocationRepository;
 use App\Repository\BrancheRepository;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -93,7 +91,7 @@ class AllocationController extends AbstractController
 
     private function createAllocation(
         Markt $markt,
-        Datetime $marktDate,
+        \Datetime $marktDate,
         bool $isAllocated,
         ?array $inrichting,
         string $koopmanErkenningsNummer,
@@ -101,7 +99,7 @@ class AllocationController extends AbstractController
         ?string $rejectReason,
         ?array $plaatsen,
         ?string $bakType,
-        ?array $plaatsvoorkeuren = null,
+        array $plaatsvoorkeuren = null,
         ?bool $anywhere = true,
         ?int $minimum = 0,
         ?int $maximum = 0
@@ -109,7 +107,7 @@ class AllocationController extends AbstractController
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($koopmanErkenningsNummer);
 
         if (null === $koopman) {
-            throw new Exception('Koopman not found');
+            throw new \Exception('Koopman not found');
         }
 
         $branche = $this->brancheRepository->findOneByAfkorting($brancheAfkorting);
@@ -122,21 +120,21 @@ class AllocationController extends AbstractController
 
         if ($isAllocated) {
             if (!isset($plaatsen)) {
-                throw new Exception('plaatsen not set for allocated allocation.');
+                throw new \Exception('plaatsen not set for allocated allocation.');
             }
             if (isset($rejectReason)) {
-                throw new Exception('rejectReason set for allocated allocation.');
+                throw new \Exception('rejectReason set for allocated allocation.');
             }
         } else {
             if (isset($rejectReason)) {
                 if (!array_key_exists($rejectReason, $this->rejectReasons)) {
-                    throw new Exception('rejectReason not valid.');
+                    throw new \Exception('rejectReason not valid.');
                 }
             } else {
-                throw new Exception('rejectReason not set for unallocated allocation.');
+                throw new \Exception('rejectReason not set for unallocated allocation.');
             }
             if (isset($plaatsen)) {
-                throw new Exception('plaatsen set for unallocated allocation.');
+                throw new \Exception('plaatsen set for unallocated allocation.');
             }
         }
 
@@ -211,28 +209,38 @@ class AllocationController extends AbstractController
      *     operationId="AllocationCreate",
      *     tags={"Allocation"},
      *     summary="Maakt nieuwe Allocation aan",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Items(items="afwijzingen", type="array", description="array met afwijzingen"),
      *                 @OA\Items(items="toewijzingen", type="array", description="array met toewijzingen")
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation/markt/{marktId}/date/{date}", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request, string $marktId, string $date): Response
@@ -257,7 +265,7 @@ class AllocationController extends AbstractController
         }
 
         if (strtotime($date)) {
-            $marktDate = new DateTime($date);
+            $marktDate = new \DateTime($date);
         } else {
             $this->logger->error('date is not a date');
 
@@ -275,7 +283,7 @@ class AllocationController extends AbstractController
 
         try {
             $this->cleanAndSaveInput($data);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
@@ -306,23 +314,31 @@ class AllocationController extends AbstractController
      *     operationId="AllocationGetByMarktAndByErkenningsNummer",
      *     tags={"Allocation"},
      *     summary="Vraag alle allocaties van een markt en een koopman op.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation/markt/{marktId}/koopman/{erkenningsNummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationByMarktAndErkenningsNummer(string $marktId, string $erkenningsNummer): Response
@@ -357,23 +373,31 @@ class AllocationController extends AbstractController
      *     operationId="AllocationGetByErkenningsNummer",
      *     tags={"Allocation"},
      *     summary="Vraag alle allocaties van een koopman op.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation/koopman/{erkenningsNummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationByErkenningsNummer(string $erkenningsNummer): Response
@@ -400,23 +424,31 @@ class AllocationController extends AbstractController
      *     operationId="AllocationGetByMarktAndByDate",
      *     tags={"Allocation"},
      *     summary="Vraag alle allocaties van een markt en een dag (YYYY-MM-DD) op.",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Allocation")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/allocation/markt/{marktId}/date/{date}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllocationsByMarktAndDate(string $marktId, string $date): Response
@@ -430,7 +462,7 @@ class AllocationController extends AbstractController
         }
 
         if (strtotime($date)) {
-            $marktDate = new DateTime($date);
+            $marktDate = new \DateTime($date);
         } else {
             $this->logger->error('date is not a date');
 

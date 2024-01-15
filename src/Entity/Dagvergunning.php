@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Utils\LocalTime;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,8 +18,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * @OA\Schema(schema="Dagvergunning", type="object")
  *
  * @ORM\Entity(repositoryClass="App\Repository\DagvergunningRepository")
+ *
  * @ORM\Table(
  *     indexes={
+ *
  *          @ORM\Index(name="dag_idx", columns={"dag"}),
  *          @ORM\Index(name="reason_idx", columns={"audit_reason"})
  *      }
@@ -83,63 +84,79 @@ class Dagvergunning
 
     /**
      * @OA\Property(example="14")
+     *
      * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
      *
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
+     *
      * @ORM\Column(type="date")
      */
     private $dag;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=50)
      */
     private $erkenningsnummerInvoerMethode;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
+     *
      * @SerializedName("erkenningsnummer")
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=50)
      */
     private $erkenningsnummerInvoerWaarde;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=50)
      */
     private $aanwezig;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
+     *
      * @ORM\Column(type="datetime")
      */
     private $registratieDatumtijd;
 
     /**
      * @OA\Property(type="array", items={"type":"number"})
+     *
      * @Groups("dagvergunning")
      *
      * @var array<float> Geo location [lat, long]
@@ -148,45 +165,54 @@ class Dagvergunning
 
     /**
      * @var ?float
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $registratieGeolocatieLat;
 
     /**
      * @var ?float
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $registratieGeolocatieLong;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(name="aantal3meter_kramen", type="integer")
      */
     private $aantal3MeterKramen;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(name="aantal4meter_kramen", type="integer")
      */
     private $aantal4MeterKramen;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $extraMeters;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
@@ -195,88 +221,108 @@ class Dagvergunning
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $aantalElektra;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $afvaleiland;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
+     *
      * @SerializedName("eenmaligElektra")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $eenmalig_elektra;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $afvaleilandVast;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $krachtstroom;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $reiniging;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantal3meterKramenVast;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantal4meterKramenVast;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalExtraMetersVast;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
@@ -285,201 +331,254 @@ class Dagvergunning
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalElektraVast;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $krachtstroomVast;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
+     *
      * @SerializedName("status")
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $statusSolliciatie;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $notitie;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
+     *
      * @ORM\Column(type="datetime")
      */
     private $aanmaakDatumtijd;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $verwijderdDatumtijd;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $audit;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", nullable=true)
      */
     private $auditReason;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $loten;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $doorgehaald;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
      *
-     * @var ?DateTimeInterface
+     * @var ?\DateTimeInterface
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $doorgehaaldDatumtijd;
 
     /**
      * @var float
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $doorgehaaldGeolocatieLat;
 
     /**
      * @var float
+     *
      * @ORM\Column(type="float", nullable=true)
      */
     private $doorgehaaldGeolocatieLong;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
+     *
      * @MaxDepth(1)
      *
      * @var Account
+     *
      * @ORM\ManyToOne(targetEntity="Account", fetch="LAZY")
+     *
      * @ORM\JoinColumn(name="doorgehaald_account", referencedColumnName="id", nullable=true)
      */
     private $doorgehaaldAccount;
 
     /**
      * @Groups({"dagvergunning", "dagvergunning_s"})
+     *
      * @MaxDepth(1)
      *
      * @var Markt
+     *
      * @ORM\ManyToOne(targetEntity="Markt", fetch="EAGER")
+     *
      * @ORM\JoinColumn(name="markt_id", referencedColumnName="id", nullable=false)
      */
     private $markt;
 
     /**
      * @Groups({"dagvergunning", "dagvergunning_s", "dagvergunning_xs"})
+     *
      * @MaxDepth(1)
      *
      * @var Koopman
+     *
      * @ORM\ManyToOne(targetEntity="Koopman", fetch="EAGER")
+     *
      * @ORM\JoinColumn(name="koopman_id", referencedColumnName="id")
      */
     private $koopman;
 
     /**
      * @Groups({"dagvergunning", "dagvergunning_s"})
+     *
      * @MaxDepth(1)
      *
      * @var Koopman
+     *
      * @ORM\ManyToOne(targetEntity="Koopman", fetch="EAGER")
+     *
      * @ORM\JoinColumn(name="vervanger_id", referencedColumnName="id")
      */
     private $vervanger;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
      *
      * @var Account
+     *
      * @ORM\ManyToOne(targetEntity="Account", fetch="LAZY")
+     *
      * @ORM\JoinColumn(name="registratie_account", referencedColumnName="id")
      */
     private $registratieAccount;
 
     /**
      * @OA\Property()
+     *
      * @Groups("dagvergunning")
+     *
      * @MaxDepth(1)
      *
      * @var Sollicitatie
+     *
      * @ORM\ManyToOne(targetEntity="Sollicitatie", fetch="LAZY")
+     *
      * @ORM\JoinColumn(name="sollicitatie_id", referencedColumnName="id", nullable=true)
      */
     private $sollicitatie;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"dagvergunning", "dagvergunning_s"})
+     *
      * @MaxDepth(1)
      *
      * @var Factuur
+     *
      * @ORM\OneToOne(targetEntity="Factuur", inversedBy="dagvergunning")
      */
     private $factuur;
 
     /**
      * @Groups("dagvergunning")
+     *
      * @MaxDepth(1)
+     *
      * @SerializedName("controles")
      *
      * @var Collection|VergunningControle[]
+     *
      * @ORM\OneToMany(targetEntity="VergunningControle", mappedBy="dagvergunning")
      */
     private $vergunningControles;
 
     /**
      * @Groups("dagvergunning_s")
+     *
      * @ORM\Column(type="json", nullable=true)
+     *
      * @SerializedName("products")
      */
     private $infoJson = [];
@@ -487,7 +586,7 @@ class Dagvergunning
     public function __construct()
     {
         $this->audit = false;
-        $this->aanmaakDatumtijd = new DateTime();
+        $this->aanmaakDatumtijd = new \DateTime();
         $this->doorgehaald = false;
         $this->vergunningControles = new ArrayCollection();
         $this->loten = 0;
@@ -515,12 +614,12 @@ class Dagvergunning
         return $this;
     }
 
-    public function getDag(): DateTimeInterface
+    public function getDag(): \DateTimeInterface
     {
         return $this->dag;
     }
 
-    public function setDag(DateTimeInterface $dag): self
+    public function setDag(\DateTimeInterface $dag): self
     {
         $this->dag = $dag;
 
@@ -590,12 +689,12 @@ class Dagvergunning
         return $this;
     }
 
-    public function getRegistratieDatumtijd(): DateTimeInterface
+    public function getRegistratieDatumtijd(): \DateTimeInterface
     {
         return $this->registratieDatumtijd;
     }
 
-    public function setRegistratieDatumtijd(DateTimeInterface $registratieDatumtijd): self
+    public function setRegistratieDatumtijd(\DateTimeInterface $registratieDatumtijd): self
     {
         $this->registratieDatumtijd = $registratieDatumtijd;
 
@@ -873,12 +972,12 @@ class Dagvergunning
         return $this->doorgehaald;
     }
 
-    public function getDoorgehaaldDatumtijd(): ?DateTimeInterface
+    public function getDoorgehaaldDatumtijd(): ?\DateTimeInterface
     {
         return $this->doorgehaaldDatumtijd;
     }
 
-    public function setDoorgehaaldDatumtijd(DateTimeInterface $doorgehaaldDatumtijd = null): self
+    public function setDoorgehaaldDatumtijd(\DateTimeInterface $doorgehaaldDatumtijd = null): self
     {
         $this->doorgehaaldDatumtijd = $doorgehaaldDatumtijd;
 
@@ -955,24 +1054,24 @@ class Dagvergunning
         return $this;
     }
 
-    public function getAanmaakDatumtijd(): DateTimeInterface
+    public function getAanmaakDatumtijd(): \DateTimeInterface
     {
         return $this->aanmaakDatumtijd;
     }
 
-    public function setAanmaakDatumtijd(DateTimeInterface $aanmaakDatumtijd): self
+    public function setAanmaakDatumtijd(\DateTimeInterface $aanmaakDatumtijd): self
     {
         $this->aanmaakDatumtijd = $aanmaakDatumtijd;
 
         return $this;
     }
 
-    public function getVerwijderdDatumtijd(): ?DateTimeInterface
+    public function getVerwijderdDatumtijd(): ?\DateTimeInterface
     {
         return $this->verwijderdDatumtijd;
     }
 
-    public function setVerwijderdDatumtijd(DateTimeInterface $verwijderdDatumtijd = null): self
+    public function setVerwijderdDatumtijd(\DateTimeInterface $verwijderdDatumtijd = null): self
     {
         $this->verwijderdDatumtijd = $verwijderdDatumtijd;
 

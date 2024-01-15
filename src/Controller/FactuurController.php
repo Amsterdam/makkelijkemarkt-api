@@ -58,19 +58,26 @@ final class FactuurController extends AbstractController
      *     operationId="FactuurPostConcept",
      *     tags={"Factuur"},
      *     summary="Stelt factuur voor dagvergunning op zonder opslag",
+     *
      *     @OA\Parameter(name="dagvergunningId", @OA\Schema(type="integer"), in="path", required=true, description="ID van de dagvergunning"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Factuur"))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/factuur/concept/{dagvergunningId}", methods={"POST"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function postConcept(int $dagvergunningId, DagvergunningRepository $dagvergunningRepository): Response
@@ -95,15 +102,20 @@ final class FactuurController extends AbstractController
      *     operationId="FactuurGetByRange",
      *     tags={"Factuur"},
      *     summary="Geeft factuuren in periode vanaf <YYYY-mm-dd> tot <YYYY-mm-dd>",
+     *
      *     @OA\Parameter(name="van", @OA\Schema(type="string"), in="path", required=true, description="als YYYY-mm-dd"),
      *     @OA\Parameter(name="tot", @OA\Schema(type="string"), in="path", required=true, description="als YYYY-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Factuur"))
      *     )
      * )
+     *
      * @Route("/report/factuur/overzicht/{dagStart}/{dagEind}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function getByRangeAction(string $dagStart, string $dagEind): Response
@@ -156,21 +168,28 @@ final class FactuurController extends AbstractController
      *     operationId="FactuurGetByMarktAndRange",
      *     tags={"Factuur"},
      *     summary="Geeft facturen voor Markt in periode vanaf <YYYY-mm-dd> tot <YYYY-mm-dd>",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true, description="ID van de markt"),
      *     @OA\Parameter(name="van", @OA\Schema(type="string"), in="path", required=true, description="als YYYY-mm-dd"),
      *     @OA\Parameter(name="tot", @OA\Schema(type="string"), in="path", required=true, description="als YYYY-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent()
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/report/factuur/overzichtmarkt/{marktId}/{dagStart}/{dagEind}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function getByMarktAndRange(

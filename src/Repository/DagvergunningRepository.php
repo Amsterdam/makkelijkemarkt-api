@@ -8,7 +8,6 @@ use App\Entity\Dagvergunning;
 use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Entity\Sollicitatie;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Join;
@@ -35,7 +34,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
      */
     public function search(array $q, int $offset = 0, int $size = 10): Paginator
     {
-        $maandGeleden = new DateTime();
+        $maandGeleden = new \DateTime();
         $maandGeleden->modify('-1 month');
         $maandGeleden->setTime(0, 0, 0);
 
@@ -110,7 +109,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
     /**
      * @return Dagvergunning[]
      */
-    public function findAllByMarktAndDag(Markt $markt, DateTime $datum, bool $includeDoorgehaald = false): array
+    public function findAllByMarktAndDag(Markt $markt, \DateTime $datum, bool $includeDoorgehaald = false): array
     {
         $qb = $this
             ->createQueryBuilder('d')
@@ -139,7 +138,7 @@ final class DagvergunningRepository extends ServiceEntityRepository
     /**
      * @return Dagvergunning[]
      */
-    public function findAllByKoopmanInPeriod(Koopman $koopman, DateTime $startDate, DateTime $endDate): array
+    public function findAllByKoopmanInPeriod(Koopman $koopman, \DateTime $startDate, \DateTime $endDate): array
     {
         $qb = $this
             ->createQueryBuilder('d')
@@ -227,8 +226,8 @@ final class DagvergunningRepository extends ServiceEntityRepository
             ->andWhere('d.doorgehaald = :ddoorgehaald')
 
             ->setParameter('sollicitatie', $sollicitatie)
-            ->setParameter('dagStart', new DateTime($dagStart))
-            ->setParameter('dagEind', new DateTime($dagEind))
+            ->setParameter('dagStart', new \DateTime($dagStart))
+            ->setParameter('dagEind', new \DateTime($dagEind))
             ->setParameter('sdoorgehaald', false)
             ->setParameter('ddoorgehaald', false);
 

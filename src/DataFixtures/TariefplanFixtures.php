@@ -8,7 +8,6 @@ use App\Entity\Concreetplan;
 use App\Entity\Lineairplan;
 use App\Entity\Markt;
 use App\Entity\Tariefplan;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -153,8 +152,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
             $tariefplan->setConcreetplan($concreetplan);
             $tariefplan->setMarkt($markt);
             $tariefplan->setNaam('Geldig tot 29 feb 2016');
-            $tariefplan->setGeldigVanaf(new DateTime('2011-01-01 00:00:00'));
-            $tariefplan->setGeldigTot(new DateTime('2016-02-29 00:00:00'));
+            $tariefplan->setGeldigVanaf(new \DateTime('2011-01-01 00:00:00'));
+            $tariefplan->setGeldigTot(new \DateTime('2016-02-29 00:00:00'));
 
             $manager->persist($tariefplan);
             ++$i;
@@ -174,8 +173,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2016');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2017-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2017-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -274,8 +273,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
             $tariefplan->setLineairplan($lineairplan);
             $tariefplan->setMarkt($markt);
             $tariefplan->setNaam('Tarieven 2016 t/m 2017');
-            $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-            $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+            $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+            $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
             $manager->persist($tariefplan);
             ++$i;
@@ -295,8 +294,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 01-04-2016 t/m 2017');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-04-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-04-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -315,8 +314,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tot 31 maart 2016');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2016-03-31 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2016-03-31 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -335,8 +334,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tot 31-03-2016');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2016-03-31 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2016-03-31 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -355,8 +354,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 01-04-2016 t/m 2017');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-04-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-04-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -375,8 +374,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 1 oktober 2016 t/m 2017');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-10-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-10-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -395,8 +394,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2017');
-        $tariefplan->setGeldigVanaf(new DateTime('2017-01-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2019-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2017-01-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2019-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -415,8 +414,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven van 1-3-2017 tot 1-1-2018');
-        $tariefplan->setGeldigVanaf(new DateTime('2017-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2017-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -435,8 +434,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven van 1-3-2017 tot 1-1-2018');
-        $tariefplan->setGeldigVanaf(new DateTime('2017-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2017-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -455,8 +454,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Lineair tarief vanaf 1-7-2017 CvdJ');
-        $tariefplan->setGeldigVanaf(new DateTime('2017-07-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2017-07-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -475,8 +474,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2016 t/m 2017');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2017-06-30 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2017-06-30 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -495,8 +494,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2016 t/m 2017 Q3');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2017-10-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2017-10-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -515,8 +514,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2016 t/m 20-04-2016');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2016-04-20 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2016-04-20 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -535,8 +534,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2016 tot 1 maart 2017');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2017-03-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2017-03-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -555,8 +554,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2016 t/m 2017 Q3');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2017-10-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2017-10-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -572,8 +571,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2016 t/m 19 april 2016');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-03-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2016-04-19 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-03-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2016-04-19 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -592,8 +591,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 20 april t/m 30 september 2016');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-04-20 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2016-09-30 23:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-04-20 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2016-09-30 23:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -609,8 +608,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven van 21 maart 2016 t/m 31 december 2017');
-        $tariefplan->setGeldigVanaf(new DateTime('2016-04-21 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2016-04-21 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -629,8 +628,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2017 Q4');
-        $tariefplan->setGeldigVanaf(new DateTime('2017-10-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2017-10-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -649,8 +648,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven 2017 Q4');
-        $tariefplan->setGeldigVanaf(new DateTime('2017-10-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime('2018-01-01 00:00:00'));
+        $tariefplan->setGeldigVanaf(new \DateTime('2017-10-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime('2018-01-01 00:00:00'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -670,8 +669,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setConcreetplan($concreetplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven '.date('Y'));
-        $tariefplan->setGeldigVanaf(new DateTime(date('Y').'-01-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime(date('Y').'-12-31 23:59:59'));
+        $tariefplan->setGeldigVanaf(new \DateTime(date('Y').'-01-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime(date('Y').'-12-31 23:59:59'));
 
         $manager->persist($tariefplan);
         ++$i;
@@ -693,8 +692,8 @@ final class TariefplanFixtures extends BaseFixture implements DependentFixtureIn
         $tariefplan->setLineairplan($lineairplan);
         $tariefplan->setMarkt($markt);
         $tariefplan->setNaam('Tarieven '.date('Y'));
-        $tariefplan->setGeldigVanaf(new DateTime(date('Y').'-01-01 00:00:00'));
-        $tariefplan->setGeldigTot(new DateTime(date('Y').'-12-31 23:59:59'));
+        $tariefplan->setGeldigVanaf(new \DateTime(date('Y').'-01-01 00:00:00'));
+        $tariefplan->setGeldigTot(new \DateTime(date('Y').'-12-31 23:59:59'));
 
         $manager->persist($tariefplan);
         ++$i;

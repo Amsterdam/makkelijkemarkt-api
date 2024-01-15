@@ -127,14 +127,11 @@ class ApiTestCase extends WebTestCase
 
     private function purgeDatabase(): void
     {
-        //$purger = new ORMPurger($this->getService('doctrine')->getManager());
-        //$purger->purge();
+        // $purger = new ORMPurger($this->getService('doctrine')->getManager());
+        // $purger->purge();
         // we need the fixtures to have enough data
     }
 
-    /**
-     * @return mixed
-     */
     protected function getService(string $id)
     {
         return self::$kernel->getContainer()->get($id);

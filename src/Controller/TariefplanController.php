@@ -11,7 +11,6 @@ use App\Entity\Tariefplan;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\MarktRepository;
 use App\Repository\TariefplanRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -64,14 +63,19 @@ final class TariefplanController extends AbstractController
      *     operationId="ATariefplanGetAllByMarkt",
      *     tags={"Tariefplan"},
      *     summary="Geeft Tariefplannen voor een markt",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true, description="ID van markt"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Tariefplan"))
      *     )
      * )
+     *
      * @Route("/tariefplannen/list/{marktId}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getAllByMarkt(int $marktId): Response
@@ -99,19 +103,26 @@ final class TariefplanController extends AbstractController
      *     operationId="TariefplanGetById",
      *     tags={"Tariefplan"},
      *     summary="Geeft informatie over specifiek tariefplan",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Tariefplan")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/tariefplannen/get/{id}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getById(int $id): Response
@@ -135,12 +146,17 @@ final class TariefplanController extends AbstractController
      *     operationId="TariefplanPostConcreetplan",
      *     tags={"Tariefplan"},
      *     summary="Maak een nieuw concreet tariefplan",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="query", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string"),
      *                 @OA\Property(property="geldigVanaf", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="geldigTot", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
@@ -168,23 +184,31 @@ final class TariefplanController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Concreetplan")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/tariefplannen/{marktId}/create/concreet", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function postConcreetplan(Request $request, int $marktId): Response
@@ -199,12 +223,17 @@ final class TariefplanController extends AbstractController
      *     operationId="TariefplanPostLineairplan",
      *     tags={"Tariefplan"},
      *     summary="Maak een nieuw lineair tariefplan",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string"),
      *                 @OA\Property(property="geldigVanaf", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="geldigTot", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
@@ -233,23 +262,31 @@ final class TariefplanController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Lineairplan")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/tariefplannen/{marktId}/create/lineair", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function postLineairplan(Request $request, int $marktId): Response
@@ -264,12 +301,17 @@ final class TariefplanController extends AbstractController
      *     operationId="TariefplanPutConcreetplan",
      *     tags={"Tariefplan"},
      *     summary="Werk een concreet tariefplan bij",
+     *
      *     @OA\Parameter(name="tariefplanId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string"),
      *                 @OA\Property(property="geldigVanaf", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="geldigTot", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
@@ -299,23 +341,31 @@ final class TariefplanController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Concreetplan")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/tariefplannen/{id}/update/concreet", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function putConcreetplan(Request $request, int $id): Response
@@ -330,12 +380,17 @@ final class TariefplanController extends AbstractController
      *     operationId="TariefplanPutLineairplan",
      *     tags={"Tariefplan"},
      *     summary="Werk een lineair tariefplan bij",
+     *
      *     @OA\Parameter(name="tariefplanId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string"),
      *                 @OA\Property(property="geldigVanaf", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
      *                 @OA\Property(property="geldigTot", type="string", example="yyyy-mm-dd H:i:s", description="Als yyyy-mm-dd H:i:s"),
@@ -364,23 +419,31 @@ final class TariefplanController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Lineairplan")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/tariefplannen/{id}/update/lineair", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function putLineairplan(Request $request, int $id): Response
@@ -530,7 +593,9 @@ final class TariefplanController extends AbstractController
      *     operationId="TariefplanDelete",
      *     tags={"Tariefplan"},
      *     summary="Verwijdert een tariefplan",
+     *
      *     @OA\Parameter(name="tariefPlanId", @OA\Schema(type="integer"), in="path", required=true, description="ID van de tariefplan"),
+     *
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -538,10 +603,13 @@ final class TariefplanController extends AbstractController
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/tariefplannen/delete/{id}", methods={"DELETE"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function delete(int $id): JsonResponse
@@ -587,27 +655,35 @@ final class TariefplanController extends AbstractController
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="ImportTariefPlan",
      *      tags={"TariefPlan", "Tarief"},
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\MediaType(
      *              mediaType="multipart/form-data",
+     *
      *              @OA\Property(property="planType", type="string", description="Tarief type: lineair, concreet"),
      *              @OA\Property(property="file", type="file", description="Csv file met tariefplan")
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/Tariefplan")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      * )
      *
      * @Route("/parse_tarief_csv", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function parseTariefCsv(
@@ -689,8 +765,8 @@ final class TariefplanController extends AbstractController
 
     protected function processTariefPlan(Tariefplan $tariefplan, $plan, $data, bool $isConcreet)
     {
-        $geldigVanaf = new DateTime($data['geldigVanaf']['date']);
-        $geldigTot = new DateTime($data['geldigTot']['date']);
+        $geldigVanaf = new \DateTime($data['geldigVanaf']['date']);
+        $geldigTot = new \DateTime($data['geldigTot']['date']);
 
         $tariefplan->setNaam($data['naam']);
         $tariefplan->setGeldigVanaf($geldigVanaf);

@@ -11,7 +11,6 @@ use App\Entity\Markt;
 use App\Entity\Tariefplan;
 use App\Service\FactuurService;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class FactuurControllerTest extends ApiTestCase
 {
@@ -27,8 +26,8 @@ class FactuurControllerTest extends ApiTestCase
 
     public function testPostConcept(): int
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string, mixed> $dataKoopman */
         $dataKoopman = [
@@ -62,8 +61,8 @@ class FactuurControllerTest extends ApiTestCase
         $dataTariefplan = [
             'markt' => $markt,
             'naam' => 'Tarieven Factuur '.$dt->format('Y-m-d H:i:s'),
-            'geldigVanaf' => new DateTime($dt->format('Y').'-01-01 00:00:00'),
-            'geldigTot' => new DateTime($dt->format('Y').'-12-31 23:59:59'),
+            'geldigVanaf' => new \DateTime($dt->format('Y').'-01-01 00:00:00'),
+            'geldigTot' => new \DateTime($dt->format('Y').'-12-31 23:59:59'),
         ];
 
         /** @var Tariefplan $tariefplan */
@@ -150,8 +149,8 @@ class FactuurControllerTest extends ApiTestCase
      */
     public function testGetByRange(int $marktId): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         $dagStart = $dt->format('Y-m').'-01';
         $dagEind = $dt->format('Y-m-t');
@@ -183,8 +182,8 @@ class FactuurControllerTest extends ApiTestCase
      */
     public function testGetByMarktAndRange(int $marktId): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         $dagStart = $dt->format('Y-m').'-01';
         $dagEind = $dt->format('Y-m-t');

@@ -55,17 +55,21 @@ final class AccountController extends AbstractController
      *     operationId="AccountGetAll",
      *     tags={"Account"},
      *     summary="Geeft accounts",
+     *
      *     @OA\Parameter(name="naam", @OA\Schema(type="string"), in="query", required=false, description="Deel van een naam"),
      *     @OA\Parameter(name="active", @OA\Schema(type="string", default="-1"), in="query", required=false, description="Actief status 1 = actief, 0 = non actief, -1 = geen selectie"),
      *     @OA\Parameter(name="locked", @OA\Schema(type="string", default="-1"), in="query", required=false, description="Locked status 1 = actief, 0 = non actief, -1 = geen selectie"),
      *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
      *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=200"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Account"))
      *     )
      * )
+     *
      * @Route("/account/", methods={"GET"})
      */
     public function getAll(Request $request): Response
@@ -108,19 +112,26 @@ final class AccountController extends AbstractController
      *     operationId="AccountGetById",
      *     tags={"Account"},
      *     summary="Geeft informatie over specifiek account",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Account")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/account/{id}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getById(int $id): Response
@@ -144,11 +155,15 @@ final class AccountController extends AbstractController
      *     operationId="AccountPost",
      *     tags={"Account"},
      *     summary="Maak een nieuw account",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", @OA\Schema(type="string"), example="string"),
      *                 @OA\Property(property="email", @OA\Schema(type="string"), example="string"),
      *                 @OA\Property(property="username", @OA\Schema(type="string"), example="string"),
@@ -159,23 +174,31 @@ final class AccountController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Account")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/account/", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function post(Request $request): Response
@@ -235,12 +258,17 @@ final class AccountController extends AbstractController
      *     operationId="AccountPut",
      *     tags={"Account"},
      *     summary="Slaat informatie over een account op",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string"),
      *                 @OA\Property(property="email", type="string"),
      *                 @OA\Property(property="username", type="string"),
@@ -251,23 +279,31 @@ final class AccountController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Account")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/account/{id}", methods={"PUT"})
+     *
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function put(Request $request, int $id): Response
@@ -333,19 +369,26 @@ final class AccountController extends AbstractController
      *     operationId="AccountPostUnlock",
      *     tags={"Account"},
      *     summary="Unlock an account",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Account")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/account/unlock/{id}", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function unlock(int $id): JsonResponse
@@ -373,34 +416,47 @@ final class AccountController extends AbstractController
      *     operationId="AccountPutPassword",
      *     tags={"Account"},
      *     summary="Werk password bij",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="password", type="string"),
      *                 required={"password"}
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Account")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/account_password/{id}", methods={"PUT"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function putPassword(Request $request, int $id): Response

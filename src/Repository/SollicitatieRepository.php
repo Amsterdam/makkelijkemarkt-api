@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Entity\Sollicitatie;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query;
@@ -125,7 +124,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
      *
      * @return Sollicitatie[]
      */
-    public function findAllByMarktInPeriod(Markt $markt, ?DateTime $startDate, ?DateTime $endDate, array $types = []): array
+    public function findAllByMarktInPeriod(Markt $markt, ?\DateTime $startDate, ?\DateTime $endDate, array $types = []): array
     {
         $dql = 'SELECT DISTINCT s
                 FROM App\Entity\Sollicitatie s
@@ -214,10 +213,10 @@ final class SollicitatieRepository extends ServiceEntityRepository
                     d2.doorgehaald = false AND 
                     LOWER(d2.aanwezig) = \'zelf\'
                 ) AS aantalActieveDagvergunningenZelfAanwezig')
-            ->setParameter('dagStart1', new DateTime($dagStart))
-            ->setParameter('dagEind1', new DateTime($dagEind))
-            ->setParameter('dagStart2', new DateTime($dagStart))
-            ->setParameter('dagEind2', new DateTime($dagEind))
+            ->setParameter('dagStart1', new \DateTime($dagStart))
+            ->setParameter('dagEind1', new \DateTime($dagEind))
+            ->setParameter('dagStart2', new \DateTime($dagStart))
+            ->setParameter('dagEind2', new \DateTime($dagEind))
 
             ->addOrderBy('k.erkenningsnummer')
 

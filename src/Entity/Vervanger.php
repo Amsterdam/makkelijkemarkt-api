@@ -18,19 +18,26 @@ class Vervanger
 {
     /**
      * @OA\Property(example="14")
+     *
      * @Groups("vervanger")
+     *
      * @SerializedName("relation_id")
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property(example="14")
+     *
      * @Groups("vervanger")
+     *
      * @SerializedName("vervanger_id")
      *
      * @var int
@@ -39,30 +46,38 @@ class Vervanger
 
     /**
      * @var Koopman
+     *
      * @ORM\ManyToOne(targetEntity="Koopman", fetch="LAZY", inversedBy="vervangersVan")
+     *
      * @ORM\JoinColumn(name="koopman_id", referencedColumnName="id", nullable=false)
      */
     private $koopman;
 
     /**
      * @var Koopman
+     *
      * @ORM\ManyToOne(targetEntity="Koopman", fetch="LAZY", inversedBy="vervangerVoor")
+     *
      * @ORM\JoinColumn(name="vervanger_id", referencedColumnName="id", nullable=false)
      */
     private $vervanger;
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
+     *
      * @SerializedName("pas_uid")
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $pasUid;
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string
@@ -71,6 +86,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string
@@ -79,6 +95,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string
@@ -87,6 +104,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string
@@ -95,6 +113,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string
@@ -103,6 +122,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string
@@ -111,7 +131,9 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
+     *
      * @SerializedName("status")
      *
      * @var ?string
@@ -120,6 +142,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?int
@@ -133,6 +156,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string
@@ -141,6 +165,7 @@ class Vervanger
 
     /**
      * @OA\Property()
+     *
      * @Groups("vervanger")
      *
      * @var ?string

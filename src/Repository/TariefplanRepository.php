@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Markt;
 use App\Entity\Tariefplan;
-use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,7 +22,7 @@ final class TariefplanRepository extends ServiceEntityRepository
         parent::__construct($registry, Tariefplan::class);
     }
 
-    public function findOneByMarktAndDag(Markt $markt, DateTimeInterface $dag): ?Tariefplan
+    public function findOneByMarktAndDag(Markt $markt, \DateTimeInterface $dag): ?Tariefplan
     {
         $qb = $this->createQueryBuilder('t')
             ->where('t.markt = :markt')

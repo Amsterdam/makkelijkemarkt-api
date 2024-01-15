@@ -9,7 +9,6 @@ use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Entity\VergunningControle;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class VergunningControleControllerTest extends ApiTestCase
 {
@@ -34,15 +33,15 @@ class VergunningControleControllerTest extends ApiTestCase
         $dataDagvergunning = [
             'markt' => $markt,
             'koopman' => $koopman,
-            'dag' => new DateTime(),
+            'dag' => new \DateTime(),
             'erkenningsnummerInvoerMethode' => $this->faker->randomLetter,
-            'registratie_datumtijd' => new DateTime(),
+            'registratie_datumtijd' => new \DateTime(),
             'erkenningsnummer_invoer_waarde' => '1993081004',
             'aanwezig' => 'Zelf-1',
             'doorgehaald' => false,
             'extraMeters' => 0,
             'notitie' => '----vergunning controle testPost----',
-            'aanmaak_datumtijd' => new DateTime(),
+            'aanmaak_datumtijd' => new \DateTime(),
             'aantalElektra' => 2,
             'krachtstroom' => false,
             'reiniging' => true,
@@ -74,13 +73,13 @@ class VergunningControleControllerTest extends ApiTestCase
         $responseData = json_decode((string) $response->getBody(), true);
 
         foreach ($dataDagvergunning as $key => $val) {
-            if ('koopman' !== $key &&
-                'markt' !== $key &&
-                'erkenningsnummerInvoerMethode' !== $key &&
-                'erkenningsnummer_invoer_waarde' !== $key &&
-                'dag' !== $key &&
-                'registratie_datumtijd' !== $key &&
-                'aanmaak_datumtijd' !== $key
+            if ('koopman' !== $key
+                && 'markt' !== $key
+                && 'erkenningsnummerInvoerMethode' !== $key
+                && 'erkenningsnummer_invoer_waarde' !== $key
+                && 'dag' !== $key
+                && 'registratie_datumtijd' !== $key
+                && 'aanmaak_datumtijd' !== $key
             ) {
                 $this->assertEquals($val, $responseData[$key]);
             }
@@ -91,8 +90,8 @@ class VergunningControleControllerTest extends ApiTestCase
             'aanmaakDatumtijd',
         ];
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         foreach ($expectedDates as $key) {
             $this->assertStringContainsString($dt->format('Y-m-d'), $responseData[$key]);
@@ -233,15 +232,15 @@ class VergunningControleControllerTest extends ApiTestCase
         $dataDagvergunning = [
             'markt' => $markt,
             'koopman' => $koopman,
-            'dag' => new DateTime(),
+            'dag' => new \DateTime(),
             'erkenningsnummerInvoerMethode' => $this->faker->randomLetter,
-            'registratie_datumtijd' => new DateTime(),
+            'registratie_datumtijd' => new \DateTime(),
             'erkenningsnummer_invoer_waarde' => '1993081004',
             'aanwezig' => 'Zelf-1',
             'doorgehaald' => false,
             'extraMeters' => 0,
             'notitie' => '----vergunning controle testPost----',
-            'aanmaak_datumtijd' => new DateTime(),
+            'aanmaak_datumtijd' => new \DateTime(),
             'aantalElektra' => 2,
             'krachtstroom' => false,
             'reiniging' => true,

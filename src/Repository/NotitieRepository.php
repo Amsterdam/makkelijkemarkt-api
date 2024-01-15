@@ -17,9 +17,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 final class NotitieRepository extends ServiceEntityRepository
 {
-    const VERWIJDERDSTATUS_ALL = -1;
-    const VERWIJDERDSTATUS_ACTIVE = 0;
-    const VERWIJDERDSTATUS_REMOVED = 1;
+    public const VERWIJDERDSTATUS_ALL = -1;
+    public const VERWIJDERDSTATUS_ACTIVE = 0;
+    public const VERWIJDERDSTATUS_REMOVED = 1;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -49,10 +49,10 @@ final class NotitieRepository extends ServiceEntityRepository
             $qb->setParameter('dag', $q['dag']);
         }
 
-        if (true === isset($q['verwijderdStatus']) &&
-                null !== $q['verwijderdStatus'] &&
-                '' !== $q['verwijderdStatus'] &&
-                (self::VERWIJDERDSTATUS_ACTIVE === $q['verwijderdStatus'] || self::VERWIJDERDSTATUS_REMOVED === $q['verwijderdStatus'])
+        if (true === isset($q['verwijderdStatus'])
+                && null !== $q['verwijderdStatus']
+                && '' !== $q['verwijderdStatus']
+                && (self::VERWIJDERDSTATUS_ACTIVE === $q['verwijderdStatus'] || self::VERWIJDERDSTATUS_REMOVED === $q['verwijderdStatus'])
         ) {
             $qb->andWhere('notitie.dag = :verwijderd');
             $qb->setParameter('verwijderd', $q['verwijderdStatus']);

@@ -13,10 +13,7 @@ use App\Repository\RsvpPatternRepository;
 use App\Repository\RsvpRepository;
 use App\Repository\SollicitatieRepository;
 use App\Utils\Constants;
-use DateTime;
-use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OpenApi\Annotations as OA;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -92,11 +89,15 @@ class RsvpController extends AbstractController
      *     operationId="RsvpCreate",
      *     tags={"Rsvp"},
      *     summary="Maakt nieuwe Rsvp aan",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="marktDate", type="string", description="datum van de markt (als YYYY-MM-DD)"),
      *                 @OA\Property(property="attending", type="boolean", description="rsvp status van de koopman"),
      *                 @OA\Property(property="marktId", type="string", description="id van de markt"),
@@ -105,18 +106,24 @@ class RsvpController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/rsvp", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response
@@ -158,7 +165,7 @@ class RsvpController extends AbstractController
 
         try {
             $rsvps = $this->handleCreateRsvps($data['rsvps'], $user);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
@@ -171,13 +178,13 @@ class RsvpController extends AbstractController
     {
         foreach ($rsvpInput as $rsvpData) {
             if (strtotime($rsvpData['marktDate'])) {
-                $marktDate = new DateTime($rsvpData['marktDate']);
+                $marktDate = new \DateTime($rsvpData['marktDate']);
             } else {
-                throw new Exception('marktDate is not a date');
+                throw new \Exception('marktDate is not a date');
             }
 
             if (!is_bool($rsvpData['attending'])) {
-                throw new Exception('attending is not a boolean');
+                throw new \Exception('attending is not a boolean');
             } else {
                 $attending = (bool) $rsvpData['attending'];
             }
@@ -185,7 +192,7 @@ class RsvpController extends AbstractController
             $markt = $this->marktRepository->getById($rsvpData['marktId']);
 
             if (null === $markt) {
-                throw new Exception('Markt not found');
+                throw new \Exception('Markt not found');
             }
 
             $koopman = $this->koopmanRepository->findOneByErkenningsnummer($rsvpData['koopmanErkenningsNummer']);
@@ -193,13 +200,13 @@ class RsvpController extends AbstractController
             $oldRsvp = $this->rsvpRepository->findOneByKoopmanAndMarktAndMarktDate($koopman, $markt, $marktDate);
 
             if (null === $koopman) {
-                throw new Exception('Koopman not found');
+                throw new \Exception('Koopman not found');
             }
 
-            $now = new DateTime('now');
+            $now = new \DateTime('now');
             $allocTime = Constants::getAllocationTime();
-            $today = new DateTime('today');
-            $tomorrow = new DateTime('tomorrow');
+            $today = new \DateTime('today');
+            $tomorrow = new \DateTime('tomorrow');
 
             // If rsvp is in the past, use either original RSVP attendance,
             // Or default to true or false for vpl or soll respectively.
@@ -244,24 +251,33 @@ class RsvpController extends AbstractController
      *     operationId="RsvpGetByErkenninsnummer",
      *     tags={"Rsvp"},
      *     summary="Vraag Rsvp's van deze week en volgende week van een erkenningsnummer.",
+     *
      *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/rsvp/koopman/{erkenningsnummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getRsvpByErkenningsnummer(string $erkenningsnummer): Response
@@ -272,8 +288,8 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $monday = new DateTime('Monday this week');
-        $later = (new DateTime('Monday this week'))->modify('+2 weeks');
+        $monday = new \DateTime('Monday this week');
+        $later = (new \DateTime('Monday this week'))->modify('+2 weeks');
 
         $rsvps = $this->rsvpRepository->findByKoopmanAndBetweenDates($koopman, $monday, $later);
 
@@ -293,25 +309,34 @@ class RsvpController extends AbstractController
      *     operationId="RsvpGetByMarktId",
      *     tags={"Rsvp"},
      *     summary="Vraag Rsvp's van een markt voor een dag op",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="marktDate", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/rsvp/markt/{marktId}/date/{marktDate}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getRsvpByMarktIdAndMarktDate(int $marktId, string $marktDate): Response
@@ -323,7 +348,7 @@ class RsvpController extends AbstractController
         }
 
         if (strtotime($marktDate)) {
-            $date = new DateTime($marktDate);
+            $date = new \DateTime($marktDate);
         } else {
             return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
         }
@@ -344,25 +369,34 @@ class RsvpController extends AbstractController
      *     operationId="RsvpGetByMarktIdAndErkenninsnummer",
      *     tags={"Rsvp"},
      *     summary="Vraag Rsvp's van deze week en volgende week van een erkenningsnummer.",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Rsvp")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/rsvp/markt/{marktId}/koopman/{erkenningsnummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getRsvpByMarktIdAndErkenningsnummer(int $marktId, string $erkenningsnummer): Response
@@ -379,8 +413,8 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $monday = new DateTime('Monday this week');
-        $later = (new DateTime('Monday this week'))->modify('+2 weeks');
+        $monday = new \DateTime('Monday this week');
+        $later = (new \DateTime('Monday this week'))->modify('+2 weeks');
 
         $rsvps = $this->rsvpRepository->findByMarktAndKoopmanAndBetweenDates($markt, $koopman, $monday, $later);
         $rsvpPattern = $this->rsvpPatternRepository->findOneByMarktAndKoopmanAndBeforeDate($markt, $koopman, $later);
@@ -397,8 +431,8 @@ class RsvpController extends AbstractController
      *
      * @param RsvpPattern[] $rsvpPatterns
      * @param Rsvp[]        $rsvps
-     * @param DateTime      $start
-     * @param DateTime      $end
+     * @param \DateTime     $start
+     * @param \DateTime     $end
      */
     private function combineRsvpWithPattern($rsvps, $rsvpPatterns, $start, $end)
     {
@@ -473,8 +507,10 @@ class RsvpController extends AbstractController
      *     operationId="RsvpDeleteByMarktIdAndErkenninsnummer",
      *     tags={"Rsvp"},
      *     summary="Verwijder toekomstige Rsvp's van deze koopman op deze markt.",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="204",
      *         description="No Content"
@@ -482,15 +518,20 @@ class RsvpController extends AbstractController
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/rsvp/markt/{marktId}/koopman/{erkenningsnummer}", methods={"DELETE"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function rsvpDeleteFutureItemsByMarktIdAndErkenninsnummer(Request $request, int $marktId, string $erkenningsnummer): Response
@@ -508,7 +549,7 @@ class RsvpController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $startDate = new DateTime('now', new DateTimeZone('Europe/Amsterdam'));
+        $startDate = new \DateTime('now', new \DateTimeZone('Europe/Amsterdam'));
 
         // TODO: this should not be a hard-coded time
         // https://dev.azure.com/CloudCompetenceCenter/salmagundi/_sprints/backlog/Markten%20-%20Dev%20team/salmagundi/Sprint%2029?workitem=50146

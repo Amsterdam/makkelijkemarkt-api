@@ -17,7 +17,7 @@ abstract class BaseFixture extends Fixture
     /** @var Generator */
     protected $faker;
 
-    const FILE_BASED_FIXTURES_DIR = './src/DataFixtures/fixtures';
+    public const FILE_BASED_FIXTURES_DIR = './src/DataFixtures/fixtures';
 
     abstract protected function loadData(ObjectManager $manager): void;
 

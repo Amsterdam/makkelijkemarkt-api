@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,41 +23,51 @@ class Account implements UserInterface
 
     /**
      * @OA\Property(example="14")
+     *
      * @Groups({"account", "account_xs"})
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"account", "account_xs"})
      *
      * @var string
+     *
      * @ORM\Column(type="string")
      */
     private $naam;
 
     /**
      * @OA\Property()
+     *
      * @Groups("account")
      *
      * @var string
+     *
      * @ORM\Column(type="string")
      */
     private $email;
 
     /**
      * @var string
+     *
      * @ORM\Column(type="string")
      */
     private $role;
 
     /**
      * @OA\Property(type="array", items={"type":"string"}, example={"ROLE_USER"})
+     *
      * @Groups("account")
      *
      * @var array<string>
@@ -67,45 +76,54 @@ class Account implements UserInterface
 
     /**
      * @OA\Property()
+     *
      * @Groups("account")
      *
      * @var string
+     *
      * @ORM\Column(type="string", unique=true)
      */
     private $username;
 
     /**
      * @var string
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $password;
 
     /**
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $attempts;
 
     /**
-     * @var ?DateTimeInterface
+     * @var ?\DateTimeInterface
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastAttempt;
 
     /**
      * @OA\Property(example=false)
+     *
      * @Groups("account")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $locked;
 
     /**
      * @OA\Property()
+     *
      * @Groups("account")
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $active;
@@ -209,12 +227,12 @@ class Account implements UserInterface
         return $this;
     }
 
-    public function getLastAttempt(): DateTimeInterface
+    public function getLastAttempt(): \DateTimeInterface
     {
         return $this->lastAttempt;
     }
 
-    public function setLastAttempt(DateTimeInterface $lastAttempt = null): self
+    public function setLastAttempt(\DateTimeInterface $lastAttempt = null): self
     {
         $this->lastAttempt = $lastAttempt;
 

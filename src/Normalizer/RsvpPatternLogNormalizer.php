@@ -15,12 +15,12 @@ class RsvpPatternLogNormalizer implements NormalizerInterface, NormalizerAwareIn
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof RsvpPattern;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         // Human readable string:
         // {actor} changed RsvpPattern for {koopmanName} on the {marktName} to {monday}, ... , {sunday}

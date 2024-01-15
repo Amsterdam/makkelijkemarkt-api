@@ -6,7 +6,6 @@ use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Entity\RsvpPattern;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class RsvpPatternRepositoryTest extends ApiTestCase
 {
@@ -18,7 +17,7 @@ class RsvpPatternRepositoryTest extends ApiTestCase
 
     public function testFindOneByMarktAndKoopmanAndBeforeDate()
     {
-        $date = new DateTime();
+        $date = new \DateTime();
 
         $result = $this->rsvpPatternRepository->findOneByMarktAndKoopmanAndBeforeDate($this->markt, $this->koopman, $date);
 
@@ -28,7 +27,7 @@ class RsvpPatternRepositoryTest extends ApiTestCase
 
     public function testFindOneForEachMarktByKoopmanBeforeDate()
     {
-        $date = new DateTime();
+        $date = new \DateTime();
         $result = $this->rsvpPatternRepository->findOneForEachMarktByKoopmanAndBeforeDate($this->koopman, $date);
         $this->assertCount(2, $result);
     }

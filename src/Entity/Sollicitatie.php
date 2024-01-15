@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -15,13 +14,16 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * @OA\Schema(schema="Sollicitatie", type="object")
  *
  * @ORM\Entity(repositoryClass="App\Repository\SollicitatieRepository")
+ *
  * @ORM\Table(
  *     indexes={
+ *
  *      @ORM\Index(name="sollicitatiesollicitatienummer", columns={"sollicitatie_nummer"}),
  *      @ORM\Index(name="sollicitatiemarktsollicitatienummer", columns={"markt_id", "sollicitatie_nummer"}),
  *      @ORM\Index(name="sollicitatieperfectviewnumber", columns={"perfect_view_nummer"})
  *     },
  *     uniqueConstraints={
+ *
  *          @ORM\UniqueConstraint(name="sollicitatiekoppelveld", columns={"koppelveld"})
  *     }
  * )
@@ -57,220 +59,278 @@ class Sollicitatie
 
     /**
      * @OA\Property(example="14")
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $sollicitatieNummer;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=15)
      */
     private $status;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var ?array<string>
+     *
      * @ORM\Column(type="simple_array", nullable=true)
      */
     private $vastePlaatsen;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?int
+     *
      * @ORM\Column(name="aantal_3meter_kramen", type="integer", nullable=true)
      */
     private $aantal3MeterKramen;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?int
+     *
      * @ORM\Column(name="aantal_4meter_kramen", type="integer", nullable=true)
      */
     private $aantal4MeterKramen;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalExtraMeters;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalElektra;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("aantalAfvaleiland")
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $aantalAfvaleilanden;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("grootPerMeter")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $grootPerMeter;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("kleinPerMeter")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinPerMeter;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("grootReiniging")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $grootReiniging;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("kleinReiniging")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $kleinReiniging;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("afvalEilandAgf")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $afvalEilandAgf;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
+     *
      * @SerializedName("krachtstroomPerStuk")
      *
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $krachtstroomPerStuk;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?bool
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $krachtstroom;
 
     /**
-     * @var ?DateTimeInterface
+     * @var ?\DateTimeInterface
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $inschrijfDatum;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $doorgehaald;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $doorgehaaldReden;
 
     /**
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $perfectViewNummer;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie"})
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $koppelveld;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "simpleSollicitatie", "sollicitatie_m"})
+     *
      * @MaxDepth(1)
      *
      * @var Markt
+     *
      * @ORM\ManyToOne(targetEntity="Markt", fetch="LAZY", inversedBy="sollicitaties")
+     *
      * @ORM\JoinColumn(name="markt_id", referencedColumnName="id", nullable=false)
      */
     private $markt;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"sollicitatie", "sollicitatie_m"})
+     *
      * @MaxDepth(1)
      *
      * @var Koopman
+     *
      * @ORM\ManyToOne(targetEntity="Koopman", fetch="LAZY", inversedBy="sollicitaties")
+     *
      * @ORM\JoinColumn(name="koopman_id", referencedColumnName="id", nullable=false)
      */
     private $koopman;
 
     /**
      * @Groups({"sollicitatie_m"})
+     *
      * @SerializedName("products")
      */
     private $products;
@@ -407,12 +467,12 @@ class Sollicitatie
         return $this;
     }
 
-    public function getInschrijfDatum(): DateTimeInterface
+    public function getInschrijfDatum(): \DateTimeInterface
     {
         return $this->inschrijfDatum;
     }
 
-    public function setInschrijfDatum(DateTimeInterface $inschrijfDatum): self
+    public function setInschrijfDatum(\DateTimeInterface $inschrijfDatum): self
     {
         $this->inschrijfDatum = $inschrijfDatum;
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,8 +16,10 @@ use Symfony\Component\HttpFoundation\Request;
  * @OA\Schema(schema="MarktConfiguratie", type="object")
  *
  * @ORM\Entity(repositoryClass="App\Repository\MarktConfiguratieRepository")
+ *
  * @ORM\Table(
  *     indexes={
+ *
  *         @ORM\Index(name="markt_id", columns={"markt_id"}),
  *         @ORM\Index(name="aanmaak_datumtijd", columns={"aanmaak_datumtijd"})
  *     }
@@ -43,7 +44,9 @@ class MarktConfiguratie
      * @OA\Property(example="14")
      *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
@@ -51,6 +54,7 @@ class MarktConfiguratie
      * @OA\Property(type="integer", example="101", property="marktId")
      *
      * @ORM\ManyToOne(targetEntity=Markt::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private Markt $markt;
@@ -89,34 +93,39 @@ class MarktConfiguratie
      *
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $aanmaakDatumtijd;
+    private \DateTimeInterface $aanmaakDatumtijd;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktGeografie", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktGeografies;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktLocatie", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktLocaties;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktPagina", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktPaginas;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktBrancheEigenschap", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"id" = "ASC"})
      */
     public Collection $marktBrancheEigenschaps;
 
     /**
      * @ORM\OneToMany(targetEntity="MarktOpstelling", mappedBy="marktConfiguratie", cascade={"persist", "remove"})
+     *
      * @ORM\OrderBy({"position" = "ASC"})
      */
     public Collection $marktOpstellings;
@@ -157,7 +166,7 @@ class MarktConfiguratie
         $marktConfiguratie = new self();
 
         $marktConfiguratie->setMarkt($markt)
-            ->setAanmaakDatumtijd(new DateTime())
+            ->setAanmaakDatumtijd(new \DateTime())
             ->setMarkt($markt)
             ->setGeografie($data[self::INPUT_FIELD_GEOGRAFIE])
             ->setBranches($data[self::INPUT_FIELD_BRANCHES])
@@ -233,15 +242,12 @@ class MarktConfiguratie
         return $this->id;
     }
 
-    public function getAanmaakDatumtijd(): DateTimeInterface
+    public function getAanmaakDatumtijd(): \DateTimeInterface
     {
         return $this->aanmaakDatumtijd;
     }
 
-    /**
-     * @return self
-     */
-    public function setAanmaakDatumtijd(DateTimeInterface $aanmaakDatumtijd): MarktConfiguratie
+    public function setAanmaakDatumtijd(\DateTimeInterface $aanmaakDatumtijd): MarktConfiguratie
     {
         $this->aanmaakDatumtijd = $aanmaakDatumtijd;
 

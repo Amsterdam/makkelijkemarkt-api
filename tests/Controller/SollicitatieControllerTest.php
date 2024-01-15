@@ -10,7 +10,6 @@ use App\Entity\Sollicitatie;
 use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class SollicitatieControllerTest extends ApiTestCase
 {
@@ -114,7 +113,7 @@ class SollicitatieControllerTest extends ApiTestCase
         ]);
 
         /** @var string $dt */
-        $dt = new DateTime();
+        $dt = new \DateTime();
 
         /** @var array<string, mixed> $dataSollicitatie */
         $dataSollicitatie = [

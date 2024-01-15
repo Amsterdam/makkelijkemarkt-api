@@ -9,7 +9,6 @@ use App\Entity\Token;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\AccountRepository;
 use App\Repository\FeatureFlagRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -440,7 +439,7 @@ final class LoginController extends AbstractController
             return new JsonResponse(['error' => 'Account is not active'], Response::HTTP_FORBIDDEN);
         }
 
-        $account->setLastAttempt(new DateTime());
+        $account->setLastAttempt(new \DateTime());
 
         if (false === $this->userPasswordEncoder->isPasswordValid($account, $data['password'])) {
             $attempts = $account->getAttempts();

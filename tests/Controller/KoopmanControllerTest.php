@@ -6,7 +6,6 @@ namespace App\Tests\Controller;
 
 use App\Entity\Koopman;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class KoopmanControllerTest extends ApiTestCase
 {
@@ -211,8 +210,8 @@ class KoopmanControllerTest extends ApiTestCase
         /** @var Koopman $koopman */
         $koopman = $this->createObject($dataKoopman, new Koopman());
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
         $toggleDate = $dt->format('Y-m-d');
 
         $response = $this->client->post('/api/1.1.0/koopman/toggle_handhavingsverzoek/'.$koopman->getId().'/'.$toggleDate, ['headers' => $this->headers]);

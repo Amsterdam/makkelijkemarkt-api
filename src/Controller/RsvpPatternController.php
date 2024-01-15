@@ -10,7 +10,6 @@ use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\RsvpPatternRepository;
 use App\Utils\Constants;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -69,11 +68,15 @@ class RsvpPatternController extends AbstractController
      *      operationId="RsvpPatternCreate",
      *      tags={"RsvpPattern"},
      *      summary="Maakt een nieuw Rsvp Patroon aan",
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *
      *              @OA\Schema(
+     *
      *                  @OA\Property(property="patternDate", type="string", description="Ingangdatum van Rsvp patroon (als YYYY-MM-DD)"),
      *                  @OA\Property(property="markt", type="string", description="id van de markt"),
      *                  @OA\Property(property="erkenningsNummer", type="string", description="erkenningsnummer van de koopman"),
@@ -87,19 +90,24 @@ class RsvpPatternController extends AbstractController
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/RsvpPattern")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      * )
      *
      * @Route("/rsvp_pattern", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function create(Request $request): Response
@@ -172,21 +180,27 @@ class RsvpPatternController extends AbstractController
      *      operationId="RsvpPatternGetRsvpPatternByMarktIdAndErkenningsnummer",
      *      tags={"RsvpPattern"},
      *      summary="Vraag RSVP Patronen van een koopman op op basis van erkenningsnummer en marktid.",
+     *
      *      @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *      @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/RsvpPattern")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      * )
      *
      * @Route("/rsvp_pattern/markt/{marktId}/koopman/{erkenningsnummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getRsvpPatternByMarktIdAndErkenningsnummer(int $marktId, string $erkenningsnummer)
@@ -202,7 +216,7 @@ class RsvpPatternController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $today = new DateTime();
+        $today = new \DateTime();
         $rsvp_pattern = $this->rsvpPatternRepository->findOneByMarktAndKoopmanAndBeforeDate($markt, $koopman, $today);
 
         $response = $this->serializer->serialize($rsvp_pattern, 'json');
@@ -217,20 +231,26 @@ class RsvpPatternController extends AbstractController
      *      operationId="RsvpPatternGetRsvpPatternByErkenningsnummer",
      *      tags={"RsvpPattern"},
      *      summary="Vraag RSVP Patronen van een koopman op op basis van erkenningsnummer.",
+     *
      *      @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/RsvpPattern")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      * )
      *
      * @Route("/rsvp_pattern/koopman/{erkenningsnummer}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getRsvpPatternByErkenningsnummer(string $erkenningsnummer)
@@ -241,7 +261,7 @@ class RsvpPatternController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $today = new DateTime();
+        $today = new \DateTime();
         $rsvp_pattern = $this->rsvpPatternRepository->findOneForEachMarktByKoopmanAndBeforeDate($koopman, $today);
 
         $response = $this->serializer->serialize($rsvp_pattern, 'json');
@@ -256,21 +276,27 @@ class RsvpPatternController extends AbstractController
      *      operationId="RsvpPatternGetRsvpPatternMarktIdAndMarktDate",
      *      tags={"RsvpPattern"},
      *      summary="Vraag RSVP Patronen van een markt op op basis van marktId en markt datum.",
+     *
      *      @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *      @OA\Parameter(name="marktDate", @OA\Schema(type="string"), in="path", required=true),
+     *
      *      @OA\Response(
      *          response="200",
      *          description="Success",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/RsvpPattern")
      *      ),
+     *
      *      @OA\Response(
      *          response="400",
      *          description="Bad Request",
+     *
      *          @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *      )
      * )
      *
      * @Route("/rsvp_pattern/markt/{marktId}/date/{marktDate}", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function getRsvpPatternByMarktIdAndMarktDate(int $marktId, string $marktDateString): Response
@@ -281,13 +307,13 @@ class RsvpPatternController extends AbstractController
         }
 
         if (strtotime($marktDateString)) {
-            $date = new DateTime($marktDateString);
+            $date = new \DateTime($marktDateString);
         } else {
             return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
         }
 
         $rsvpPatterns = $this->rsvpPatternRepository->findOneForEachKoopmanByMarktAndBeforeDate($markt, $date);
-        $response = $this->serializer->serialize(($rsvpPatterns), 'json');
+        $response = $this->serializer->serialize($rsvpPatterns, 'json');
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
