@@ -121,7 +121,7 @@ class MobileController extends AbstractController
 
         // To avoid logging sensitive data, we only log requests that are not secure.
         if (isset($body['secure'])) {
-            return $this->handleSecure($request, $action, $body['secure']);
+            return $this->handleSecure($request, $action, $body);
         }
 
         $this->logger->warning('Incoming mobile request', $body);
@@ -157,8 +157,9 @@ class MobileController extends AbstractController
     }
 
     // Secure actions are not logged.
-    private function handleSecure(Request $request, string $action, array $secure): Response
+    private function handleSecure(Request $request, string $action, array $body): Response
     {
+        $secure = $body['secure'];
         $controllerAction = $this->getEndpointForAction($action);
 
         if (null !== $controllerAction) {
@@ -181,7 +182,9 @@ class MobileController extends AbstractController
         if (Response::HTTP_OK !== $response->getStatusCode()) {
             $this->logger->warning('Unsuccesful mobile login', ['errorCode' => $response->getStatusCode()]);
         } else {
-            $this->logger->warning('Succesful mobile login');
+            $responseContent = json_decode((string) $response->getContent(), true);
+            $userId = $responseContent['account']['id'];
+            $this->logger->warning('Succesful mobile login', ['userId' => $userId, 'data' => $body['data']]);
         }
 
         return $response;
