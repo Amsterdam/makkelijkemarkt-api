@@ -26,15 +26,19 @@ class ImageController extends AbstractController
      *     tags={"Images"},
      *     summary="Get all images",
      *     description="Get all images",
+     *
      *     @OA\Response(
      *         response=302,
      *         description="Redirected to storage",
+     *
      *         @OA\JsonContent(
      *             type="array",
+     *
      *             @OA\Items(ref="#/components/schemas/Image")
      *         )
      *     )
      * )
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      *
      * @Route("/image/open/{image}", methods={"GET"})

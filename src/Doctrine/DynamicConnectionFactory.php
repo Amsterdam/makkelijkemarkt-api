@@ -17,7 +17,7 @@ class DynamicConnectionFactory extends BaseConnectionFactory
         parent::__construct([]);
     }
 
-    public function createConnection(array $params, ?Configuration $config = null, ?EventManager $eventManager = null, array $mappingTypes = []): DynamicConnection
+    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = []): DynamicConnection
     {
         $defaultConnection = parent::createConnection($params, $config, $eventManager, $mappingTypes);
         $driver = $defaultConnection->getDriver();

@@ -19,9 +19,9 @@ class DynamicConnection extends Connection
     public function __construct(
         array $params,
         Driver $driver,
-        ?Configuration $config = null,
-        ?EventManager $eventManager = null,
-        ?AzureDatabase $azureDatabase = null
+        Configuration $config = null,
+        EventManager $eventManager = null,
+        AzureDatabase $azureDatabase = null
     ) {
         $this->params = $params;
         $this->driver = $driver;

@@ -91,7 +91,7 @@ class AllocationController extends AbstractController
 
     private function createAllocation(
         Markt $markt,
-        \Datetime $marktDate,
+        \DateTime $marktDate,
         bool $isAllocated,
         ?array $inrichting,
         string $koopmanErkenningsNummer,
