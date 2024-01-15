@@ -53,7 +53,7 @@ final class DagvergunningService
 
         // TODO make sure we save this in UTC and it still works in the app and dashboard.
         // We are now purposefully saving it in CET, because to migrate to the new app, it needs to be backwards compatible.
-        $time = $data['registratieDatumtijd'] ?
+        $time = isset($data['registratieDatumtijd']) ?
             DateTime::createFromFormat('Y-m-d H:i:s', $data['registratieDatumtijd'])
             : new LocalTime();
 
