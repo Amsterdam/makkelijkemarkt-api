@@ -9,7 +9,6 @@ use App\Entity\Vervanger;
 use App\Normalizer\EntityNormalizer;
 use App\Repository\KoopmanRepository;
 use App\Repository\VervangerRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -56,6 +55,7 @@ final class KoopmanController extends AbstractController
      *     operationId="KoopmanGetAll",
      *     tags={"Koopman"},
      *     summary="Zoek door alle koopmannen",
+     *
      *     @OA\Parameter(name="freeSearch", @OA\Schema(type="string"), in="query", required=false),
      *     @OA\Parameter(name="achternaam", @OA\Schema(type="string"), in="query", required=false, description="Deel van een naam"),
      *     @OA\Parameter(name="voorletters", @OA\Schema(type="string"), in="query", required=false),
@@ -66,13 +66,17 @@ final class KoopmanController extends AbstractController
      *     @OA\Parameter(name="status", @OA\Schema(type="integer"), in="query", required=false, description="-1 = ignore, 0 = only removed, 1 = only active"),
      *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
      *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=100"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Koopman"))
      *     )
      * )
+     *
      * @Route("/koopman/", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getAll(Request $request): Response
@@ -121,20 +125,27 @@ final class KoopmanController extends AbstractController
      *     operationId="KoopmanGetById",
      *     tags={"Koopman"},
      *     summary="Geeft informatie over specifiek koopman op basis van API id",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Koopman")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/koopman/{id}", methods={"GET"})
      * @Route("/koopman/id/{id}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getById(int $id): Response
@@ -159,19 +170,26 @@ final class KoopmanController extends AbstractController
      *     operationId="KoopmanGetById",
      *     tags={"Koopman"},
      *     summary="Geeft informatie over specifiek koopman op basis van erkenningsnummer",
+     *
      *     @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Koopman")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/koopman/erkenningsnummer/{erkenningsnummer}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getByErkenningsnummer(string $erkenningsnummer): Response
@@ -198,19 +216,26 @@ final class KoopmanController extends AbstractController
      *     operationId="KoopmanGetByPasUid",
      *     tags={"Koopman"},
      *     summary="Geeft informatie over specifiek koopman op basis van erkenningsnummer",
+     *
      *     @OA\Parameter(name="pasUid", @OA\Schema(type="string"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Koopman")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/koopman/pasuid/{pasUid}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @todo unit-test for vervanger-part
@@ -248,20 +273,27 @@ final class KoopmanController extends AbstractController
      *     operationId="KoopmanGetByMarktAndSollicitatieNummer",
      *     tags={"Koopman"},
      *     summary="Geeft informatie over specifiek koopman op basis van markt en sollicitatienummer",
+     *
      *     @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *     @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Koopman")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/koopman/markt/{marktId}/sollicitatienummer/{sollicitatieNummer}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @todo unit-test
@@ -287,20 +319,27 @@ final class KoopmanController extends AbstractController
      *     operationId="KoopmanPostToggleHandhavingsVerzoek",
      *     tags={"Koopman"},
      *     summary="Toggle Handhavingsverzoek op basis van id en datum",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true, description="koopmanId"),
      *     @OA\Parameter(name="date", @OA\Schema(type="string"), in="path", required=true, description="yyyy-mm-dd"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Koopman")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/koopman/toggle_handhavingsverzoek/{id}/{date}", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function postToggleHandhavingsVerzoek(int $id, string $date): Response
@@ -312,8 +351,8 @@ final class KoopmanController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found, id = '.$id], Response::HTTP_NOT_FOUND);
         }
 
-        /** @var DateTime $date */
-        $date = new DateTime($date);
+        /** @var \DateTime $date */
+        $date = new \DateTime($date);
 
         $koopman->setHandhavingsVerzoek($date);
 

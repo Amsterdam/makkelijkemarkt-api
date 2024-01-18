@@ -66,17 +66,21 @@ final class DefaultController extends AbstractController
      *     operationId="version",
      *     tags={"Version"},
      *     summary="Geeft versie nummer",
+     *
      *     @OA\Response(
      *         response="default",
      *         description="",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="apiVersion", @OA\Schema(type="string")),
      *             @OA\Property(property="androidVersion", @OA\Schema(type="string")),
      *             @OA\Property(property="androidBuild", @OA\Schema(type="string"))
      *         )
      *     )
      * )
+     *
      * @Route("/version/")
      */
     public function version(Kernel $appKernel): JsonResponse

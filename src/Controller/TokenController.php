@@ -48,21 +48,28 @@ final class TokenController extends AbstractController
      *     operationId="TokenGetAllByAccountId",
      *     tags={"Token"},
      *     summary="Geeft tokens voor een account",
+     *
      *     @OA\Parameter(name="accountId", @OA\Schema(type="integer"), in="path", required=true, description="ID van de account"),
      *     @OA\Parameter(name="listOffset", @OA\Schema(type="integer"), in="query", required=false),
      *     @OA\Parameter(name="listLength", @OA\Schema(type="integer"), in="query", required=false, description="Default=100"),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Token"))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/account/{accountId}/tokens", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getAllByAccountId(Request $request, int $accountId, AccountRepository $accountRepository): Response

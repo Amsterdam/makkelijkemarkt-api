@@ -19,7 +19,6 @@ use App\Repository\MarktRepository;
 use App\Repository\SollicitatieRepository;
 use App\Repository\TariefplanRepository;
 use App\Repository\TarievenplanRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class FactuurService
@@ -205,12 +204,12 @@ final class FactuurService
 
         // set dag
         /** @var \DateTime $dag */
-        $dag = DateTime::createFromFormat('Y-m-d', $dag);
+        $dag = \DateTime::createFromFormat('Y-m-d', $dag);
         $dagvergunning->setDag($dag);
 
         // set registratie datum/tijd
         /** @var \DateTime $registratieDatumtijd */
-        $registratieDatumtijd = DateTime::createFromFormat('Y-m-d H:i:s', $registratieDatumtijd);
+        $registratieDatumtijd = \DateTime::createFromFormat('Y-m-d H:i:s', $registratieDatumtijd);
         $dagvergunning->setRegistratieDatumtijd($registratieDatumtijd);
 
         // set account
@@ -305,8 +304,6 @@ final class FactuurService
 
     /**
      * Helper to parse geolocation.
-     *
-     * @param mixed $geoInput
      *
      * @return array<int, null> tupple
      */

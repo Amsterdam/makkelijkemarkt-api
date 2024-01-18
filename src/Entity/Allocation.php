@@ -10,8 +10,10 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="Allocation", type="object")
  *
  * @ORM\Entity(repositoryClass=AllocationRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="allocation_unique", columns={"koopman_id", "markt_id", "date"})
  *     }
  * )
@@ -20,7 +22,9 @@ class Allocation
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -72,18 +76,21 @@ class Allocation
 
     /**
      * @ORM\ManyToOne(targetEntity=Koopman::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $koopman;
 
     /**
      * @ORM\ManyToOne(targetEntity=Branche::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $branche;
 
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $markt;

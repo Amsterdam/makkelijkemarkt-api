@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Sollicitatie;
 use App\Entity\VergunningControle;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -42,8 +41,8 @@ final class VergunningControleRepository extends ServiceEntityRepository
             ->andWhere('d.doorgehaald = :ddoorgehaald')
 
             ->setParameter('sollicitatie', $sollicitatie)
-            ->setParameter('dagStart3', new DateTime($dagStart))
-            ->setParameter('dagEind3', new DateTime($dagEind))
+            ->setParameter('dagStart3', new \DateTime($dagStart))
+            ->setParameter('dagEind3', new \DateTime($dagEind))
             ->setParameter('sdoorgehaald', false)
             ->setParameter('ddoorgehaald', false)
         ;
@@ -62,8 +61,8 @@ final class VergunningControleRepository extends ServiceEntityRepository
             ->andWhere('vc.registratieDatumtijd < :dayAfterDate')
             ->andWhere('d.doorgehaald = false')
             ->setParameter('marktId', $marktId)
-            ->setParameter('date', new DateTime($date))
-            ->setParameter('dayAfterDate', (new DateTime($date))->modify('+1 day'));
+            ->setParameter('date', new \DateTime($date))
+            ->setParameter('dayAfterDate', (new \DateTime($date))->modify('+1 day'));
 
         $data = $qb->getQuery()->execute();
 

@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Entity\Rsvp;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,17 +24,17 @@ class RsvpRepository extends ServiceEntityRepository
     /**
      * @return Rsvp[] Returns an array of Rsvp objects
      */
-    public function findByMarktAndDate(Markt $markt, DateTime $date)
+    public function findByMarktAndDate(Markt $markt, \DateTime $date)
     {
         return $this->findBy(['markt' => $markt, 'marktDate' => $date]);
     }
 
-    public function findOneByKoopmanAndMarktAndMarktDate(Koopman $koopman, Markt $markt, DateTime $marktDate): ?Rsvp
+    public function findOneByKoopmanAndMarktAndMarktDate(Koopman $koopman, Markt $markt, \DateTime $marktDate): ?Rsvp
     {
         return $this->findOneBy(['markt' => $markt, 'koopman' => $koopman, 'marktDate' => $marktDate]);
     }
 
-    public function findByMarktAndKoopmanAfterDate(Markt $markt, Koopman $koopman, DateTime $startDate)
+    public function findByMarktAndKoopmanAfterDate(Markt $markt, Koopman $koopman, \DateTime $startDate)
     {
         $qb = $this
             ->createQueryBuilder('r')
@@ -54,7 +53,7 @@ class RsvpRepository extends ServiceEntityRepository
     /**
      * @return Rsvp[] Returns an array of Rsvp objects
      */
-    public function findByMarktAndKoopmanAndBetweenDates(Markt $markt, Koopman $koopman, DateTime $startDate, DateTime $endDate)
+    public function findByMarktAndKoopmanAndBetweenDates(Markt $markt, Koopman $koopman, \DateTime $startDate, \DateTime $endDate)
     {
         $qb = $this
             ->createQueryBuilder('r')
@@ -75,7 +74,7 @@ class RsvpRepository extends ServiceEntityRepository
     /**
      * @return Rsvp[] Returns an array of Rsvp objects
      */
-    public function findByKoopmanAndBetweenDates(Koopman $koopman, DateTime $startDate, DateTime $endDate)
+    public function findByKoopmanAndBetweenDates(Koopman $koopman, \DateTime $startDate, \DateTime $endDate)
     {
         $qb = $this
             ->createQueryBuilder('r')
@@ -94,7 +93,7 @@ class RsvpRepository extends ServiceEntityRepository
     /**
      * @return Rsvp[] Returns an array of Rsvp objects
      */
-    public function findByMarktAndBetweenDates(Markt $markt, DateTime $startDate, DateTime $endDate)
+    public function findByMarktAndBetweenDates(Markt $markt, \DateTime $startDate, \DateTime $endDate)
     {
         $qb = $this
             ->createQueryBuilder('r')

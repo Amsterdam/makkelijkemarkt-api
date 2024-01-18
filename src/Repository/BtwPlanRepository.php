@@ -4,10 +4,8 @@ namespace App\Repository;
 
 use App\Entity\BtwPlan;
 use App\Entity\TariefSoort;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
 
 /**
  * @method BtwPlan|null find($id, $lockMode = null, $lockVersion = null)
@@ -33,7 +31,7 @@ class BtwPlanRepository extends ServiceEntityRepository
         }
 
         if (!$btwPlan) {
-            throw new Exception("Can't find BTW Plan for tariefsoort: ".$tariefSoort->getId());
+            throw new \Exception("Can't find BTW Plan for tariefsoort: ".$tariefSoort->getId());
         }
 
         return $btwPlan;
@@ -41,7 +39,7 @@ class BtwPlanRepository extends ServiceEntityRepository
 
     public function findCurrentForMarket(TariefSoort $tariefSoort, $marktId)
     {
-        $now = new DateTime();
+        $now = new \DateTime();
         $qb = $this
             ->createQueryBuilder('row')
             ->where('row.tariefSoort = :tariefSoort')

@@ -15,12 +15,12 @@ class MarktVoorkeurLogNormalizer implements NormalizerInterface, NormalizerAware
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof MarktVoorkeur;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         // Human readable string:
         // {actor} changed Rsvp for {koopmanName} on the {marktName} on {date} to {attending}

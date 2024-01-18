@@ -12,7 +12,6 @@ use App\Entity\MarktPagina;
 use App\Entity\MarktPaginaIndelingslijstGroup;
 use App\Entity\Obstakel;
 use App\Entity\Plaatseigenschap;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -32,7 +31,7 @@ class MarktConfiguratieFixtures extends BaseFixture implements DependentFixtureI
         ), true);
         $marktConfiguratie = new MarktConfiguratie();
         $marktConfiguratie->setMarkt($this->getReference('markt_AC-2022'))
-            ->setAanmaakDatumtijd(new DateTime())
+            ->setAanmaakDatumtijd(new \DateTime())
             ->setGeografie($marktConfiguratieData['geografie'])
             ->setBranches($marktConfiguratieData['branches'])
             ->setLocaties($marktConfiguratieData['locaties'])

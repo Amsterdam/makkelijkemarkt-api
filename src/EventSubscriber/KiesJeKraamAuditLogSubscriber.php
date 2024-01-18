@@ -4,7 +4,6 @@ namespace App\EventSubscriber;
 
 use App\Entity\KiesJeKraamAuditLog;
 use App\Event\KiesJeKraamAuditLogEvent;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -30,7 +29,7 @@ class KiesJeKraamAuditLogSubscriber implements EventSubscriberInterface
             ->setActor($event->getActor())
             ->setAction($event->getAction())
             ->setEntityType($event->getEntityType())
-            ->setDatetime(new DateTime())
+            ->setDatetime(new \DateTime())
             ->setResult($event->getResult());
 
         $this->em->persist($logEntry);

@@ -35,9 +35,6 @@ class PerfectViewSollicitatieImport
         $this->logger = $logger;
     }
 
-    /**
-     * @param array $perfectViewData
-     */
     public function execute(CsvIterator $content)
     {
         $headings = $content->getHeadings();
@@ -86,7 +83,7 @@ class PerfectViewSollicitatieImport
             // prepare query builder
             $qb = $this->conn->createQueryBuilder();
 
-            if ((null !== $solliciatieRecord)) {
+            if (null !== $solliciatieRecord) {
                 // update
                 $qb->update('sollicitatie', 'e');
                 $qb->where('e.id = :id')->setParameter('id', $solliciatieRecord['id']);
@@ -100,7 +97,7 @@ class PerfectViewSollicitatieImport
             $this->setValue($qb, 'markt_id', \PDO::PARAM_INT, $markt['id']);
             $this->setValue($qb, 'koopman_id', \PDO::PARAM_INT, $koopman['id']);
             $this->setValue($qb, 'sollicitatie_nummer', \PDO::PARAM_INT, $pvRecord['SollicitantenNummer']);
-            $this->setValue($qb, 'status', \PDO::PARAM_STR, $this->convertMarktstatus((('Doorgehaald' === $pvRecord['MarktStatus']) ? $pvRecord['PreDoorhaalStatus'] : $pvRecord['MarktStatus'])));
+            $this->setValue($qb, 'status', \PDO::PARAM_STR, $this->convertMarktstatus(('Doorgehaald' === $pvRecord['MarktStatus']) ? $pvRecord['PreDoorhaalStatus'] : $pvRecord['MarktStatus']));
             $this->setValue($qb, 'vaste_plaatsen', \PDO::PARAM_STR, utf8_encode(implode(',', $this->getVastePlaatsenArray($pvRecord))));
             $this->setValue($qb, 'aantal_3meter_kramen', \PDO::PARAM_INT, intval($pvRecord['Aantal3']));
             $this->setValue($qb, 'aantal_4meter_kramen', \PDO::PARAM_INT, intval($pvRecord['Aantal4']));
@@ -115,7 +112,7 @@ class PerfectViewSollicitatieImport
             $this->setValue($qb, 'inschrijf_datum', \PDO::PARAM_STR, $this->convertToDateTimeString($pvRecord['Inschrijfdatum'].' '.$pvRecord['Inschrijftijd']));
             $this->setValue($qb, 'doorgehaald', \PDO::PARAM_BOOL, 'Doorgehaald' === $pvRecord['MarktStatus']);
             $this->setValue($qb, 'doorgehaald_reden', \PDO::PARAM_STR, utf8_encode($pvRecord['DoorHaalReden']));
-            //$this->setValue($qb, 'perfect_view_nummer',     \PDO::PARAM_INT,  $pvRecord['Kaartnr']);
+            // $this->setValue($qb, 'perfect_view_nummer',     \PDO::PARAM_INT,  $pvRecord['Kaartnr']);
             $this->setValue($qb, 'koppelveld', \PDO::PARAM_STR, $pvRecord['Koppelveld']);
 
             // execute insert/update query

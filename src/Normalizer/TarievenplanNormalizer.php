@@ -15,12 +15,12 @@ class TarievenplanNormalizer implements NormalizerInterface, NormalizerAwareInte
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof Tarievenplan;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         $dateUntil = $object->getDateUntil();
 

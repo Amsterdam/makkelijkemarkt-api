@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Koopman;
 use App\Entity\Markt;
 use App\Entity\RsvpPattern;
-use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,7 +24,7 @@ class RsvpPatternRepository extends ServiceEntityRepository
     /**
      * @return RsvpPattern[] Returns an array of RsvpPattern objects
      */
-    public function findOneByMarktAndKoopmanAndBeforeDate(Markt $markt, Koopman $koopman, DateTimeInterface $date)
+    public function findOneByMarktAndKoopmanAndBeforeDate(Markt $markt, Koopman $koopman, \DateTimeInterface $date)
     {
         $qb = $this
             ->createQueryBuilder('row')
@@ -45,7 +44,7 @@ class RsvpPatternRepository extends ServiceEntityRepository
     /**
      * @return RsvpPattern[] Returns an array of Rsvp objects
      */
-    public function findOneForEachMarktByKoopmanAndBeforeDate(Koopman $koopman, DateTimeInterface $date)
+    public function findOneForEachMarktByKoopmanAndBeforeDate(Koopman $koopman, \DateTimeInterface $date)
     {
         // Get all RsvpPatterns of Koopman ordered by date
         $qb = $this->createQueryBuilder('r')
@@ -82,7 +81,7 @@ class RsvpPatternRepository extends ServiceEntityRepository
         // ";
     }
 
-    public function findOneForEachKoopmanByMarktAndBeforeDate(Markt $markt, DateTimeInterface $date)
+    public function findOneForEachKoopmanByMarktAndBeforeDate(Markt $markt, \DateTimeInterface $date)
     {
         $qb = $this->createQueryBuilder('r')
             ->where('r.markt = :markt')

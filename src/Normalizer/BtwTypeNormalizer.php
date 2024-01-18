@@ -15,12 +15,12 @@ class BtwTypeNormalizer implements NormalizerInterface, NormalizerAwareInterface
     {
     }
 
-    public function supportsNormalization($data, ?string $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof BtwType;
     }
 
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         /* @var BtwType $object */
         return [

@@ -7,8 +7,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=TariefRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="tarief_unique", columns={"tarief_soort_id", "tarievenplan_id"})
  *     }
  * )
@@ -17,26 +19,32 @@ class Tarief
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
+     *
      * @Groups("tarievenplan")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Tarievenplan::class, inversedBy="Tarieven")
+     *
      * @ORM\JoinColumn(name="tarievenplan_id", nullable=false)
      */
     private $tarievenplan;
 
     /**
      * @ORM\ManyToOne(targetEntity=TariefSoort::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $tariefSoort;
 
     /**
      * @ORM\Column(type="float")
+     *
      * @Groups("tarievenplan")
      */
     private $waarde;

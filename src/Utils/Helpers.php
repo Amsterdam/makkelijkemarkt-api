@@ -7,8 +7,6 @@ class Helpers
     /**
      * Helper to parse geolocation.
      *
-     * @param mixed $geoInput
-     *
      * @return array<int, null> tupple
      */
     public static function parseGeolocation($geoInput): array

@@ -17,99 +17,123 @@ class Concreetplan
 {
     /**
      * @OA\Property(example="14")
+     *
      * @Groups("concreetplan")
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $een_meter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $drie_meter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $vier_meter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $elektra;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $promotieGeldenPerMeter;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $promotieGeldenPerKraam;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $afvaleiland;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $eenmaligElektra;
 
     /**
      * @var Tariefplan
+     *
      * @ORM\OneToOne(targetEntity="Tariefplan", inversedBy="concreetplan")
+     *
      * @ORM\JoinColumn(name="tariefplan_id", referencedColumnName="id")
      */
     private $tariefplan;
 
     /**
      * @OA\Property()
+     *
      * @Groups("concreetplan")
      *
      * @var float
+     *
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      */
     private $agfPerMeter;

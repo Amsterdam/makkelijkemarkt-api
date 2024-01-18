@@ -9,7 +9,6 @@ use App\Entity\Notitie;
 use App\Repository\MarktRepository;
 use App\Repository\NotitieRepository;
 use App\Test\ApiTestCase;
-use DateTime;
 
 class NotitieControllerTest extends ApiTestCase
 {
@@ -24,8 +23,8 @@ class NotitieControllerTest extends ApiTestCase
             'soort' => Markt::SOORT_DAG,
         ]);
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string, mixed> $dataNotitie */
         $dataNotitie = [
@@ -111,8 +110,8 @@ class NotitieControllerTest extends ApiTestCase
         /** @var Markt $markt */
         $markt = $notitie->getMarkt();
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string, mixed> $dataNotitie */
         $dataNotitie = [
@@ -200,8 +199,8 @@ class NotitieControllerTest extends ApiTestCase
      */
     public function testPutWithAfgevinktTrue(int $notitieId): void
     {
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         /** @var array<string, mixed> $dataNotitie */
         $dataNotitie = [
@@ -236,11 +235,11 @@ class NotitieControllerTest extends ApiTestCase
         /** @var Notitie $notitie */
         $notitie = $notitieRepository->find($id);
 
-        /** @var DateTime $dt */
-        $dt = new DateTime();
+        /** @var \DateTime $dt */
+        $dt = new \DateTime();
 
         $this->assertEquals(204, $response->getStatusCode());
-//        $this->assertEquals($dt->format('Y-m-d'), $notitie->getVerwijderdDatumtijd()->format('Y-m-d'));
-//        $this->assertTrue($notitie->getVerwijderd());
+        //        $this->assertEquals($dt->format('Y-m-d'), $notitie->getVerwijderdDatumtijd()->format('Y-m-d'));
+        //        $this->assertTrue($notitie->getVerwijderd());
     }
 }

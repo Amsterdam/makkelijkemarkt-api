@@ -19,20 +19,26 @@ class VergunningControle
 
     /**
      * @OA\Property(example="14")
+     *
      * @Groups({"vergunningControle", "vergunningControle_l"})
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"vergunningControle", "vergunningControle_l"})
      *
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $ronde;
@@ -41,7 +47,9 @@ class VergunningControle
      * @Groups({"vergunningControle_l"})
      *
      * @var Dagvergunning
+     *
      * @ORM\ManyToOne(targetEntity="Dagvergunning", fetch="EAGER")
+     *
      * @ORM\JoinColumn(name="dagvergunning_id", referencedColumnName="id", nullable=false)
      */
     private $dagvergunning;

@@ -86,7 +86,7 @@ class PerfectViewMarktImport
             $markt->setNaam($pvRecord['MARKTNAAM']);
             $markt->setSoort($this->soortMarkConversion[$pvRecord['SOORT_MARK']]);
             $markt->setExtraMetersMogelijk('True' === $pvRecord['A1_METER']);
-            $markt->setStandaardKraamAfmeting((('True' === $pvRecord['A3_METER']) ? 3 : (('True' === $pvRecord['A4_METER']) ? 4 : 0)));
+            $markt->setStandaardKraamAfmeting(('True' === $pvRecord['A3_METER']) ? 3 : (('True' === $pvRecord['A4_METER']) ? 4 : 0));
 
             $opties = [];
             if ('True' === $pvRecord['A3_METER'] || 'Waar' === $pvRecord['A3_METER']) {
@@ -101,12 +101,12 @@ class PerfectViewMarktImport
 
             // Only show the afvaleiland option in the app for markets with a Concreet Plan
             if ((
-                    'True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']
-                ) && (
-                    'BKSL' === $upperCaseAfkorting
-                    || 'BBKSL' === $upperCaseAfkorting
-                    || 'TK' === $upperCaseAfkorting
-                )
+                'True' === $pvRecord['AFVAL'] || 'Waar' === $pvRecord['AFVAL']
+            ) && (
+                'BKSL' === $upperCaseAfkorting
+                || 'BBKSL' === $upperCaseAfkorting
+                || 'TK' === $upperCaseAfkorting
+            )
             ) {
                 $opties[] = 'afvaleiland';
             }

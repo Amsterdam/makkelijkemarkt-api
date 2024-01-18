@@ -297,11 +297,15 @@ final class VergunningControleController extends AbstractController
      *     operationId="VergunningControlePost",
      *     tags={"VergunningControle"},
      *     summary="Maak een vergunning controle",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="dagvergunningId", type="integer", description="ID van de dagvergunning"),
      *                 @OA\Property(property="aanwezig", type="string", description="Aangetroffen persoon Zelf|Partner|Vervanger met toestemming|Vervanger zonder toestemming|Niet aanwezig|Niet geregisteerd"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
@@ -322,23 +326,31 @@ final class VergunningControleController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/VergunningControle")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/controle/", methods={"POST"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function post(Request $request): Response
@@ -353,11 +365,15 @@ final class VergunningControleController extends AbstractController
      *     operationId="VergunningControlePost",
      *     tags={"VergunningControle"},
      *     summary="Maak een vergunning controle",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="dagvergunningId", type="integer", description="ID van de dagvergunning"),
      *                 @OA\Property(property="aanwezig", type="string", description="Aangetroffen persoon Zelf|Partner|Vervanger met toestemming|Vervanger zonder toestemming|Niet aanwezig|Niet geregisteerd"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
@@ -378,23 +394,31 @@ final class VergunningControleController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/VergunningControle")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/flex/controle/", methods={"POST"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function postFlex(Request $request): Response
@@ -409,12 +433,17 @@ final class VergunningControleController extends AbstractController
      *     operationId="VergunningControlePut",
      *     tags={"VergunningControle"},
      *     summary="Werk een vergunning controle bij",
+     *
      *     @OA\Parameter(name="controleId", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="dagvergunningId", type="integer", description="ID van de dagvergunning"),
      *                 @OA\Property(property="aanwezig", type="string", description="Aangetroffen persoon Zelf|Partner|Vervanger met toestemming|Vervanger zonder toestemming|Niet aanwezig|Niet geregisteerd"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Nummer zoals ingevoerd"),
@@ -435,23 +464,31 @@ final class VergunningControleController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/VergunningControle")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/controle/{controleId}", methods={"PUT"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function put(Request $request, int $controleId): Response
@@ -466,18 +503,24 @@ final class VergunningControleController extends AbstractController
      *     operationId="GetVergunningControleByMarktAndDate",
      *     tags={"VergunningControle"},
      *     summary="Maak een vergunning controle",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/VergunningControle")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/controle/{marktId}/{date}", methods={"GET"})
+     *
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function getByMarktAndDate(Request $request, int $marktId, string $date): Response

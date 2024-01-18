@@ -6,7 +6,6 @@ use App\Entity\BtwPlan;
 use App\Entity\BtwType;
 use App\Entity\BtwWaarde;
 use App\Entity\TariefSoort;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -45,7 +44,7 @@ class BtwFixtures extends BaseFixture implements DependentFixtureInterface
             $btwType = $this->getReference($data['btw_type_ref']);
             $btwWaarde = (new BtwWaarde())
                 ->setBtwType($btwType)
-                ->setDateFrom(new DateTime($data['date']))
+                ->setDateFrom(new \DateTime($data['date']))
                 ->setTarief($data['tarief']);
             $manager->persist($btwWaarde);
         }
@@ -69,7 +68,7 @@ class BtwFixtures extends BaseFixture implements DependentFixtureInterface
             $btwPlan = (new BtwPlan())
                 ->setTariefSoort($tariefSoort)
                 ->setBtwType($btwType)
-                ->setDateFrom(new DateTime($data['date_from']));
+                ->setDateFrom(new \DateTime($data['date_from']));
 
             $manager->persist($btwPlan);
         }

@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\AllocationV2;
 use App\Entity\Markt;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,12 +25,12 @@ class AllocationV2Repository extends ServiceEntityRepository
         return $this->findBy(['markt' => $markt]);
     }
 
-    public function findByMarktAndDate(Markt $markt, DateTime $marktDate)
+    public function findByMarktAndDate(Markt $markt, \DateTime $marktDate)
     {
         return $this->findBy(['markt' => $markt, 'marktDate' => $marktDate]);
     }
 
-    public function findOneByMarktAndDate(Markt $markt, DateTime $marktDate)
+    public function findOneByMarktAndDate(Markt $markt, \DateTime $marktDate)
     {
         return $this->findBy(['markt' => $markt, 'marktDate' => $marktDate], ['creationDate' => 'DESC'], 1);
     }

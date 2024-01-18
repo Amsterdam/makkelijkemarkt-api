@@ -61,20 +61,26 @@ class MarktConfiguratieController extends AbstractController
      *     operationId="MarktconfiguratieGetLatest",
      *     tags={"MarktConfiguratie"},
      *     summary="Vraag een configuratie voor een Markt op",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet of de markt heeft geen configuratie"))
      *     )
      * )
      *
      * @Route("/markt/{marktId}/marktconfiguratie/latestOld", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function getLatestOld(Request $request, int $marktId): Response
@@ -103,20 +109,26 @@ class MarktConfiguratieController extends AbstractController
      *     operationId="MarktconfiguratieGetLatest",
      *     tags={"MarktConfiguratie"},
      *     summary="Vraag een configuratie voor een Markt op",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet of de markt heeft geen configuratie"))
      *     )
      * )
      *
      * @Route("/markt/{marktId}/marktconfiguratie/latest", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function getLatest(Request $request, int $marktId): Response
@@ -147,25 +159,33 @@ class MarktConfiguratieController extends AbstractController
      *     operationId="MarktconfiguratiePostByMarktId",
      *     tags={"MarktConfiguratie"},
      *     summary="Voeg een nieuwe marktconfiguratie voor een markt toe",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/MarktConfiguratie")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description="Er is foutieve input gegeven"))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description="De markt bestaat niet"))
      *     )
      * )
      *
      * @Route("/markt/{marktId}/marktconfiguratie", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function postByMarktId(Request $request, int $marktId): Response

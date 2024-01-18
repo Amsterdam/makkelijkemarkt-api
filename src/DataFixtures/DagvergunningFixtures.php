@@ -7,7 +7,6 @@ namespace App\DataFixtures;
 use App\Entity\Dagvergunning;
 use App\Entity\Koopman;
 use App\Entity\Markt;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -39,8 +38,8 @@ final class DagvergunningFixtures extends BaseFixture implements DependentFixtur
         /** @var string $ds */
         $ds = date('Y-m-d');
 
-        /** @var DateTime $dt */
-        $dt = new DateTime($ds);
+        /** @var \DateTime $dt */
+        $dt = new \DateTime($ds);
 
         $koopmanData = json_decode(file_get_contents(
             BaseFixture::FILE_BASED_FIXTURES_DIR.'/koopman.json'

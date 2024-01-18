@@ -13,13 +13,16 @@ class MarktOpstelling
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
 
     /**
      * @Ignore()
+     *
      * @ORM\ManyToOne(targetEntity="MarktConfiguratie", inversedBy="marktOpstellings", cascade={"persist"})
      */
     private MarktConfiguratie $marktConfiguratie;

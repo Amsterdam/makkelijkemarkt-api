@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -47,81 +46,101 @@ class Koopman
 
     /**
      * @OA\Property(example="14")
+     *
      * @Groups({"koopman", "simpleKoopman", "koopman_xs", "koopman_s"})
      *
      * @var int
+     *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman", "koopman_xs", "koopman_s"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $erkenningsnummer;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $voorletters;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $tussenvoegsels;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
      * @var string
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $achternaam;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman"})
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $email;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman"})
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $telefoon;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman"})
      *
      * @var int
+     *
      * @ORM\Column(type="smallint")
      */
     private $status;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman"})
+     *
      * @SerializedName("status")
      *
      * @var ?string
@@ -130,24 +149,28 @@ class Koopman
 
     /**
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $foto;
 
     /**
-     * @var ?DateTimeInterface
+     * @var ?\DateTimeInterface
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $fotoLastUpdate;
 
     /**
      * @var ?string
+     *
      * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $fotoHash;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman"})
      *
      * @var ?string
@@ -156,6 +179,7 @@ class Koopman
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman"})
      *
      * @var ?string
@@ -164,33 +188,40 @@ class Koopman
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman"})
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $pasUid;
 
     /**
      * @OA\Property()
+     *
      * @Groups("koopman")
      *
      * @var ?int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     private $perfectViewNummer;
 
     /**
      * @OA\Property()
+     *
      * @Groups({"koopman", "simpleKoopman", "koopman_s"})
      *
-     * @var ?DateTimeInterface
+     * @var ?\DateTimeInterface
+     *
      * @ORM\Column(type="date", nullable=true, options={"default": null})
      */
     private $handhavingsVerzoek;
 
     /**
      * @OA\Property()
+     *
      * @Groups("koopman")
      *
      * @var ?int
@@ -199,31 +230,38 @@ class Koopman
 
     /**
      * @var Collection|Dagvergunning[]
+     *
      * @ORM\OneToMany(targetEntity="Dagvergunning", mappedBy="koopman", fetch="LAZY", orphanRemoval=true)
      */
     private $dagvergunningen;
 
     /**
      * @Groups("koopman")
+     *
      * @MaxDepth(1)
      *
      * @var Collection|Sollicitatie[]
+     *
      * @ORM\OneToMany(targetEntity="Sollicitatie", mappedBy="koopman", fetch="LAZY", orphanRemoval=true)
      */
     private $sollicitaties;
 
     /**
      * @Groups({"koopman", "simpleKoopman"})
+     *
      * @MaxDepth(1)
+     *
      * @SerializedName("vervangers")
      *
      * @var Collection|Vervanger[]
+     *
      * @ORM\OneToMany(targetEntity="Vervanger", mappedBy="koopman", fetch="EXTRA_LAZY", orphanRemoval=true)
      */
     private $vervangersVan;
 
     /**
      * @var Collection|Vervanger[]
+     *
      * @ORM\OneToMany(targetEntity="Vervanger", mappedBy="vervanger", fetch="EXTRA_LAZY", orphanRemoval=true)
      */
     private $vervangerVoor;
@@ -369,12 +407,12 @@ class Koopman
         return $this;
     }
 
-    public function getFotoLastUpdate(): DateTimeInterface
+    public function getFotoLastUpdate(): \DateTimeInterface
     {
         return $this->fotoLastUpdate;
     }
 
-    public function setFotoLastUpdate(DateTimeInterface $fotoLastUpdate = null): self
+    public function setFotoLastUpdate(\DateTimeInterface $fotoLastUpdate = null): self
     {
         $this->fotoLastUpdate = $fotoLastUpdate;
 
@@ -427,12 +465,12 @@ class Koopman
         return $this;
     }
 
-    public function getHandhavingsVerzoek(): ?DateTimeInterface
+    public function getHandhavingsVerzoek(): ?\DateTimeInterface
     {
         return $this->handhavingsVerzoek;
     }
 
-    public function setHandhavingsVerzoek(DateTimeInterface $handhavingsVerzoek = null): self
+    public function setHandhavingsVerzoek(\DateTimeInterface $handhavingsVerzoek = null): self
     {
         $this->handhavingsVerzoek = $handhavingsVerzoek;
 
@@ -544,7 +582,7 @@ class Koopman
      */
     public function getWeging()
     {
-        $maandGeleden = new DateTime();
+        $maandGeleden = new \DateTime();
         $maandGeleden->modify('-1 month');
         $maandGeleden->setTime(0, 0, 0);
 

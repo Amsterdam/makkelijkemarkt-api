@@ -19,7 +19,6 @@ use App\Service\DagvergunningService;
 use App\Service\FactuurService;
 use App\Service\FlexibeleFactuurService;
 use App\Utils\LocalTime;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -495,8 +494,8 @@ final class DagvergunningController extends AbstractController
             return new JsonResponse(['error' => 'Koopman not found, koopmanId = '.$koopmanId], Response::HTTP_NOT_FOUND);
         }
 
-        $sDate = new DateTime($startDate);
-        $eDate = new DateTime($endDate);
+        $sDate = new \DateTime($startDate);
+        $eDate = new \DateTime($endDate);
 
         $dagvergunningen = $this->dagvergunningRepository->findAllByKoopmanInPeriod($koopman, $sDate, $eDate);
         $response = $this->serializer->serialize($dagvergunningen, 'json', ['groups' => $this->groups]);
@@ -887,7 +886,7 @@ final class DagvergunningController extends AbstractController
         }
 
         // modify object
-        $date = new DateTime($data['doorgehaaldDatumtijd']);
+        $date = new \DateTime($data['doorgehaaldDatumtijd']);
 
         $dagvergunning->setDoorgehaald(true);
         $dagvergunning->setDoorgehaaldDatumtijd($date);
@@ -922,7 +921,9 @@ final class DagvergunningController extends AbstractController
      *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="saveFactuur", type="bool", description="Determines if factuur is persisted"),
      *                 @OA\Property(property="isSimulation", type="bool", description="Als er gesimuleerd wordt zijn er minder validaties en wordt er geen factuur opgeslagen"),
      *                 @OA\Property(property="marktId", type="integer", description="ID van de markt"),
@@ -1012,7 +1013,7 @@ final class DagvergunningController extends AbstractController
             );
         }
 
-        $tarievenplan = $this->tarievenplanRepository->getActivePlan($markt, new DateTime($data['dag']));
+        $tarievenplan = $this->tarievenplanRepository->getActivePlan($markt, new \DateTime($data['dag']));
 
         if (null === $tarievenplan) {
             return new JsonResponse(['error' => 'Tarievenplan not found for markt with id = '.$data['marktId'].' and date = '.$data['dag']], Response::HTTP_NOT_FOUND);
@@ -1063,7 +1064,9 @@ final class DagvergunningController extends AbstractController
      *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="audit", type="bool", description="Determines if dagvergunnig is audited"),
      *                 @OA\Property(property="auditReason", type="string", description="Gives reason for audit"),
      *             )

@@ -53,12 +53,15 @@ final class MarktController extends AbstractController
      *     operationId="MarktGetAll",
      *     tags={"Markt"},
      *     summary="Zoek door alle markten",
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Markt"))
      *     )
      * )
+     *
      * @Route("/markt/", methods={"GET"})
      */
     public function getAll(): Response
@@ -79,18 +82,24 @@ final class MarktController extends AbstractController
      *     operationId="MarktGetById",
      *     tags={"Markt"},
      *     summary="Vraag een markt op",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Markt")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/markt/{id}", methods={"GET"})
      */
     public function getById(int $id): Response
@@ -114,18 +123,24 @@ final class MarktController extends AbstractController
      *     operationId="MarktGetById",
      *     tags={"Markt"},
      *     summary="Vraag een markt op",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Markt")
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/flex/markt/{id}", methods={"GET"})
      */
     public function getByIdV2(int $id): Response
@@ -152,12 +167,17 @@ final class MarktController extends AbstractController
      *     operationId="MarktPostById",
      *     tags={"Markt"},
      *     summary="Sla extra markt gegevens op die niet uit PerfectView komen",
+     *
      *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="aantalKramen", type="integer", description="Aantal kramen op de markt (capaciteit)"),
      *                 @OA\Property(property="aantalMeter", type="integer", description="Aantal meter op de markt (capaciteit)"),
      *                 @OA\Property(property="auditMax", type="integer", description="Aantal plaatsen op de audit lijst"),
@@ -200,23 +220,31 @@ final class MarktController extends AbstractController
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Markt")
      *     ),
+     *
      *     @OA\Response(
      *         response="400",
      *         description="Bad Request",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     ),
+     *
      *     @OA\Response(
      *         response="404",
      *         description="Not Found",
+     *
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
+     *
      * @Route("/markt/{id}", methods={"POST"})
+     *
      * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
      */
     public function postById(Request $request, int $id): Response

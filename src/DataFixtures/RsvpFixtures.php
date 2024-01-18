@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Koopman;
 use App\Entity\Rsvp;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -31,7 +30,7 @@ class RsvpFixtures extends BaseFixture implements DependentFixtureInterface
             $rsvp = new Rsvp();
             $rsvp->setMarkt($markt);
             $rsvp->setKoopman($koopman);
-            $rsvp->setMarktDate(new DateTime($data['markt_date']));
+            $rsvp->setMarktDate(new \DateTime($data['markt_date']));
             $rsvp->setAttending($data['attending']);
             $manager->persist($rsvp);
         }

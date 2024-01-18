@@ -23,7 +23,7 @@ class CsvIterator implements \Iterator
         $this->rewind();
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         if (null !== $this->stream) {
             fclose($this->stream);
@@ -36,33 +36,33 @@ class CsvIterator implements \Iterator
         $this->headings = array_map('trim', $headings);
     }
 
-    public function current()
+    public function current(): array|null
     {
         return $this->parseLine($this->currentLine);
     }
 
-    public function key()
+    public function key(): int
     {
         return $this->counter;
     }
 
-    public function next()
+    public function next(): void
     {
         $this->currentLine = fgets($this->stream);
         ++$this->counter;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return false === feof($this->stream);
     }
 
-    public function getHeadings()
+    public function getHeadings(): array
     {
         return $this->headings;
     }
 
-    protected function parseLine($line)
+    protected function parseLine($line): array|null
     {
         if ('' === $line || null === $line) {
             return null;

@@ -6,7 +6,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Markt;
 use App\Entity\Notitie;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
@@ -23,8 +22,8 @@ final class NotitieFixtures extends BaseFixture implements DependentFixtureInter
             $day += $i;
             $date = date('Y-m-').sprintf('%02d', $day);
 
-            /** @var DateTime $dt */
-            $dt = new DateTime($date);
+            /** @var \DateTime $dt */
+            $dt = new \DateTime($date);
 
             /** @var Notitie $notitie */
             $notitie = new Notitie();
@@ -33,7 +32,7 @@ final class NotitieFixtures extends BaseFixture implements DependentFixtureInter
             $notitie->setBericht(implode(' ', (array) $this->faker->words(10)));
             $notitie->setAfgevinktStatus(false);
             $notitie->setVerwijderd(false);
-            $notitie->setAangemaaktDatumtijd(new DateTime());
+            $notitie->setAangemaaktDatumtijd(new \DateTime());
 
             return $notitie;
         });
@@ -47,8 +46,8 @@ final class NotitieFixtures extends BaseFixture implements DependentFixtureInter
             $day += $i;
             $date = date('Y-m-').sprintf('%02d', $day);
 
-            /** @var DateTime $dt */
-            $dt = new DateTime($date);
+            /** @var \DateTime $dt */
+            $dt = new \DateTime($date);
 
             /** @var Notitie $notitie */
             $notitie = new Notitie();
@@ -57,7 +56,7 @@ final class NotitieFixtures extends BaseFixture implements DependentFixtureInter
             $notitie->setBericht(implode(' ', (array) $this->faker->words(10)));
             $notitie->setAfgevinktStatus(false);
             $notitie->setVerwijderd(false);
-            $notitie->setAangemaaktDatumtijd(new DateTime());
+            $notitie->setAangemaaktDatumtijd(new \DateTime());
 
             return $notitie;
         });

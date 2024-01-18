@@ -14,13 +14,16 @@ class MarktLocatie
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
 
     /**
      * @Ignore()
+     *
      * @ORM\ManyToOne(targetEntity="MarktConfiguratie", inversedBy="marktLocaties", cascade={"persist"})
      */
     private MarktConfiguratie $marktConfiguratie;
@@ -37,12 +40,14 @@ class MarktLocatie
 
     /**
      * @ORM\ManyToMany(targetEntity="Branche")
+     *
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private Collection $branches;
 
     /**
      * @ORM\ManyToMany(targetEntity="Plaatseigenschap")
+     *
      * @ORM\OrderBy({"id" = "ASC"})
      */
     private Collection $plaatseigenschappen;

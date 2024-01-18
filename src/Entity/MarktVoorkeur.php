@@ -10,8 +10,10 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(schema="MarktVoorkeur", type="object")
  *
  * @ORM\Entity(repositoryClass=MarktVoorkeurRepository::class)
+ *
  * @ORM\Table(
  *     uniqueConstraints={
+ *
  *        @ORM\UniqueConstraint(name="markt_voorkeur_unique", columns={"koopman_id", "markt_id"})
  *     }
  * )
@@ -20,7 +22,9 @@ class MarktVoorkeur
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -62,18 +66,21 @@ class MarktVoorkeur
 
     /**
      * @ORM\ManyToOne(targetEntity=Branche::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $branche;
 
     /**
      * @ORM\ManyToOne(targetEntity=Markt::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $markt;
 
     /**
      * @ORM\ManyToOne(targetEntity=Koopman::class, inversedBy="marktVoorkeuren")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private $koopman;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -19,34 +18,42 @@ class Token
 {
     /**
      * @OA\Property(example="aaa9d3dd-bbb6-4d99-bca1-bfdb1aaa5a35")
+     *
      * @Groups("token")
      *
      * @var string
+     *
      * @ORM\Id
+     *
      * @ORM\Column(type="string", length=36)
      */
     private $uuid;
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
+     *
      * @ORM\Column(type="datetime")
      */
     private $creationDate;
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $lifeTime;
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
      * @var int in seconds
@@ -55,43 +62,53 @@ class Token
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $deviceUuid;
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $clientApp;
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
      * @var ?string
+     *
      * @ORM\Column(type="string", length=25, nullable=true)
      */
     private $clientVersion;
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
      * @var Account
+     *
      * @ORM\ManyToOne(targetEntity="Account", fetch="EAGER")
+     *
      * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=true)
      */
     private $account;
 
     /**
      * @OA\Property()
+     *
      * @Groups("token")
      *
      * Non persisted property
@@ -117,12 +134,12 @@ class Token
         return $this->uuid;
     }
 
-    public function getCreationDate(): DateTimeInterface
+    public function getCreationDate(): \DateTimeInterface
     {
         return $this->creationDate;
     }
 
-    public function setCreationDate(DateTimeInterface $creationDate): self
+    public function setCreationDate(\DateTimeInterface $creationDate): self
     {
         $this->creationDate = $creationDate;
 
