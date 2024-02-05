@@ -43,8 +43,6 @@ final class FactuurService
 
     private EntityManagerInterface $entityManager;
 
-    private bool $flexibeleTarievenEnabled;
-
     public function __construct(
         ConcreetplanFactuurService $concreetplanFactuurService,
         LineairplanFactuurService $lineairplanFactuurService,
@@ -67,13 +65,11 @@ final class FactuurService
         $this->koopmanRepository = $koopmanRepository;
         $this->sollicitatieRepository = $sollicitatieRepository;
         $this->entityManager = $entityManager;
-
-        $this->flexibeleTarievenEnabled = $this->featureFlagRepository->isEnabled('flexibele-tarieven');
     }
 
     public function createFactuur(Dagvergunning $dagvergunning): ?Factuur
     {
-        if ($this->flexibeleTarievenEnabled) {
+        if ($this->featureFlagRepository->isEnabled('flexibele-tarieven')) {
             $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning->getMarkt(), $dagvergunning->getDag());
 
             if (null === $tarievenplan) {
@@ -259,7 +255,7 @@ final class FactuurService
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $erkenningsnummer, false);
 
         $ignoreVastePlaats = false;
-        if ($this->flexibeleTarievenEnabled) {
+        if ($this->featureFlagRepository->isEnabled('flexibele-tarieven')) {
             $tarievenplan = $this->tarievenplanRepository->getActivePlan($dagvergunning->getMarkt(), $dagvergunning->getDag());
 
             // If this is true, every ondernemer will be seen as a sollicitant and vergunde plaatsen do not matter.
