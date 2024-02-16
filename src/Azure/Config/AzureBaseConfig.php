@@ -7,10 +7,10 @@ class AzureBaseConfig
     private array $config;
 
     public function __construct(
-        $subscriptionId,
-        $clientId,
-        $resourceGroup,
-        $authorityHost,
+        string $subscriptionId,
+        string $clientId,
+        string $resourceGroup,
+        string $authorityHost,
         $tenantId,
         $federatedTokenFile
     ) {

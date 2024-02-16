@@ -13,10 +13,10 @@ parameters:
     azureTenantId: '%env(AZURE_TENANT_ID)%'
     azureClientId: '%env(AZURE_CLIENT_ID)%'
     azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
-    imageStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
-    imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
-    azureSubscriptionId: '%env(AZURE_SUBSCRIPTION_ID)%'
-    azureResourceGroup: '%env(AZURE_RESOURCE_GROUP)%'
+    string imageStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
+    string imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
+    string azureSubscriptionId: '%env(resolve:AZURE_SUBSCRIPTION_ID)%'
+    string azureResourceGroup: '%env(AZURE_RESOURCE_GROUP)%'
 
 services:
     # default configuration for services in *this* file
