@@ -19,14 +19,14 @@ class DynamicConnection extends Connection
         private readonly ?AzureDatabase $azureDatabase = null,
         private readonly ?LoggerInterface $logger = null,
     ) {
-        if ($azureDatabase && $logger && isset($params['password'])) {
+        if ($azureDatabase && $this->logger && isset($params['password'])) {
             $newPassword = $azureDatabase->getPassword($params['password']);
             $params = $this->addNewPasswordToParams($params, $newPassword);
         }
 
         parent::__construct($params, $driver, $config, $eventManager);
 
-        if ($azureDatabase && $logger && isset($params['password'])) {
+        if ($azureDatabase && $this->logger && isset($params['password'])) {
             try {
                 $this->connect();
             } catch (\Exception $e) {
@@ -42,7 +42,10 @@ class DynamicConnection extends Connection
     private function addNewPasswordToParams(array $params, string $newPassword): array
     {
         $params['password'] = $newPassword;
-        $params['url'] = str_replace('temporary', $newPassword, $params['url']);
+
+        if (array_key_exists('url', $params)) {
+            $params['url'] = str_replace('temporary', $newPassword, $params['url']);
+        }
 
         return $params;
     }

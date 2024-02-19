@@ -11,8 +11,8 @@ class AzureBaseConfig
         string $clientId,
         string $resourceGroup,
         string $authorityHost,
-        $tenantId,
-        $federatedTokenFile
+        string $tenantId,
+        string $federatedTokenFile
     ) {
         $this->config = [
             'subscriptionId' => $subscriptionId,
