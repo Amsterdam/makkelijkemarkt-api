@@ -36,7 +36,7 @@ class AzureDatabase
 
     public function getPassword(string $default, $invalidateCache = false): string
     {
-        $this->logger->warning('Fetching DB Password either from cache or filesystem');
+        // $this->logger->warning('Fetching DB Password either from cache or filesystem');
         $cache = new FilesystemAdapter();
         if ($invalidateCache) {
             $cache->delete(self::CACHE_KEY);
