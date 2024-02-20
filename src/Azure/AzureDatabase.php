@@ -36,14 +36,14 @@ class AzureDatabase
 
     public function getPassword(string $default, $invalidateCache = false): string
     {
-        $this->logger->debug('Fetching DB Password either from cache or filesystem');
+        $this->logger->warning('Fetching DB Password either from cache or filesystem');
         $cache = new FilesystemAdapter();
         if ($invalidateCache) {
             $cache->delete(self::CACHE_KEY);
         }
 
         return $cache->get(self::CACHE_KEY, function (ItemInterface $item) use ($default) {
-            $this->logger->debug('Cache invalid. Getting db password from azure');
+            $this->logger->warning('Cache invalid. Getting db password from azure');
             if (!$this->azureAuthorityHost || !$this->azureTenantId || !$this->azureFederatedTokenFile || !$this->azureClientId) {
                 return $default;
             }
@@ -79,7 +79,7 @@ class AzureDatabase
 
         $accessToken = $data['access_token'];
 
-        $this->logger->debug('Succesfully got password from Azure!');
+        $this->logger->warning('Succesfully got password from Azure!');
 
         return $accessToken;
     }
