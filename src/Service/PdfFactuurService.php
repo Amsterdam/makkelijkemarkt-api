@@ -8,6 +8,10 @@ use Qipsius\TCPDFBundle\Controller\TCPDFController;
 
 class PdfFactuurService
 {
+    public const FONT = 'helvetica';
+
+    public const FONT_BOLD = 'helveticab';
+
     /**
      * @var \TCPDF
      */
@@ -35,8 +39,8 @@ class PdfFactuurService
         $this->tcpdfController = $tcpdfController;
         $this->projectDir = $projectDir;
 
-        $this->fontname = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/AmsterdamSans-Regular.ttf', 'TrueTypeUnicode', '', 96);
-        $this->fontnameBold = \TCPDF_FONTS::addTTFfont($this->projectDir.'/public/fonts/AmsterdamSans-Bold.ttf', 'TrueTypeUnicode', '', 96);
+        $this->fontname = self::FONT;
+        $this->fontnameBold = self::FONT_BOLD;
     }
 
     public function generate($koopman, $dagvergunningen)
