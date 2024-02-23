@@ -7,12 +7,12 @@ class AzureBaseConfig
     private array $config;
 
     public function __construct(
-        $subscriptionId,
-        $clientId,
-        $resourceGroup,
-        $authorityHost,
-        $tenantId,
-        $federatedTokenFile
+        string $subscriptionId,
+        string $clientId,
+        string $resourceGroup,
+        string $authorityHost,
+        string $tenantId,
+        string $federatedTokenFile
     ) {
         $this->config = [
             'subscriptionId' => $subscriptionId,

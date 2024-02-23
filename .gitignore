@@ -13,6 +13,7 @@
 
 ###> friendsofphp/php-cs-fixer ###
 /.php_cs.cache
+.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
 ###> symfony/phpunit-bridge ###

@@ -61,15 +61,12 @@ services:
         bind:
             $container: '@service_container'
 
-    App\Azure\AzureDatabase:
-        arguments:
-            $azureAuthorityHost: '%azureAuthorityHost%'
-            $azureTenantId: '%azureTenantId%'
-            $azureClientId: '%azureClientId%'
-            $azureFederatedTokenFile: '%azureFederatedTokenFile%'
-
     App\Controller\ImageController:
         arguments: ["@=parameter('azureClientId') !== '' ? service('App\\\\Azure\\\\AzureStorage') : service('App\\\\Azure\\\\AzureStorageLocal')"]
+
+    App\Azure\AzureDatabase:
+        arguments:
+            $azureBaseConfig: '@app_azure_base_config'
 
     app_azure_base_config:
         class: App\Azure\Config\AzureBaseConfig
@@ -80,7 +77,6 @@ services:
             $tenantId: '%azureTenantId%'
             $federatedTokenFile: '%azureFederatedTokenFile%'
             $authorityHost: '%azureAuthorityHost%'
-
 
     app_azure_sas_image_config:
         class: App\Azure\Config\SASImageReaderConfig

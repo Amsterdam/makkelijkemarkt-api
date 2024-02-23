@@ -2,54 +2,71 @@
 
 namespace App\Azure;
 
+use App\Azure\Config\AzureBaseConfig;
 use GuzzleHttp\RequestOptions;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AzureDatabase
 {
-    private HttpClientInterface $client;
+    public const CACHE_KEY = 'azure-db-password';
+
     private string $azureAuthorityHost;
+
     private string $azureTenantId;
+
     private string $azureFederatedTokenFile;
+
     private string $azureClientId;
 
     public function __construct(
-        HttpClientInterface $client,
-        string $azureAuthorityHost,
-        string $azureTenantId,
-        string $azureFederatedTokenFile,
-        string $azureClientId
+        private HttpClientInterface $client,
+        private LoggerInterface $logger,
+        private AzureBaseConfig $azureBaseConfig
     ) {
-        $this->client = $client;
-        $this->azureAuthorityHost = $azureAuthorityHost;
-        $this->azureTenantId = $azureTenantId;
-        $this->azureFederatedTokenFile = $azureFederatedTokenFile;
-        $this->azureClientId = $azureClientId;
+        $config = $azureBaseConfig->getConfig();
+
+        $this->azureAuthorityHost = $config['authorityHost'];
+        $this->azureTenantId = $config['tenantId'];
+        $this->azureFederatedTokenFile = $config['federatedTokenFile'];
+        $this->azureClientId = $config['clientId'];
     }
 
-    public function getPassword(string $default): string
+    public function getPassword(string $default, $invalidateCache = false): string
     {
-        if (!$this->azureAuthorityHost || !$this->azureTenantId || !$this->azureFederatedTokenFile || !$this->azureClientId) {
-            return $default;
+        // $this->logger->warning('Fetching DB Password either from cache or filesystem');
+        $cache = new FilesystemAdapter();
+        if ($invalidateCache) {
+            $cache->delete(self::CACHE_KEY);
         }
 
-        return $this->getPasswordFromAzure();
+        return $cache->get(self::CACHE_KEY, function (ItemInterface $item) use ($default) {
+            $this->logger->warning('Cache invalid. Getting db password from azure');
+            if (!$this->azureAuthorityHost || !$this->azureTenantId || !$this->azureFederatedTokenFile || !$this->azureClientId) {
+                return $default;
+            }
+
+            return $this->getPasswordFromAzure();
+        });
     }
 
     private function getPasswordFromAzure(): string
     {
-        // TODO implement caching
-        // TODO make this a bit more clean
-        $authorityHost = $this->azureAuthorityHost;
-        $tenantId = $this->azureTenantId;
-        $tokenUrl = "$authorityHost$tenantId/oauth2/v2.0/token";
+        $tokenUrl = $this->azureAuthorityHost.$this->azureTenantId.'/oauth2/v2.0/token';
         $grantType = 'client_credentials';
         $scope = 'https://ossrdbms-aad.database.windows.net/.default';
         $clientAssertion = file_get_contents($this->azureFederatedTokenFile);
         $clientAssertionType = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
-        $clientId = $this->azureClientId;
-        // Prepare the request payload
-        $payload = ['grant_type' => $grantType, 'scope' => $scope, 'client_assertion' => $clientAssertion, 'client_assertion_type' => $clientAssertionType, 'client_id' => $clientId];
+
+        $payload = [
+            'grant_type' => $grantType,
+            'scope' => $scope,
+            'client_assertion' => $clientAssertion,
+            'client_assertion_type' => $clientAssertionType,
+            'client_id' => $this->azureClientId,
+        ];
 
         $response = $this->client->request('POST', $tokenUrl, [RequestOptions::HEADERS => ['Content-Type' => 'application/x-www-form-urlencoded'], RequestOptions::BODY => http_build_query($payload)]);
 
@@ -61,6 +78,8 @@ class AzureDatabase
         $data = json_decode($body, true);
 
         $accessToken = $data['access_token'];
+
+        $this->logger->warning('Succesfully got password from Azure!');
 
         return $accessToken;
     }
