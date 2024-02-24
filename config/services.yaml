@@ -13,8 +13,8 @@ parameters:
     azureTenantId: '%env(AZURE_TENANT_ID)%'
     azureClientId: '%env(AZURE_CLIENT_ID)%'
     azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
-    imageStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
-    imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
+    fileStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
+    fileContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
     azureSubscriptionId: '%env(AZURE_SUBSCRIPTION_ID)%'
     azureResourceGroup: '%env(AZURE_RESOURCE_GROUP)%'
 

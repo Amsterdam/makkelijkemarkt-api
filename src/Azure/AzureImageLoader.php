@@ -1,8 +1,7 @@
 <?php
 
-namespace Azure;
+namespace App\Azure;
 
-use App\Azure\AzureStorage;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 
 /**
