@@ -273,7 +273,7 @@ class AzureStorage implements AzureStorageInterface
         }
 
         $this->accessToken = $cache->get(self::CACHE_KEY, function (ItemInterface $item) {
-            return $this->getAccessTokenFromAzure();
+            return $this->getAccessTokenFromAzure(AzureTokenRequestScope::MANAGEMENT);
         });
     }
 
