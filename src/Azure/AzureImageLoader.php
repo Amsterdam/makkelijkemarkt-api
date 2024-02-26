@@ -18,7 +18,7 @@ class AzureImageLoader implements LoaderInterface
 
     public function find($path)
     {
-        $imageBlob = $this->azureStorage->getBlob($path, null);
+        $imageBlob = $this->azureStorage->getBlob($path);
 
         return $imageBlob->getContent();
     }

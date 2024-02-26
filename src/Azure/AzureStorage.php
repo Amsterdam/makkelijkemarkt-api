@@ -208,6 +208,7 @@ class AzureStorage implements AzureStorageInterface
      */
     public function getBlob(string $file): ResponseInterface
     {
+        $this->logger->warning("Getting blob $file");
         $accessToken = $this->getAccessTokenFromAzure(AzureTokenRequestScope::STORAGE);
 
         $blobUrl = 'https://'.
@@ -310,6 +311,8 @@ class AzureStorage implements AzureStorageInterface
             'client_assertion_type' => $clientAssertionType,
             'client_id' => $this->config['clientId'],
         ];
+
+        $this->logger->warning('payload while get token', $payload);
 
         $response = $this->client->request(
             'POST',
