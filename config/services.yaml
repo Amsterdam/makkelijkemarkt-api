@@ -61,9 +61,6 @@ services:
         bind:
             $container: '@service_container'
 
-    # App\Controller\ImageController:
-    #     arguments: ["@=parameter('azureClientId') !== '' ? service('App\\\\Azure\\\\AzureStorage') : service('App\\\\Azure\\\\AzureStorageLocal')"]
-
     App\Azure\AzureDatabase:
         arguments:
             $azureBaseConfig: '@app_azure_base_config'
