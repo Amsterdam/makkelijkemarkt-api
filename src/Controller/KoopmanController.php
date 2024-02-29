@@ -162,7 +162,7 @@ final class KoopmanController extends AbstractController
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de ondernemer"),
      *                 @OA\Property(property="voorletters", type="string", description="Voorletters van de ondernemer."),
      *                 @OA\Property(property="tussenvoegsels", type="string", description="Tussenvoegsels van de ondernemer."),
-     *                 @OA\Property(property="achternaam", type="string", description="Achternaame van de ondernemer."),
+     *                 @OA\Property(property="achternaame", type="string", description="Achternaame van de ondernemer."),
      *                 @OA\Property(property="email", type="string", description="Email van de ondernemer."),
      *                 @OA\Property(property="telefoon", type="string", description="Telefoon van de ondernemer."),
      *                 @OA\Property(property="status", type="string", description="Status van de ondernemer."),
@@ -186,7 +186,7 @@ final class KoopmanController extends AbstractController
      *     )
      * )
      * 
-     * @Route("/koopman/{erkenningsnummer}", methods={"PUT, PATCH"})
+     * @Route("/koopman/erkenningsnummer", methods={"PUT, PATCH"})
      * 
      * @Security("is_granted('ROLE_SENIOR')")
      */
