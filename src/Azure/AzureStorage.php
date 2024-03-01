@@ -312,8 +312,6 @@ class AzureStorage implements AzureStorageInterface
             'client_id' => $this->config['clientId'],
         ];
 
-        $this->logger->warning('payload while get token', $payload);
-
         $response = $this->client->request(
             'POST',
             $tokenUrl,
