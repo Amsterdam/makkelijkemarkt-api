@@ -70,11 +70,11 @@ final class SollicitatieController extends AbstractController
      *                 @OA\Property(property="marktId", type="string", description="MarktId van de sollicitatie"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de sollicitatie"),
      *                 @OA\Property(property="sollicitatieNummer", type="string", description="SollicitatieNummer van de sollicitatie"),
+     *                 @OA\Property(property="status", type="string", description="Status van de sollicitatie"),
      *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
      *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
      *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
      *                 @OA\Property(property="aantalExtraMeters", type="string", description="AantalExtraMeters van de sollicitatie"),
-     *                 @OA\Property(property="status", type="string", description="Status van de sollicitatie"),
      *                 @OA\Property(property="aantalElektra", type="string", description="AantalElektra van de sollicitatie"),
      *                 @OA\Property(property="aantalAfvaleilanden", type="string", description="AantalAfvaleilanden van de sollicitatie"),
      *                 @OA\Property(property="grootPerMeter", type="string", description="GrootPerMeter van de sollicitatie"),
@@ -123,13 +123,14 @@ final class SollicitatieController extends AbstractController
         }
 
         $expectedParameters = [
+            'marktId',
+            'erkenningsnummer',
             'sollicitatieNummer',
             'status',
             'vastePlaatsen',
             'aantal3MeterKramen',
             'aantal4MeterKramen',
             'aantalExtraMeters',
-            'status',
             'aantalElektra',
             'aantalAfvaleilanden',
             'grootPerMeter',
@@ -144,8 +145,6 @@ final class SollicitatieController extends AbstractController
             'doorgehaaldReden',
             'perfectViewNummer',
             'koppelveld',
-            'markt',
-            'koopman',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -170,7 +169,6 @@ final class SollicitatieController extends AbstractController
         $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
         $sollicitatie->setAantal4MeterKramen($data['aantal4MeterKramen']);
         $sollicitatie->setAantalExtraMeters($data['aantalExtraMeters']);
-        $sollicitatie->setStatus($data['status']);
         $sollicitatie->setAantalElektra($data['aantalElektra']);
         $sollicitatie->setAantalAfvaleilanden($data['aantalAfvaleilanden']);
         $sollicitatie->setGrootPerMeter($data['grootPerMeter']);
@@ -187,6 +185,188 @@ final class SollicitatieController extends AbstractController
         $sollicitatie->setKoppelveld($data['koppelveld']);
         $sollicitatie->setMarkt($markt);
         $sollicitatie->setKoopman($koopman);
+
+        $this->entityManager->persist($sollicitatie);
+        $this->entityManager->flush();
+
+        
+        $response = $this->serializer->serialize($sollicitatie, 'json');
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+     /**
+     * @OA\Put(
+     *      path="/api/1.1.0/sollicitatie/{sollicitatieNummer}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="SollicitatieUpdate",
+     *      tags={"Sollicitatie"},
+     *      summary="Update new sollicitatie",
+     * 
+     *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="string"), in="path", required=true)
+
+     * 
+     *      @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
+     *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantalExtraMeters", type="string", description="AantalExtraMeters van de sollicitatie"),
+     *                 @OA\Property(property="status", type="string", description="Status van de sollicitatie"),
+     *                 @OA\Property(property="aantalElektra", type="string", description="AantalElektra van de sollicitatie"),
+     *                 @OA\Property(property="aantalAfvaleilanden", type="string", description="AantalAfvaleilanden van de sollicitatie"),
+     *                 @OA\Property(property="grootPerMeter", type="string", description="GrootPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="kleinPerMeter", type="string", description="KleinPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="grootReiniging", type="string", description="GrootReiniging van de sollicitatie"),
+     *                 @OA\Property(property="kleinReiniging", type="string", description="KleinReiniging van de sollicitatie"),
+     *                 @OA\Property(property="afvalEilandAgf", type="string", description="AfvalEilandAgf van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroomPerStuk", type="string", description="KrachtstroomPerStuk van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroom", type="string", description="Krachtstroom van de sollicitatie"),
+     *                 @OA\Property(property="inschrijfDatum", type="string", description="InschrijfDatum van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaald", type="string", description="Doorgehaald van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
+     *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
+     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *                 
+     *             )
+     *         )
+     *     ),
+     * 
+     *      @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Sollicitatie")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * 
+     * @Route("/sollicitatie/{sollicitatieNummer}", methods={"PUT, PATCH"})
+     * 
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function updateSollicitatie(Request $request, string $sollicitatieNummer): Response
+    {
+
+        $data = json_decode((string) $request->getContent(), true);
+
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $expectedParameters = [
+            'marktId',
+            'status',
+            'vastePlaatsen',
+            'aantal3MeterKramen',
+            'aantal4MeterKramen',
+            'aantalExtraMeters',
+            'aantalElektra',
+            'aantalAfvaleilanden',
+            'grootPerMeter',
+            'kleinPerMeter',
+            'grootReiniging',
+            'kleinReiniging',
+            'afvalEilandAgf',
+            'krachtstroomPerStuk',
+            'krachtstroom',
+            'inschrijfDatum',
+            'doorgehaald',
+            'doorgehaaldReden',
+            'perfectViewNummer',
+            'koppelveld'
+        ];
+        if ("PUT" === $request->getMethod()) {
+            foreach ($expectedParameters as $expectedParameter) {
+                if (!array_key_exists($expectedParameter, $data)) {
+                    return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
+                }
+            }
+        }
+        $markt = $this->marktRepository->find($data['marktId']);
+        if (null === $markt) {
+            return new JsonResponse(['error' => "Markt niet gevonden."], Response::HTTP_BAD_REQUEST);
+        }
+        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, $sollicitatieNummer, $data['doorgehaald']);
+        if (null !== $sollicitatie) {
+            return new JsonResponse(['error' => "Sollicitatie already exists"], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            
+            if (isset($data['status'])) {
+                $sollicitatie->setStatus($data['status']);
+            }
+            if (isset($data['vastePlaatsen'])) {
+                $sollicitatie->setVastePlaatsen($data['vastePlaatsen']);
+            }
+            if (isset($data['aantal3MeterKramen'])) {
+                $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
+            }
+            if (isset($data['aantal4MeterKramen'])) {
+                $sollicitatie->setAantal4MeterKramen($data['aantal4MeterKramen']);
+            }
+            if (isset($data['aantalExtraMeters'])) {
+                $sollicitatie->setAantalExtraMeters($data['aantalExtraMeters']);
+            }
+            if (isset($data['status'])) {
+                $sollicitatie->setStatus($data['status']);
+            }
+            if (isset($data['aantalElektra'])) {
+                $sollicitatie->setAantalElektra($data['aantalElektra']);
+            }
+            if (isset($data['aantalAfvaleilanden'])) {
+                $sollicitatie->setAantalAfvaleilanden($data['aantalAfvaleilanden']);
+            }
+            if (isset($data['grootPerMeter'])) {
+                $sollicitatie->setGrootPerMeter($data['grootPerMeter']);
+            }
+            if (isset($data['kleinPerMeter'])) {
+                $sollicitatie->setKleinPerMeter($data['kleinPerMeter']);
+            }
+            if (isset($data['grootReiniging'])) {
+                $sollicitatie->setGrootReiniging($data['grootReiniging']);
+            }
+            if (isset($data['kleinReiniging'])) {
+                $sollicitatie->setKleinReiniging($data['kleinReiniging']);
+            }
+            if (isset($data['afvalEilandAgf'])) {
+                $sollicitatie->setAfvalEilandAgf($data['afvalEilandAgf']);
+            }
+            if (isset($data['krachtstroomPerStuk'])) {
+                $sollicitatie->setKrachtstroomPerStuk($data['krachtstroomPerStuk']);
+            }
+            if (isset($data['krachtstroom'])) {
+                $sollicitatie->setKrachtstroom($data['krachtstroom']);
+            }
+            if (isset($data['inschrijfDatum'])) {
+                $sollicitatie->setInschrijfDatum($data['inschrijfDatum']);
+            }
+            if (isset($data['doorgehaald'])) {
+                $sollicitatie->setDoorgehaald($data['doorgehaald']);
+            }
+            if (isset($data['doorgehaaldReden'])) {
+                $sollicitatie->setDoorgehaaldReden($data['doorgehaaldReden']);
+            }
+            if (isset($data['perfectViewNummer'])) {
+                $sollicitatie->setPerfectViewNummer($data['perfectViewNummer']);
+            }
+            if (isset($data['koppelveld'])) {
+                $sollicitatie->setKoppelveld($data['koppelveld']);
+            }            
+        } catch(\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($sollicitatie);
         $this->entityManager->flush();
