@@ -7,8 +7,10 @@ namespace App\Controller;
 use App\Entity\Markt;
 use App\Entity\Sollicitatie;
 use App\Normalizer\EntityNormalizer;
+use App\Repository\KoopmanRepository;
 use App\Repository\MarktRepository;
 use App\Repository\SollicitatieRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,22 +27,173 @@ use Symfony\Component\Serializer\Serializer;
  */
 final class SollicitatieController extends AbstractController
 {
+    private KoopmanRepository $koopmanRepository;
     private MarktRepository $marktRepository;
-
     private SollicitatieRepository $sollicitatieRepository;
+
+    private EntityManagerInterface $entityManager;
 
     private Serializer $serializer;
     private array $groups;
 
     public function __construct(
+        KoopmanRepository $koopmanRepository,
         MarktRepository $marktRepository,
-        SollicitatieRepository $sollicitatieRepository
+        SollicitatieRepository $sollicitatieRepository,
+        EntityManagerInterface $entityManager
     ) {
+        $this->koopmanRepository = $koopmanRepository;
         $this->marktRepository = $marktRepository;
         $this->sollicitatieRepository = $sollicitatieRepository;
 
+        $this->entityManager = $entityManager;
+
         $this->serializer = new Serializer([new EntityNormalizer()], [new JsonEncoder()]);
         $this->groups = ['sollicitatie', 'simpleKoopman', 'simpleMarkt', 'vervanger'];
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/1.1.0/sollicitatie/",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="SollicitatieCreate",
+     *      tags={"Sollicitatie"},
+     *      summary="Create new sollicitatie",
+     * 
+     *      @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *                 @OA\Property(property="marktId", type="string", description="MarktId van de sollicitatie"),
+     *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de sollicitatie"),
+     *                 @OA\Property(property="sollicitatieNummer", type="string", description="SollicitatieNummer van de sollicitatie"),
+     *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
+     *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantalExtraMeters", type="string", description="AantalExtraMeters van de sollicitatie"),
+     *                 @OA\Property(property="status", type="string", description="Status van de sollicitatie"),
+     *                 @OA\Property(property="aantalElektra", type="string", description="AantalElektra van de sollicitatie"),
+     *                 @OA\Property(property="aantalAfvaleilanden", type="string", description="AantalAfvaleilanden van de sollicitatie"),
+     *                 @OA\Property(property="grootPerMeter", type="string", description="GrootPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="kleinPerMeter", type="string", description="KleinPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="grootReiniging", type="string", description="GrootReiniging van de sollicitatie"),
+     *                 @OA\Property(property="kleinReiniging", type="string", description="KleinReiniging van de sollicitatie"),
+     *                 @OA\Property(property="afvalEilandAgf", type="string", description="AfvalEilandAgf van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroomPerStuk", type="string", description="KrachtstroomPerStuk van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroom", type="string", description="Krachtstroom van de sollicitatie"),
+     *                 @OA\Property(property="inschrijfDatum", type="string", description="InschrijfDatum van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaald", type="string", description="Doorgehaald van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
+     *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
+     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *                 
+     *             )
+     *         )
+     *     ),
+     * 
+     *      @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Sollicitatie")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * 
+     * @Route("/sollicitatie", methods={"POST"})
+     * 
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function createSollicitatie(Request $request): Response
+    {
+
+        $data = json_decode((string) $request->getContent(), true);
+
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $expectedParameters = [
+            'sollicitatieNummer',
+            'status',
+            'vastePlaatsen',
+            'aantal3MeterKramen',
+            'aantal4MeterKramen',
+            'aantalExtraMeters',
+            'status',
+            'aantalElektra',
+            'aantalAfvaleilanden',
+            'grootPerMeter',
+            'kleinPerMeter',
+            'grootReiniging',
+            'kleinReiniging',
+            'afvalEilandAgf',
+            'krachtstroomPerStuk',
+            'krachtstroom',
+            'inschrijfDatum',
+            'doorgehaald',
+            'doorgehaaldReden',
+            'perfectViewNummer',
+            'koppelveld',
+            'markt',
+            'koopman',
+        ];
+
+        foreach ($expectedParameters as $expectedParameter) {
+            if (!array_key_exists($expectedParameter, $data)) {
+                return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
+            }
+        }
+        $markt = $this->marktRepository->find($data['marktId']);
+        $koopman = $this->koopmanRepository->findByErkenningsnummer($data['erkenningsnummer']);
+        if (null === $markt || null === $koopman) {
+            return new JsonResponse(['error' => "Markt of Koopman niet gevonden."], Response::HTTP_BAD_REQUEST);
+        }
+        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $data['erkenningsnummer'], $data['doorgehaald']);
+        if (null !== $sollicitatie) {
+            return new JsonResponse(['error' => "Sollicitatie already exists"], Response::HTTP_BAD_REQUEST);
+        }
+
+        $sollicitatie = new Sollicitatie();
+        $sollicitatie->setSollicitatieNummer($data['sollicitatieNummer']);
+        $sollicitatie->setStatus($data['status']);
+        $sollicitatie->setVastePlaatsen($data['vastePlaatsen']);
+        $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
+        $sollicitatie->setAantal4MeterKramen($data['aantal4MeterKramen']);
+        $sollicitatie->setAantalExtraMeters($data['aantalExtraMeters']);
+        $sollicitatie->setStatus($data['status']);
+        $sollicitatie->setAantalElektra($data['aantalElektra']);
+        $sollicitatie->setAantalAfvaleilanden($data['aantalAfvaleilanden']);
+        $sollicitatie->setGrootPerMeter($data['grootPerMeter']);
+        $sollicitatie->setKleinPerMeter($data['kleinPerMeter']);
+        $sollicitatie->setGrootReiniging($data['grootReiniging']);
+        $sollicitatie->setKleinReiniging($data['kleinReiniging']);
+        $sollicitatie->setAfvalEilandAgf($data['afvalEilandAgf']);
+        $sollicitatie->setKrachtstroomPerStuk($data['krachtstroomPerStuk']);
+        $sollicitatie->setKrachtstroom($data['krachtstroom']);
+        $sollicitatie->setInschrijfDatum($data['inschrijfDatum']);
+        $sollicitatie->setDoorgehaald($data['doorgehaald']);
+        $sollicitatie->setDoorgehaaldReden($data['doorgehaaldReden']);
+        $sollicitatie->setPerfectViewNummer($data['perfectViewNummer']);
+        $sollicitatie->setKoppelveld($data['koppelveld']);
+        $sollicitatie->setMarkt($markt);
+        $sollicitatie->setKoopman($koopman);
+
+        $this->entityManager->persist($sollicitatie);
+        $this->entityManager->flush();
+
+        
+        $response = $this->serializer->serialize($sollicitatie, 'json');
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
     /**
