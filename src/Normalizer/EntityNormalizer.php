@@ -113,8 +113,10 @@ final class EntityNormalizer extends ObjectNormalizer
     private function getBrowserPath(string $photo, string $imageSize): string
     {
         $base_url = '';
-        if (isset($_SERVER['MM_API__BASE_URL'])) {
-            $base_url = $_SERVER['MM_API__BASE_URL'];
+        if (isset($_SERVER['MM_API_NGINX_MM_API_SERVICE_HOST'])
+            && isset($_SERVER['MM_API_NGINX_MM_API_SERVICE_PORT'])
+        ) {
+            $base_url = $_SERVER['MM_API_NGINX_MM_API_SERVICE_HOST'].':'.$_SERVER['MM_API_NGINX_MM_API_SERVICE_PORT'].'/api/1.1.0/';
         }
 
         return $base_url.IMAGE_RESOLVE_PATH.$imageSize.'/'.$photo;
