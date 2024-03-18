@@ -230,6 +230,8 @@ class AzureStorage implements AzureStorageInterface
         );
 
         if (200 != $apiResponse->getStatusCode()) {
+            $this->logger->warning("Blob $file not found, status code: ".$apiResponse->getStatusCode());
+            $this->logger->warning("Blob $file not found, response: ".$apiResponse->getContent(false));
             throw new NotFoundHttpException();
         }
 

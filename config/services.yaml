@@ -117,46 +117,6 @@ services:
         tags:
         - { name: 'kernel.event_listener', event: 'kernel.response' }
 
-
-#TODO remove
-    # Open Stack
-    # openstack:
-    #     class: OpenStack\OpenStack
-    #     lazy: true
-    #     arguments:
-    #         -   authUrl: '%env(SWIFT_AUTH_URL)%'
-    #             region: '%env(SWIFT_REGION)%'
-    #             user:
-    #                 name: '%env(SWIFT_USER_NAME)%'
-    #                 domain:
-    #                     id: '%env(SWIFT_USER_DOMAIN_ID)%'
-    #                 password: '%env(SWIFT_USER_PASSWORD)%'
-    #             scope:
-    #                 project:
-    #                     id: '%env(SWIFT_PROJECT_ID)%'
-    #             requestOptions:
-    #                 timeout: 5
-
-    # openstack_client:
-    #     class: OpenStack\OpenStack
-    #     factory: '@openstack'
-    # openstack_objectstore:
-    #     class: OpenStack\ObjectStore\v1\Service
-    #     lazy: true
-    #     factory: ['@openstack', 'objectStoreV1']
-    # openstack_objectstore_container_fotos:
-    #     class: OpenStack\ObjectStore\v1\Models\Container
-    #     lazy: true
-    #     factory: ['@openstack_objectstore', 'getContainer']
-    #     arguments:
-    #         - '%swift_flysystem_container_fotos%'
-    # openstack_objectstore_container_thumbs:
-    #     class: OpenStack\ObjectStore\v1\Models\Container
-    #     lazy: true
-    #     factory: ['@openstack_objectstore', 'getContainer']
-    #     arguments:
-    #         - '%swift_flysystem_container_thumbs%'
-
     # # Flysystem
     # flysystem_openstack_adapter_fotos:
     #     class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
