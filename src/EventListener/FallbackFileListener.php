@@ -2,13 +2,14 @@
 
 namespace App\EventListener;
 
+use App\Utils\Logger;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class FallbackFileListener
 {
-    public function __construct(private readonly string $publicDir)
+    public function __construct(private readonly string $publicDir, private Logger $logger)
     {
     }
 
@@ -21,6 +22,8 @@ class FallbackFileListener
 
         $request = $event->getRequest();
         $path = $request->getPathInfo();
+
+        $this->logger->warning('looking for file', ['path' => $path]);
 
         $filePath = $this->publicDir.$path;
 
@@ -39,6 +42,8 @@ class FallbackFileListener
             if ('css' === $file->getExtension()) {
                 $mimeType = 'text/css';
             }
+
+            $this->logger->warning('serving file', ['path' => $path]);
 
             $newResponse->headers->set('Content-Type', $mimeType);
             $event->setResponse($newResponse);
