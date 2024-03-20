@@ -106,12 +106,7 @@ final class KoopmanController extends AbstractController
         $expectedParameters = [
             'erkenningsnummer',
             'voorletters',
-            'tussenvoegsels',
-            'achternaame',
-            'email',
-            'telefoon',
-            'status',
-            'pasUid',
+            'achternaam',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -124,15 +119,32 @@ final class KoopmanController extends AbstractController
         if (null !== $koopman) {
             return new JsonResponse(['error' => "Koopman already exists"], Response::HTTP_BAD_REQUEST);
         }
-        $koopman = (new Koopman())
-            ->setErkenningsnummer($data['erkenningsnummer'])
-            ->setVoorletters($data['voorletters'])
-            ->setTussenvoegsels($data['tussenvoegsels'])
-            ->setAchternaam($data['achternaam'])
-            ->setEmail($data['email'])
-            ->setTelefoon($data['telefoon'])
-            ->setStatus($data['status'])
-            ->setPasUid($data['pasUid']);
+        $koopman = new Koopman();
+        try {
+            if (isset($data['voorlettters'])) {
+                $koopman->setVoorletters($data['voorletters']);
+            }
+            if (isset($data['tussenvoegsels'])) {
+                $koopman->setTussenvoegsels($data['tussenvoegsels']);
+            }
+            if (isset($data['achternaam'])) {
+                $koopman->setAchternaam($data['achternaam']);
+            }
+            if (isset($data['email'])) {
+                $koopman->setEmail($data['email']);
+            }
+            if (isset($data['telefoon'])) {
+                $koopman->setTelefoon($data['telefoon']);
+            }
+            if (isset($data['status'])) {
+                $koopman->setStatus($data['status']);
+            }
+            if (isset($data['pasUid'])) {
+                $koopman->setPasUid($data['pasUid']);
+            }
+        } catch(\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($koopman);
         $this->entityManager->flush();
@@ -150,7 +162,7 @@ final class KoopmanController extends AbstractController
      *      tags={"Koopman"},
      *      summary="Update koopman",
      * 
-     *      @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true)
+     *      @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
      * 
      *      @OA\RequestBody(
      *         required=true,
@@ -186,7 +198,7 @@ final class KoopmanController extends AbstractController
      *     )
      * )
      * 
-     * @Route("/koopman/erkenningsnummer", methods={"PUT, PATCH"})
+     * @Route("/koopman/{erkenningsnummer}", methods={"PUT, PATCH"})
      * 
      * @Security("is_granted('ROLE_SENIOR')")
      */
@@ -201,12 +213,7 @@ final class KoopmanController extends AbstractController
 
         $expectedParameters = [
             'voorletters',
-            'tussenvoegsels',
-            'achternaame',
-            'email',
-            'telefoon',
-            'status',
-            'pasUid',
+            'achternaam',
         ];
 
         if ("PUT" === $request->getMethod()) {
