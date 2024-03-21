@@ -1,10 +1,14 @@
 # See dos how to configure the bundle: https://symfony.com/doc/current/bundles/LiipImagineBundle/basic-usage.html
+# Documentation on how to configure the bundle can be found at: https://symfony.com/doc/current/bundles/LiipImagineBundle/basic-usage.html
 liip_imagine:
     # valid drivers options include "gd" or "gmagick" or "imagick"
-    driver: 'gd'
-
-    data_loader: app_flysystem_loader
-    cache: app_flysystem_resolver
+    driver: "gd"
+    loaders:
+        default:
+            filesystem:
+                allow_unresolvable_data_roots: true
+                data_root: "%kernel.project_dir%/public/media/cache"
+    data_loader: azure_image_loader
 
     filter_sets:
         cache: ~
@@ -19,22 +23,22 @@ liip_imagine:
             filters:
                 thumbnail: { size: [426, 568], mode: outbound }
 
-services:
-    imagine.data.loader.flysystem:
-        class: App\Imagine\SwiftFlysystemLoader
-        arguments:
-            - "@service_container"
-            - "@app_util_logger"
-        tags:
-            - { name: "liip_imagine.binary.loader", loader: app_flysystem_loader }
-    imagine.cache.resolver.flysystem:
-        class: App\Imagine\SwiftFlysystemResolver
-        arguments:
-            - '%env(SWIFT_PROJECT_ID)%'
-            - '%env(SWIFT_EXTERNAL_DOMAIN)%'
-            - '%swift_flysystem_container_thumbs%'
-            - '%env(SWIFT_TEMP_URL_KEY)%'
-            - "@imagine_cache"
-            - "@service_container"
-        tags:
-            - { name: "liip_imagine.cache.resolver", resolver: app_flysystem_resolver }
+# services:
+#     imagine.data.loader.flysystem:
+#         class: App\Imagine\SwiftFlysystemLoader
+#         arguments:
+#             - "@service_container"
+#             - "@app_util_logger"
+#         tags:
+#             - { name: "liip_imagine.binary.loader", loader: app_flysystem_loader }
+#     imagine.cache.resolver.flysystem:
+#         class: App\Imagine\SwiftFlysystemResolver
+#         arguments:
+#             - '%env(SWIFT_PROJECT_ID)%'
+#             - '%env(SWIFT_EXTERNAL_DOMAIN)%'
+#             - '%swift_flysystem_container_thumbs%'
+#             - '%env(SWIFT_TEMP_URL_KEY)%'
+#             - "@imagine_cache"
+#             - "@service_container"
+#         tags:
+#             - { name: "liip_imagine.cache.resolver", resolver: app_flysystem_resolver }

@@ -13,8 +13,8 @@ parameters:
     azureTenantId: '%env(AZURE_TENANT_ID)%'
     azureClientId: '%env(AZURE_CLIENT_ID)%'
     azureFederatedTokenFile: '%env(AZURE_FEDERATED_TOKEN_FILE)%'
-    imageStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
-    imageContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
+    fileStorageAccount: '%env(AZURE_STORAGE_IMAGE_ACCOUNT)%'
+    fileContainer: '%env(AZURE_STORAGE_IMAGE_CONTAINER)%'
     azureSubscriptionId: '%env(AZURE_SUBSCRIPTION_ID)%'
     azureResourceGroup: '%env(AZURE_RESOURCE_GROUP)%'
 
@@ -61,9 +61,6 @@ services:
         bind:
             $container: '@service_container'
 
-    App\Controller\ImageController:
-        arguments: ["@=parameter('azureClientId') !== '' ? service('App\\\\Azure\\\\AzureStorage') : service('App\\\\Azure\\\\AzureStorageLocal')"]
-
     App\Azure\AzureDatabase:
         arguments:
             $azureBaseConfig: '@app_azure_base_config'
@@ -78,18 +75,24 @@ services:
             $federatedTokenFile: '%azureFederatedTokenFile%'
             $authorityHost: '%azureAuthorityHost%'
 
-    app_azure_sas_image_config:
-        class: App\Azure\Config\SASImageReaderConfig
+    app_azure_sas_file_reader_config:
+        class: App\Azure\Config\SASFileReaderConfig
         arguments:
             $baseConfig: '@app_azure_base_config'
-            $imageStorageAccount: '%imageStorageAccount%'
-            $imageContainer: '%imageContainer%'
+            $fileStorageAccount: '%fileStorageAccount%'
+            $fileContainer: '%fileContainer%'
+
+    app_azure_sas_file_writer_config:
+        class: App\Azure\Config\SASFileWriterConfig
+        arguments:
+            $baseConfig: '@app_azure_base_config'
+            $fileStorageAccount: '%fileStorageAccount%'
+            $fileContainer: '%fileContainer%'
 
     App\Azure\AzureStorage:
         arguments:
-            $SASImageReaderConfig: '@app_azure_sas_image_config'
-
-
+            $SASFileReaderConfig: '@app_azure_sas_file_reader_config'
+            $SASFileWriterConfig: '@app_azure_sas_file_writer_config'
 
     # for unit test
     app.service.factuur:
@@ -101,67 +104,42 @@ services:
 
     Qipsius\TCPDFBundle\Controller\TCPDFController: '@qipsius.tcpdf'
 
-    # Open Stack
-    openstack:
-        class: OpenStack\OpenStack
-        lazy: true
+    imagine.data.loader.azure_image_loader:
+        class: App\Azure\AzureImageLoader
         arguments:
-            -   authUrl: '%env(SWIFT_AUTH_URL)%'
-                region: '%env(SWIFT_REGION)%'
-                user:
-                    name: '%env(SWIFT_USER_NAME)%'
-                    domain:
-                        id: '%env(SWIFT_USER_DOMAIN_ID)%'
-                    password: '%env(SWIFT_USER_PASSWORD)%'
-                scope:
-                    project:
-                        id: '%env(SWIFT_PROJECT_ID)%'
-                requestOptions:
-                    timeout: 5
+            - "@liip_imagine"
+        tags:
+            - { name: "liip_imagine.binary.loader", loader: azure_image_loader }
 
-    openstack_client:
-        class: OpenStack\OpenStack
-        factory: '@openstack'
-    openstack_objectstore:
-        class: OpenStack\ObjectStore\v1\Service
-        lazy: true
-        factory: ['@openstack', 'objectStoreV1']
-    openstack_objectstore_container_fotos:
-        class: OpenStack\ObjectStore\v1\Models\Container
-        lazy: true
-        factory: ['@openstack_objectstore', 'getContainer']
+    App\EventListener\FallbackFileListener:
         arguments:
-            - '%swift_flysystem_container_fotos%'
-    openstack_objectstore_container_thumbs:
-        class: OpenStack\ObjectStore\v1\Models\Container
-        lazy: true
-        factory: ['@openstack_objectstore', 'getContainer']
-        arguments:
-            - '%swift_flysystem_container_thumbs%'
+            $publicDir: '%kernel.project_dir%/public'
+        tags:
+        - { name: 'kernel.event_listener', event: 'kernel.response' }
 
-    # Flysystem
-    flysystem_openstack_adapter_fotos:
-        class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
-        lazy: true
-        arguments:
-            - '@openstack_objectstore_container_fotos'
-    flysystem_fotos:
-        class: League\Flysystem\Filesystem
-        lazy: true
-        public: true
-        arguments:
-            - '@flysystem_openstack_adapter_fotos'
-    flysystem_openstack_adapter_thumbs:
-        class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
-        lazy: true
-        arguments:
-            - '@openstack_objectstore_container_thumbs'
-    flysystem_thumbs:
-        class: League\Flysystem\Filesystem
-        lazy: true
-        public: true
-        arguments:
-            - '@flysystem_openstack_adapter_thumbs'
+    # # Flysystem
+    # flysystem_openstack_adapter_fotos:
+    #     class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
+    #     lazy: true
+    #     arguments:
+    #         - '@openstack_objectstore_container_fotos'
+    # flysystem_fotos:
+    #     class: League\Flysystem\Filesystem
+    #     lazy: true
+    #     public: true
+    #     arguments:
+    #         - '@flysystem_openstack_adapter_fotos'
+    # flysystem_openstack_adapter_thumbs:
+    #     class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
+    #     lazy: true
+    #     arguments:
+    #         - '@openstack_objectstore_container_thumbs'
+    # flysystem_thumbs:
+    #     class: League\Flysystem\Filesystem
+    #     lazy: true
+    #     public: true
+    #     arguments:
+    #         - '@flysystem_openstack_adapter_thumbs'
 
     # Custom formatter for Monolog
     log.custom.formatter:

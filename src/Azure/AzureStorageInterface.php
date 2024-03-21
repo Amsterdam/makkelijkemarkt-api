@@ -4,5 +4,5 @@ namespace App\Azure;
 
 interface AzureStorageInterface
 {
-    public function generateURLForImageReading(string $blob): string;
+    public function generateURLForFileReading(string $filename, ?string $destinationPath): string;
 }
