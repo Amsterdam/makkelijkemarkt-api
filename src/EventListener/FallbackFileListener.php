@@ -23,7 +23,7 @@ class FallbackFileListener
         $request = $event->getRequest();
         $path = $request->getPathInfo();
 
-        $this->logger->warning('looking for file', ['path' => $path]);
+        $this->logger->warning('looking for file inside FallbackFileListener', ['path' => $path]);
 
         $filePath = $this->publicDir.$path;
 
