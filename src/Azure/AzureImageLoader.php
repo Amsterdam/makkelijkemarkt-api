@@ -2,7 +2,6 @@
 
 namespace App\Azure;
 
-use App\Utils\Logger;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 
 /**
@@ -13,8 +12,7 @@ class AzureImageLoader implements LoaderInterface
 {
     public function __construct(
         private $lippImage,
-        private AzureStorage $azureStorage,
-        private Logger $logger
+        private AzureStorage $azureStorage
     ) {
     }
 

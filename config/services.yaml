@@ -117,30 +117,6 @@ services:
         tags:
         - { name: 'kernel.event_listener', event: 'kernel.response' }
 
-    # # Flysystem
-    # flysystem_openstack_adapter_fotos:
-    #     class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
-    #     lazy: true
-    #     arguments:
-    #         - '@openstack_objectstore_container_fotos'
-    # flysystem_fotos:
-    #     class: League\Flysystem\Filesystem
-    #     lazy: true
-    #     public: true
-    #     arguments:
-    #         - '@flysystem_openstack_adapter_fotos'
-    # flysystem_openstack_adapter_thumbs:
-    #     class: Nimbusoft\Flysystem\OpenStack\SwiftAdapter
-    #     lazy: true
-    #     arguments:
-    #         - '@openstack_objectstore_container_thumbs'
-    # flysystem_thumbs:
-    #     class: League\Flysystem\Filesystem
-    #     lazy: true
-    #     public: true
-    #     arguments:
-    #         - '@flysystem_openstack_adapter_thumbs'
-
     # Custom formatter for Monolog
     log.custom.formatter:
         class: App\Logging\LogFormatter
