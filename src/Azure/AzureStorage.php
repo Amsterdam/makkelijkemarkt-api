@@ -211,7 +211,6 @@ class AzureStorage implements AzureStorageInterface
         // Only catches the last part of the path
         // Example path: /media/cache/resolve/koopman_rect_small/9cb9e92fd06806bef9e8054207c9f9e9-2008073001.jpg
         $file = basename($file);
-        $this->logger->warning("Getting blob $file");
         $accessToken = $this->getAccessTokenFromAzure(AzureTokenRequestScope::STORAGE);
 
         $blobUrl = 'https://'.
@@ -233,11 +232,9 @@ class AzureStorage implements AzureStorageInterface
         );
 
         if (200 != $apiResponse->getStatusCode()) {
-            $this->logger->warning("Blob $file not found, status code: ".$apiResponse->getStatusCode());
             $this->logger->warning("Blob $file not found, response: ".$apiResponse->getContent(false));
             throw new NotFoundHttpException();
         }
-        $this->logger->warning("Got blob $file from storage");
 
         return $apiResponse;
     }

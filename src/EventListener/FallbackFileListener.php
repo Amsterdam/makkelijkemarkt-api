@@ -23,8 +23,6 @@ class FallbackFileListener
         $request = $event->getRequest();
         $path = $request->getPathInfo();
 
-        $this->logger->warning('looking for file inside FallbackFileListener', ['path' => $path]);
-
         $filePath = $this->publicDir.$path;
 
         // Check if the file exists in the public directory
@@ -42,8 +40,6 @@ class FallbackFileListener
             if ('css' === $file->getExtension()) {
                 $mimeType = 'text/css';
             }
-
-            $this->logger->warning('serving file', ['path' => $path]);
 
             $newResponse->headers->set('Content-Type', $mimeType);
             $event->setResponse($newResponse);

@@ -20,7 +20,6 @@ class AzureImageLoader implements LoaderInterface
 
     public function find($path)
     {
-        $this->logger->warning('Performing find in image loader', ['path' => $path]);
         $imageBlob = $this->azureStorage->getBlob($path);
 
         return $imageBlob->getContent();
