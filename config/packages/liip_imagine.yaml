@@ -3,21 +3,27 @@
 liip_imagine:
     # valid drivers options include "gd" or "gmagick" or "imagick"
     driver: "gd"
-    loaders:
-        default:
-            filesystem:
-                allow_unresolvable_data_roots: true
-                data_root: "%kernel.project_dir%/public/media/cache"
+    resolvers:
+        koopman_rect_small:
+            web_path:
+                web_root:
+                 - "%kernel.project_dir%/public/media/cache/koopman_rect_small"
+        koopman_rect_medium:
+            web_path:
+                web_root:
+                 - "%kernel.project_dir%/public/media/cache/koopman_rect_medium"
     data_loader: azure_image_loader
 
     filter_sets:
         cache: ~
         koopman_rect_small:
+            cache: koopman_rect_small
             quality: 75
             format: jpg
             filters:
                 thumbnail: { size: [120, 160], mode: outbound }
         koopman_rect_medium:
+            cache: koopman_rect_medium
             quality: 75
             format: jpg
             filters:
