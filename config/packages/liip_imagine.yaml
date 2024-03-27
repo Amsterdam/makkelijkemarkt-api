@@ -6,10 +6,10 @@ liip_imagine:
     resolvers:
         koopman_rect_small:
             web_path:
-                web_root: "%kernel.project_dir%/public/media/cache/koopman_rect_small"
+                web_root: "%kernel.project_dir%/public"
         koopman_rect_medium:
             web_path:
-                web_root: "%kernel.project_dir%/public/media/cache/koopman_rect_medium"
+                web_root: "%kernel.project_dir%/public"
     data_loader: azure_image_loader
 
     filter_sets:
