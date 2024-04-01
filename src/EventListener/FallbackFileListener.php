@@ -2,13 +2,14 @@
 
 namespace App\EventListener;
 
+use App\Utils\Logger;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class FallbackFileListener
 {
-    public function __construct(private readonly string $publicDir)
+    public function __construct(private readonly string $publicDir, private Logger $logger)
     {
     }
 
@@ -23,6 +24,8 @@ class FallbackFileListener
         $path = $request->getPathInfo();
 
         $filePath = $this->publicDir.$path;
+
+        $this->logger->warning('FallbackFileListener: '.$filePath);
 
         // Check if the file exists in the public directory
         if (file_exists($filePath) && is_file($filePath)) {
