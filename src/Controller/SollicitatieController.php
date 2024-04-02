@@ -67,9 +67,9 @@ final class SollicitatieController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
-     *                 @OA\Property(property="marktId", type="string", description="MarktId van de sollicitatie"),
+     *                 @OA\Property(property="sollicitatieNummer", type="integer", description="SollicitatieNummer van de sollicitatie"),
+     *                 @OA\Property(property="marktId", type="integer", description="MarktId van de sollicitatie"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de sollicitatie"),
-     *                 @OA\Property(property="sollicitatieNummer", type="string", description="SollicitatieNummer van de sollicitatie"),
      *                 @OA\Property(property="status", type="string", description="Status van de sollicitatie"),
      *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
      *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
@@ -127,64 +127,89 @@ final class SollicitatieController extends AbstractController
             'erkenningsnummer',
             'sollicitatieNummer',
             'status',
-            'vastePlaatsen',
-            'aantal3MeterKramen',
-            'aantal4MeterKramen',
-            'aantalExtraMeters',
-            'aantalElektra',
-            'aantalAfvaleilanden',
-            'grootPerMeter',
-            'kleinPerMeter',
-            'grootReiniging',
-            'kleinReiniging',
-            'afvalEilandAgf',
-            'krachtstroomPerStuk',
-            'krachtstroom',
             'inschrijfDatum',
-            'doorgehaald',
-            'doorgehaaldReden',
-            'perfectViewNummer',
-            'koppelveld',
         ];
-
+        
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
                 return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
             }
         }
         $markt = $this->marktRepository->find($data['marktId']);
-        $koopman = $this->koopmanRepository->findByErkenningsnummer($data['erkenningsnummer']);
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
         if (null === $markt || null === $koopman) {
             return new JsonResponse(['error' => "Markt of Koopman niet gevonden."], Response::HTTP_BAD_REQUEST);
         }
-        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $data['erkenningsnummer'], $data['doorgehaald']);
+        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $data['erkenningsnummer'], false);
         if (null !== $sollicitatie) {
             return new JsonResponse(['error' => "Sollicitatie already exists"], Response::HTTP_BAD_REQUEST);
         }
+        
+        $sollicitatie = (new Sollicitatie())
+            ->setMarkt($markt)
+            ->setKoopman($koopman)
+            ->setSollicitatieNummer((int) $data['sollicitatieNummer'])
+            ->setStatus($data['status'])
+            ->setDoorgehaald(false)
+            ->setInschrijfDatum(new \DateTime($data['inschrijfDatum']))
+            ;
 
-        $sollicitatie = new Sollicitatie();
-        $sollicitatie->setSollicitatieNummer($data['sollicitatieNummer']);
-        $sollicitatie->setStatus($data['status']);
-        $sollicitatie->setVastePlaatsen($data['vastePlaatsen']);
-        $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
-        $sollicitatie->setAantal4MeterKramen($data['aantal4MeterKramen']);
-        $sollicitatie->setAantalExtraMeters($data['aantalExtraMeters']);
-        $sollicitatie->setAantalElektra($data['aantalElektra']);
-        $sollicitatie->setAantalAfvaleilanden($data['aantalAfvaleilanden']);
-        $sollicitatie->setGrootPerMeter($data['grootPerMeter']);
-        $sollicitatie->setKleinPerMeter($data['kleinPerMeter']);
-        $sollicitatie->setGrootReiniging($data['grootReiniging']);
-        $sollicitatie->setKleinReiniging($data['kleinReiniging']);
-        $sollicitatie->setAfvalEilandAgf($data['afvalEilandAgf']);
-        $sollicitatie->setKrachtstroomPerStuk($data['krachtstroomPerStuk']);
-        $sollicitatie->setKrachtstroom($data['krachtstroom']);
-        $sollicitatie->setInschrijfDatum($data['inschrijfDatum']);
-        $sollicitatie->setDoorgehaald($data['doorgehaald']);
-        $sollicitatie->setDoorgehaaldReden($data['doorgehaaldReden']);
-        $sollicitatie->setPerfectViewNummer($data['perfectViewNummer']);
-        $sollicitatie->setKoppelveld($data['koppelveld']);
-        $sollicitatie->setMarkt($markt);
-        $sollicitatie->setKoopman($koopman);
+        try {
+            
+            if (isset($data['vastePlaatsen'])) {
+                $sollicitatie->setVastePlaatsen($data['vastePlaatsen']);
+            }
+            if (isset($data['aantal3MeterKramen'])) {
+                $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
+            }
+            if (isset($data['aantal4MeterKramen'])) {
+                $sollicitatie->setAantal4MeterKramen($data['aantal4MeterKramen']);
+            }
+            if (isset($data['aantalExtraMeters'])) {
+                $sollicitatie->setAantalExtraMeters($data['aantalExtraMeters']);
+            }
+            if (isset($data['aantalElektra'])) {
+                $sollicitatie->setAantalElektra($data['aantalElektra']);
+            }
+            if (isset($data['aantalAfvaleilanden'])) {
+                $sollicitatie->setAantalAfvaleilanden($data['aantalAfvaleilanden']);
+            }
+            if (isset($data['grootPerMeter'])) {
+                $sollicitatie->setGrootPerMeter($data['grootPerMeter']);
+            }
+            if (isset($data['kleinPerMeter'])) {
+                $sollicitatie->setKleinPerMeter($data['kleinPerMeter']);
+            }
+            if (isset($data['grootReiniging'])) {
+                $sollicitatie->setGrootReiniging($data['grootReiniging']);
+            }
+            if (isset($data['kleinReiniging'])) {
+                $sollicitatie->setKleinReiniging($data['kleinReiniging']);
+            }
+            if (isset($data['afvalEilandAgf'])) {
+                $sollicitatie->setAfvalEilandAgf($data['afvalEilandAgf']);
+            }
+            if (isset($data['krachtstroomPerStuk'])) {
+                $sollicitatie->setKrachtstroomPerStuk($data['krachtstroomPerStuk']);
+            }
+            if (isset($data['krachtstroom'])) {
+                $sollicitatie->setKrachtstroom($data['krachtstroom']);
+            }
+            if (isset($data['doorgehaald'])) {
+                $sollicitatie->setDoorgehaald($data['doorgehaald']);
+            }
+            if (isset($data['doorgehaaldReden'])) {
+                $sollicitatie->setDoorgehaaldReden($data['doorgehaaldReden']);
+            }
+            if (isset($data['perfectViewNummer'])) {
+                $sollicitatie->setPerfectViewNummer($data['perfectViewNummer']);
+            }
+            if (isset($data['koppelveld'])) {
+                $sollicitatie->setKoppelveld($data['koppelveld']);
+            }            
+        } catch(\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($sollicitatie);
         $this->entityManager->flush();
@@ -212,6 +237,7 @@ final class SollicitatieController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *                 @OA\Property(property="marktId", type="integer", description="MarktId van de sollicitatie"),
      *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
      *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
      *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
@@ -267,24 +293,7 @@ final class SollicitatieController extends AbstractController
         $expectedParameters = [
             'marktId',
             'status',
-            'vastePlaatsen',
-            'aantal3MeterKramen',
-            'aantal4MeterKramen',
-            'aantalExtraMeters',
-            'aantalElektra',
-            'aantalAfvaleilanden',
-            'grootPerMeter',
-            'kleinPerMeter',
-            'grootReiniging',
-            'kleinReiniging',
-            'afvalEilandAgf',
-            'krachtstroomPerStuk',
-            'krachtstroom',
             'inschrijfDatum',
-            'doorgehaald',
-            'doorgehaaldReden',
-            'perfectViewNummer',
-            'koppelveld'
         ];
         if ("PUT" === $request->getMethod()) {
             foreach ($expectedParameters as $expectedParameter) {
@@ -297,9 +306,10 @@ final class SollicitatieController extends AbstractController
         if (null === $markt) {
             return new JsonResponse(['error' => "Markt niet gevonden."], Response::HTTP_BAD_REQUEST);
         }
+        /** @var Sollicitatie */
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, $sollicitatieNummer, $data['doorgehaald']);
-        if (null !== $sollicitatie) {
-            return new JsonResponse(['error' => "Sollicitatie already exists"], Response::HTTP_BAD_REQUEST);
+        if (null === $sollicitatie) {
+            return new JsonResponse(['error' => "Sollicitatie doesn't exists"], Response::HTTP_BAD_REQUEST);
         }
 
         try {
@@ -350,7 +360,7 @@ final class SollicitatieController extends AbstractController
                 $sollicitatie->setKrachtstroom($data['krachtstroom']);
             }
             if (isset($data['inschrijfDatum'])) {
-                $sollicitatie->setInschrijfDatum($data['inschrijfDatum']);
+                $sollicitatie->setInschrijfDatum(new \DateTime($data['inschrijfDatum']));
             }
             if (isset($data['doorgehaald'])) {
                 $sollicitatie->setDoorgehaald($data['doorgehaald']);
