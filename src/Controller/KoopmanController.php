@@ -195,7 +195,7 @@ final class KoopmanController extends AbstractController
      *     )
      * )
      * 
-     * @Route("/koopman/{erkenningsnummer}", methods={"PUT, PATCH"})
+     * @Route("/koopman/{erkenningsnummer}", methods={"PUT", "PATCH"})
      * 
      * @Security("is_granted('ROLE_SENIOR')")
      */
@@ -211,6 +211,7 @@ final class KoopmanController extends AbstractController
         $expectedParameters = [
             'voorletters',
             'achternaam',
+            'status'
         ];
 
         if ("PUT" === $request->getMethod()) {

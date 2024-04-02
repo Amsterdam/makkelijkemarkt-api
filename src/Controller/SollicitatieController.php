@@ -202,7 +202,7 @@ final class SollicitatieController extends AbstractController
      *      tags={"Sollicitatie"},
      *      summary="Update new sollicitatie",
      * 
-     *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="string"), in="path", required=true)
+     *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="string"), in="path", required=true),
 
      * 
      *      @OA\RequestBody(
@@ -251,7 +251,7 @@ final class SollicitatieController extends AbstractController
      *     )
      * )
      * 
-     * @Route("/sollicitatie/{sollicitatieNummer}", methods={"PUT, PATCH"})
+     * @Route("/sollicitatie/{sollicitatieNummer}", methods={"PUT", "PATCH"})
      * 
      * @Security("is_granted('ROLE_SENIOR')")
      */
