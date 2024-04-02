@@ -289,6 +289,8 @@ class Koopman
         $this->marktVoorkeuren = new ArrayCollection();
         $this->plaatsVoorkeuren = new ArrayCollection();
         $this->rsvps = new ArrayCollection();
+        $this->vervangersVan = new ArrayCollection();
+        $this->vervangerVoor = new ArrayCollection();
     }
 
     public function __toString()

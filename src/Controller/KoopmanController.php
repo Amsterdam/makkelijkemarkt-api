@@ -107,6 +107,7 @@ final class KoopmanController extends AbstractController
             'erkenningsnummer',
             'voorletters',
             'achternaam',
+            "status"
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -119,16 +120,14 @@ final class KoopmanController extends AbstractController
         if (null !== $koopman) {
             return new JsonResponse(['error' => "Koopman already exists"], Response::HTTP_BAD_REQUEST);
         }
-        $koopman = new Koopman();
+        $koopman = (new Koopman())
+            ->setErkenningsnummer($data['erkenningsnummer'])
+            ->setVoorletters($data['voorletters'])
+            ->setAchternaam($data['achternaam'])
+            ->setStatus($data['status']);
         try {
-            if (isset($data['voorlettters'])) {
-                $koopman->setVoorletters($data['voorletters']);
-            }
             if (isset($data['tussenvoegsels'])) {
                 $koopman->setTussenvoegsels($data['tussenvoegsels']);
-            }
-            if (isset($data['achternaam'])) {
-                $koopman->setAchternaam($data['achternaam']);
             }
             if (isset($data['email'])) {
                 $koopman->setEmail($data['email']);
@@ -136,9 +135,7 @@ final class KoopmanController extends AbstractController
             if (isset($data['telefoon'])) {
                 $koopman->setTelefoon($data['telefoon']);
             }
-            if (isset($data['status'])) {
-                $koopman->setStatus($data['status']);
-            }
+            
             if (isset($data['pasUid'])) {
                 $koopman->setPasUid($data['pasUid']);
             }
