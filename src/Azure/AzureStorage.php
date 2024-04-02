@@ -16,7 +16,6 @@ use GuzzleHttp\RequestOptions;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -78,12 +77,12 @@ class AzureStorage implements AzureStorageInterface
      * Store a file in the storage container and return the SAS signed URL for it
      * Microsoft API doc: https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob.
      *
-     * @param UploadedFile $file
-     *                                       The file that should be stored
-     * @param string|null  $destinationPath
-     *                                       Optional: the path where the file should be stored
-     * @param string|null  $overrideFilename
-     *                                       Optional: Override the filename of the upload file for a cusyom filename
+     * @param             $file
+     *                                      The file that should be stored
+     * @param string|null $destinationPath
+     *                                      Optional: the path where the file should be stored
+     * @param string|null $overrideFilename
+     *                                      Optional: Override the filename of the upload file for a custom filename
      *
      * @return string
      *                returns a SAS signed url of the file
@@ -94,7 +93,7 @@ class AzureStorage implements AzureStorageInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function storeFile(UploadedFile $file, string $destinationPath = null, string $overrideFilename = null): string
+    public function storeFile($file, string $destinationPath = null, string $overrideFilename = null): string
     {
         $this->config = $this->SASFileWriterConfig->getConfig();
 
@@ -211,9 +210,7 @@ class AzureStorage implements AzureStorageInterface
         $this->logger->warning('Getting blob: '.$file);
         // Only catches the last part of the path
         // Example path: /media/cache/resolve/koopman_rect_small/9cb9e92fd06806bef9e8054207c9f9e9-2008073001.jpg
-        $file = basename($file);
-        $this->logger->warning('Getting blob basename: '.$file);
-
+        // $file = basename($file);
         $accessToken = $this->getAccessTokenFromAzure(AzureTokenRequestScope::STORAGE);
 
         $blobUrl = 'https://'.

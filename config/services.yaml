@@ -94,6 +94,16 @@ services:
             $SASFileReaderConfig: '@app_azure_sas_file_reader_config'
             $SASFileWriterConfig: '@app_azure_sas_file_writer_config'
 
+    app_azure_image_resolver:
+        class: App\Azure\AzureImageResolver
+        arguments:
+            $fileSystem: '@filesystem'
+            $azureStorage: '@AzureStorage'
+            $filterManager: '@liip_imagine.filter.manager'
+            $dataManager: '@liip_imagine.data.manager'
+            $params: '@parameter_bag'
+            $logger: '@monolog.logger'
+
     # for unit test
     app.service.factuur:
         class: App\Service\FactuurService
