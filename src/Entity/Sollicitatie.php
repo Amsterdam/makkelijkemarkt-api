@@ -378,7 +378,7 @@ class Sollicitatie
      */
     public function getVastePlaatsen(): array
     {
-        if (1 === count($this->vastePlaatsen) && '' === $this->vastePlaatsen[0]) {
+        if (null === $this->vastePlaatsen || (1 === count($this->vastePlaatsen) && '' === $this->vastePlaatsen[0])) {
             return [];
         }
 
@@ -443,7 +443,7 @@ class Sollicitatie
         return $this;
     }
 
-    public function getAantalAfvaleilanden(): int
+    public function getAantalAfvaleilanden(): ?int
     {
         return $this->aantalAfvaleilanden;
     }

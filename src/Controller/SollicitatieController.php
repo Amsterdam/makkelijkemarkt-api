@@ -152,6 +152,7 @@ final class SollicitatieController extends AbstractController
             ->setStatus($data['status'])
             ->setDoorgehaald(false)
             ->setInschrijfDatum(new \DateTime($data['inschrijfDatum']))
+            ->setVastePlaatsen([])
             ;
 
         try {
@@ -215,19 +216,20 @@ final class SollicitatieController extends AbstractController
         $this->entityManager->flush();
 
         
-        $response = $this->serializer->serialize($sollicitatie, 'json');
+        $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
      /**
      * @OA\Put(
-     *      path="/api/1.1.0/sollicitatie/{sollicitatieNummer}",
+     *      path="/api/1.1.0/sollicitatie/markt/{marktId}/{sollicitatieNummer}",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="SollicitatieUpdate",
      *      tags={"Sollicitatie"},
      *      summary="Update new sollicitatie",
      * 
-     *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="string"), in="path", required=true),
+     *      @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
+     *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="integer"), in="path", required=true),
 
      * 
      *      @OA\RequestBody(
@@ -237,7 +239,6 @@ final class SollicitatieController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
-     *                 @OA\Property(property="marktId", type="integer", description="MarktId van de sollicitatie"),
      *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
      *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
      *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
@@ -277,11 +278,11 @@ final class SollicitatieController extends AbstractController
      *     )
      * )
      * 
-     * @Route("/sollicitatie/{sollicitatieNummer}", methods={"PUT", "PATCH"})
+     * @Route("/sollicitatie/markt/{marktId}/{sollicitatieNummer}", methods={"PUT", "PATCH"})
      * 
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function updateSollicitatie(Request $request, string $sollicitatieNummer): Response
+    public function updateSollicitatie(Request $request, int $marktId, int $sollicitatieNummer): Response
     {
 
         $data = json_decode((string) $request->getContent(), true);
@@ -291,7 +292,6 @@ final class SollicitatieController extends AbstractController
         }
 
         $expectedParameters = [
-            'marktId',
             'status',
             'inschrijfDatum',
         ];
@@ -302,12 +302,18 @@ final class SollicitatieController extends AbstractController
                 }
             }
         }
-        $markt = $this->marktRepository->find($data['marktId']);
+        if (isset($data['doorgehaald'])) {
+            $doorgehaald = $data['doorgehaald'];
+        } else {
+            $doorgehaald = false;
+        }
+
+        $markt = $this->marktRepository->find($marktId);
         if (null === $markt) {
             return new JsonResponse(['error' => "Markt niet gevonden."], Response::HTTP_BAD_REQUEST);
         }
         /** @var Sollicitatie */
-        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, $sollicitatieNummer, $data['doorgehaald']);
+        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, (string) $sollicitatieNummer, $doorgehaald);
         if (null === $sollicitatie) {
             return new JsonResponse(['error' => "Sollicitatie doesn't exists"], Response::HTTP_BAD_REQUEST);
         }
@@ -382,7 +388,7 @@ final class SollicitatieController extends AbstractController
         $this->entityManager->flush();
 
         
-        $response = $this->serializer->serialize($sollicitatie, 'json');
+        $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
