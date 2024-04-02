@@ -49,6 +49,219 @@ final class KoopmanController extends AbstractController
     }
 
     /**
+     * @OA\Post(
+     *      path="/api/1.1.0/koopman/",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="KoopmanCreate",
+     *      tags={"Koopman"},
+     *      summary="Create new koopman",
+     * 
+     *      @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de ondernemer"),
+     *                 @OA\Property(property="voorletters", type="string", description="Voorletters van de ondernemer."),
+     *                 @OA\Property(property="tussenvoegsels", type="string", description="Tussenvoegsels van de ondernemer."),
+     *                 @OA\Property(property="achternaame", type="string", description="Achternaame van de ondernemer."),
+     *                 @OA\Property(property="email", type="string", description="Email van de ondernemer."),
+     *                 @OA\Property(property="telefoon", type="string", description="Telefoon van de ondernemer."),
+     *                 @OA\Property(property="status", type="string", description="Status van de ondernemer."),
+     *                 @OA\Property(property="pasUid", type="string", description="PasUid van de ondernemer."),
+     *             )
+     *         )
+     *     ),
+     * 
+     *      @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Koopman")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * 
+     * @Route("/koopman", methods={"POST"})
+     * 
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function createKoopman(Request $request): Response
+    {
+
+        $data = json_decode((string) $request->getContent(), true);
+
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $expectedParameters = [
+            'erkenningsnummer',
+            'voorletters',
+            'achternaam',
+            "status"
+        ];
+
+        foreach ($expectedParameters as $expectedParameter) {
+            if (!array_key_exists($expectedParameter, $data)) {
+                return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
+        if (null !== $koopman) {
+            return new JsonResponse(['error' => "Koopman already exists"], Response::HTTP_BAD_REQUEST);
+        }
+        $koopman = (new Koopman())
+            ->setErkenningsnummer($data['erkenningsnummer'])
+            ->setVoorletters($data['voorletters'])
+            ->setAchternaam($data['achternaam'])
+            ->setStatus($data['status']);
+        try {
+            if (isset($data['tussenvoegsels'])) {
+                $koopman->setTussenvoegsels($data['tussenvoegsels']);
+            }
+            if (isset($data['email'])) {
+                $koopman->setEmail($data['email']);
+            }
+            if (isset($data['telefoon'])) {
+                $koopman->setTelefoon($data['telefoon']);
+            }
+            
+            if (isset($data['pasUid'])) {
+                $koopman->setPasUid($data['pasUid']);
+            }
+        } catch(\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->persist($koopman);
+        $this->entityManager->flush();
+
+        
+        $response = $this->serializer->serialize($koopman, 'json');
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
+     * @OA\Put(
+     *      path="/api/1.1.0/koopman/{erkenningsnummer}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="KoopmanUpdate",
+     *      tags={"Koopman"},
+     *      summary="Update koopman",
+     * 
+     *      @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
+     * 
+     *      @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de ondernemer"),
+     *                 @OA\Property(property="voorletters", type="string", description="Voorletters van de ondernemer."),
+     *                 @OA\Property(property="tussenvoegsels", type="string", description="Tussenvoegsels van de ondernemer."),
+     *                 @OA\Property(property="achternaame", type="string", description="Achternaame van de ondernemer."),
+     *                 @OA\Property(property="email", type="string", description="Email van de ondernemer."),
+     *                 @OA\Property(property="telefoon", type="string", description="Telefoon van de ondernemer."),
+     *                 @OA\Property(property="status", type="string", description="Status van de ondernemer."),
+     *                 @OA\Property(property="pasUid", type="string", description="PasUid van de ondernemer."),
+     *             )
+     *         )
+     *     ),
+     * 
+     *      @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Koopman")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     * 
+     * @Route("/koopman/{erkenningsnummer}", methods={"PUT", "PATCH"})
+     * 
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function updateKoopman(Request $request, string $erkenningsnummer): Response
+    {
+
+        $data = json_decode((string) $request->getContent(), true);
+
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $expectedParameters = [
+            'voorletters',
+            'achternaam',
+            'status'
+        ];
+
+        if ("PUT" === $request->getMethod()) {
+            foreach ($expectedParameters as $expectedParameter) {
+                if (!array_key_exists($expectedParameter, $data)) {
+                    return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
+                }
+            }
+        }
+
+        $koopman = $this->koopmanRepository->findOneByErkenningsnummer($erkenningsnummer);
+        if (null === $koopman) {
+            return new JsonResponse(['error' => "Koopman doesn't exists"], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            if (isset($data['voorlettters'])) {
+                $koopman->setVoorletters($data['voorletters']);
+            }
+            if (isset($data['tussenvoegsels'])) {
+                $koopman->setTussenvoegsels($data['tussenvoegsels']);
+            }
+            if (isset($data['achternaam'])) {
+                $koopman->setAchternaam($data['achternaam']);
+            }
+            if (isset($data['email'])) {
+                $koopman->setEmail($data['email']);
+            }
+            if (isset($data['telefoon'])) {
+                $koopman->setTelefoon($data['telefoon']);
+            }
+            if (isset($data['status'])) {
+                $koopman->setStatus($data['status']);
+            }
+            if (isset($data['pasUid'])) {
+                $koopman->setPasUid($data['pasUid']);
+            }
+        } catch(\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->persist($koopman);
+        $this->entityManager->flush();
+
+        
+        $response = $this->serializer->serialize($koopman, 'json');
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
      * @OA\Get(
      *     path="/api/1.1.0/koopman/",
      *     security={{"api_key": {}, "bearer": {}}},

@@ -156,9 +156,9 @@ class Sollicitatie
      *
      * @SerializedName("aantalAfvaleiland")
      *
-     * @var int
+     * @var ?int
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $aantalAfvaleilanden;
 
@@ -169,7 +169,7 @@ class Sollicitatie
      *
      * @SerializedName("grootPerMeter")
      *
-     * @var int
+     * @var ?int
      *
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -182,7 +182,7 @@ class Sollicitatie
      *
      * @SerializedName("kleinPerMeter")
      *
-     * @var int
+     * @var ?int
      *
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -195,7 +195,7 @@ class Sollicitatie
      *
      * @SerializedName("grootReiniging")
      *
-     * @var int
+     * @var ?int
      *
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -208,7 +208,7 @@ class Sollicitatie
      *
      * @SerializedName("kleinReiniging")
      *
-     * @var int
+     * @var ?int
      *
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -221,7 +221,7 @@ class Sollicitatie
      *
      * @SerializedName("afvalEilandAgf")
      *
-     * @var int
+     * @var ?int
      *
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -378,7 +378,7 @@ class Sollicitatie
      */
     public function getVastePlaatsen(): array
     {
-        if (1 === count($this->vastePlaatsen) && '' === $this->vastePlaatsen[0]) {
+        if (null === $this->vastePlaatsen || (1 === count($this->vastePlaatsen) && '' === $this->vastePlaatsen[0])) {
             return [];
         }
 
@@ -443,7 +443,7 @@ class Sollicitatie
         return $this;
     }
 
-    public function getAantalAfvaleilanden(): int
+    public function getAantalAfvaleilanden(): ?int
     {
         return $this->aantalAfvaleilanden;
     }
