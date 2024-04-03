@@ -14,7 +14,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 /**
  * Imagine resolver for Swift storage via Flysystem.
  */
-class AzureImageResolver implements ResolverInterface
+class SwiftFlysystemResolver implements ResolverInterface
 {
     /**
      * @var string Swift Project ID
