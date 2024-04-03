@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Imagine;
+namespace App\Azure;
 
-use App\Azure\AzureStorage;
 use App\Utils\Logger;
 use League\Flysystem\Filesystem;
 use Liip\ImagineBundle\Binary\BinaryInterface;
