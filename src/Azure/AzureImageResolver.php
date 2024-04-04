@@ -31,7 +31,7 @@ class AzureImageResolver implements ResolverInterface
         private ParameterBagInterface $params,
         private LoggerInterface $logger
     ) {
-        $this->cachePath = $params->get('kernel.project_dir').'/'.self::DATA_ROOT.'/'.self::CACHE_DIR;
+        $this->cachePath = self::DATA_ROOT.'/'.self::CACHE_DIR;
     }
 
     public function isStored($path, $filter)
@@ -107,7 +107,7 @@ class AzureImageResolver implements ResolverInterface
         $this->logger->warning('storing image locally', ['path' => $path, 'filter' => $filter]);
 
         // Store the generated image in the local filesystem
-        $filePath = $this->getCacheUrl($path, $filter);
+        $filePath = $this->params->get('kernel.project_dir').'/'.$this->getCacheUrl($path, $filter);
 
         try {
             $this->fileSystem->dumpFile($filePath, $binary->getContent());
@@ -116,17 +116,17 @@ class AzureImageResolver implements ResolverInterface
         }
     }
 
-    public function createBinaryFromImageFile(string $imagePath): BinaryInterface
+    public function createBinaryFromImageFile(string $image): BinaryInterface
     {
         // Get the binary content of the image
-        $content = file_get_contents($imagePath);
+        // $content = file_get_contents($imagePath);
 
         // Get the mime type of the image
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mimeType = $finfo->file($imagePath);
+        $mimeType = $finfo->file($image);
 
         // Create a Binary object
-        $binary = new Binary($content, $mimeType, null);
+        $binary = new Binary($image, $mimeType, null);
 
         return $binary;
     }
