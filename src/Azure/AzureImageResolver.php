@@ -36,10 +36,10 @@ class AzureImageResolver implements ResolverInterface
 
     public function isStored($path, $filter)
     {
-        $this->logger->warning('checking if image is stored', ['path' => $path, 'filter' => $filter]);
+        $this->logger->warning('checking if image is stored', ['path' => $this->getCacheUrl($path, $filter), 'filter' => $filter]);
 
         // Check if the cached image exists in the local filesystem
-        return $this->fileSystem->exists($this->getPath($path, $filter));
+        return $this->fileSystem->exists($this->getCacheUrl($path, $filter));
     }
 
     public function resolve($path, $filter)
@@ -52,7 +52,7 @@ class AzureImageResolver implements ResolverInterface
             $this->logger->warning('image found in cache', ['path' => $path, 'filter' => $filter]);
 
             // If it does, return the URL to the cached image
-            return $this->getCacheUrl($cachePath);
+            return $this->getCacheUrl($path, $filter);
         }
 
         // Try fetching thumbnail from Azure Storage
@@ -70,36 +70,36 @@ class AzureImageResolver implements ResolverInterface
             $this->store($thumbBinary, $path, $filter);
 
             // Return the URL to the cached image
-            return $this->getCacheUrl($cachePath);
+            return $this->getCacheUrl($path, $filter);
         }
 
-        // Otherwise get the original image, filter it and store it in the cache
-        $originalPath = basename($path);
+        // Otherwise get the original file name, filter it and store it in the cache
+        $fileName = basename($path);
 
         // If the cached image doesn't exist, generate the image
-        $binary = $this->filterManager->applyFilter($this->dataManager->find($filter, $originalPath), $filter);
+        $binary = $this->filterManager->applyFilter($this->dataManager->find($filter, $fileName), $filter);
 
         // Store the generated image in the cache
         $this->store($binary, $path, $filter);
 
-        $this->storeRemote($path, $filter);
+        $this->storeRemote($binary->getContent(), $filter, $fileName);
 
         // Return the URL to the cached image
-        return $this->getCacheUrl($cachePath);
+        return $this->getCacheUrl($path, $filter);
     }
 
-    private function getCacheUrl($path)
+    private function getCacheUrl($file, $filter)
     {
         // Generate the URL to the cached image
-        return $this->cachePath.'/'.$path;
+        return $this->cachePath.'/'.$filter.'/'.$file;
     }
 
     // The given filter will be the directory name
-    public function storeRemote($file, $filter)
+    public function storeRemote($file, $path, $fileName)
     {
-        $this->logger->warning('storing image remote', ['path' => $filter]);
+        $this->logger->warning('storing image remote', ['file' => $file, 'path' => $path]);
 
-        $result = $this->azureStorage->storeFile($file, $filter);
+        $result = $this->azureStorage->storeFile($file, $path, $fileName);
 
         if (false === $result) {
             throw new \RuntimeException('Can not save thumbnail');
