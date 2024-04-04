@@ -103,8 +103,8 @@ services:
             $dataManager: '@liip_imagine.data.manager'
             $params: '@parameter_bag'
             $logger: '@monolog.logger'
-        # tags:
-        #     - { name: 'liip_imagine.cache.resolver', resolver: 'azure_storage' }
+        tags:
+            - { name: 'liip_imagine.cache.resolver', resolver: 'azure_storage' }
 
     # for unit test
     app.service.factuur:
