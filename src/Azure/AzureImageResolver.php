@@ -57,11 +57,12 @@ class AzureImageResolver implements ResolverInterface
 
         // Try fetching thumbnail from Azure Storage
         $remoteThumbResponse = $this->azureStorage->getBlob($filter.'/'.$path);
-        $hasRemoteThumb = 200 == $remoteThumbResponse->getStatusCode();
+        $hasRemoteThumb = 200 === $remoteThumbResponse->getStatusCode();
 
-        $this->logger->warning('fetched thumbnail from Azure Storage: '.$hasRemoteThumb, ['path' => $path, 'filter' => $filter]);
+        $this->logger->warning('fetched thumbnail from Azure Storage: '.$hasRemoteThumb, ['path' => $path, 'filter' => $filter, 'hasRemoteThumb' => $hasRemoteThumb]);
 
         if ($hasRemoteThumb) {
+            $this->logger->warning('storing remote thumb locally', ['path' => $path, 'filter' => $filter]);
             $image = $remoteThumbResponse->getContent();
             $thumbBinary = $this->createBinaryFromImageFile($image);
 
@@ -81,6 +82,8 @@ class AzureImageResolver implements ResolverInterface
         // Store the generated image in the cache
         $this->store($binary, $path, $filter);
 
+        $this->storeRemote($path, $filter);
+
         // Return the URL to the cached image
         return $this->getCacheUrl($cachePath);
     }
@@ -88,14 +91,15 @@ class AzureImageResolver implements ResolverInterface
     private function getCacheUrl($path)
     {
         // Generate the URL to the cached image
-        return $this->cachePath;
+        return $this->cachePath.'/'.$path;
     }
 
-    public function storeRemote($file, $path)
+    // The given filter will be the directory name
+    public function storeRemote($file, $filter)
     {
-        $this->logger->warning('storing image remote', ['path' => $path]);
+        $this->logger->warning('storing image remote', ['path' => $filter]);
 
-        $result = $this->azureStorage->storeFile($file, $path);
+        $result = $this->azureStorage->storeFile($file, $filter);
 
         if (false === $result) {
             throw new \RuntimeException('Can not save thumbnail');
