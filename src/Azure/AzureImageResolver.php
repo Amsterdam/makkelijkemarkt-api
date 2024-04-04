@@ -45,10 +45,9 @@ class AzureImageResolver implements ResolverInterface
     public function resolve($path, $filter)
     {
         $this->logger->warning('resolving image', ['path' => $path, 'filter' => $filter]);
-        $cachePath = $this->getPath($path, $filter);
 
         // Check if the cached image exists in the local filesystem
-        if ($this->fileSystem->exists($cachePath)) {
+        if ($this->fileSystem->exists($this->getCacheUrl($path, $filter))) {
             $this->logger->warning('image found in cache', ['path' => $path, 'filter' => $filter]);
 
             // If it does, return the URL to the cached image
@@ -63,8 +62,8 @@ class AzureImageResolver implements ResolverInterface
 
         if ($hasRemoteThumb) {
             $this->logger->warning('storing remote thumb locally', ['path' => $path, 'filter' => $filter]);
-            $image = $remoteThumbResponse->getContent();
-            $thumbBinary = $this->createBinaryFromImageFile($image);
+            $imageContent = $remoteThumbResponse->getContent();
+            $thumbBinary = $this->createBinaryFromImageFile($imageContent);
 
             // Store the generated image in the local cache
             $this->store($thumbBinary, $path, $filter);
@@ -116,17 +115,14 @@ class AzureImageResolver implements ResolverInterface
         }
     }
 
-    public function createBinaryFromImageFile(string $image): BinaryInterface
+    public function createBinaryFromImageFile(string $imageContent): BinaryInterface
     {
-        // Get the binary content of the image
-        // $content = file_get_contents($imagePath);
-
         // Get the mime type of the image
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mimeType = $finfo->file($image);
+        $mimeType = $finfo->buffer($imageContent);
 
         // Create a Binary object
-        $binary = new Binary($image, $mimeType, null);
+        $binary = new Binary($imageContent, $mimeType, null);
 
         return $binary;
     }
