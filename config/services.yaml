@@ -90,11 +90,10 @@ services:
             $fileContainer: '%fileContainer%'
 
     app_azure_storage:
+        class: App\Azure\AzureStorage
         arguments:
             $SASFileReaderConfig: '@app_azure_sas_file_reader_config'
             $SASFileWriterConfig: '@app_azure_sas_file_writer_config'
-
-
 
     app_azure_image_resolver:
         class: App\Azure\AzureImageResolver
