@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Azure;
 
 use App\Utils\Logger;
-use League\Flysystem\Filesystem;
 use Liip\ImagineBundle\Binary\BinaryInterface;
 use Liip\ImagineBundle\Imagine\Cache\Resolver\ResolverInterface;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
@@ -13,6 +12,7 @@ use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Liip\ImagineBundle\Model\Binary;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Imagine resolver for Swift storage via Flysystem.
@@ -45,7 +45,7 @@ class AzureImageResolver implements ResolverInterface
         $this->logger->warning('checking if image is stored', ['path' => $path, 'filter' => $filter]);
 
         // Check if the cached image exists in the local filesystem
-        return $this->fileSystem->has($this->getPath($path, $filter));
+        return $this->fileSystem->exists($this->getPath($path, $filter));
     }
 
     public function resolve($path, $filter)
@@ -54,7 +54,7 @@ class AzureImageResolver implements ResolverInterface
         $cachePath = $this->getPath($path, $filter);
 
         // Check if the cached image exists in the local filesystem
-        if ($this->fileSystem->has($cachePath)) {
+        if ($this->fileSystem->exists($cachePath)) {
             $this->logger->warning('image found in cache', ['path' => $path, 'filter' => $filter]);
 
             // If it does, return the URL to the cached image
@@ -114,10 +114,11 @@ class AzureImageResolver implements ResolverInterface
 
         // Store the generated image in the local filesystem
         $cachePath = $this->getCacheUrl($path, $filter);
-        $result = $this->fileSystem->write($cachePath, $binary->getContent());
 
-        if (false === $result) {
-            throw new \RuntimeException('Can not save thumbnail');
+        try {
+            $this->fileSystem->dumpFile($cachePath, $binary->getContent());
+        } catch (\Exception $e) {
+            $this->logger->error('Error storing image locally', ['path' => $path, 'filter' => $filter, 'error' => $e->getMessage()]);
         }
     }
 
