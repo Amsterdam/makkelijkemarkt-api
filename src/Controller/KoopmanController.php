@@ -71,6 +71,7 @@ final class KoopmanController extends AbstractController
      *                 @OA\Property(property="telefoon", type="string", description="Telefoon van de ondernemer."),
      *                 @OA\Property(property="status", type="string", description="Status van de ondernemer."),
      *                 @OA\Property(property="pasUid", type="string", description="PasUid van de ondernemer."),
+     *                 @OA\Property(property="foto", type="string", description="Pad naar foto van de ondernemer."),
      *             )
      *         )
      *     ),
@@ -107,7 +108,7 @@ final class KoopmanController extends AbstractController
             'erkenningsnummer',
             'voorletters',
             'achternaam',
-            "status"
+            'status'
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -135,9 +136,12 @@ final class KoopmanController extends AbstractController
             if (isset($data['telefoon'])) {
                 $koopman->setTelefoon($data['telefoon']);
             }
-            
             if (isset($data['pasUid'])) {
                 $koopman->setPasUid($data['pasUid']);
+            }
+            if (isset($data['foto'])) {
+                $fileName = str_replace(["data", "/"], "", $data['foto']);
+                $koopman->setFoto($fileName);
             }
         } catch(\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -176,6 +180,7 @@ final class KoopmanController extends AbstractController
      *                 @OA\Property(property="telefoon", type="string", description="Telefoon van de ondernemer."),
      *                 @OA\Property(property="status", type="string", description="Status van de ondernemer."),
      *                 @OA\Property(property="pasUid", type="string", description="PasUid van de ondernemer."),
+     *                 @OA\Property(property="foto", type="string", description="Pad naar foto van de ondernemer."),
      *             )
      *         )
      *     ),
@@ -248,6 +253,10 @@ final class KoopmanController extends AbstractController
             }
             if (isset($data['pasUid'])) {
                 $koopman->setPasUid($data['pasUid']);
+            }
+            if (isset($data['foto'])) {
+                $fileName = str_replace(["data", "/"], "", $data['foto']);
+                $koopman->setFoto($fileName);
             }
         } catch(\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
