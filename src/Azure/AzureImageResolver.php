@@ -36,7 +36,7 @@ class AzureImageResolver implements ResolverInterface
 
     public function isStored($path, $filter)
     {
-        $this->logger->warning('checking if image is stored', ['path' => $this->getCacheUrl($path, $filter), 'filter' => $filter]);
+        $this->logger->warning('checking if image is stored', ['path' => $this->getCacheUrl($path, $filter)]);
 
         // Check if the cached image exists in the local filesystem
         return $this->fileSystem->exists($this->getCacheUrl($path, $filter));
@@ -82,7 +82,7 @@ class AzureImageResolver implements ResolverInterface
         // Store the generated image in the cache
         $this->store($binary, $path, $filter);
 
-        $this->storeRemote($binary->getContent(), $filter, $fileName);
+        $this->storeRemote($binary, $filter, $fileName);
 
         // Return the URL to the cached image
         return $this->getCacheUrl($path, $filter);
@@ -99,11 +99,7 @@ class AzureImageResolver implements ResolverInterface
     {
         $this->logger->warning('storing image remote', ['file' => $file, 'path' => $path]);
 
-        $result = $this->azureStorage->storeFile($file, $path, $fileName);
-
-        if (false === $result) {
-            throw new \RuntimeException('Can not save thumbnail');
-        }
+        $this->azureStorage->storeFile($file, $path, $fileName);
     }
 
     public function store(BinaryInterface $binary, $path, $filter)
@@ -111,10 +107,10 @@ class AzureImageResolver implements ResolverInterface
         $this->logger->warning('storing image locally', ['path' => $path, 'filter' => $filter]);
 
         // Store the generated image in the local filesystem
-        $cachePath = $this->getCacheUrl($path, $filter);
+        $filePath = $this->getCacheUrl($path, $filter);
 
         try {
-            $this->fileSystem->dumpFile($cachePath, $binary->getContent());
+            $this->fileSystem->dumpFile($filePath, $binary->getContent());
         } catch (\Exception $e) {
             $this->logger->error('Error storing image locally', ['path' => $path, 'filter' => $filter, 'error' => $e->getMessage()]);
         }
