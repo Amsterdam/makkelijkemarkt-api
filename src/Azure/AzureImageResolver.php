@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Azure;
 
-use App\Utils\Logger;
 use Liip\ImagineBundle\Binary\BinaryInterface;
 use Liip\ImagineBundle\Imagine\Cache\Resolver\ResolverInterface;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Liip\ImagineBundle\Model\Binary;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -29,7 +29,7 @@ class AzureImageResolver implements ResolverInterface
         private FilterManager $filterManager,
         private DataManager $dataManager,
         private ParameterBagInterface $params,
-        private Logger $logger
+        private LoggerInterface $logger
     ) {
         $this->cachePath = $params->get('kernel.project_dir').'/'.self::DATA_ROOT.'/'.self::CACHE_DIR;
     }

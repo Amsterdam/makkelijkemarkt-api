@@ -102,7 +102,6 @@ services:
             $filterManager: '@liip_imagine.filter.manager'
             $dataManager: '@liip_imagine.data.manager'
             $params: '@parameter_bag'
-            $logger: '@app_util_logger'
         tags:
             - { name: 'liip_imagine.cache.resolver', resolver: 'azure_storage_image_resolver' }
 
