@@ -140,7 +140,7 @@ final class SollicitatieController extends AbstractController
         if (null === $markt || null === $koopman) {
             return new JsonResponse(['error' => 'Markt of Koopman niet gevonden.'], Response::HTTP_BAD_REQUEST);
         }
-        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $data['erkenningsnummer'], false);
+        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, $data['sollicitatieNummer'], false);
         if (null !== $sollicitatie) {
             return new JsonResponse(['error' => 'Sollicitatie already exists'], Response::HTTP_BAD_REQUEST);
         }
