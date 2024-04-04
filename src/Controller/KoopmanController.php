@@ -55,7 +55,7 @@ final class KoopmanController extends AbstractController
      *      operationId="KoopmanCreate",
      *      tags={"Koopman"},
      *      summary="Create new koopman",
-     * 
+     *
      *      @OA\RequestBody(
      *         required=true,
      *
@@ -63,6 +63,7 @@ final class KoopmanController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de ondernemer"),
      *                 @OA\Property(property="voorletters", type="string", description="Voorletters van de ondernemer."),
      *                 @OA\Property(property="tussenvoegsels", type="string", description="Tussenvoegsels van de ondernemer."),
@@ -75,7 +76,7 @@ final class KoopmanController extends AbstractController
      *             )
      *         )
      *     ),
-     * 
+     *
      *      @OA\Response(
      *         response="200",
      *         description="Success",
@@ -90,14 +91,13 @@ final class KoopmanController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * 
+     *
      * @Route("/koopman", methods={"POST"})
-     * 
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function createKoopman(Request $request): Response
     {
-
         $data = json_decode((string) $request->getContent(), true);
 
         if (null === $data) {
@@ -108,7 +108,7 @@ final class KoopmanController extends AbstractController
             'erkenningsnummer',
             'voorletters',
             'achternaam',
-            'status'
+            'status',
         ];
 
         foreach ($expectedParameters as $expectedParameter) {
@@ -119,7 +119,7 @@ final class KoopmanController extends AbstractController
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
         if (null !== $koopman) {
-            return new JsonResponse(['error' => "Koopman already exists"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Koopman already exists'], Response::HTTP_BAD_REQUEST);
         }
         $koopman = (new Koopman())
             ->setErkenningsnummer($data['erkenningsnummer'])
@@ -140,18 +140,18 @@ final class KoopmanController extends AbstractController
                 $koopman->setPasUid($data['pasUid']);
             }
             if (isset($data['foto'])) {
-                $fileName = str_replace(["data", "/"], "", $data['foto']);
+                $fileName = str_replace(['data', '/'], '', $data['foto']);
                 $koopman->setFoto($fileName);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->persist($koopman);
         $this->entityManager->flush();
 
-        
         $response = $this->serializer->serialize($koopman, 'json');
+
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
@@ -162,9 +162,9 @@ final class KoopmanController extends AbstractController
      *      operationId="KoopmanUpdate",
      *      tags={"Koopman"},
      *      summary="Update koopman",
-     * 
+     *
      *      @OA\Parameter(name="erkenningsnummer", @OA\Schema(type="string"), in="path", required=true),
-     * 
+     *
      *      @OA\RequestBody(
      *         required=true,
      *
@@ -172,6 +172,7 @@ final class KoopmanController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de ondernemer"),
      *                 @OA\Property(property="voorletters", type="string", description="Voorletters van de ondernemer."),
      *                 @OA\Property(property="tussenvoegsels", type="string", description="Tussenvoegsels van de ondernemer."),
@@ -184,7 +185,7 @@ final class KoopmanController extends AbstractController
      *             )
      *         )
      *     ),
-     * 
+     *
      *      @OA\Response(
      *         response="200",
      *         description="Success",
@@ -199,14 +200,13 @@ final class KoopmanController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * 
+     *
      * @Route("/koopman/{erkenningsnummer}", methods={"PUT", "PATCH"})
-     * 
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function updateKoopman(Request $request, string $erkenningsnummer): Response
     {
-
         $data = json_decode((string) $request->getContent(), true);
 
         if (null === $data) {
@@ -216,10 +216,10 @@ final class KoopmanController extends AbstractController
         $expectedParameters = [
             'voorletters',
             'achternaam',
-            'status'
+            'status',
         ];
 
-        if ("PUT" === $request->getMethod()) {
+        if ('PUT' === $request->getMethod()) {
             foreach ($expectedParameters as $expectedParameter) {
                 if (!array_key_exists($expectedParameter, $data)) {
                     return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
@@ -255,18 +255,18 @@ final class KoopmanController extends AbstractController
                 $koopman->setPasUid($data['pasUid']);
             }
             if (isset($data['foto'])) {
-                $fileName = str_replace(["data", "/"], "", $data['foto']);
+                $fileName = str_replace(['data', '/'], '', $data['foto']);
                 $koopman->setFoto($fileName);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->persist($koopman);
         $this->entityManager->flush();
 
-        
         $response = $this->serializer->serialize($koopman, 'json');
+
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
