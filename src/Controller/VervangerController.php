@@ -62,6 +62,7 @@ final class VervangerController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="ondernemer_erkenningsnummer", type="string", description="Erkenningsnummer van de ondernemer"),
      *                 @OA\Property(property="vervanger_erkenningsnummer", type="string", description="Erkenningsnummer van de vervanger."),
      *             )
@@ -121,14 +122,14 @@ final class VervangerController extends AbstractController
         }
 
         $active_vervangers = $koopman->getVervangersVan();
-        $vervanger_already_exists = $active_vervangers->exists(function($key, Vervanger $verv) use ($vervangende_koopman) {
+        $vervanger_already_exists = $active_vervangers->exists(function ($key, Vervanger $verv) use ($vervangende_koopman) {
             return $verv->getErkenningsnummer() === $vervangende_koopman->getErkenningsnummer();
         });
 
         if ($vervanger_already_exists) {
-            return new JsonResponse(['error' => "Vervanger already exists for Koopman"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Vervanger already exists for Koopman'], Response::HTTP_BAD_REQUEST);
         }
-        
+
         $vervanger = (new Vervanger())
             ->setKoopman($koopman)
             ->setVervanger($vervangende_koopman);
