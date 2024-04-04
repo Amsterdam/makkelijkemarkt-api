@@ -59,7 +59,7 @@ final class SollicitatieController extends AbstractController
      *      operationId="SollicitatieCreate",
      *      tags={"Sollicitatie"},
      *      summary="Create new sollicitatie",
-     * 
+     *
      *      @OA\RequestBody(
      *         required=true,
      *
@@ -67,6 +67,7 @@ final class SollicitatieController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="sollicitatieNummer", type="integer", description="SollicitatieNummer van de sollicitatie"),
      *                 @OA\Property(property="marktId", type="integer", description="MarktId van de sollicitatie"),
      *                 @OA\Property(property="erkenningsnummer", type="string", description="Erkenningsnummer van de sollicitatie"),
@@ -89,11 +90,11 @@ final class SollicitatieController extends AbstractController
      *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
      *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
      *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
-     *                 
+     *
      *             )
      *         )
      *     ),
-     * 
+     *
      *      @OA\Response(
      *         response="200",
      *         description="Success",
@@ -108,14 +109,13 @@ final class SollicitatieController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * 
+     *
      * @Route("/sollicitatie", methods={"POST"})
-     * 
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function createSollicitatie(Request $request): Response
     {
-
         $data = json_decode((string) $request->getContent(), true);
 
         if (null === $data) {
@@ -129,7 +129,7 @@ final class SollicitatieController extends AbstractController
             'status',
             'inschrijfDatum',
         ];
-        
+
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
                 return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
@@ -138,13 +138,13 @@ final class SollicitatieController extends AbstractController
         $markt = $this->marktRepository->find($data['marktId']);
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
         if (null === $markt || null === $koopman) {
-            return new JsonResponse(['error' => "Markt of Koopman niet gevonden."], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Markt of Koopman niet gevonden.'], Response::HTTP_BAD_REQUEST);
         }
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndErkenningsNummer($markt, $data['erkenningsnummer'], false);
         if (null !== $sollicitatie) {
-            return new JsonResponse(['error' => "Sollicitatie already exists"], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Sollicitatie already exists'], Response::HTTP_BAD_REQUEST);
         }
-        
+
         $sollicitatie = (new Sollicitatie())
             ->setMarkt($markt)
             ->setKoopman($koopman)
@@ -153,10 +153,9 @@ final class SollicitatieController extends AbstractController
             ->setDoorgehaald(false)
             ->setInschrijfDatum(new \DateTime($data['inschrijfDatum']))
             ->setVastePlaatsen([])
-            ;
+        ;
 
         try {
-            
             if (isset($data['vastePlaatsen'])) {
                 $sollicitatie->setVastePlaatsen($data['vastePlaatsen']);
             }
@@ -207,31 +206,30 @@ final class SollicitatieController extends AbstractController
             }
             if (isset($data['koppelveld'])) {
                 $sollicitatie->setKoppelveld($data['koppelveld']);
-            }            
-        } catch(\Exception $e) {
+            }
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->persist($sollicitatie);
         $this->entityManager->flush();
 
-        
         $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
+
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
-     /**
+    /**
      * @OA\Put(
      *      path="/api/1.1.0/sollicitatie/markt/{marktId}/{sollicitatieNummer}",
      *      security={{"api_key": {}, "bearer": {}}},
      *      operationId="SollicitatieUpdate",
      *      tags={"Sollicitatie"},
      *      summary="Update new sollicitatie",
-     * 
+     *
      *      @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
      *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="integer"), in="path", required=true),
-
-     * 
+     *
      *      @OA\RequestBody(
      *         required=true,
      *
@@ -239,6 +237,7 @@ final class SollicitatieController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
      *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
      *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
@@ -258,11 +257,11 @@ final class SollicitatieController extends AbstractController
      *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
      *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
      *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
-     *                 
+     *
      *             )
      *         )
      *     ),
-     * 
+     *
      *      @OA\Response(
      *         response="200",
      *         description="Success",
@@ -277,14 +276,13 @@ final class SollicitatieController extends AbstractController
      *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
      *     )
      * )
-     * 
+     *
      * @Route("/sollicitatie/markt/{marktId}/{sollicitatieNummer}", methods={"PUT", "PATCH"})
-     * 
+     *
      * @Security("is_granted('ROLE_SENIOR')")
      */
     public function updateSollicitatie(Request $request, int $marktId, int $sollicitatieNummer): Response
     {
-
         $data = json_decode((string) $request->getContent(), true);
 
         if (null === $data) {
@@ -295,7 +293,7 @@ final class SollicitatieController extends AbstractController
             'status',
             'inschrijfDatum',
         ];
-        if ("PUT" === $request->getMethod()) {
+        if ('PUT' === $request->getMethod()) {
             foreach ($expectedParameters as $expectedParameter) {
                 if (!array_key_exists($expectedParameter, $data)) {
                     return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
@@ -310,7 +308,7 @@ final class SollicitatieController extends AbstractController
 
         $markt = $this->marktRepository->find($marktId);
         if (null === $markt) {
-            return new JsonResponse(['error' => "Markt niet gevonden."], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Markt niet gevonden.'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Sollicitatie */
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, (string) $sollicitatieNummer, $doorgehaald);
@@ -319,7 +317,6 @@ final class SollicitatieController extends AbstractController
         }
 
         try {
-            
             if (isset($data['status'])) {
                 $sollicitatie->setStatus($data['status']);
             }
@@ -379,16 +376,16 @@ final class SollicitatieController extends AbstractController
             }
             if (isset($data['koppelveld'])) {
                 $sollicitatie->setKoppelveld($data['koppelveld']);
-            }            
-        } catch(\Exception $e) {
+            }
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->persist($sollicitatie);
         $this->entityManager->flush();
 
-        
         $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
+
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
