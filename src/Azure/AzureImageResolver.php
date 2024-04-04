@@ -21,7 +21,9 @@ class AzureImageResolver implements ResolverInterface
     public const DATA_ROOT = 'public';
     public const CACHE_DIR = 'media/cache';
 
-    private string $cachePath;
+    private string $cacheDataRoot;
+
+    private string $publicUrlRoot;
 
     public function __construct(
         private FileSystem $fileSystem,
@@ -31,15 +33,17 @@ class AzureImageResolver implements ResolverInterface
         private ParameterBagInterface $params,
         private LoggerInterface $logger
     ) {
-        $this->cachePath = self::DATA_ROOT.'/'.self::CACHE_DIR;
+        $this->cacheDataRoot = self::DATA_ROOT.'/'.self::CACHE_DIR;
+
+        $this->publicUrlRoot = self::CACHE_DIR;
     }
 
     public function isStored($path, $filter)
     {
-        $this->logger->warning('checking if image is stored', ['path' => $this->getCacheUrl($path, $filter)]);
+        $this->logger->warning('checking if image is stored', ['path' => $this->getCachePath($path, $filter)]);
 
         // Check if the cached image exists in the local filesystem
-        return $this->fileSystem->exists($this->getCacheUrl($path, $filter));
+        return $this->fileSystem->exists($this->getCachePath($path, $filter));
     }
 
     public function resolve($path, $filter)
@@ -47,11 +51,11 @@ class AzureImageResolver implements ResolverInterface
         $this->logger->warning('resolving image', ['path' => $path, 'filter' => $filter]);
 
         // Check if the cached image exists in the local filesystem
-        if ($this->fileSystem->exists($this->getCacheUrl($path, $filter))) {
+        if ($this->fileSystem->exists($this->getCachePath($path, $filter))) {
             $this->logger->warning('image found in cache', ['path' => $path, 'filter' => $filter]);
 
             // If it does, return the URL to the cached image
-            return $this->getCacheUrl($path, $filter);
+            return $this->getPublicUrl($path, $filter);
         }
 
         // Try fetching thumbnail from Azure Storage
@@ -69,7 +73,7 @@ class AzureImageResolver implements ResolverInterface
             $this->store($thumbBinary, $path, $filter);
 
             // Return the URL to the cached image
-            return $this->getCacheUrl($path, $filter);
+            return $this->getPublicUrl($path, $filter);
         }
 
         // Otherwise get the original file name, filter it and store it in the cache
@@ -84,13 +88,19 @@ class AzureImageResolver implements ResolverInterface
         $this->storeRemote($binary, $filter, $fileName);
 
         // Return the URL to the cached image
-        return $this->getCacheUrl($path, $filter);
+        return $this->getPublicUrl($path, $filter);
     }
 
-    private function getCacheUrl($file, $filter)
+    private function getCachePath($file, $filter)
     {
         // Generate the URL to the cached image
-        return $this->cachePath.'/'.$filter.'/'.$file;
+        return $this->cacheDataRoot.'/'.$filter.'/'.$file;
+    }
+
+    private function getPublicUrl($file, $filter)
+    {
+        // Generate the URL to the cached image
+        return $this->publicUrlRoot.'/'.$filter.'/'.$file;
     }
 
     // The given filter will be the directory name
@@ -106,7 +116,7 @@ class AzureImageResolver implements ResolverInterface
         $this->logger->warning('storing image locally', ['path' => $path, 'filter' => $filter]);
 
         // Store the generated image in the local filesystem
-        $filePath = $this->params->get('kernel.project_dir').'/'.$this->getCacheUrl($path, $filter);
+        $filePath = $this->params->get('kernel.project_dir').'/'.$this->getCachePath($path, $filter);
 
         try {
             $this->fileSystem->dumpFile($filePath, $binary->getContent());
