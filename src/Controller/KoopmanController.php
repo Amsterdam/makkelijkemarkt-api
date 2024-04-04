@@ -564,7 +564,7 @@ final class KoopmanController extends AbstractController
      *
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function postToggleHandhavingsVerzoek(int $id, string $date): Response
+    public function postToggleHandhavingsVerzoek(int $id, string $dateStr): Response
     {
         /** @var ?Koopman $koopman */
         $koopman = $this->koopmanRepository->find($id);
@@ -574,7 +574,7 @@ final class KoopmanController extends AbstractController
         }
 
         /** @var \DateTime $date */
-        $date = new \DateTime($date);
+        $date = new \DateTime($dateStr);
 
         $koopman->setHandhavingsVerzoek($date);
 

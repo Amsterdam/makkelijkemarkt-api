@@ -262,6 +262,8 @@ class Koopman
     /**
      * @var Collection|Vervanger[]
      *
+     * @Groups({"vervanger"})
+     *
      * @ORM\OneToMany(targetEntity="Vervanger", mappedBy="vervanger", fetch="EXTRA_LAZY", orphanRemoval=true)
      */
     private $vervangerVoor;
