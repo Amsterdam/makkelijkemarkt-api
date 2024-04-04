@@ -10,7 +10,6 @@ use Liip\ImagineBundle\Imagine\Cache\Resolver\ResolverInterface;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Liip\ImagineBundle\Model\Binary;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -23,11 +22,6 @@ class AzureImageResolver implements ResolverInterface
     public const CACHE_DIR = 'media/cache';
 
     private string $cachePath;
-
-    /**
-     * @var Container
-     */
-    private $container;
 
     public function __construct(
         private FileSystem $fileSystem,
