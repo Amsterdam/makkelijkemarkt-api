@@ -89,22 +89,24 @@ services:
             $fileStorageAccount: '%fileStorageAccount%'
             $fileContainer: '%fileContainer%'
 
-    App\Azure\AzureStorage:
+    app_azure_storage:
         arguments:
             $SASFileReaderConfig: '@app_azure_sas_file_reader_config'
             $SASFileWriterConfig: '@app_azure_sas_file_writer_config'
+
+
 
     app_azure_image_resolver:
         class: App\Azure\AzureImageResolver
         arguments:
             $fileSystem: '@filesystem'
-            $azureStorage: '@AzureStorage'
+            $azureStorage: '@app_azure_storage'
             $filterManager: '@liip_imagine.filter.manager'
             $dataManager: '@liip_imagine.data.manager'
             $params: '@parameter_bag'
             $logger: '@monolog.logger'
         tags:
-            - { name: 'liip_imagine.cache.resolver', resolver: 'azure_storage' }
+            - { name: 'liip_imagine.cache.resolver', resolver: 'azure_storage_image_resolver' }
 
     # for unit test
     app.service.factuur:
