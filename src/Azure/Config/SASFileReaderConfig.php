@@ -8,8 +8,8 @@ class SASFileReaderConfig
 
     public function __construct(
         AzureBaseConfig $baseConfig,
-        $fileStorageAccount,
-        $fileContainer
+        string $fileStorageAccount,
+        string $fileContainer
     ) {
         $this->config = array_merge(
             $baseConfig->getConfig(),

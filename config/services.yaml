@@ -89,8 +89,7 @@ services:
             $fileStorageAccount: '%fileStorageAccount%'
             $fileContainer: '%fileContainer%'
 
-    app_azure_storage:
-        class: App\Azure\AzureStorage
+    App\Azure\AzureStorage:
         arguments:
             $SASFileReaderConfig: '@app_azure_sas_file_reader_config'
             $SASFileWriterConfig: '@app_azure_sas_file_writer_config'
@@ -99,13 +98,20 @@ services:
         class: App\Azure\AzureImageResolver
         arguments:
             $fileSystem: '@filesystem'
-            $azureStorage: '@app_azure_storage'
+            $azureStorage: '@App\Azure\AzureStorage'
             $filterManager: '@liip_imagine.filter.manager'
             $dataManager: '@liip_imagine.data.manager'
             $params: '@parameter_bag'
             $logger: '@monolog.logger'
         tags:
             - { name: 'liip_imagine.cache.resolver', resolver: 'azure_storage_image_resolver' }
+
+    imagine.data.loader.azure_image_loader:
+        class: App\Azure\AzureImageLoader
+        arguments:
+            - "@liip_imagine"
+        tags:
+            - { name: "liip_imagine.binary.loader", loader: azure_image_loader }
 
     # for unit test
     app.service.factuur:
@@ -116,13 +122,6 @@ services:
         class: App\Utils\Logger
 
     Qipsius\TCPDFBundle\Controller\TCPDFController: '@qipsius.tcpdf'
-
-    imagine.data.loader.azure_image_loader:
-        class: App\Azure\AzureImageLoader
-        arguments:
-            - "@liip_imagine"
-        tags:
-            - { name: "liip_imagine.binary.loader", loader: azure_image_loader }
 
     App\EventListener\FallbackFileListener:
         arguments:
