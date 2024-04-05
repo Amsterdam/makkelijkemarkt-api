@@ -33,7 +33,7 @@ class AzureImageResolver implements ResolverInterface
         private ParameterBagInterface $params,
         private LoggerInterface $logger
     ) {
-        $this->cacheDataRoot = self::DATA_ROOT.'/'.self::CACHE_DIR;
+        $this->cacheDataRoot = $this->params->get('kernel.project_dir').'/'.self::DATA_ROOT.'/'.self::CACHE_DIR;
 
         $this->publicUrlRoot = self::CACHE_DIR;
     }
@@ -91,12 +91,14 @@ class AzureImageResolver implements ResolverInterface
         return $this->getPublicUrl($path, $filter);
     }
 
+    // The path where a file is actually saved in the container
     private function getCachePath($file, $filter)
     {
         // Generate the URL to the cached image
         return $this->cacheDataRoot.'/'.$filter.'/'.$file;
     }
 
+    // The url where the file is reachable on the web
     private function getPublicUrl($file, $filter)
     {
         // Generate the URL to the cached image
