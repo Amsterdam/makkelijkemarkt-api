@@ -150,7 +150,7 @@ final class KoopmanController extends AbstractController
         $this->entityManager->persist($koopman);
         $this->entityManager->flush();
 
-        $response = $this->serializer->serialize($koopman, 'json');
+        $response = $this->serializer->serialize($koopman, 'json', ['groups' => ['simpleKoopman', 'vervanger']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
@@ -265,7 +265,7 @@ final class KoopmanController extends AbstractController
         $this->entityManager->persist($koopman);
         $this->entityManager->flush();
 
-        $response = $this->serializer->serialize($koopman, 'json');
+        $response = $this->serializer->serialize($koopman, 'json', ['groups' => ['simpleKoopman', 'vervanger']]);
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
