@@ -123,7 +123,6 @@ final class SollicitatieController extends AbstractController
         }
 
         $expectedParameters = [
-            'marktId',
             'erkenningsnummer',
             'sollicitatieNummer',
             'status',
@@ -135,7 +134,16 @@ final class SollicitatieController extends AbstractController
                 return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
             }
         }
-        $markt = $this->marktRepository->find($data['marktId']);
+
+        // Get markt by id or afk.
+        if (array_key_exists('marktId', $data)) {
+            $markt = $this->marktRepository->find($data['marktId']);
+        } elseif (array_key_exists('marktAfkorting', $data)) {
+            $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
+        } else {
+            return new JsonResponse(['error' => 'Markt identification missing, pass marktId or marktAfkorting'], Response::HTTP_BAD_REQUEST);
+        }
+
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
         if (null === $markt || null === $koopman) {
             return new JsonResponse(['error' => 'Markt of Koopman niet gevonden.'], Response::HTTP_BAD_REQUEST);
@@ -152,8 +160,7 @@ final class SollicitatieController extends AbstractController
             ->setStatus($data['status'])
             ->setDoorgehaald(false)
             ->setInschrijfDatum(new \DateTime($data['inschrijfDatum']))
-            ->setVastePlaatsen([])
-        ;
+            ->setVastePlaatsen([]);
 
         try {
             if (isset($data['vastePlaatsen'])) {
