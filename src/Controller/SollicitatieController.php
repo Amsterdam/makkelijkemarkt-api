@@ -397,6 +397,78 @@ final class SollicitatieController extends AbstractController
     }
 
     /**
+     * @OA\Put(
+     *      path="/api/1.1.0/sollicitatie/marktafkorting/{marktAfkorting}/{sollicitatieNummer}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="SollicitatieUpdateAFK",
+     *      tags={"Sollicitatie"},
+     *      summary="Update new sollicitatie obv AFK",
+     *
+     *      @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
+     *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="integer"), in="path", required=true),
+     *
+     *      @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *
+     *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
+     *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantalExtraMeters", type="string", description="AantalExtraMeters van de sollicitatie"),
+     *                 @OA\Property(property="status", type="string", description="Status van de sollicitatie"),
+     *                 @OA\Property(property="aantalElektra", type="string", description="AantalElektra van de sollicitatie"),
+     *                 @OA\Property(property="aantalAfvaleilanden", type="string", description="AantalAfvaleilanden van de sollicitatie"),
+     *                 @OA\Property(property="grootPerMeter", type="string", description="GrootPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="kleinPerMeter", type="string", description="KleinPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="grootReiniging", type="string", description="GrootReiniging van de sollicitatie"),
+     *                 @OA\Property(property="kleinReiniging", type="string", description="KleinReiniging van de sollicitatie"),
+     *                 @OA\Property(property="afvalEilandAgf", type="string", description="AfvalEilandAgf van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroomPerStuk", type="string", description="KrachtstroomPerStuk van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroom", type="string", description="Krachtstroom van de sollicitatie"),
+     *                 @OA\Property(property="inschrijfDatum", type="string", description="InschrijfDatum van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaald", type="string", description="Doorgehaald van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
+     *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
+     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *
+     *             )
+     *         )
+     *     ),
+     *
+     *      @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Sollicitatie")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     *
+     * @Route("/sollicitatie/marktafkorting/{marktAfkorting}/{sollicitatieNummer}", methods={"PUT", "PATCH"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function updateSollicitatieMetAfk(Request $request, string $marktAfkorting, int $sollicitatieNummer): Response
+    {
+        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt niet gevonden.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->updateSollicitatie($request, $markt->getId(), $sollicitatieNummer);
+    }
+
+    /**
      * @OA\Get(
      *     path="/api/1.1.0/sollicitaties/markt/{marktId}",
      *     security={{"api_key": {}, "bearer": {}}},
