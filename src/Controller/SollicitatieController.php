@@ -89,7 +89,7 @@ final class SollicitatieController extends AbstractController
      *                 @OA\Property(property="doorgehaald", type="boolean", description="Doorgehaald van de sollicitatie"),
      *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
      *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
-     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *                 @OA\Property(property="version", type="string", description="Koppelveld van de sollicitatie")
      *
      *             )
      *         )
@@ -142,6 +142,17 @@ final class SollicitatieController extends AbstractController
             $markt = $this->marktRepository->getByAfkorting($data['marktAfkorting']);
         } else {
             return new JsonResponse(['error' => 'Markt identification missing, pass marktId or marktAfkorting'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (isset($data['version'])) {
+            $afkorting = $markt->getAfkorting();
+            $sollicitatieNummer = $data['sollicitatieNummer'];
+            if (null !== $data['version']) {
+                $verStr = str_pad((string) $data['version'], 2, '0', STR_PAD_LEFT);
+                $koppelveld = "$afkorting\_$sollicitatieNummer.$verStr";
+            } else {
+                $koppelveld = "$afkorting\_$sollicitatieNummer";
+            }
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
@@ -211,8 +222,8 @@ final class SollicitatieController extends AbstractController
             if (isset($data['perfectViewNummer'])) {
                 $sollicitatie->setPerfectViewNummer($data['perfectViewNummer']);
             }
-            if (isset($data['koppelveld'])) {
-                $sollicitatie->setKoppelveld($data['koppelveld']);
+            if (null !== $koppelveld) {
+                $sollicitatie->setKoppelveld($koppelveld);
             }
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -263,7 +274,7 @@ final class SollicitatieController extends AbstractController
      *                 @OA\Property(property="doorgehaald", type="string", description="Doorgehaald van de sollicitatie"),
      *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
      *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
-     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *                 @OA\Property(property="version", type="string", description="Version van de sollicitatie")
      *
      *             )
      *         )
