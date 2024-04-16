@@ -42,8 +42,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
 
             ->join('sollicitatie.koopman', 'koopman')
             ->leftJoin('koopman.vervangersVan', 'vervanger')
-            ->leftJoin('vervanger.vervanger', 'vervangerKoopman')
-        ;
+            ->leftJoin('vervanger.vervanger', 'vervangerKoopman');
 
         if (true === isset($q['markt']) && null !== $q['markt'] && '' !== $q['markt']) {
             $qb->andWhere('sollicitatie.markt = :markt');
@@ -56,8 +55,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
                 ->andWhere('sollicitatie.doorgehaald = :doorgehaald')
 
                 ->setParameter('notStatus', Koopman::STATUS_VERWIJDERD)
-                ->setParameter('doorgehaald', false)
-            ;
+                ->setParameter('doorgehaald', false);
         }
 
         $qb
@@ -66,8 +64,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
 
             // pagination
             ->setMaxResults($size)
-            ->setFirstResult($offset)
-        ;
+            ->setFirstResult($offset);
 
         // paginator
         $q = $qb->getQuery();
@@ -90,8 +87,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
 
             ->setParameter('markt', $markt)
             ->setParameter('erkenningsnummer', $erkenningsNummer)
-            ->setParameter('doorgehaald', $doorgehaald)
-        ;
+            ->setParameter('doorgehaald', $doorgehaald);
 
         $query = $qb->getQuery();
 
@@ -111,8 +107,42 @@ final class SollicitatieRepository extends ServiceEntityRepository
             ->andWhere('sollicitatie.sollicitatieNummer = :sollicitatieNummer')
 
             ->setParameter('markt', $markt)
-            ->setParameter('sollicitatieNummer', $sollicitatieNummer)
-        ;
+            ->setParameter('sollicitatieNummer', $sollicitatieNummer);
+
+        $query = $qb->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function findAllByMarktAndSollicitatieNummer(Markt $markt, string $sollicitatieNummer): array
+    {
+        $qb = $this
+            ->createQueryBuilder('sollicitatie')
+            ->select('sollicitatie')
+            ->addSelect('koopman')
+
+            ->join('sollicitatie.koopman', 'koopman')
+
+            ->where('sollicitatie.markt = :markt')
+            ->andWhere('sollicitatie.sollicitatieNummer = :sollicitatieNummer')
+
+            ->setParameter('markt', $markt)
+            ->setParameter('sollicitatieNummer', $sollicitatieNummer);
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function findOneByKoppelveld(string $koppelveld): ?Sollicitatie
+    {
+        $qb = $this
+            ->createQueryBuilder('sollicitatie')
+            ->select('sollicitatie')
+
+            ->where('sollicitatie.koppelveld = :koppelveld')
+
+            ->setParameter('koppelveld', $koppelveld);
 
         $query = $qb->getQuery();
 
@@ -154,8 +184,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
         $query = $this
             ->getEntityManager()
             ->createQuery($dql)
-            ->setParameters($parameters)
-        ;
+            ->setParameters($parameters);
 
         $sollicitaties = $query->getResult();
 
@@ -179,21 +208,18 @@ final class SollicitatieRepository extends ServiceEntityRepository
             ->andWhere('k.status <> :kstatus')
 
             ->setParameter('sdoorgehaald', false)
-            ->setParameter('kstatus', Koopman::STATUS_VERWIJDERD)
-        ;
+            ->setParameter('kstatus', Koopman::STATUS_VERWIJDERD);
 
         if (count($marktIds) > 0) {
             $qb
                 ->andWhere($qb->expr()->in('markt.id', ':marktIds'))
-                ->setParameter('marktIds', $marktIds)
-            ;
+                ->setParameter('marktIds', $marktIds);
         }
 
         if ('alle' !== $vergunningType) {
             $qb
                 ->andWhere('s.status = :status')
-                ->setParameter('status', $vergunningType)
-            ;
+                ->setParameter('status', $vergunningType);
         }
 
         $qb
@@ -221,8 +247,7 @@ final class SollicitatieRepository extends ServiceEntityRepository
             ->addOrderBy('k.erkenningsnummer')
 
             ->addGroupBy('s.id')
-            ->addGroupBy('k.erkenningsnummer')
-        ;
+            ->addGroupBy('k.erkenningsnummer');
 
         return $qb->getQuery()->execute([], Query::HYDRATE_ARRAY);
     }
@@ -245,14 +270,12 @@ final class SollicitatieRepository extends ServiceEntityRepository
 
             ->addSelect('vervanger')
             ->addSelect('vervangerKoopman')
-            ->addSelect('k')
-        ;
+            ->addSelect('k');
 
         if (count($marktIds) > 0) {
             $qb
                 ->andWhere($qb->expr()->in('markt.id', ':marktIds'))
-                ->setParameter('marktIds', $marktIds)
-            ;
+                ->setParameter('marktIds', $marktIds);
         }
 
         return $qb->getQuery()->execute();

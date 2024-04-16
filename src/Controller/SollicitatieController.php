@@ -307,20 +307,31 @@ final class SollicitatieController extends AbstractController
                 }
             }
         }
-        if (isset($data['doorgehaald'])) {
-            $doorgehaald = $data['doorgehaald'];
-        } else {
-            $doorgehaald = false;
-        }
+        $doorgehaald = false;
 
+        /** @var Markt */
         $markt = $this->marktRepository->find($marktId);
         if (null === $markt) {
             return new JsonResponse(['error' => 'Markt niet gevonden.'], Response::HTTP_BAD_REQUEST);
         }
-        /** @var Sollicitatie */
-        $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, (string) $sollicitatieNummer, $doorgehaald);
+
+        if (isset($data['version']) && null !== $data['version']) {
+            $verStr = str_pad((string) $data['version'], 2, '0', STR_PAD_LEFT);
+            $afkorting = $markt->getAfkorting();
+            $koppelveld = "$afkorting\_$sollicitatieNummer.$verStr";
+            $sollicitatie = $this->sollicitatieRepository->findOneByKoppelveld($koppelveld);
+        }
+
         if (null === $sollicitatie) {
-            return new JsonResponse(['error' => "Sollicitatie doesn't exists"], Response::HTTP_BAD_REQUEST);
+            /** @var Sollicitatie[] */
+            $sollicitaties = $this->sollicitatieRepository->findAllByMarktAndSollicitatieNummer($markt, (string) $sollicitatieNummer);
+            if (0 === count($sollicitaties)) {
+                return new JsonResponse(['error' => "Sollicitatie doesn't exists"], Response::HTTP_BAD_REQUEST);
+            } elseif (count($sollicitaties) >= 1) {
+                return new JsonResponse(['error' => 'Too many sollicitaties found'], Response::HTTP_BAD_REQUEST);
+            } else {
+                $sollicitatie = $sollicitaties[0];
+            }
         }
 
         try {
