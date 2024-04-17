@@ -144,15 +144,13 @@ final class SollicitatieController extends AbstractController
             return new JsonResponse(['error' => 'Markt identification missing, pass marktId or marktAfkorting'], Response::HTTP_BAD_REQUEST);
         }
 
+        $afkorting = $markt->getAfkorting();
+        $sollicitatieNummer = $data['sollicitatieNummer'];
         if (isset($data['version'])) {
-            $afkorting = $markt->getAfkorting();
-            $sollicitatieNummer = $data['sollicitatieNummer'];
-            if (null !== $data['version']) {
-                $verStr = str_pad((string) $data['version'], 2, '0', STR_PAD_LEFT);
-                $koppelveld = "$afkorting\_$sollicitatieNummer.$verStr";
-            } else {
-                $koppelveld = "$afkorting\_$sollicitatieNummer";
-            }
+            $verStr = str_pad((string) $data['version'], 2, '0', STR_PAD_LEFT);
+            $koppelveld = "$afkorting\_$sollicitatieNummer.$verStr";
+        } else {
+            $koppelveld = "$afkorting\_$sollicitatieNummer";
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
@@ -222,7 +220,7 @@ final class SollicitatieController extends AbstractController
             if (isset($data['perfectViewNummer'])) {
                 $sollicitatie->setPerfectViewNummer($data['perfectViewNummer']);
             }
-            if (null !== $koppelveld) {
+            if (isset($koppelveld)) {
                 $sollicitatie->setKoppelveld($koppelveld);
             }
         } catch (\Exception $e) {
