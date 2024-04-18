@@ -159,6 +159,13 @@ final class SollicitatieController extends AbstractController
         }
         $sollicitatie = $this->sollicitatieRepository->findOneByMarktAndSollicitatieNummer($markt, $data['sollicitatieNummer'], false);
         if (null !== $sollicitatie) {
+            if ($sollicitatie->getSollicitatieNummer() == $sollicitatieNummer
+                && $sollicitatie->getMarkt() == $markt
+                && $sollicitatie->getKoopman() == $koopman
+            ) {
+                return new JsonResponse(['error' => 'Sollicitatie already exists'], Response::HTTP_OK);
+            }
+
             return new JsonResponse(['error' => 'Sollicitatie already exists'], Response::HTTP_BAD_REQUEST);
         }
 
