@@ -119,7 +119,13 @@ final class KoopmanController extends AbstractController
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
         if (null !== $koopman) {
-            return new JsonResponse(['error' => 'Koopman already exists'], Response::HTTP_BAD_REQUEST);
+            if ($koopman->getVoorletters() == $data['voorletters']
+                && $koopman->getAchternaam() == $data['achternaam']
+            ) {
+                return new JsonResponse(['error' => 'Koopman already exists'], Response::HTTP_OK);
+            }
+
+            return new JsonResponse(['error' => 'Koopman already exists with this erkenningsnummer'], Response::HTTP_BAD_REQUEST);
         }
         $koopman = (new Koopman())
             ->setErkenningsnummer($data['erkenningsnummer'])
