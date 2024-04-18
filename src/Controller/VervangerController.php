@@ -133,7 +133,7 @@ final class VervangerController extends AbstractController
         });
 
         if ($vervanger_already_exists) {
-            return new JsonResponse(['error' => 'Vervanger already exists for Koopman'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => 'Vervanger already exists for Koopman'], Response::HTTP_OK);
         }
 
         $vervanger = (new Vervanger())
