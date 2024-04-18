@@ -148,9 +148,9 @@ final class SollicitatieController extends AbstractController
         $sollicitatieNummer = $data['sollicitatieNummer'];
         if (isset($data['version'])) {
             $verStr = str_pad((string) $data['version'], 2, '0', STR_PAD_LEFT);
-            $koppelveld = "$afkorting\_$sollicitatieNummer.$verStr";
+            $koppelveld = $afkorting.'_'.$sollicitatieNummer.'.'.$verStr;
         } else {
-            $koppelveld = "$afkorting\_$sollicitatieNummer";
+            $koppelveld = $afkorting.'_'.$sollicitatieNummer;
         }
 
         $koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['erkenningsnummer']);
@@ -316,7 +316,6 @@ final class SollicitatieController extends AbstractController
                 }
             }
         }
-        $doorgehaald = false;
 
         /** @var Markt */
         $markt = $this->marktRepository->find($marktId);
@@ -324,10 +323,13 @@ final class SollicitatieController extends AbstractController
             return new JsonResponse(['error' => 'Markt niet gevonden.'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (isset($data['version']) && null !== $data['version']) {
+        $afkorting = $markt->getAfkorting();
+        if (isset($data['version'])) {
             $verStr = str_pad((string) $data['version'], 2, '0', STR_PAD_LEFT);
-            $afkorting = $markt->getAfkorting();
-            $koppelveld = "$afkorting\_$sollicitatieNummer.$verStr";
+            $koppelveld = $afkorting.'_'.$sollicitatieNummer.'.'.$verStr;
+            $sollicitatie = $this->sollicitatieRepository->findOneByKoppelveld($koppelveld);
+        } else {
+            $koppelveld = $afkorting.'_'.$sollicitatieNummer;
             $sollicitatie = $this->sollicitatieRepository->findOneByKoppelveld($koppelveld);
         }
 
@@ -336,7 +338,7 @@ final class SollicitatieController extends AbstractController
             $sollicitaties = $this->sollicitatieRepository->findAllByMarktAndSollicitatieNummer($markt, (string) $sollicitatieNummer);
             if (0 === count($sollicitaties)) {
                 return new JsonResponse(['error' => "Sollicitatie doesn't exists"], Response::HTTP_BAD_REQUEST);
-            } elseif (count($sollicitaties) >= 1) {
+            } elseif (count($sollicitaties) > 1) {
                 return new JsonResponse(['error' => 'Too many sollicitaties found'], Response::HTTP_BAD_REQUEST);
             } else {
                 $sollicitatie = $sollicitaties[0];
@@ -401,8 +403,8 @@ final class SollicitatieController extends AbstractController
             if (isset($data['perfectViewNummer'])) {
                 $sollicitatie->setPerfectViewNummer($data['perfectViewNummer']);
             }
-            if (isset($data['koppelveld'])) {
-                $sollicitatie->setKoppelveld($data['koppelveld']);
+            if ($koppelveld) {
+                $sollicitatie->setKoppelveld($koppelveld);
             }
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
