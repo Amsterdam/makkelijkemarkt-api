@@ -47,6 +47,91 @@ final class MarktController extends AbstractController
     }
 
     /**
+     * @OA\Post(
+     *     path="/api/1.1.0/markt/",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="MarktCreate",
+     *     tags={"Markt"},
+     *     summary="Sla extra markt gegevens op die niet uit PerfectView komen",
+     *
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *                 @OA\Property(property="naam", type="string", description="Naam van de markt"),
+     *                 @OA\Property(property="afkorting", type="string", description="Afkorting van de markt"),
+     *                 @OA\Property(property="soort", type="string", description="Soort markt (dag, week, maand)"),
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Markt")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     * )
+     *
+     * @Route("/markt", methods={"POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
+     */
+    public function createMarkt(Request $request): Response
+    {
+
+        $data = json_decode((string) $request->getContent(), true);
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $expectedParameters = [
+            'naam',
+            'afkorting',
+            'soort',
+        ];
+
+        foreach ($expectedParameters as $expectedParameter) {
+            if (!array_key_exists($expectedParameter, $data)) {
+                return new JsonResponse(['error' => "Parameter $expectedParameter missing"], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $markt = $this->marktRepository->getByAfkorting($data['afkorting']);
+        if (null !== $markt) {
+            if ($markt->getNaam() == $data['naam']) {
+                return new JsonResponse(['error' => 'Markt already exists'], Response::HTTP_OK);
+            }
+            return new JsonResponse(['error' => 'Markt already exists with afkorting'], Response::HTTP_BAD_REQUEST);
+        }
+        /** @var Markt */
+        $markt = (new Markt())
+            ->setNaam($data['naam'])
+            ->setAfkorting($data["afkorting"])
+            ->setSoort($data['soort']);
+
+        $this->entityManager->persist($markt);
+        $this->entityManager->flush();
+
+        $response = $this->serializer->serialize($markt, 'json', ['groups' => ['markt']]);
+
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
      * @OA\Get(
      *     path="/api/1.1.0/markt/",
      *     security={{"api_key": {}}},
@@ -108,7 +193,7 @@ final class MarktController extends AbstractController
         $markt = $this->marktRepository->find($id);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = '.$id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = ' . $id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($markt, 'json', ['groups' => ['markt']]);
@@ -152,7 +237,7 @@ final class MarktController extends AbstractController
         $markt = $this->marktRepository->find($id);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = '.$id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = ' . $id], Response::HTTP_NOT_FOUND);
         }
 
         $response = $this->serializer->serialize($markt, 'json', ['groups' => ['markt', 'marktProducts']]);
@@ -281,7 +366,7 @@ final class MarktController extends AbstractController
 
         foreach ($expectedParameters as $expectedParameter) {
             if (!array_key_exists($expectedParameter, $data)) {
-                return new JsonResponse(['error' => "parameter '".$expectedParameter."' missing"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "parameter '" . $expectedParameter . "' missing"], Response::HTTP_BAD_REQUEST);
             }
         }
 
@@ -289,7 +374,7 @@ final class MarktController extends AbstractController
         $markt = $this->marktRepository->find($id);
 
         if (null === $markt) {
-            return new JsonResponse(['error' => 'Markt not found, id = '.$id], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Markt not found, id = ' . $id], Response::HTTP_NOT_FOUND);
         }
 
         /** @var PropertyAccessor $accessor */
