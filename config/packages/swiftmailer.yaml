@@ -1,7 +1,7 @@
 swiftmailer:
     # url: '%env(MAILER_URL)%'
     spool: { type: 'memory' }
-    username: '%env(MAILER_USER%'
+    username: '%env(MAILER_USER)%'
     password: '%env(MAILER_PASSWORD)%'
     host: '%env(MAILER_HOST)%'
     port: '%env(MAILER_PORT)%'
