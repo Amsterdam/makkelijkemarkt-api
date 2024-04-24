@@ -591,4 +591,34 @@ final class KoopmanController extends AbstractController
 
         return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/1.1.0/koopman/fotos/",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="KoopmanGetAllFotos",
+     *     tags={"Koopman"},
+     *     summary="Zoek door alle koopmannen",
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *
+     *         @OA\JsonContent(@OA\Items(ref="#/components/schemas/Koopman"))
+     *     )
+     * )
+     *
+     * @Route("/koopman_fotos/", methods={"GET"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function getAllFotos(Request $request): Response
+    {
+        $koopmannen = $this->koopmanRepository->findAll();
+        $fotoArray = array_map(function (Koopman $koopman) {
+            return [$koopman->getErkenningsnummer(), $koopman->getFoto()];
+        }, $koopmannen);
+
+        return new JsonResponse($fotoArray, Response::HTTP_OK);
+    }
 }
