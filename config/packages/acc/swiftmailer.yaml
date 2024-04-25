@@ -1,2 +1,2 @@
 swiftmailer:
-    delivery_addresses: '%env(json:MAIL_TEST_RECIPIENTS)%'
+    delivery_addresses: '%env(MAIL_TEST_RECIPIENTS)%'
