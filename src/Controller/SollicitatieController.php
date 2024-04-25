@@ -180,7 +180,8 @@ final class SollicitatieController extends AbstractController
 
         try {
             if (isset($data['vastePlaatsen'])) {
-                $sollicitatie->setVastePlaatsen($data['vastePlaatsen']);
+                $vastePlaatsen = explode(',', $data['vastePlaatsen']);
+                $sollicitatie->setVastePlaatsen($vastePlaatsen);
             }
             if (isset($data['aantal3MeterKramen'])) {
                 $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
@@ -216,7 +217,7 @@ final class SollicitatieController extends AbstractController
                 $sollicitatie->setKrachtstroomPerStuk($data['krachtstroomPerStuk']);
             }
             if (isset($data['krachtstroom'])) {
-                $sollicitatie->setKrachtstroom($data['krachtstroom']);
+                $sollicitatie->setKrachtstroom((bool) $data['krachtstroom']);
             }
             if (isset($data['doorgehaald'])) {
                 $sollicitatie->setDoorgehaald($data['doorgehaald']);
@@ -357,7 +358,8 @@ final class SollicitatieController extends AbstractController
                 $sollicitatie->setStatus($data['status']);
             }
             if (isset($data['vastePlaatsen'])) {
-                $sollicitatie->setVastePlaatsen($data['vastePlaatsen']);
+                $vastePlaatsen = explode(',', $data['vastePlaatsen']);
+                $sollicitatie->setVastePlaatsen($vastePlaatsen);
             }
             if (isset($data['aantal3MeterKramen'])) {
                 $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
@@ -396,7 +398,7 @@ final class SollicitatieController extends AbstractController
                 $sollicitatie->setKrachtstroomPerStuk($data['krachtstroomPerStuk']);
             }
             if (isset($data['krachtstroom'])) {
-                $sollicitatie->setKrachtstroom($data['krachtstroom']);
+                $sollicitatie->setKrachtstroom((bool) $data['krachtstroom']);
             }
             if (isset($data['inschrijfDatum'])) {
                 $sollicitatie->setInschrijfDatum(new \DateTime($data['inschrijfDatum']));
