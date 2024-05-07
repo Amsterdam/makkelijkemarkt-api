@@ -261,8 +261,7 @@ final class KoopmanController extends AbstractController
                 $koopman->setPasUid($data['pasUid']);
             }
             if (isset($data['foto'])) {
-                $fileName = str_replace(['data', '/'], '', $data['foto']);
-                $koopman->setFoto($fileName);
+                $koopman->setFoto($data['foto']);
             }
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);

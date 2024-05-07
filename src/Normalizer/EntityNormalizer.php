@@ -112,6 +112,12 @@ final class EntityNormalizer extends ObjectNormalizer
 
     private function getBrowserPath(string $photo, string $imageSize): string
     {
+        // Fallback to redirect to Daalder for fetching images from the newer storage
+        $regex = '/(\/media\/foto|\/foto)\/.*/';
+        if (preg_match($regex, $photo)) {
+            return $_SERVER['DAALDER_URL'].'image/open/ondernemer'.$photo;
+        }
+
         $base_url = '';
         if (isset($_SERVER['MM_API__BASE_URL'])) {
             $base_url = $_SERVER['MM_API__BASE_URL'];
