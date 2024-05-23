@@ -154,7 +154,7 @@ final class SollicitatieController extends AbstractController
         }
 
         $sollicitaties = $this->sollicitatieRepository->findAllByMarktAndSollicitatieNummer($markt, $data['sollicitatieNummer']);
-        $known_koppelvelden = array_map(fn(Sollicitatie $soll): string => $soll->getKoppelveld(), $sollicitaties);
+        $known_koppelvelden = array_map(fn (Sollicitatie $soll): string => $soll->getKoppelveld(), $sollicitaties);
         if (in_array($koppelveld, $known_koppelvelden)) {
             return new JsonResponse(['error' => 'Sollicitatie already exists with this version'], Response::HTTP_OK);
         }
@@ -163,7 +163,7 @@ final class SollicitatieController extends AbstractController
         if (null === $markt || null === $koopman) {
             return new JsonResponse(['error' => 'Markt of Koopman niet gevonden.'], Response::HTTP_BAD_REQUEST);
         }
-        
+
         $sollicitatie = $this->sollicitatieRepository->findActiveByMarktAndSollicitatieNummer($markt, $data['sollicitatieNummer']);
         if (null !== $sollicitatie) {
             if ($sollicitatie->getKoopman() == $koopman
