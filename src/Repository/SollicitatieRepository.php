@@ -94,6 +94,27 @@ final class SollicitatieRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
+    public function findActiveByMarktAndSollicitatieNummer(Markt $markt, string $sollicitatieNummer): ?Sollicitatie
+    {
+        $qb = $this
+            ->createQueryBuilder('sollicitatie')
+            ->select('sollicitatie')
+            ->addSelect('koopman')
+
+            ->join('sollicitatie.koopman', 'koopman')
+
+            ->where('sollicitatie.markt = :markt')
+            ->andWhere('sollicitatie.sollicitatieNummer = :sollicitatieNummer')
+            ->andWhere('sollicitatie.doorgehaald = false')
+
+            ->setParameter('markt', $markt)
+            ->setParameter('sollicitatieNummer', $sollicitatieNummer);
+
+        $query = $qb->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
     public function findOneByMarktAndSollicitatieNummer(Markt $markt, string $sollicitatieNummer): ?Sollicitatie
     {
         $qb = $this
