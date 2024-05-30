@@ -132,6 +132,79 @@ final class MarktController extends AbstractController
     }
 
     /**
+     * @OA\Patch(
+     *     path="/api/1.1.0/markt/",
+     *     security={{"api_key": {}, "bearer": {}}},
+     *     operationId="MarktUpdate",
+     *     tags={"Markt"},
+     *     summary="Sla extra markt gegevens op die niet uit PerfectView komen",
+     *
+     *     @OA\Parameter(name="id", @OA\Schema(type="integer"), in="path", required=true),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *                 @OA\Property(property="naam", type="string", description="Naam van de markt"),
+     *                 @OA\Property(property="soort", type="string", description="Soort markt (dag, week, maand)"),
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Markt")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     ),
+     * )
+     *
+     * @Route("/markt/{afkorting}", methods={"PATCH"})
+     *
+     * @Security("is_granted('ROLE_ADMIN') || is_granted('ROLE_SENIOR')")
+     */
+    public function updateMarkt(Request $request, string $afkorting): Response
+    {
+        $data = json_decode((string) $request->getContent(), true);
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $markt = $this->marktRepository->getByAfkorting($afkorting);
+        if (null === $markt) {
+            return new JsonResponse(['error' => "Markt doesn't exist"], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            if (isset($data['naam'])) {
+                $markt->setNaam($data['naam']);
+            }
+            if (isset($data['soort'])) {
+                $markt->setSoort($data['soort']);
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->persist($markt);
+        $this->entityManager->flush();
+
+        $response = $this->serializer->serialize($markt, 'json', ['groups' => ['markt']]);
+
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
+    }
+
+    /**
      * @OA\Get(
      *     path="/api/1.1.0/markt/",
      *     security={{"api_key": {}}},
