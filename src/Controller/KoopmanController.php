@@ -239,7 +239,7 @@ final class KoopmanController extends AbstractController
         }
 
         try {
-            if (isset($data['voorlettters'])) {
+            if (isset($data['voorletters'])) {
                 $koopman->setVoorletters($data['voorletters']);
             }
             if (isset($data['tussenvoegsels'])) {
