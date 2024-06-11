@@ -30,6 +30,7 @@ class DynamicConnection extends Connection
             try {
                 $this->connect();
             } catch (\Exception $e) {
+                $this->logger->warning('Got error connecting to DB: '.$e->getMessage());
                 $this->logger->warning('DB Connection failed. Trying to invalidate cache and set password again.');
                 $newPassword = $azureDatabase->getPassword($params['password'], true);
                 $params = $this->addNewPasswordToParams($params, $newPassword);
