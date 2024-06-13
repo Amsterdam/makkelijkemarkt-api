@@ -119,17 +119,17 @@ final class VervangerController extends AbstractController
             return new JsonResponse(['error' => "Koopman doesn't exists"], Response::HTTP_BAD_REQUEST);
         }
         /** @var Koopman */
-        $vervangende_koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['vervanger_erkenningsnummer']);
-        if (null === $vervangende_koopman) {
+        $vervangendeKoopman = $this->koopmanRepository->findOneByErkenningsnummer($data['vervanger_erkenningsnummer']);
+        if (null === $vervangendeKoopman) {
             return new JsonResponse(['error' => "Vervanger doesn't exists"], Response::HTTP_BAD_REQUEST);
         }
-        if ($koopman === $vervangende_koopman) {
+        if ($koopman === $vervangendeKoopman) {
             return new JsonResponse(['error' => "Koopman and vervanger can't be the same"], Response::HTTP_BAD_REQUEST);
         }
 
         $active_vervangers = $koopman->getVervangersVan();
-        $vervanger_already_exists = $active_vervangers->exists(function ($key, Vervanger $verv) use ($vervangende_koopman) {
-            return $verv->getErkenningsnummer() === $vervangende_koopman->getErkenningsnummer();
+        $vervanger_already_exists = $active_vervangers->exists(function ($key, Vervanger $verv) use ($vervangendeKoopman) {
+            return $verv->getErkenningsnummer() === $vervangendeKoopman->getErkenningsnummer();
         });
 
         if ($vervanger_already_exists) {
@@ -138,7 +138,12 @@ final class VervangerController extends AbstractController
 
         $vervanger = (new Vervanger())
             ->setKoopman($koopman)
-            ->setVervanger($vervangende_koopman);
+            ->setVervanger($vervangendeKoopman);
+
+        if (Koopman::STATUS_VERWIJDERD === $vervangendeKoopman->getStatus()) {
+            $vervangendeKoopman->setStatus(Koopman::STATUS_VERVANGER);
+            $this->entityManager->persist($vervangendeKoopman);
+        }
 
         $this->entityManager->persist($vervanger);
         $this->entityManager->flush();
@@ -214,21 +219,26 @@ final class VervangerController extends AbstractController
             return new JsonResponse(['error' => "Koopman doesn't exists"], Response::HTTP_BAD_REQUEST);
         }
         /** @var Koopman */
-        $vervangende_koopman = $this->koopmanRepository->findOneByErkenningsnummer($data['vervanger_erkenningsnummer']);
-        if (null === $vervangende_koopman) {
+        $vervangendeKoopman = $this->koopmanRepository->findOneByErkenningsnummer($data['vervanger_erkenningsnummer']);
+        if (null === $vervangendeKoopman) {
             return new JsonResponse(['error' => "Vervanger doesn't exists"], Response::HTTP_BAD_REQUEST);
         }
-        if ($koopman === $vervangende_koopman) {
+        if ($koopman === $vervangendeKoopman) {
             return new JsonResponse(['error' => "Koopman and vervanger can't be the same"], Response::HTTP_BAD_REQUEST);
         }
 
-        $vervanger = $this->vervangerRepository->findOneByKoopmanAndVervanger($koopman, $vervangende_koopman);
+        $vervanger = $this->vervangerRepository->findOneByKoopmanAndVervanger($koopman, $vervangendeKoopman);
 
         if (null == $vervanger) {
             return new JsonResponse(['message' => 'Vervanger not found'], Response::HTTP_OK);
         }
 
         $this->entityManager->remove($vervanger);
+
+        if ($vervangendeKoopman->getVervangerVoor()->isEmpty()) {
+            $vervangendeKoopman->setStatus(Koopman::STATUS_VERWIJDERD);
+            $this->entityManager->persist($vervangendeKoopman);
+        }
         $this->entityManager->flush();
 
         return new JsonResponse(['message' => 'Vervanger deleted'], Response::HTTP_OK);

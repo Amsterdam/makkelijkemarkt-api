@@ -148,6 +148,7 @@ final class MarktController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="naam", type="string", description="Naam van de markt"),
      *                 @OA\Property(property="soort", type="string", description="Soort markt (dag, week, maand)"),
      *             )
