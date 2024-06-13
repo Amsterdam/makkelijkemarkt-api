@@ -235,11 +235,12 @@ final class VervangerController extends AbstractController
 
         $this->entityManager->remove($vervanger);
         $this->entityManager->flush();
-        
+
         if ($vervangendeKoopman->getVervangerVoor()->isEmpty()) {
             $vervangendeKoopman->setStatus(Koopman::STATUS_VERWIJDERD);
             $this->entityManager->persist($vervangendeKoopman);
             $this->entityManager->flush();
+
             return new JsonResponse(['message' => 'Vervanger deleted and deactivated'], Response::HTTP_OK);
         }
 
