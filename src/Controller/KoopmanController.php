@@ -541,7 +541,7 @@ final class KoopmanController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/api/1.1.0/koopman/toggle_handhavingsverzoek/{id}/{date}",
+     *     path="/api/1.1.0/koopman/toggle_handhavingsverzoek/{id}/{dateStr}",
      *     security={{"api_key": {}, "bearer": {}}},
      *     operationId="KoopmanPostToggleHandhavingsVerzoek",
      *     tags={"Koopman"},
@@ -565,7 +565,7 @@ final class KoopmanController extends AbstractController
      *     )
      * )
      *
-     * @Route("/koopman/toggle_handhavingsverzoek/{id}/{date}", methods={"POST"})
+     * @Route("/koopman/toggle_handhavingsverzoek/{id}/{dateStr}", methods={"POST"})
      *
      * @Security("is_granted('ROLE_SENIOR')")
      */
