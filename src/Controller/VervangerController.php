@@ -236,7 +236,7 @@ final class VervangerController extends AbstractController
         $this->entityManager->remove($vervanger);
         $this->entityManager->flush();
 
-        if ($vervangendeKoopman->getVervangerVoor()->isEmpty()) {
+        if ($vervangendeKoopman->getVervangerVoor()->isEmpty() && $vervangendeKoopman->getSollicitaties()->isEmpty()) {
             $vervangendeKoopman->setStatus(Koopman::STATUS_VERWIJDERD);
             $this->entityManager->persist($vervangendeKoopman);
             $this->entityManager->flush();
