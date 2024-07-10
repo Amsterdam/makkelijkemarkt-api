@@ -52,3 +52,6 @@ refresh: reset build push deploy
 
 dev:
 	nohup kubycat kubycat-config.yaml > /dev/null 2>&1&
+
+composer-install:
+	docker run --rm -v .:/app -u 1000:1000 composer install
