@@ -3,7 +3,7 @@ services:
   mm-api_phpfpm:
     build:
       context: .
-      dockerfile: Dockerfile_phpfpm
+      dockerfile: Dockerfile_phpfpm_local
     image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-salmagundi/mm-api}:${VERSION:-latest}
   mm-api_nginx:
     build:
