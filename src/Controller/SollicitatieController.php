@@ -505,6 +505,61 @@ final class SollicitatieController extends AbstractController
     }
 
     /**
+     * @OA\Delete(
+     *      path="/api/1.1.0/sollicitatie/marktafkorting/{marktAfkorting}/{sollicitatieNummer}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="SollicitatieUpdateAFK",
+     *      tags={"Sollicitatie"},
+     *      summary="Haal sollicitatie door obv AFK en sollicitatienummer",
+     *
+     *      @OA\Parameter(name="marktId", @OA\Schema(type="integer"), in="path", required=true),
+     *      @OA\Parameter(name="sollicitatieNummer", @OA\Schema(type="integer"), in="path", required=true),
+     *
+     *      @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *             )
+     *         )
+     *     ),
+     *
+     *      @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Sollicitatie")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     *
+     * @Route("/sollicitatie/marktafkorting/{marktAfkorting}/{sollicitatieNummer}", methods={"DELETE"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function deleteSollicitatieMetAfk(Request $request, string $marktAfkorting, int $sollicitatieNummer): Response
+    {
+        $markt = $this->marktRepository->getByAfkorting($marktAfkorting);
+        if (null === $markt) {
+            return new JsonResponse(['error' => 'Markt niet gevonden.'], Response::HTTP_BAD_REQUEST);
+        }
+        $requestArray = $request->request->all();
+        $requestArray['doorgehaald'] = true;
+        $request->request->replace($requestArray);
+
+        return $this->updateSollicitatie($request, $markt->getId(), $sollicitatieNummer);
+    }
+
+    /**
      * @OA\Get(
      *     path="/api/1.1.0/sollicitaties/markt/{marktId}",
      *     security={{"api_key": {}, "bearer": {}}},
