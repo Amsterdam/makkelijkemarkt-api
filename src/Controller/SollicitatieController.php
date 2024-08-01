@@ -318,6 +318,8 @@ final class SollicitatieController extends AbstractController
             return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
+        $deleteRequest = $data['deleteRequest'] ?? false;
+
         $expectedParameters = [
             'status',
             'inschrijfDatum',
@@ -350,11 +352,17 @@ final class SollicitatieController extends AbstractController
             /** @var Sollicitatie[] */
             $sollicitaties = $this->sollicitatieRepository->findAllByMarktAndSollicitatieNummer($markt, (string) $sollicitatieNummer);
             if (0 === count($sollicitaties)) {
-                return new JsonResponse(['error' => "Sollicitatie doesn't exists"], Response::HTTP_BAD_REQUEST);
+                // Return OK when no sollicitaties were found and was Delete Request.
+                $responseCode = $deleteRequest ? Response::HTTP_ACCEPTED : Response::HTTP_BAD_REQUEST;
+                return new JsonResponse(['error' => "Sollicitatie doesn't exists"], $responseCode);
             } elseif (count($sollicitaties) > 1) {
                 return new JsonResponse(['error' => 'Too many sollicitaties found'], Response::HTTP_BAD_REQUEST);
             } else {
-                $sollicitatie = $sollicitaties[0];
+                if (isset($data['version'])) {
+                    return new JsonResponse(['error' => 'Sollicitatie found but not correct koppelveld'], Response::HTTP_BAD_REQUEST);
+                } else {
+                    $sollicitatie = $sollicitatie[0];
+                }
             }
         }
 
@@ -522,6 +530,7 @@ final class SollicitatieController extends AbstractController
      *             mediaType="application/json",
      *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
      *             )
      *         )
