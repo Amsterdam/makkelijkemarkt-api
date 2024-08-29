@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_phpfpm
-    container_name: mm-api-mm-api # TODO kleiner maken
+    container_name: mm-api
     restart: always
     # TODO debugger wordt niet geinstalleerd
     command: >
@@ -60,11 +60,18 @@ services:
       - /tmp
       - /var/www/public/media/cache/koopman_rect_small
       - /var/www/public/media/cache/koopman_rect_medium
+    depends_on:
+      - mm-db
   mm-api-nginx:
     build:
       context: .
       dockerfile: Dockerfile_nginx
     container_name: mm-api-nginx
+
+    # necessary for the fastcgi_pass in docker-nginx/default.template
+    # other option is to remove this link and make FASTCGI_PASS an env
+    links:
+      - mm-api:mm-api-mm-api
     depends_on:
       - mm-api
     environment:
