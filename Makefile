@@ -22,14 +22,13 @@ test:
 	echo "No tests available"
 
 migrate:
-	kubectl exec -it deploy/mm-api-mm-api -- sh -c "php bin/console --no-interaction doctrine:migrations:migrate"
-	kubectl exec -it deploy/mm-api-mm-api -- sh -c "php bin/console doc:fix:load  --no-interaction --purge-with-truncate"
+	docker exec -it mm-api-mm-api sh -c "php bin/console --no-interaction doctrine:migrations:migrate"
 
 fixtures: migrate
+	docker exec -it mm-api-mm-api sh -c "php bin/console doc:fix:load  --no-interaction --purge-with-truncate"
 
 push:
 	$(dc) push
-
 
 manifests:
 	@helm template mm-api $(HELM_ARGS) $(ARGS)
@@ -50,5 +49,11 @@ reset:
 
 refresh: reset build push deploy
 
+build-dev:
+	$(dc) -f docker-compose-dev.yml build
+
 dev:
-	nohup kubycat kubycat-config.yaml > /dev/null 2>&1&
+	$(dc) -f docker-compose-dev.yml up -d
+
+dev-down:
+	$(dc) -f docker-compose-dev.yml down
