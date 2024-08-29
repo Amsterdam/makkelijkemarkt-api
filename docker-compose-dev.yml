@@ -46,8 +46,8 @@ services:
 
 
       # TODO nog testen
-      - MM_API__BASE_URL=http://api.mm/
-      - DAALDER_URL=http://rah.mm/
+      - MM_API__BASE_URL=http://localhost:8080/
+      - DAALDER_URL=http://localhost:8000/
       - MAILER_HOST=smtp://null:null@salmagundi_mailhog:1025
       - MAILER_PORT=1025
     networks:
@@ -97,3 +97,4 @@ volumes:
 networks:
   markten:
     driver: bridge
+    external: true
