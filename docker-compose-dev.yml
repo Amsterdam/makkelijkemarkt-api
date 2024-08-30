@@ -44,9 +44,6 @@ services:
       - MAILER_FROM=test@local.nl
       - MAILER_USER=salmagundi
       - MAILER_PASSWORD=insecure
-
-
-      # TODO nog testen
       - MM_API__BASE_URL=http://localhost:8080/
       - DAALDER_URL=http://localhost:8000/
       - MAILER_HOST=smtp://null:null@salmagundi_mailhog:1025
@@ -74,8 +71,6 @@ services:
       - mm-api:mm-api-mm-api
     depends_on:
       - mm-api
-    environment:
-      - FASTCGI_PASS=mm-api:9000  # TODO dit nog toevoegen bij salmagundi-infra
     networks:
       - markten
     ports:
