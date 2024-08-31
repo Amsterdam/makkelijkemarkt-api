@@ -43,7 +43,7 @@ class AzureDatabase
 
         return $cache->get(self::CACHE_KEY, function (ItemInterface $item) use ($default) {
             $this->logger->warning('Cache invalid. Getting db password from azure');
-            if (!$this->azureAuthorityHost || !$this->azureTenantId || (bool) $this->azureFederatedTokenFile || !$this->azureClientId) {
+            if (!$this->azureAuthorityHost || !$this->azureTenantId || !empty($this->azureFederatedTokenFile) || !$this->azureClientId) {
                 return $default;
             }
 
