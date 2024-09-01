@@ -31,7 +31,6 @@ composer.phar
 /public/media/
 /mercato
 .tool-versions
-.vscode
 .idea
 ###< local dev env
 
