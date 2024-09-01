@@ -1,7 +1,7 @@
 services:
   mm-api:
     build:
-      context: .
+      context: ${MM_API_CONTEXT:-.}
       dockerfile: Dockerfile_phpfpm
     user: root # necessary to run xdebug, to install in Dockerfile.dev
     command: >
@@ -19,9 +19,9 @@ services:
     container_name: mm-api
     restart: always
     volumes:
-      - $PWD/src:/var/www/src
-      - $PWD/config:/var/www/config
-      - $PWD/tests:/var/www/tests
+      - ./src:/var/www/src
+      - ./config:/var/www/config
+      - ./tests:/var/www/tests
     environment:
       - APP_ENV=dev
       - APP_DEBUG=1
@@ -98,5 +98,4 @@ volumes:
   mm-db-data:
 networks:
   markten:
-    driver: bridge
     external: true
