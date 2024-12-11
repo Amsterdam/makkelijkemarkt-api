@@ -99,9 +99,6 @@ class PdfFactuurService
 
         $this->pdf->SetFont($this->fontname, 'b', 10);
         $this->pdf->Cell(130, 6, '', 0, 0);
-        $this->pdf->Cell(50, 6, 'Stadswerken', 0, 0);
-        $this->pdf->Ln(5);
-        $this->pdf->Cell(130, 6, '', 0, 0);
         $this->pdf->Cell(50, 6, 'Bezoekadres', 0, 0);
         $this->pdf->Ln(5);
         $this->pdf->Cell(130, 6, '', 0, 0);
@@ -118,7 +115,7 @@ class PdfFactuurService
         $this->pdf->Cell(50, 6, '1000 AE Amsterdam', 0, 0);
         $this->pdf->Ln(5);
         $this->pdf->Cell(130, 6, '', 0, 0);
-        $this->pdf->Cell(50, 6, 'Telefoon 020 2552912', 0, 0);
+        $this->pdf->Cell(50, 6, 'Telefoon 14 020', 0, 0);
         $this->pdf->Ln(5);
         $this->pdf->Cell(130, 6, '', 0, 0);
         $this->pdf->Cell(50, 6, 'Bereikbaar van 8.00-18.00', 0, 0);
@@ -127,7 +124,10 @@ class PdfFactuurService
         $this->pdf->Cell(50, 6, 'Email', 0, 0);
         $this->pdf->Ln(5);
         $this->pdf->Cell(130, 6, '', 0, 0);
-        $this->pdf->Cell(50, 6, 'debiteurenadministratie@amsterdam.nl', 0, 0);
+        $this->pdf->Cell(50, 6, 'marktbureau@amsterdam.nl', 0, 0);
+        $this->pdf->Ln(5);
+        $this->pdf->Cell(130, 6, '', 0, 0);
+        $this->pdf->Cell(50, 6, 'https://amsterdam.nl/markt', 0, 0);
 
         $this->pdf->Ln(5);
         $this->pdf->Cell(130, 6, '', 0, 0);
