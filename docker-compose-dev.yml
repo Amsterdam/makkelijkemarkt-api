@@ -1,7 +1,7 @@
 services:
   mm-api:
     build:
-      context: ${MM_API_CONTEXT:-.}
+      context: .
       dockerfile: Dockerfile_phpfpm
     user: root # necessary to run xdebug, to install in Dockerfile.dev
     command: >
