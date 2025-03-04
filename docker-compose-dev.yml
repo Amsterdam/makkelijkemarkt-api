@@ -1,0 +1,101 @@
+services:
+  mm-api:
+    build:
+      context: .
+      dockerfile: Dockerfile_phpfpm
+    user: root # necessary to run xdebug, to install in Dockerfile.dev
+    command: >
+      sh -c "apk add --no-cache --virtual .build-deps $$PHPIZE_DEPS pcre-dev linux-headers autoconf \
+            pecl channel-update pecl.php.net;\
+            nslookup host.docker.internal || echo '172.172.0.1 host.docker.internal' >> /etc/hosts ;\
+            pecl install xdebug-3.3.2 ;\
+            docker-php-ext-enable xdebug ;\
+            echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
+            echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
+            echo 'xdebug.client_port=9003' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
+            echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
+            echo 'xdebug.log=/var/www/xdebug.log' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ;\
+            php-fpm -e"
+    container_name: mm-api
+    restart: always
+    volumes:
+      - ./src:/var/www/src
+      - ./config:/var/www/config
+      - ./tests:/var/www/tests
+    environment:
+      - APP_ENV=dev
+      - APP_DEBUG=1
+      - APP_SECRET=insecure
+      - DATABASE_URL=pgsql://salmagundi:insecure@mm-db:5432/makkelijkemarkt?serverVersion=14&charset=utf8
+      - MAILER_URL=smtp://null:null@salmagundi_mailhog:1025
+      - APP_MM_KEY=insecure
+      - API_KEY=insecure
+      - TRUSTED_PROXIES=0.0.0.0/0
+      - MM_API__NGINX_HTPASSWD=insecure
+      - MOBILE_ACCESS_KEY=insecure
+      - AZURE_AUTHORITY_HOST=''
+      - AZURE_TENANT_ID=''
+      - AZURE_FEDERATED_TOKEN_FILE=''
+      - AZURE_CLIENT_ID=''
+      - AZURE_STORAGE_IMAGE_ACCOUNT=''
+      - AZURE_STORAGE_IMAGE_CONTAINER=''
+      - AZURE_SUBSCRIPTION_ID=''
+      - AZURE_RESOURCE_GROUP=''
+      - MAILER_FROM=test@local.nl
+      - MAILER_USER=salmagundi
+      - MAILER_PASSWORD=insecure
+      - MM_API__BASE_URL=http://localhost:8080/
+      - DAALDER_URL=http://localhost:8000/
+      - MAILER_HOST=smtp://null:null@salmagundi_mailhog:1025
+      - MAILER_PORT=1025
+    networks:
+      - markten
+    ports:
+      - 9001:9000
+    tmpfs:
+      - /var/www/var/cache/dev
+      - /var/www/var/log
+      - /var/www/public/media/cache/koopman_rect_small
+      - /var/www/public/media/cache/koopman_rect_medium
+    depends_on:
+      - mm-db
+  mm-api-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile_nginx
+    container_name: mm-api-nginx
+
+    # necessary for the fastcgi_pass in docker-nginx/default.template
+    # other option is to remove this link and make FASTCGI_PASS an env
+    links:
+      - mm-api:mm-api-mm-api
+    depends_on:
+      - mm-api
+    networks:
+      - markten
+    ports:
+      - 8091:8080
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /var/log/nginx
+  mm-db:
+    image: postgres:14
+    container_name: mm-db
+    environment:
+      POSTGRES_DB: makkelijkemarkt
+      POSTGRES_USER: salmagundi
+      POSTGRES_PASSWORD: insecure
+    ports:
+      - "5433:5432"
+    expose:
+      - 5432
+    volumes:
+      - mm-db-data:/var/lib/postgresql/data
+    networks:
+      - markten
+volumes:
+  mm-db-data:
+networks:
+  markten:
+    external: true
