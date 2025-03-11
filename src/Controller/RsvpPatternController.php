@@ -262,7 +262,7 @@ class RsvpPatternController extends AbstractController
         }
 
         $today = new \DateTime();
-        $rsvp_pattern = $this->rsvpPatternRepository->findOneForEachMarktByKoopmanAndBeforeDate($koopman, $today);
+        $rsvp_pattern = $this->rsvpPatternRepository->findActiveRsvpPatternForEachMarktByKoopmanAndBeforeDate($koopman, $today);
 
         $response = $this->serializer->serialize($rsvp_pattern, 'json');
 
