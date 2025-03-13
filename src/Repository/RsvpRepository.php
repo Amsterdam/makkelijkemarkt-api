@@ -103,7 +103,7 @@ class RsvpRepository extends ServiceEntityRepository
             ->where('r.koopman = :koopman')
             ->andWhere('r.marktDate >= :startDate')
             ->andWhere('r.marktDate <= :endDate')
-            ->andWhere('markt.marktBeeindigd = false')
+            ->andWhere('markt.marktBeeindigd IS null OR markt.marktBeeindigd = false')
             ->andWhere('sollicitatie.doorgehaald = false')
             ->setParameter('koopman', $koopman)
             ->setParameter('startDate', $startDate)
