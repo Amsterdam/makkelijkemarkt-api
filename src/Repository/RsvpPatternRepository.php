@@ -91,7 +91,7 @@ class RsvpPatternRepository extends ServiceEntityRepository
             ->join('r.markt', 'markt')
             ->join('App\Entity\Sollicitatie', 'sollicitatie', 'WITH', 'sollicitatie.koopman = r.koopman AND sollicitatie.markt = r.markt')
             ->where('r.koopman = :koopman')
-            ->andWhere('markt.marktBeeindigd IS null')
+            ->andWhere('markt.marktBeeindigd IS null OR markt.marktBeeindigd = false')
             ->andWhere('sollicitatie.doorgehaald = false')
             ->setParameter('koopman', $koopman)
             ->orderBy('r.patternDate', 'DESC');
