@@ -81,6 +81,39 @@ class RsvpPatternRepository extends ServiceEntityRepository
         // ";
     }
 
+     /**
+     * @return RsvpPattern[] Returns an array of Rsvp objects
+     */
+    public function findActiveRsvpPatternForEachMarktByKoopmanAndBeforeDate(Koopman $koopman, \DateTimeInterface $date)
+    {
+        // Get all RsvpPatterns of Koopman ordered by date
+        $qb = $this->createQueryBuilder('r')
+            ->join('r.markt', 'markt')
+            ->join('App\Entity\Sollicitatie', 'sollicitatie', 'WITH', 'sollicitatie.koopman = r.koopman AND sollicitatie.markt = r.markt')
+            ->where('r.koopman = :koopman')
+            ->andWhere('markt.marktBeeindigd IS null OR markt.marktBeeindigd = false')
+            ->andWhere('sollicitatie.doorgehaald = false')
+            ->setParameter('koopman', $koopman)
+            ->orderBy('r.patternDate', 'DESC');
+
+        $results = $qb->getQuery()->getResult();
+
+        // Find all unique markten where koopman has RsvpPatroon
+        $uniqueMarkten = array_values(array_unique(array_map(function (RsvpPattern $elem) {
+            return $elem->getMarkt();
+        }, $results)));
+
+        // Return the first found RsvpPatroon of koopman at Markt (was sorted by date so returns most recent)
+        $firstPatterns = [];
+        foreach ($uniqueMarkten as $marktId) {
+            $firstPatterns[] = current(array_filter($results, function (RsvpPattern $elem) use ($marktId) {
+                return $elem->getMarkt() == $marktId;
+            }));
+        }
+
+        return $firstPatterns;
+    }
+
     public function findOneForEachKoopmanByMarktAndBeforeDate(Markt $markt, \DateTimeInterface $date)
     {
         $qb = $this->createQueryBuilder('r')
