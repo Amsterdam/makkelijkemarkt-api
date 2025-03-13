@@ -74,30 +74,6 @@ class RsvpRepository extends ServiceEntityRepository
     /**
      * @return Rsvp[] Returns an array of Rsvp objects
      */
-    public function findActiveRsvpsByMarktAndKoopmanAndBetweenDates(Markt $markt, Koopman $koopman, \DateTime $startDate, \DateTime $endDate)
-    {
-        $qb = $this
-            ->createQueryBuilder('rsvp')
-            ->join('rsvp.markt', 'markt')
-            ->join('App\Entity\Sollicitatie', 'sollicitatie', 'WITH', 'sollicitatie.koopman = rsvp.koopman AND sollicitatie.markt = rsvp.markt')
-            ->where('rsvp.markt = :markt')
-            ->andWhere('rsvp.koopman = :koopman')
-            ->andWhere('rsvp.marktDate >= :startDate')
-            ->andWhere('rsvp.marktDate <= :endDate')
-            ->andWhere('markt.marktBeeindigd = false')
-            ->andWhere('sollicitatie.doorgehaald = false')
-            ->setParameter('markt', $markt)
-            ->setParameter('koopman', $koopman)
-            ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate)
-        ;
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * @return Rsvp[] Returns an array of Rsvp objects
-     */
     public function findByKoopmanAndBetweenDates(Koopman $koopman, \DateTime $startDate, \DateTime $endDate)
     {
         $qb = $this
