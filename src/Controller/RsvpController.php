@@ -291,9 +291,9 @@ class RsvpController extends AbstractController
         $monday = new \DateTime('Monday this week');
         $later = (new \DateTime('Monday this week'))->modify('+2 weeks');
 
-        $rsvps = $this->rsvpRepository->findByKoopmanAndBetweenDates($koopman, $monday, $later);
+        $rsvps = $this->rsvpRepository->findActiveByKoopmanAndBetweenDates($koopman, $monday, $later);
 
-        $rsvpPatterns = $this->rsvpPatternRepository->findOneForEachMarktByKoopmanAndBeforeDate($koopman, $later);
+        $rsvpPatterns = $this->rsvpPatternRepository->findActiveRsvpPatternForEachMarktByKoopmanAndBeforeDate($koopman, $later);
 
         $aggregatedRsvps = $this->combineRsvpWithPattern($rsvps, $rsvpPatterns, $monday, $later);
 
