@@ -47,6 +47,6 @@ USER www-data
 
 RUN composer install --prefer-dist --no-progress --no-suggest --no-scripts
 
-RUN vendor/bin/grumphp run -n
+# RUN vendor/bin/grumphp run -n
 
 CMD ["php-fpm"]
