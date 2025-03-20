@@ -13,6 +13,8 @@ REPOSITORY ?= salmagundi/mm-api
 VERSION ?= latest
 CHART_VERSION ?= 1.9.1
 
+CONTAINER = mm-api
+
 all: build push deploy fixtures
 
 build:
@@ -22,10 +24,10 @@ test:
 	echo "No tests available"
 
 migrate:
-	docker exec -it mm-api-mm-api sh -c "php bin/console --no-interaction doctrine:migrations:migrate"
+	docker exec -it ${CONTAINER} sh -c "php bin/console --no-interaction doctrine:migrations:migrate"
 
 fixtures: migrate
-	docker exec -it mm-api-mm-api sh -c "php bin/console doc:fix:load  --no-interaction --purge-with-truncate"
+	docker exec -it ${CONTAINER} sh -c "php bin/console doc:fix:load  --no-interaction --purge-with-truncate"
 
 push:
 	$(dc) push
