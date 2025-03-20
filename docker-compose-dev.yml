@@ -26,7 +26,7 @@ services:
       - APP_ENV=dev
       - APP_DEBUG=1
       - APP_SECRET=insecure
-      - DATABASE_URL=pgsql://salmagundi:insecure@mm-db:5432/makkelijkemarkt?serverVersion=14&charset=utf8
+      - DATABASE_URL=pgsql://postgres:insecure@postgres:5432/makkelijkemarkt?serverVersion=14&charset=utf8
       - MAILER_URL=smtp://null:null@salmagundi_mailhog:1025
       - APP_MM_KEY=insecure
       - API_KEY=insecure
@@ -58,7 +58,7 @@ services:
       - /var/www/public/media/cache/koopman_rect_small
       - /var/www/public/media/cache/koopman_rect_medium
     depends_on:
-      - mm-db
+      - postgres
   mm-api-nginx:
     build:
       context: .
@@ -79,23 +79,7 @@ services:
       - /var/cache/nginx
       - /var/run
       - /var/log/nginx
-  mm-db:
-    image: postgres:14
-    container_name: mm-db
-    environment:
-      POSTGRES_DB: makkelijkemarkt
-      POSTGRES_USER: salmagundi
-      POSTGRES_PASSWORD: insecure
-    ports:
-      - "5433:5432"
-    expose:
-      - 5432
-    volumes:
-      - mm-db-data:/var/lib/postgresql/data
-    networks:
-      - markten
-volumes:
-  mm-db-data:
+
 networks:
   markten:
     external: true
