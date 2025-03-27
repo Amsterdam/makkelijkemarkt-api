@@ -36,7 +36,6 @@ class AzureDatabase
 
     public function getPassword(string $default, $invalidateCache = false): string
     {
-        // $this->logger->warning('Fetching DB Password either from cache or filesystem');
         $cache = new FilesystemAdapter();
         if ($invalidateCache) {
             $cache->delete(self::CACHE_KEY);
@@ -44,7 +43,8 @@ class AzureDatabase
 
         return $cache->get(self::CACHE_KEY, function (ItemInterface $item) use ($default) {
             $this->logger->warning('Cache invalid. Getting db password from azure');
-            if (!$this->azureAuthorityHost || !$this->azureTenantId || !$this->azureFederatedTokenFile || !$this->azureClientId) {
+            $hasFederationTokenFile = $this->azureFederatedTokenFile && strlen($this->azureFederatedTokenFile) > 0;
+            if (!$this->azureAuthorityHost || !$this->azureTenantId || $hasFederationTokenFile || !$this->azureClientId) {
                 return $default;
             }
 

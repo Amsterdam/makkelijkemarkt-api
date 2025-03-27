@@ -13,6 +13,8 @@ REPOSITORY ?= salmagundi/mm-api
 VERSION ?= latest
 CHART_VERSION ?= 1.9.1
 
+CONTAINER = mm-api
+
 all: build push deploy fixtures
 
 build:
@@ -22,14 +24,13 @@ test:
 	echo "No tests available"
 
 migrate:
-	kubectl exec -it deploy/mm-api-mm-api -- sh -c "php bin/console --no-interaction doctrine:migrations:migrate"
-	kubectl exec -it deploy/mm-api-mm-api -- sh -c "php bin/console doc:fix:load  --no-interaction --purge-with-truncate"
+	docker exec -it ${CONTAINER} sh -c "php bin/console --no-interaction doctrine:migrations:migrate"
 
 fixtures: migrate
+	docker exec -it ${CONTAINER} sh -c "php bin/console doc:fix:load  --no-interaction --purge-with-truncate"
 
 push:
 	$(dc) push
-
 
 manifests:
 	@helm template mm-api $(HELM_ARGS) $(ARGS)
@@ -50,5 +51,12 @@ reset:
 
 refresh: reset build push deploy
 
+build-dev:
+	$(dc) -f docker-compose.yml build
+
 dev:
-	nohup kubycat kubycat-config.yaml > /dev/null 2>&1&
+	-docker network create markten
+	$(dc) -f docker-compose.yml up -d
+
+dev-down:
+	$(dc) -f docker-compose.yml down
