@@ -469,7 +469,7 @@ final class SollicitatieController extends AbstractController
      *                 @OA\Property(property="doorgehaald", type="string", description="Doorgehaald van de sollicitatie"),
      *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
      *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
-     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *                 @OA\Property(property="version", type="string", description="Version in Daalder van de sollicitatie")
      *
      *             )
      *         )
@@ -502,6 +502,150 @@ final class SollicitatieController extends AbstractController
         }
 
         return $this->updateSollicitatie($request, $markt->getId(), $sollicitatieNummer);
+    }
+
+    /**
+     * @OA\Put(
+     *      path="/api/1.1.0/sollicitatie/id/{sollicitatieId}",
+     *      security={{"api_key": {}, "bearer": {}}},
+     *      operationId="SollicitatieUpdateAFK",
+     *      tags={"Sollicitatie"},
+     *      summary="Update new sollicitatie obv AFK",
+     *
+     *      @OA\Parameter(name="sollicitatieId", @OA\Schema(type="integer"), in="path", required=true),
+     *
+     *      @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *
+     *                 @OA\Property(property="vastePlaatsen", type="string", description="VastePlaatsen van de sollicitatie"),
+     *                 @OA\Property(property="aantal3MeterKramen", type="string", description="Aantal3MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantal4MeterKramen", type="string", description="Aantal4MeterKramen van de sollicitatie"),
+     *                 @OA\Property(property="aantalExtraMeters", type="string", description="AantalExtraMeters van de sollicitatie"),
+     *                 @OA\Property(property="status", type="string", description="Status van de sollicitatie"),
+     *                 @OA\Property(property="aantalElektra", type="string", description="AantalElektra van de sollicitatie"),
+     *                 @OA\Property(property="aantalAfvaleilanden", type="string", description="AantalAfvaleilanden van de sollicitatie"),
+     *                 @OA\Property(property="grootPerMeter", type="string", description="GrootPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="kleinPerMeter", type="string", description="KleinPerMeter van de sollicitatie"),
+     *                 @OA\Property(property="grootReiniging", type="string", description="GrootReiniging van de sollicitatie"),
+     *                 @OA\Property(property="kleinReiniging", type="string", description="KleinReiniging van de sollicitatie"),
+     *                 @OA\Property(property="afvalEilandAgf", type="string", description="AfvalEilandAgf van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroomPerStuk", type="string", description="KrachtstroomPerStuk van de sollicitatie"),
+     *                 @OA\Property(property="krachtstroom", type="string", description="Krachtstroom van de sollicitatie"),
+     *                 @OA\Property(property="inschrijfDatum", type="string", description="InschrijfDatum van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaald", type="string", description="Doorgehaald van de sollicitatie"),
+     *                 @OA\Property(property="doorgehaaldReden", type="string", description="DoorgehaaldReden van de sollicitatie"),
+     *                 @OA\Property(property="perfectViewNummer", type="string", description="PerfectViewNummer van de sollicitatie"),
+     *                 @OA\Property(property="koppelveld", type="string", description="Koppelveld van de sollicitatie")
+     *
+     *             )
+     *         )
+     *     ),
+     *
+     *      @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *
+     *         @OA\JsonContent(ref="#/components/schemas/Sollicitatie")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad Request",
+     *
+     *         @OA\JsonContent(@OA\Property(property="error", type="string", description=""))
+     *     )
+     * )
+     *
+     * @Route("/sollicitaties/id/{sollicitatieId}", methods={"PATCH"})
+     *
+     * @Security("is_granted('ROLE_SENIOR')")
+     */
+    public function updateSollicitatieById(Request $request, int $sollicitatieId): Response
+    {
+        $data = json_decode((string) $request->getContent(), true);
+
+        if (null === $data) {
+            return new JsonResponse(['error' => json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+        /** @var Sollicitatie */
+        $sollicitatie = $this->sollicitatieRepository->find($sollicitatieId);
+        if (null === $sollicitatie) {
+            return new JsonResponse(['error' => 'Sollicitatie niet gevonden.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+
+            if (isset($data['koppelveld'])) {
+                $sollicitatie->setKoppelveld($koppelveld);
+            }
+            if (isset($data['status'])) {
+                $sollicitatie->setStatus($data['status']);
+            }
+            if (isset($data['vastePlaatsen'])) {
+                $vastePlaatsen = explode(',', $data['vastePlaatsen']);
+                $sollicitatie->setVastePlaatsen($vastePlaatsen);
+            }
+            if (isset($data['aantal3MeterKramen'])) {
+                $sollicitatie->setAantal3MeterKramen($data['aantal3MeterKramen']);
+            }
+            if (isset($data['aantal4MeterKramen'])) {
+                $sollicitatie->setAantal4MeterKramen($data['aantal4MeterKramen']);
+            }
+            if (isset($data['aantalExtraMeters'])) {
+                $sollicitatie->setAantalExtraMeters($data['aantalExtraMeters']);
+            }
+            if (isset($data['status'])) {
+                $sollicitatie->setStatus($data['status']);
+            }
+            if (isset($data['aantalElektra'])) {
+                $sollicitatie->setAantalElektra($data['aantalElektra']);
+            }
+            if (isset($data['aantalAfvaleilanden'])) {
+                $sollicitatie->setAantalAfvaleilanden($data['aantalAfvaleilanden']);
+            }
+            if (isset($data['grootPerMeter'])) {
+                $sollicitatie->setGrootPerMeter($data['grootPerMeter']);
+            }
+            if (isset($data['kleinPerMeter'])) {
+                $sollicitatie->setKleinPerMeter($data['kleinPerMeter']);
+            }
+            if (isset($data['grootReiniging'])) {
+                $sollicitatie->setGrootReiniging($data['grootReiniging']);
+            }
+            if (isset($data['kleinReiniging'])) {
+                $sollicitatie->setKleinReiniging($data['kleinReiniging']);
+            }
+            if (isset($data['afvalEilandAgf'])) {
+                $sollicitatie->setAfvalEilandAgf($data['afvalEilandAgf']);
+            }
+            if (isset($data['krachtstroomPerStuk'])) {
+                $sollicitatie->setKrachtstroomPerStuk($data['krachtstroomPerStuk']);
+            }
+            if (isset($data['krachtstroom'])) {
+                $sollicitatie->setKrachtstroom((bool) $data['krachtstroom']);
+            }
+            if (isset($data['inschrijfDatum'])) {
+                $sollicitatie->setInschrijfDatum(new \DateTime($data['inschrijfDatum']));
+            }
+            if (isset($data['doorgehaald'])) {
+                $sollicitatie->setDoorgehaald($data['doorgehaald']);
+            }
+            if (isset($data['doorgehaaldReden'])) {
+                $sollicitatie->setDoorgehaaldReden($data['doorgehaaldReden']);
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+        $this->entityManager->persist($sollicitatie);
+        $this->entityManager->flush();
+        $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
+        
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json'])
     }
 
     /**
