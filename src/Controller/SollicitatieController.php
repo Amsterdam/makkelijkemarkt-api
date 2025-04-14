@@ -561,7 +561,7 @@ final class SollicitatieController extends AbstractController
      *     )
      * )
      *
-     * @Route("/sollicitaties/id/{sollicitatieId}", methods={"PATCH"})
+     * @Route("/sollicitatie/id/{sollicitatieId}", methods={"PATCH"})
      *
      * @Security("is_granted('ROLE_SENIOR')")
      */
