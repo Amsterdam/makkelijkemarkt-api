@@ -645,7 +645,7 @@ final class SollicitatieController extends AbstractController
         $this->entityManager->flush();
         $response = $this->serializer->serialize($sollicitatie, 'json', ['groups' => $this->groups]);
         
-        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json'])
+        return new Response($response, Response::HTTP_OK, ['Content-type' => 'application/json']);
     }
 
     /**
