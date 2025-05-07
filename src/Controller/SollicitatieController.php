@@ -581,7 +581,7 @@ final class SollicitatieController extends AbstractController
         try {
 
             if (isset($data['koppelveld'])) {
-                $sollicitatie->setKoppelveld($koppelveld);
+                $sollicitatie->setKoppelveld($data['koppelveld']);
             }
             if (isset($data['status'])) {
                 $sollicitatie->setStatus($data['status']);
