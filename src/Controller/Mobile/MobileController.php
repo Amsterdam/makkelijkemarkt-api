@@ -110,6 +110,8 @@ class MobileController extends AbstractController
     public function handleRequest(Request $request, string $version = 'v1')
     {
         $body = json_decode($request->getContent(), true);
+        // https://github.com/symfony/http-foundation/blob/7.3/Response.php
+        return new Response("MM API unavailable for Mobile", Response::HTTP_GONE)
 
         if (!isset($body['type'])) {
             $this->logger->warning('Mobile request without action', ['data' => $body ?? null]);
