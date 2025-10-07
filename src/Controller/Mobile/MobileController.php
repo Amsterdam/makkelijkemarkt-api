@@ -110,25 +110,27 @@ class MobileController extends AbstractController
     public function handleRequest(Request $request, string $version = 'v1')
     {
         $body = json_decode($request->getContent(), true);
+        // https://github.com/symfony/http-foundation/blob/7.3/Response.php
+        return new Response("MM API unavailable for Mobile", Response::HTTP_GONE);
 
-        if (!isset($body['type'])) {
-            $this->logger->warning('Mobile request without action', ['data' => $body ?? null]);
+        // if (!isset($body['type'])) {
+        //     $this->logger->warning('Mobile request without action', ['data' => $body ?? null]);
 
-            return new Response('Mobile request without action', Response::HTTP_BAD_REQUEST);
-        }
+        //     return new Response('Mobile request without action', Response::HTTP_BAD_REQUEST);
+        // }
 
-        $action = $body['type'];
+        // $action = $body['type'];
 
-        $this->setActionMap($version);
+        // $this->setActionMap($version);
 
-        // To avoid logging sensitive data, we only log requests that are not secure.
-        if (isset($body['secure'])) {
-            return $this->handleSecure($request, $action, $body);
-        }
+        // // To avoid logging sensitive data, we only log requests that are not secure.
+        // if (isset($body['secure'])) {
+        //     return $this->handleSecure($request, $action, $body);
+        // }
 
-        $this->logger->warning('Incoming mobile request', $body);
+        // $this->logger->warning('Incoming mobile request', $body);
 
-        return $this->handleAction($request, $action, $body['data'] ?? []);
+        // return $this->handleAction($request, $action, $body['data'] ?? []);
     }
 
     private function handleAction(Request $request, string $action, array $data): Response
