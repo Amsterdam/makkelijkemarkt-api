@@ -299,15 +299,15 @@ class RsvpPatternController extends AbstractController
      *
      * @Security("is_granted('ROLE_SENIOR')")
      */
-    public function getRsvpPatternByMarktIdAndMarktDate(int $marktId, string $marktDateString): Response
+    public function getRsvpPatternByMarktIdAndMarktDate(int $marktId, string $marktDate): Response
     {
         $markt = $this->marktRepository->getById($marktId);
         if (null === $markt) {
             return new JsonResponse(['error' => 'Markt not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (strtotime($marktDateString)) {
-            $date = new \DateTime($marktDateString);
+        if (strtotime($marktDate)) {
+            $date = new \DateTime($marktDate);
         } else {
             return new JsonResponse(['error' => 'Not a valid date'], Response::HTTP_BAD_REQUEST);
         }
